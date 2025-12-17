@@ -28,14 +28,14 @@ export function Main () {
     }
   return (
       <div className="flex flex-col h-screen w-screen bg-black overflow-auto ">
-          <div className="h-[10%] max-h-32 w-full">
+          <div className="h-[10%] max-h-32 w-full bg-[#242B3A] border-b-2 border-[#5F88B8]">
               <Header/>
           </div>
           <div className="flex w-full h-[90%] bg-[#21252E] bg-no-repeat bg-center bg-cover pb-20 lg:pb-0">
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-auto mx-auto
+                <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-auto mx-auto mt-2
                 [&::-webkit-scrollbar]:w-2
                 [&::-webkit-scrollbar-track]:bg-transparent
                 [&::-webkit-scrollbar-thumb]:bg-yellow-500

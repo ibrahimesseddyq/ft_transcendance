@@ -1,15 +1,20 @@
 import {Link, useLocation } from 'react-router-dom';
-import { Home, Gamepad2, MessageCircleMore ,Settings, LogOut, Trophy} from "lucide-react";
 import { cn } from "@/lib/utils";
+import Dashboard from '../assets/icons/Dashboard.svg?react';
+import Messages from '../assets/icons/Messages.svg?react';
+import Settings from '../assets/icons/Settings.svg?react';
+import Logout from '../assets/icons/Logout.svg?react';
+import Jobs from '../assets/icons/Jobs.svg?react';
+import Candidates from '../assets/icons/Candidates.svg?react';
 
 
  export const navigation = [
-  { name: "Home", path: "/homepage", icon: Home }, 
-  { name: "Games", path: "/games", icon: Gamepad2}, 
-  { name: "Chat", path: "/chat", icon: MessageCircleMore }, 
-  { name: "Tournaments", path: "/tournaments", icon: Trophy}, 
+  { name: "Dashboard", path: "/homepage", icon: Dashboard }, 
+  { name: "Jobs", path: "/games", icon: Jobs}, 
+  { name: "Messages", path: "/chat", icon: Messages }, 
+  { name: "Candidates", path: "/tournaments", icon: Candidates}, 
   { name: "Settings", path: "/settting", icon: Settings},
-  { name: "LogOut", path: "/logout", icon: LogOut},
+  { name: "LogOut", path: "/logout", icon: Logout},
 ];
 export function Sidebar() {
     const location = useLocation(); 
@@ -18,15 +23,12 @@ export function Sidebar() {
     return (
         <div
             className="
-                fixed bottom-0 left-0 w-full h-20
-                flex items-center justify-center gap-5
-                bg-transparent z-20 
-                lg:relative lg:h-full lg:flex-col lg:z-0 lg:w-[10%] lg:max-w-64"
+                flex flex-col mt-28
+                bg-transparent relative h-full w-[250px]"
         >
             {/* Navigation */}
-            <nav className="bg-[#1E212A] lg:h-[700px] lg:w-[55%] lg:max-w-28 h-full w-full
-                items-center flex flex-row lg:flex-col mx-auto lg:py-8 lg:my-8
-                 lg:rounded-full shadow-[0px_0px_12px_0px_#d6d6d6]">
+            <nav className=" 
+                 flex flex-col gap-5  ">
                 
                 {navigation.map((item) => {
                     const Icon = item.icon;
@@ -38,12 +40,19 @@ export function Sidebar() {
                             to={item.path}
                             className={cn(
                                 isCurrent
-                                    ? "text-white" 
-                                    : "text-[#666875] hover:text-yellow-400", 
-                                "group flex h-[50%] w-[50%] items-center justify-center rounded-lg transition-all duration-200"
+                                    ? "text-green-600" 
+                                    : "text-[#666875]", 
+                                "group flex h-full w-full pl-14 rounded-lg transition-all duration-200"
                             )}
                         >
-                            <Icon className="h-[90%] w-[90%]" />
+                            <div className='flex gap-2'>
+                                <Icon 
+                                    className={cn(
+                                        "h-[30px] w-[30px] fill-[#666875]  transition-all duration-200"
+                                )}
+                                />
+                                <p className='text-[20px] font-bold'>{item.name}</p> 
+                            </div>
                         </Link>
                     );
                 })}
