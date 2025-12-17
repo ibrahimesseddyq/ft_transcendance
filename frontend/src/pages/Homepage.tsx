@@ -1,61 +1,85 @@
-import { HeroSection } from "@/components/HeroSection";
-import { StatsSection } from "@/components/StatsSection";
-import { OnlineFriends } from "@/components/OnlineFriends";
-import { CreateTournament } from "@/components/CreateTournament";
-import { RecentGames } from "@/components/RecentGames";
+import { FunnielOverview } from "@/components/FunnielOverview";
+import { ActiveJobStatus } from "@/components/ActiveJobStatus";
+import { RecentActivity } from "@/components/RecentActivity";
+import { SourceOfHire } from "@/components/SourceOfHire";
+
 
 export function HomePage(){
+   const TotalStatistics = () =>{
+    return (
+      <div className="h-full w-full flex justify-between items-center ">
+        <div className="pl-5 py-2  mx-auto flex flex-col justify-between h-[95px] w-[200px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[14px] text-white">Active Job Opening</p>
+          <p className="text-xl text-white">20</p>
+          <p className="text-xs text-gray-400">+3 last 30 days</p>
+        </div>
+        <div className="pl-5 py-2 mx-auto flex flex-col justify-between h-[95px] w-[200px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[14px] text-white">Total Active Condidates</p>
+          <p className="text-xl text-white">215</p>
+          <p className="text-xs text-gray-400">+3 last 30 days</p>
+        </div>
+        <div className="pl-5 py-2  mx-auto flex flex-col justify-between h-[95px] w-[200px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[14px] text-white">New Condidates (last day)</p>
+          <p className="text-xl text-white">48</p>
+          <p className="text-xs text-gray-400">12% from last week</p>
+        </div>
+        <div className="pl-5 py-2 mx-auto m flex flex-col justify-between h-[95px] w-[200px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[14px] text-white">Average Time To Hire</p>
+          <p className="text-xl text-white">20</p>
+          <p className="text-xs text-gray-400">5 days from last month</p>
+        </div>
+      </div>
+    );
+  }
   return (
-        <div className="w-full h-full p-2 grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 gap-4">
+        <div className="w-full h-full p-2 grid grid-cols-1 lg:grid-cols-8 lg:grid-rows-7 gap-4">
+              <div className="h-[300px] w-full lg:h-full col-span-1 lg:col-span-8 lg:row-span-1 ">
+                  <TotalStatistics/>
+              </div>
             {/* Left Column - Main Content */}
-            <div className="flex flex-col col-span-1 lg:col-span-2 lg:row-span-3 gap-4">
-              <div className="">
-                <h2 className="text-[#FFCE22] font-serif text-xl	xl:text-2xl 2xl:text-5xl mb-2">WELCOME</h2>
-                <h1 className="text-3xl xl:text-4xl 2xl:text-6xl text-white font-bold">TO YOUR ACCOUNT</h1>
-              </div>
-              <div className="h-[500px] lg:h-full w-full place-content-center bg-[url('../src/assets/icons/bg-test.jpeg')] bg-no-repeat bg-center bg-cover
-                border border-yellow-500 rounded-xl  justify-between overflow-auto bg-[#1E212A] hover:shadow-[0_0_15px_0px_rgba(252,_211,_77,_0.3)]
+              <div className="col-span-1 lg:col-span-5 lg:row-span-3 h-[500px] lg:h-full w-full place-content-center
+                border border-[#5F88B8] rounded-xl  justify-between overflow-auto bg-transparent
                   [&::-webkit-scrollbar]:w-2
                   [&::-webkit-scrollbar-track]:bg-transparent
                   [&::-webkit-scrollbar-thumb]:bg-white
                   [&::-webkit-scrollbar-thumb]:rounded-full">
-                <HeroSection />   
+                {/* <HeroSection />    */}
               </div>
-              <div className="h-[500px] lg:h-full w-full items-center
-                border border-yellow-500 rounded-xl  justify-between overflow-auto bg-[#1E212A] hover:shadow-[0_0_15px_0px_rgba(252,_211,_77,_0.3)] 
-                  [&::-webkit-scrollbar]:w-2
-                  [&::-webkit-scrollbar-track]:bg-transparent
-                  [&::-webkit-scrollbar-thumb]:bg-white
-                  [&::-webkit-scrollbar-thumb]:rounded-full">
-                <StatsSection />
+              <div className="col-span-1 lg:col-span-3 lg:row-span-3 h-[500px] lg:h-full w-full items-center
+                border border-[#5F88B8] rounded-xl  justify-between overflow-auto bg-transparent 
+                [&::-webkit-scrollbar]:w-2
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:bg-white
+                [&::-webkit-scrollbar-thumb]:rounded-full">
+                {/* <ActiveJobStatus /> */}
               </div>
-            </div>
+    
             
             {/* Right Column - Sidebar Content */}
-            <div className="flex flex-col col-span-1 lg:row-span-3 gap-4">
 
-              <div className="w-full h-full border  border-yellow-500 rounded-lg overflow-auto
-                bg-[#1E212A] hover:shadow-[0_0_15px_0px_rgba(252,_211,_77,_0.3)]
+              <div className="col-span-1 lg:col-span-3 lg:row-span-3 w-full h-full
+                border border-[#5F88B8] rounded-lg overflow-auto
+                bg-transparent
                 [&::-webkit-scrollbar]:w-3
                 [&::-webkit-scrollbar-track]:bg-[#948a8a]
                 [&::-webkit-scrollbar-track]:rounded-full
                 [&::-webkit-scrollbar-thumb]:bg-white
                 [&::-webkit-scrollbar-thumb]:h-5
                 [&::-webkit-scrollbar-thumb]:rounded-full">
-                <OnlineFriends />
+                {/* <RecentActivity /> */}
               </div>
-              <CreateTournament /> 
-              <div className="w-full h-full border  border-yellow-500 rounded-lg overflow-auto
-                bg-[#1E212A] hover:shadow-[0_0_15px_0px_rgba(252,_211,_77,_0.3)]
+              
+              <div className="col-span-1 lg:col-span-5 lg:row-span-3 w-full h-full
+                border border-[#5F88B8] rounded-lg overflow-auto
+                bg-transparent
                 [&::-webkit-scrollbar]:w-3
                 [&::-webkit-scrollbar-track]:bg-[#948a8a]
                 [&::-webkit-scrollbar-track]:rounded-full
                 [&::-webkit-scrollbar-thumb]:bg-white
                 [&::-webkit-scrollbar-thumb]:h-5
                 [&::-webkit-scrollbar-thumb]:rounded-full">
-                <RecentGames />
+                {/* <SourceOfHire /> */}
               </div>
-            </div>
-          </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
   );
 };
