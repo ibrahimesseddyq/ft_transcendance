@@ -1,0 +1,14 @@
+services:
+  eureka:
+    build: ./backend/eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+
+  gateway:
+    build: ./backend/gateway
+    container_name: api-gateway
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka
