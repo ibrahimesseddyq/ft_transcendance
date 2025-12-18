@@ -62,7 +62,7 @@ export function LoginPage(){
                     <div className="flex justify-between items-center h-[50px] w-full mt-5 border-transparent border border-[#afb8c4] rounded-full">
                         <input
                             placeholder="Enter your email"
-                            type="text"
+                            type='email'
                             className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                         />
                         <Mail className="h-10 w-14 pr-5 text-white" />
@@ -70,7 +70,7 @@ export function LoginPage(){
                     <div className="flex justify-between items-center h-[50px] w-full mt-3 border-transparent border border-[#afb8c4]  rounded-full">
                         <input
                             placeholder="Enter your Password"
-                            type="text"
+                            type='password'
                             className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                         />
                         <Eye className="h-10 w-14 pr-5 text-white" />
@@ -118,18 +118,22 @@ export function LoginPage(){
                     <div className='flex gap-4 h-[40px] w-full '>
                         <input
                             placeholder="First Name"
+                            type='text'
                             className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
                         />
                         <input
                             placeholder="Last Name"
+                            type='text'
                             className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
                         />
                     </div>
                     <div className='flex gap-4 h-[40px] w-full'>
-                        <input
-                            placeholder="Category"
-                            className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
-                        />
+                        <select name="User" id="User"
+                            className=" w-full lg:w-[60%] text-sm text-white outline-none 
+                            placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent">
+                                <option value="organization" className='text-black'>organization</option>
+                                <option value="Developer" className='text-black'>Developer</option>
+                        </select>
                         <input
                             placeholder="Number"
                             className="w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
