@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
-import { HomePage } from "@/pages/Homepage"
+import { HomePage } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Games } from "@/components/Jobs"
 import { Tournaments } from "@/components/Tournaments"

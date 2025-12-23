@@ -43,7 +43,7 @@ export function Header() {
         />
         <div className="text-right">
           <p className="text-sm xl:text-md font-medium text-white">CHIDORI</p>
-          <p className="text-xs xl:text-md text-yellow-400">@ael-fagr</p>
+          <p className="text-xs xl:text-md text-green-600">@Developer</p>
         </div>
       </Link>
   </div>
