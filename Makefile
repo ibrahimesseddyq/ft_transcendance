@@ -15,3 +15,10 @@ clean:
 	docker system prune -f
 
 re: clean  up
+
+dev:
+	cd srcs/backend/eureka && ./gradlew bootRun --args='--spring.profiles.active=dev' &
+	cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev' &
+	cd srcs/backend/main_service && npm install && npm run dev &
+	cd srcs/backend/quiz_service && npm install && npm run dev &
+	wait
