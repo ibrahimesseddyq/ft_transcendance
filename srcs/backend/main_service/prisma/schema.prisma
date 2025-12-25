@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model application_phases {
+  id             String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  application_id String       @db.Char(36)
+  phase_id       String       @db.Char(36)
+  status         String?      @default("pending") @db.VarChar(20)
+  started_at     DateTime?    @db.Timestamp(0)
+  completed_at   DateTime?    @db.Timestamp(0)
+  notes          String?      @db.Text
+  score          Int?
+  applications   applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "application_phases_ibfk_1")
+  job_phases     job_phases   @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "application_phases_ibfk_2")
+  interviews     interviews[]
+
+  @@unique([application_id, phase_id], map: "unique_app_phase")
+  @@index([application_id, status], map: "idx_application_phases_status")
+  @@index([phase_id], map: "phase_id")
+}
+
+model applications {
+  id                 String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  job_id             String               @db.Char(36)
+  candidate_id       String               @db.Char(36)
+  status             applications_status? @default(pending)
+  current_phase_id   String?              @db.Char(36)
+  applied_at         DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?            @default(now()) @db.Timestamp(0)
+  application_phases application_phases[]
+  jobs               jobs                 @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "applications_ibfk_1")
+  users              users                @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "applications_ibfk_2")
+  job_phases         job_phases?          @relation(fields: [current_phase_id], references: [id], onUpdate: Restrict, map: "applications_ibfk_3")
+  offers             offers?
+
+  @@unique([job_id, candidate_id], map: "unique_application")
+  @@index([current_phase_id], map: "current_phase_id")
+  @@index([candidate_id], map: "idx_applications_candidate")
+  @@index([job_id], map: "idx_applications_job")
+  @@index([status], map: "idx_applications_status")
+}
+
+model candidate_profiles {
+  user_id             String    @id @db.Char(36)
+  resume_url          String?   @db.Text
+  linkedin_url        String?   @db.VarChar(255)
+  portfolio_url       String?   @db.VarChar(255)
+  current_company     String?   @db.VarChar(255)
+  current_title       String?   @db.VarChar(255)
+  years_experience    Int?
+  skills              String?   @db.LongText
+  preferred_locations String?   @db.LongText
+  salary_expectation  String?   @db.VarChar(50)
+  available_from      DateTime? @db.Date
+  users               users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "candidate_profiles_ibfk_1")
+}
+
+model interview_participants {
+  id           String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  interview_id String     @db.Char(36)
+  user_id      String     @db.Char(36)
+  role         String?    @db.VarChar(50)
+  joined_at    DateTime?  @db.Timestamp(0)
+  left_at      DateTime?  @db.Timestamp(0)
+  interviews   interviews @relation(fields: [interview_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interview_participants_ibfk_1")
+  users        users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interview_participants_ibfk_2")
+
+  @@unique([interview_id, user_id], map: "unique_participant")
+  @@index([user_id], map: "user_id")
+}
+
+model interviews {
+  id                     String                    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  application_phase_id   String                    @db.Char(36)
+  scheduled_at           DateTime                  @db.Timestamp(0)
+  duration_minutes       Int?                      @default(60)
+  interview_mode         interviews_interview_mode
+  location               String?                   @db.VarChar(255)
+  whiteboard_session_id  String?                   @db.Char(36)
+  status                 interviews_status?        @default(scheduled)
+  started_at             DateTime?                 @db.Timestamp(0)
+  ended_at               DateTime?                 @db.Timestamp(0)
+  created_at             DateTime?                 @default(now()) @db.Timestamp(0)
+  interview_participants interview_participants[]
+  application_phases     application_phases        @relation(fields: [application_phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interviews_ibfk_1")
+
+  @@index([application_phase_id], map: "application_phase_id")
+  @@index([scheduled_at, status], map: "idx_interviews_scheduled")
+  @@index([status], map: "idx_interviews_status")
+}
+
+model job_phases {
+  id                 String                @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  job_id             String                @db.Char(36)
+  phase_type         job_phases_phase_type
+  name               String                @db.VarChar(100)
+  description        String?               @db.Text
+  order_index        Int
+  is_required        Boolean?              @default(true)
+  duration_minutes   Int?
+  created_at         DateTime?             @default(now()) @db.Timestamp(0)
+  application_phases application_phases[]
+  applications       applications[]
+  jobs               jobs                  @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "job_phases_ibfk_1")
+  phase_interviews   phase_interviews?
+  phase_tests        phase_tests?
+
+  @@unique([job_id, order_index], map: "unique_job_order")
+}
+
+model jobs {
+  id              String         @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  title           String         @db.VarChar(255)
+  department      String?        @db.VarChar(100)
+  description     String?        @db.Text
+  requirements    String?        @db.LongText
+  location        String?        @db.VarChar(255)
+  is_remote       Boolean?       @default(false)
+  employment_type String?        @db.VarChar(50)
+  salary_min      Int?
+  salary_max      Int?
+  salary_currency String?        @default("USD") @db.VarChar(3)
+  status          jobs_status?   @default(open)
+  created_by      String?        @db.Char(36)
+  created_at      DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?      @default(now()) @db.Timestamp(0)
+  closed_at       DateTime?      @db.Timestamp(0)
+  applications    applications[]
+  job_phases      job_phases[]
+  users           users?         @relation(fields: [created_by], references: [id], onUpdate: Restrict, map: "jobs_ibfk_1")
+
+  @@index([created_by], map: "created_by")
+  @@index([status], map: "idx_jobs_status")
+}
+
+model notifications {
+  id             String             @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  user_id        String             @db.Char(36)
+  type           notifications_type
+  title          String             @db.VarChar(255)
+  message        String?            @db.Text
+  reference_type String?            @db.VarChar(50)
+  reference_id   String?            @db.Char(36)
+  is_read        Boolean?           @default(false)
+  created_at     DateTime?          @default(now()) @db.Timestamp(0)
+  users          users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "notifications_ibfk_1")
+
+  @@index([user_id, is_read], map: "idx_notifications_user_unread")
+}
+
+model offers {
+  id               String         @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  application_id   String         @unique(map: "application_id") @db.Char(36)
+  title            String         @db.VarChar(255)
+  department       String?        @db.VarChar(100)
+  salary           Int
+  salary_currency  String?        @default("USD") @db.VarChar(3)
+  bonus            Int?
+  equity           String?        @db.VarChar(100)
+  start_date       DateTime?      @db.Date
+  benefits         String?        @db.Text
+  additional_terms String?        @db.Text
+  status           offers_status? @default(pending)
+  sent_at          DateTime?      @default(now()) @db.Timestamp(0)
+  expires_at       DateTime?      @db.Timestamp(0)
+  responded_at     DateTime?      @db.Timestamp(0)
+  response_notes   String?        @db.Text
+  applications     applications   @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "offers_ibfk_1")
+}
+
+model phase_interviews {
+  phase_id       String                          @id @db.Char(36)
+  interview_mode phase_interviews_interview_mode
+  location       String?                         @db.VarChar(255)
+  has_whiteboard Boolean?                        @default(false)
+  job_phases     job_phases                      @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "phase_interviews_ibfk_1")
+}
+
+model phase_tests {
+  phase_id   String     @id @db.Char(36)
+  test_id    String     @db.Char(36)
+  job_phases job_phases @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "phase_tests_ibfk_1")
+}
+
+model users {
+  id                     String                   @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  email                  String                   @unique(map: "email") @db.VarChar(255)
+  password_hash          String                   @db.VarChar(255)
+  role                   users_role               @default(candidate)
+  first_name             String                   @db.VarChar(100)
+  last_name              String                   @db.VarChar(100)
+  phone                  String?                  @db.VarChar(20)
+  avatar_url             String?                  @db.Text
+  created_at             DateTime?                @default(now()) @db.Timestamp(0)
+  updated_at             DateTime?                @default(now()) @db.Timestamp(0)
+  applications           applications[]
+  candidate_profiles     candidate_profiles?
+  interview_participants interview_participants[]
+  jobs                   jobs[]
+  notifications          notifications[]
+}
+
+enum phase_interviews_interview_mode {
+  online
+  onsite
+}
+
+enum job_phases_phase_type {
+  test
+  interview
+}
+
+enum notifications_type {
+  application_received
+  phase_started
+  test_completed
+  interview_scheduled
+  accepted
+  rejected
+  offer_sent
+  offer_response
+}
+
+enum users_role {
+  candidate
+  recruiter
+  admin
+}
+
+enum applications_status {
+  pending
+  in_progress
+  accepted
+  rejected
+  withdrawn
+}
+
+enum interviews_interview_mode {
+  online
+  onsite
+}
+
+enum interviews_status {
+  scheduled
+  in_progress
+  completed
+  cancelled
+  no_show
+}
+
+enum jobs_status {
+  open
+  closed
+  archived
+}
+
+enum offers_status {
+  pending
+  accepted
+  declined
+  expired
+}
