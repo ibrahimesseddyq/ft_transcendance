@@ -4,6 +4,13 @@ services:
     container_name: eureka
     ports:
       - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices
 
   gateway:
     build: ./backend/gateway
@@ -11,4 +18,28 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - eureka
+      eureka:
+        condition: service_healthy
+    networks:
+      - microservices
+
+
+  main_service:
+      build: ./backend/main_service
+      container_name: main-service
+      environment:
+        - EUREKA_URL=http://eureka:8761/eureka/apps
+        - HOSTNAME=main-service
+        - HOST_IP=main-service
+        - PORT=3000
+      depends_on:
+        eureka:
+          condition: service_healthy
+      networks:
+        - microservices
+      env_file:
+        - .env
+    
+networks:
+  microservices:
+    driver: bridge
