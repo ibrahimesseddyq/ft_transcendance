@@ -209,6 +209,7 @@ export function Profile(){
               [&::-webkit-scrollbar-thumb]:rounded-full'>
           <div className='flex flex-col gap-5 py-5'>
             <div className="h-28 w-28 mx-auto overflow-hidden rounded-full bg-gray-700">
+              {/* <img className='h-full w-full bg-cover flex items-center justify-center rounded-full' src='../src/assets/profile.png'></img> */}
               <div className="h-full w-full flex items-center justify-center text-white text-4xl">
                 AE
               </div>

@@ -9,10 +9,10 @@ import Candidates from '../assets/icons/Candidates.svg?react';
 
 
  export const navigation = [
-  { name: "Dashboard", path: "/homepage", icon: Dashboard }, 
-  { name: "Jobs", path: "/games", icon: Jobs}, 
-  { name: "Messages", path: "/chat", icon: Messages }, 
-  { name: "Candidates", path: "/tournaments", icon: Candidates}, 
+  { name: "Dashboard", path: "/Dashboard", icon: Dashboard }, 
+  { name: "Jobs", path: "/Jobs", icon: Jobs}, 
+  { name: "Messages", path: "/Messages", icon: Messages }, 
+  { name: "Condidates", path: "/Condidates", icon: Candidates}, 
   { name: "Settings", path: "/settting", icon: Settings},
   { name: "LogOut", path: "/logout", icon: Logout},
 ];

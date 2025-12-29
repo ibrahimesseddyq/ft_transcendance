@@ -1,4 +1,4 @@
-const Jobs = [
+const JobsArray = [
   {
     id: 1,
     category: "Enginering",
@@ -91,7 +91,7 @@ const Jobs = [
   }
 ];
 
-export function Games() {
+export function Jobs() {
    
   return (
     <div className="flex flex-col  h-full w-full gap-5 overflow-auto m-auto">
@@ -101,7 +101,7 @@ export function Games() {
           [&::-webkit-scrollbar-track]:bg-transparent
           [&::-webkit-scrollbar-thumb]:bg-green-500
           [&::-webkit-scrollbar-thumb]:rounded-full">
-          {Jobs.map((item) => {
+          {JobsArray.map((item) => {
             return (
               <div
                 className="flex flex-col w-[600px] h-[150px] rounded-md pl-10 pt-4 gap-3 bg-[#09122C]"
