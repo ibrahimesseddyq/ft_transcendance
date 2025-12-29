@@ -1,0 +1,35 @@
+# ============================================================================
+# Backup Cron Schedule
+# ============================================================================
+
+# Environment variables
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# ----------------------------------------------------------------------------
+# Daily Backup - Every day at 2:00 AM
+# ----------------------------------------------------------------------------
+0 2 * * * root /scripts/backup.sh >> /var/log/mysql-backup/cron.log 2>&1
+
+# ----------------------------------------------------------------------------
+# Archive Job - Every day at 3:00 AM (runs after backup)
+# Executes MySQL stored procedure for archiving
+# ----------------------------------------------------------------------------
+0 3 * * * root mysql --defaults-file=/etc/mysql/backup.cnf -h mysql-main -e "CALL sp_run_all_archive_jobs();" >> /var/log/mysql-backup/archive.log 2>&1
+
+# ----------------------------------------------------------------------------
+# Cleanup Old Backups - Every Sunday at 4:00 AM
+# ----------------------------------------------------------------------------
+0 4 * * 0 root find /var/backups/mysql/daily -name "*.sql.gz" -mtime +7 -delete >> /var/log/mysql-backup/cleanup.log 2>&1
+
+# ----------------------------------------------------------------------------
+# Sync to S3 - Every 6 hours (if enabled)
+# ----------------------------------------------------------------------------
+0 */6 * * * root [ "$REMOTE_STORAGE_ENABLED" = "true" ] && aws s3 sync /var/backups/mysql s3://${S3_BUCKET}/backups/mysql/ --storage-class STANDARD_IA >> /var/log/mysql-backup/s3sync.log 2>&1
+
+# ----------------------------------------------------------------------------
+# Health Check - Every hour
+# ----------------------------------------------------------------------------
+0 * * * * root /scripts/healthcheck.sh >> /var/log/mysql-backup/health.log 2>&1
+
+# Required empty line at end
