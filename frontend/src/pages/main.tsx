@@ -1,15 +1,13 @@
 import {Routes, Route} from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
-import { HomePage } from "@/pages/Dashboard"
+import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
-import { Games } from "@/components/Jobs"
-import { Tournaments } from "@/components/Tournaments"
-import { GameSettings } from "@/components/GameSettings"
-import { GameBoard } from "@/components/Gameboard";
+import { Jobs } from "@/components/Jobs"
+import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound"
 
 
@@ -35,14 +33,13 @@ export function Main () {
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2">
+                <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2 p-1">
                     <Routes>
-                      <Route path="/homepage" element={<HomePage />} />
-                      <Route path="/games" element={<Games/>} />
-                      <Route path="/tournaments" element={<Tournaments />} />
-                      <Route path="/gamesettings" element={<GameSettings />} />
+                      <Route path="/Dashboard" element={<Dashboard />} />
+                      <Route path="/Jobs" element={<Jobs/>} />
+                      <Route path="/Condidates" element={<Condidates />} />
                       <Route path="/profile" element={<Profile />} />
-                      <Route path="/Gameboard" element={<GameBoard />} />
+                      <Route path="/Messages" element={<NotFound />} />
                       <Route path="*" element={<NotFound />} /> 
                     </Routes>
 
