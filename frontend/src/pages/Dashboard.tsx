@@ -1,10 +1,6 @@
-import { FunnielOverview } from "@/components/FunnielOverview";
-import { ActiveJobStatus } from "@/components/ActiveJobStatus";
-import { RecentActivity } from "@/components/RecentActivity";
-import { SourceOfHire } from "@/components/SourceOfHire";
 
 
-export function HomePage(){
+export function Dashboard(){
    const TotalStatistics = () =>{
     return (
       <div className="h-full w-full flex justify-between items-center ">

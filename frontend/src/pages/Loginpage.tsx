@@ -10,7 +10,7 @@ export function LoginPage(){
     const [activeGender, setActiveGender] = useState('Male');
 
     const handlePlayClick = () => {
-        navigate('/homepage'); 
+        navigate('/dashboard'); 
     };
 
     const getTabClasses = (tabName: String) => {
@@ -80,13 +80,13 @@ export function LoginPage(){
                             className="text-white font-bold w-full mx-auto h-[50px] mt-5 border rounded-full bg-[#44BC19]">
                         Log in
                     </button>
-                    <button onClick={handlePlayClick}
+                    <a  href="/auth/google" onClick={handlePlayClick}
                             className="h-[50px]  flex gap-5 rounded-full w-full mt-5 mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"
                                 alt="Google icon"/>
                         <h1>Log in with Google </h1>
-                    </button>
+                    </a>
                 </div>
             </div>
         );
