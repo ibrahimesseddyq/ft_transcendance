@@ -21,7 +21,10 @@ export function LoginPage(){
     };
     
     const getTextColor = (tabName: String) => {
-        return activeGender === tabName ? 'text-white' : 'text-[#A8A2A2]';
+        const baseClasses = "`text-sm font-bold"
+        return activeAuth === tabName
+            ? `${baseClasses} text-white` 
+            : `${baseClasses} text-[#A8A2A2]`; 
     };
     const getGender = (tabName: String) => {
         const baseClasses = "h-[90%] w-[50%] rounded-full flex items-center justify-center transition-colors duration-300";
@@ -49,13 +52,13 @@ export function LoginPage(){
                             onClick={() => {setActiveAuth('signin'); setRetate(true);}}
                             className={getTabClasses('signin')}
                             >
-                            <h1 className={`text-sm font-bold ${getTextColor('signin')}`}>Sign In</h1>
+                            <h1 className={getTextColor('signin')}>Sign In</h1>
                         </button>
                         <button 
                             onClick={() => {setActiveAuth('signup'); setRetate(false);}}
                             className={getTabClasses('signup')}
                         >
-                            <h1 className={`text-sm font-bold ${getTextColor('signup')}`}>Sign Up</h1>
+                            <h1 className={getTextColor('signup')}>Sign Up</h1>
                         </button>
                 </div>
                 <div className="flex flex-col w-[90%] ">
@@ -165,13 +168,13 @@ export function LoginPage(){
                             className="text-white font-bold w-full mx-auto h-[40px] border rounded-full bg-[#44BC19]">
                         Log in
                     </button>
-                    <button onClick={handlePlayClick}
+                    <a href='http://localhost:3000/auth/google'
                             className="h-[40px] flex gap-5 rounded-full w-full mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"
                                 alt="Google icon"/>
                         <h1>Log in with Google </h1>
-                    </button>
+                    </a>
                 </div>
             </div>
         );
