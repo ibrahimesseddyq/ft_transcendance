@@ -1,7 +1,7 @@
 const { PrismaClient } = require('../../generated/prisma');
 let prismaInstance = null;
 
-function getPrismaClient()
+const  getPrismaClient = () =>
 {
     if (!prismaInstance)
     {
@@ -10,6 +10,16 @@ function getPrismaClient()
     return prismaInstance;
 }
 
+const   disconnect = async () =>
+{
+    if (prismaInstance)
+    {
+        await prismaInstance.$disconnect();
+        prismaInstance = null;
+
+    }
+}
+
 const prisma  =  getPrismaClient();
 
-module.export = prisma;
+module.exports = {prisma , disconnect };

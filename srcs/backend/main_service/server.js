@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+const app = require('./src/app')
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
