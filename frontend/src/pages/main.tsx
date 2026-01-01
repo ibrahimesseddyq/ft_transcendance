@@ -1,6 +1,7 @@
 import {Routes, Route} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 
+import ProtectedRoutes from "@/utils/ProtectedRoutes"
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
@@ -35,12 +36,13 @@ export function Main () {
               {/* Main Content */}
                 <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2 p-1">
                     <Routes>
-                      <Route path="/Dashboard" element={<Dashboard />} />
-                      <Route path="/Jobs" element={<Jobs/>} />
-                      <Route path="/Condidates" element={<Condidates />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/Messages" element={<NotFound />} />
-                      <Route path="*" element={<NotFound />} /> 
+                      <Route element={<ProtectedRoutes />}>
+                        <Route path="/Dashboard" element={<Dashboard />} />
+                        <Route path="/Jobs" element={<Jobs />} />
+                        <Route path="/Condidates" element={<Condidates />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/Messages" element={<NotFound />} />
+                      </Route>
                     </Routes>
 
                 </main>
