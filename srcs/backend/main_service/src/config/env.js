@@ -1,16 +1,20 @@
 const dotenv =  require('dotenv');
-const {zod} = require('zod')
-dotenv.config({path: "../../.env.dev"});
+const { z } = require('zod');
+const path =  require('path');
 
-const envShcema =  zod.object({
+dotenv.config({path: path.resolve(__dirname,"../../.env.dev") });
 
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production']).default('development'),
+  PORT: z.string().transform((val) => parseInt(val, 10)).default('3000'),
+  DATABASE_URL: z.string().url({ message: "Invalid Database URL" })
 });
 
-const envVars = envShcema.safeParse(process.env);
+const envVars = envSchema.safeParse(process.env);
 if (!envVars.success)
 {
-    console.error(`failed to load the envirment variables`);
-    exit(1);
+    console.error("❌ Invalid environment variables:", envVars.error.format());
+    process.exit(1);
 }
 
 module.exports = envVars.data;
