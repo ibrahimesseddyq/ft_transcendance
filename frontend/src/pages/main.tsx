@@ -9,6 +9,7 @@ import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
 import { Condidates } from "@/components/Condidates"
+import { OTPpage } from '@/components/OTPpage';
 import { NotFound } from "@/components/NotFound"
 
 
@@ -18,6 +19,7 @@ export function Main () {
     if (isLoginPage) {
         return (
             <main className="sm:rounded-tl-lg h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
+              {/* {<OTPpage/>} */}
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
                     <Route path="*" element={<NotFound />} />

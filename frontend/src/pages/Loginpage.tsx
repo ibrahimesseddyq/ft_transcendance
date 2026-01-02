@@ -55,7 +55,7 @@ export function LoginPage(){
                         We are happy to see you again. 
                     </h1>
                 </div>
-                <div className='flex mt-3 h-[40px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
+                <div className='flex mt-3 h-[60px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
                         <button 
                             onClick={() => {setActiveAuth('signin'); setRetate(true);}}
                             className={getTabClasses('signin')}
@@ -69,9 +69,9 @@ export function LoginPage(){
                             <h1 className={getTextColor('signup')}>Sign Up</h1>
                         </button>
                 </div>
-                <div className="flex flex-col w-[90%] ">
-                    <form action="http://localhost:3000/signin" method="POST">+
-                        <div className="flex justify-between items-center h-[50px] w-full mt-5 border-transparent border border-[#2a79e0]  rounded-full">
+                <div className="flex flex-col gap-2 h-full w-[90%] place-content-center ">
+                    <form action="http://localhost:3000/signin" method="POST">
+                        <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your email"
                                 type='email'
@@ -81,7 +81,7 @@ export function LoginPage(){
                                 />
                             <Mail className="h-10 w-14 pr-5 text-white" />
                         </div>
-                        <div className="flex justify-between items-center h-[50px] w-full mt-3 border-transparent border border-[#2a79e0]  rounded-full">
+                        <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your Password"
                                 type='password'
@@ -151,7 +151,7 @@ export function LoginPage(){
                         We are happy to have you. 
                     </h1>
                 </div>
-                <div className='flex mt-3 h-[40px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
+                <div className='flex mt-3 h-[60px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
                         <button type="button"
                             onClick={() => {setActiveAuth('signin'); setRetate(true);}}
                             className={getTabClasses('signin')}
@@ -165,9 +165,9 @@ export function LoginPage(){
                             <h1 className={`text-sm font-bold ${getTextColor('signup')}`}>Sign Up</h1>
                         </button>
                 </div>
-                <div className="flex flex-col w-[90%] items-center gap-2">
+                <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
                     <form action="#" method="POST" className='flex flex-col gap-2 w-full'>
-                        <div className='flex gap-4 h-[40px] w-full '>
+                        <div className='flex gap-4 h-[50px] w-full '>
                             <input
                                 placeholder="First Name"
                                 type='text'
@@ -185,7 +185,7 @@ export function LoginPage(){
                                 className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
                                 required/>
                         </div>
-                        <div className='flex gap-4 h-[40px] w-full'>
+                        <div className='flex gap-4 h-[50px] w-full'>
                             <select value={selectValue} onChange={handleSelectChange}  name="User" id="User"
                                 className=" w-full lg:w-[60%] text-sm text-white outline-none 
                                 placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent">
@@ -201,7 +201,7 @@ export function LoginPage(){
                                 className="w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
                                 required/>
                         </div>
-                        <div className='flex h-[40px] w-full border border-[#405673] rounded-full bg-transparent items-center justify-between'>
+                        <div className='flex h-[50px] w-full border border-[#405673] rounded-full bg-transparent items-center justify-between'>
                             <button 
                                 onClick={() => {setActiveGender('Male'); setRetate(true);}}
                                 value={formData.Type}
@@ -225,7 +225,7 @@ export function LoginPage(){
                             name='email'
                             value={formData.Email}
                             onChange={handleChange}
-                            className="h-[40px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
+                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
                             required/>
                         <input
                             placeholder="Enter Your Password"
@@ -233,15 +233,15 @@ export function LoginPage(){
                             name='password'
                             value={formData.Password}
                             onChange={handleChange}
-                            className="h-[40px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
+                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
                             required/>
                         <button  type="submit"
-                                className="text-white font-bold w-full mx-auto h-[40px] border rounded-full bg-[#44BC19]">
+                                className="text-white font-bold w-full mx-auto h-[50px] border rounded-full bg-[#44BC19]">
                             Log in
                         </button>
                     </form>
                     <a href='http://localhost:3000/auth/google'
-                            className="h-[40px] flex gap-5 rounded-full w-full mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
+                            className="h-[50px] flex gap-5 rounded-full w-full mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"
                                 alt="Google icon"/>
@@ -259,7 +259,7 @@ export function LoginPage(){
     }`;
     
     return(
-        <div className={`h-auto w-full sm:p-5 sm:w-[500px] p-0 border border-[#5F88B8]  rounded bg-[#09122C] mx-auto flex items-center justify-center overflow-hidden`}>
+        <div className={`h-[600px] w-full sm:p-5 sm:w-[500px] p-0 border border-[#5F88B8]  rounded bg-[#09122C] mx-auto flex items-center justify-center overflow-hidden`}>
             <div className="flex-grow  h-full w-full">
                 {activeAuth === 'signin' ? <Signin /> : <Signup />}
             </div>
