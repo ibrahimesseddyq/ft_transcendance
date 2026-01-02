@@ -11,8 +11,6 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --border: 220 15% 25%;
-    --radius: 0.75rem;
 
   }
 
