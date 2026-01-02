@@ -6,7 +6,7 @@ export function Header() {
   return (
   <header className="flex h-full w-full  items-center justify-center">
        <Link
-        to={"/homepage"}
+        to={"/Dashboard"}
         className="hidden sm:flex h-full w-[300px] items-center justify-center border-r-2 border-[#5F88B8]">
         <img
           src="../src/assets/icons/logo.png"
