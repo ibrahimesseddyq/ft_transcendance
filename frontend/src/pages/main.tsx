@@ -5,6 +5,7 @@ import ProtectedRoutes from "@/utils/ProtectedRoutes"
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
+import { ResetPassword } from '@/components/ResetPassword';
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
@@ -18,12 +19,13 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="sm:rounded-tl-lg h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
-              {/* {<OTPpage/>} */}
-                <Routes>
+            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
+              {<OTPpage/>}
+              {/* {<ResetPassword/>} */}
+                {/* <Routes>
                     <Route path="/" element={<LoginPage />} />
                     <Route path="*" element={<NotFound />} />
-                </Routes>
+                </Routes> */}
             </main>
         );
     }
@@ -36,7 +38,7 @@ export function Main () {
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="sm:rounded-tl-lg  w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2 p-1">
+                <main className="w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2 p-1">
                     <Routes>
                       <Route element={<ProtectedRoutes />}>
                         <Route path="/Dashboard" element={<Dashboard />} />
