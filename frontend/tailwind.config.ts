@@ -17,19 +17,6 @@ export default {
 				'2xl': '1400px'
 			}
 		},
-		extend: {
-			fontFamily: {
-        		electrolize: ['Electrolize', 'sans-serif'],
-      		},
-			colors: {
-				border: 'hsl(var(--border))',
-			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
-		}
 	},
 	plugins: [
     
