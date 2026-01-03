@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { Mail, Eye } from "lucide-react";
+import { Mail, Eye, EyeOff } from "lucide-react";
+// import eye from "@/assets/icons/eye.svg"
+// import eyeOff from "@/assets/icons/eyeOff.svg"
 // import { validate as validateEmail } from 'email-validator';
 
 
@@ -46,6 +48,19 @@ export function LoginPage(){
 // };
 
     const Signin = () => {
+        const [type, setType] = useState('password');
+        const [Icon, setIcon] = useState<any>(Eye);
+
+        const handleToggle = ()=>{
+            if (type === 'password'){
+                setType('text');
+                setIcon(Eye);
+            }
+            else{
+                setType('password');
+                setIcon(EyeOff);
+            }
+        }
         return(
 
             <div className="p-1 flex flex-col w-full h-full gap-2 items-center my-4">
@@ -57,19 +72,19 @@ export function LoginPage(){
                 </div>
                 <div className='flex mt-3 h-[60px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
                         <button 
-                            onClick={() => {setActiveAuth('signin'); setRetate(true);}}
+                            onClick={() => {setActiveAuth('signin'); }}
                             className={getTabClasses('signin')}
                             >
                             <h1 className={getTextColor('signin')}>Sign In</h1>
                         </button>
                         <button 
-                            onClick={() => {setActiveAuth('signup'); setRetate(false);}}
+                            onClick={() => {setActiveAuth('signup'); }}
                             className={getTabClasses('signup')}
                         >
                             <h1 className={getTextColor('signup')}>Sign Up</h1>
                         </button>
                 </div>
-                <div className="flex flex-col gap-2 h-full w-[90%] place-content-center ">
+                <div className="flex flex-col gap-2 h-full w-[90%] place-content-center">
                     <form action="http://localhost:3000/signin" method="POST">
                         <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-full">
                             <input
@@ -84,20 +99,20 @@ export function LoginPage(){
                         <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your Password"
-                                type='password'
+                                type={type}
                                 name='password'
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                                 />
-                            <Eye className="h-10 w-14 pr-5 text-white" />
+                            <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 pr-5 text-white'/>
                         </div>
-                        <a href='#' className='text-[#44BC19] text-sm font-semibold hover:underline hover:cursor-pointer w-28'>Forgot Password?</a>
+                        <a href='#' className='pl-[70%]  text-[#44BC19] text-sm font-semibold hover:underline hover:cursor-pointer w-28 '>Forgot Password?</a>
                         <button type="submit"
-                            className="text-white font-bold w-full mx-auto h-[50px] mt-5 border rounded-full bg-[#44BC19]">
+                            className="text-white font-bold w-full mx-auto h-[50px] mt-5  rounded-full bg-[#44BC19]">
                             Log in
                         </button>
                     </form>
                     <a  href="http://localhost:3000/auth/google" 
-                            className="h-[50px]  flex gap-5 rounded-full w-full mt-5 mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
+                            className="h-[50px]  flex gap-5  rounded-full w-full mt-5 mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"
                                 alt="Google icon"/>
@@ -110,13 +125,14 @@ export function LoginPage(){
     const Signup = () => {
         const [selectValue, setSelectValue] = useState('');
         const [activeGender, setActiveGender] = useState('Male');
-        const [formData, setformData] = useState({FirstName: '',
+        const [formData, setformData] = useState({
+            FirstName: '',
             LastName:'',
             Type: '',
             Number:'',
             Gender:'',
-            Email:'',
-            Password: ''
+            email:'',
+            password: ''
         });
         const handleChange = (e:any) => {
           const { name, value } = e.target;
@@ -126,15 +142,12 @@ export function LoginPage(){
             [name]: value
           }));
         };
-        useEffect(() => {
-            console.log("Current First Name:", formData.FirstName);
-        }, [formData.FirstName]);
 
         const handleSelectChange = (event:any) => {
             setSelectValue(event.target.value);
         };
         const getGender = (tabName: String) => {
-            const baseClasses = "h-[90%] w-[50%] rounded-full flex items-center justify-center transition-colors duration-300";
+            const baseClasses = "h-[90%] w-[50%] rounded-full flex items-center justify-center";
             return activeGender === tabName 
                 ? `${baseClasses} bg-[#405673] m-1` 
                 : `${baseClasses} bg-transparent m-1`; 
@@ -153,13 +166,13 @@ export function LoginPage(){
                 </div>
                 <div className='flex mt-3 h-[60px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
                         <button type="button"
-                            onClick={() => {setActiveAuth('signin'); setRetate(true);}}
+                            onClick={() => {setActiveAuth('signin');}}
                             className={getTabClasses('signin')}
                             >
                             <h1 className={`text-sm font-bold ${getTextColor('signin')}`}>Sign In</h1>
                         </button>
                         <button type="button"
-                            onClick={() => {setActiveAuth('signup'); setRetate(false);}}
+                            onClick={() => {setActiveAuth('signup');}}
                             className={getTabClasses('signup')}
                         >
                             <h1 className={`text-sm font-bold ${getTextColor('signup')}`}>Sign Up</h1>
@@ -202,28 +215,24 @@ export function LoginPage(){
                                 required/>
                         </div>
                         <div className='flex h-[50px] w-full border border-[#405673] rounded-full bg-transparent items-center justify-between'>
-                            <button 
-                                onClick={() => {setActiveGender('Male'); setRetate(true);}}
-                                value={formData.Type}
-                                onChange={handleChange}
+                            <div 
+                                onClick={() => {setActiveGender('Male');}}
                                 className={getGender('Male')}
                                 >
-                                <h1 className={`text-sm font-bold ${getGenderTextColor('Male')}`}>Male</h1>
-                            </button>
-                            <button 
-                                onClick={() => {setActiveGender('Female'); setRetate(false);}}
-                                value={formData.Type}
-                                onChange={handleChange}
+                                <h1 className={`cursor-pointer text-sm font-bold ${getGenderTextColor('Male')}`}>Male</h1>
+                            </div>
+                            <div 
+                                onClick={() => {setActiveGender('Female');  }}
                                 className={getGender('Female')}
                             >
-                                <h1 className={`text-sm font-bold ${getGenderTextColor('Female')}`}>Female</h1>
-                            </button>
+                                <h1 className={`cursor-pointer text-sm font-bold ${getGenderTextColor('Female')}`}>Female</h1>
+                            </div>
                         </div>
                         <input
                             placeholder="Enter Your Email"
                             type='email'
                             name='email'
-                            value={formData.Email}
+                            value={formData.email}
                             onChange={handleChange}
                             className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
                             required/>
@@ -231,12 +240,12 @@ export function LoginPage(){
                             placeholder="Enter Your Password"
                             type='password'
                             name='password'
-                            value={formData.Password}
+                            value={formData.password}
                             onChange={handleChange}
                             className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
                             required/>
                         <button  type="submit"
-                                className="text-white font-bold w-full mx-auto h-[50px] border rounded-full bg-[#44BC19]">
+                                className="text-white font-bold w-full mx-auto h-[50px] rounded-full bg-[#44BC19]">
                             Log in
                         </button>
                     </form>
@@ -252,12 +261,7 @@ export function LoginPage(){
         );
         
     }
-    const [isRetate, setRetate] = useState(true);
-    const retate = `${isRetate 
-      ? ''
-      : 'lg:col-start-2 ' 
-    }`;
-    
+
     return(
         <div className={`h-[600px] w-full sm:p-5 sm:w-[500px] p-0 border border-[#5F88B8]  rounded bg-[#09122C] mx-auto flex items-center justify-center overflow-hidden`}>
             <div className="flex-grow  h-full w-full">
