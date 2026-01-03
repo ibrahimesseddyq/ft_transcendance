@@ -31,7 +31,7 @@ class UserRepository
         )
     }
 
-    async update (userId , updateData)
+    async update(userId , updateData)
     {
         return await prisma.user.update({
             where : {id : userId},
@@ -49,6 +49,10 @@ class UserRepository
                 where : {id : userId}
             }
         )
+    }
+
+    async findMany({ page = 1, limit = 10, role, search }){
+
     }
 
 
