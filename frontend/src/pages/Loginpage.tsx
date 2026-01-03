@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Mail, Eye, EyeOff } from "lucide-react";
+import { PassThrough } from 'stream';
 // import eye from "@/assets/icons/eye.svg"
 // import eyeOff from "@/assets/icons/eyeOff.svg"
 // import { validate as validateEmail } from 'email-validator';
@@ -49,6 +50,9 @@ export function LoginPage(){
 
     const Signin = () => {
         const [type, setType] = useState('password');
+        const [email, setEmail] = useState('');
+        const [password, setPassword] = useState('');
+        const [userPass, setUserPass] = useState('');
         const [Icon, setIcon] = useState<any>(Eye);
 
         const handleToggle = ()=>{
@@ -91,7 +95,8 @@ export function LoginPage(){
                                 placeholder="Enter your email"
                                 type='email'
                                 name='email'
-                                
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                                 />
                             <Mail className="h-10 w-14 pr-5 text-white" />
@@ -99,8 +104,9 @@ export function LoginPage(){
                         <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your Password"
-                                type={type}
                                 name='password'
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                                 />
                             <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 pr-5 text-white'/>
