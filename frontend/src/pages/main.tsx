@@ -19,13 +19,13 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
-              {<OTPpage/>}
+            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center p-3">
+              {/* {<OTPpage/>} */}
               {/* {<ResetPassword/>} */}
-                {/* <Routes>
+                <Routes>
                     <Route path="/" element={<LoginPage />} />
                     <Route path="*" element={<NotFound />} />
-                </Routes> */}
+                </Routes>
             </main>
         );
     }
