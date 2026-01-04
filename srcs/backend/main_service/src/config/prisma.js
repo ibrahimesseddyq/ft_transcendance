@@ -1,11 +1,20 @@
-const { PrismaClient } = require('../../generated/prisma');
+const { PrismaClient } = require('@prisma/client');
+const config = require('./env')
 let prismaInstance = null;
 
 const  getPrismaClient = () =>
 {
     if (!prismaInstance)
     {
-        prismaInstance = new PrismaClient();
+        prismaInstance = new PrismaClient({
+        log: [
+        { level: 'query', emit:  'event' },
+        { level: 'error', emit: 'stdout' },
+        { level: 'warn', emit: 'stdout' },
+        { level: 'info', emit: 'stdout' } 
+      ],
+       errorFormat: 'pretty'
+    });
     }
     return prismaInstance;
 }

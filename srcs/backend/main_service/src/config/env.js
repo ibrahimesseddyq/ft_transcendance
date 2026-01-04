@@ -7,7 +7,7 @@ dotenv.config({path: path.resolve(__dirname,"../../.env.dev") });
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']).default('development'),
   PORT: z.string().transform((val) => parseInt(val, 10)).default('3000'),
-  DATABASE_URL: z.string().url({ message: "Invalid Database URL" })
+  DATABASE_URL: z.string()
 });
 
 const envVars = envSchema.safeParse(process.env);
