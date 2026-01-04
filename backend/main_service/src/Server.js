@@ -18,7 +18,6 @@ app.use(cors({
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Session middleware for using Passport
 app.use(session({
@@ -39,17 +38,19 @@ app.get('/', (req, res) => {
   res.send('Server is running!');
 });
 app.post('/signin', (req, res) => { 
-  const { email, password } = req.body;
-  console.log("visit login route");
-  console.log('Trying to login with: ' + email);
-  res.json({ 
-    success: true, 
-    message: "Form received!" 
-  });
+  console.log("req.body : " , req.body);
   res.redirect('http://localhost:5173/dashboard');
   
 });
 app.get('/signin', (req, res) => {
+    res.send("The server is alive! But please submit the form from your React app.");
+});
+app.post('/signup', (req, res) => { 
+  console.log("req.body : ", req.body);
+  res.redirect('http://localhost:5173/dashboard');
+  
+});
+app.get('/signup', (req, res) => {
     res.send("The server is alive! But please submit the form from your React app.");
 });
 

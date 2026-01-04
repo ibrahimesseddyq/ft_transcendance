@@ -89,7 +89,7 @@ export function LoginPage(){
                         </button>
                 </div>
                 <div className="flex flex-col gap-2 h-full w-[90%] place-content-center">
-                    <form action="http://localhost:3000/signin" method="POST">
+                    <form action="http://localhost:3000/signin" encType='application/json' method="POST">
                         <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your email"
@@ -98,17 +98,18 @@ export function LoginPage(){
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
-                                />
+                                required/>
                             <Mail className="h-10 w-14 pr-5 text-white" />
                         </div>
                         <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your Password"
                                 name='password'
+                                type={type}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
-                                />
+                                required/>
                             <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 pr-5 text-white'/>
                         </div>
                         <a href='#' className='pl-[70%]  text-[#44BC19] text-sm font-semibold hover:underline hover:cursor-pointer w-28 '>Forgot Password?</a>
@@ -185,7 +186,8 @@ export function LoginPage(){
                         </button>
                 </div>
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
-                    <form action="#" method="POST" className='flex flex-col gap-2 w-full'>
+                    <form action="http://localhost:3000/signup" encType='application/json' method="POST"
+                        className='flex flex-col gap-2 w-full'>
                         <div className='flex gap-4 h-[50px] w-full '>
                             <input
                                 placeholder="First Name"
@@ -233,6 +235,7 @@ export function LoginPage(){
                             >
                                 <h1 className={`cursor-pointer text-sm font-bold ${getGenderTextColor('Female')}`}>Female</h1>
                             </div>
+                            <input type="hidden" name="gender" value={activeGender}/>
                         </div>
                         <input
                             placeholder="Enter Your Email"
