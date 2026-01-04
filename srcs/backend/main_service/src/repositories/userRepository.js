@@ -59,4 +59,4 @@ class UserRepository
 }
 
 const userRepository = new UserRepository();
-MediaSourceHandle.eports =  userRepository;
+module.exports =  userRepository;
