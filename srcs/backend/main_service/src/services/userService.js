@@ -6,12 +6,12 @@ class UserService {
 
     async createUser({email,password,first_name,last_name,role = "condidate"}) // should add more data if needed
     {
-        if (password.length() < 8)
+        if (password.length < 8)
             throw Error('Password must be at least 8 characters')
         const password_hash = bcrypt.hash(password , env.BCRYPT_ROUNDS); // BCRYPT_ROUNDS should be defined in configs
         const user = await userRepository.create(
             {
-                email : email.toLowercase(),
+                email : email.toLowerCase(),
                 password_hash,
                 first_name,
                 last_name,
@@ -38,13 +38,13 @@ class UserService {
             if (updateData[field] !== undefined)
                 filteredData[field] = updateData[field];
         })
-        if(Object.keys(filteredData).length() === 0)
+        if(Object.keys(filteredData).length === 0)
             throw new Error('No valid fields to update');
-        return await userRepository.updater(userId,filteredData);
+        return await userRepository.update(userId,filteredData);
     }
 
     async deleteUser(userId){
-       await userRepository.delet(userId);
+       await userRepository.delete(userId);
     }
 
     async listUsers(filters){
