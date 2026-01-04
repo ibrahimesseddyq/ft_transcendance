@@ -8,7 +8,7 @@ class UserRepository
         return await prisma.user.create(
             {
                 data : userData,
-                inclules : {
+                include : {
                     
                 }
             }
@@ -18,13 +18,13 @@ class UserRepository
     {
         return await prisma.user.findUniqe({
             where : {id : userId},
-            inclule: {}
+            include: {}
         })
     }
 
     async findByEmail(email)
     {
-        return await prisma.user.findUniqe(
+        return await prisma.user.findUnique(
             {
                 where :{email :email }
             }
@@ -35,7 +35,7 @@ class UserRepository
     {
         return await prisma.user.update({
             where : {id : userId},
-            data: userData,
+            data: updateData,
             include : {
 
             }
@@ -52,6 +52,22 @@ class UserRepository
     }
 
     async findMany({ page = 1, limit = 10, role, search }){
+        const where = {};
+        if (role) where.role = role;
+        if (search)
+        {
+            where.OR = [
+                {first_name: {contains: search}},
+                {lastt_name : {contains: search}},
+                {email : {conatins: search}}
+            ];
+        }
+        return await  prisma.user.findMany({
+            where,
+            page,
+            limit,
+            orderBy : {created_at:' desc'}
+        })
 
     }
 

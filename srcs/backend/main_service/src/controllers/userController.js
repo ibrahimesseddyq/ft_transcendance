@@ -59,7 +59,7 @@ class UserControler {
     async deleteUser(req,res,next)
     {
         try{
-            const id = req.params;
+            const {id} = req.params;
             await userService.deleteUser(id);
             res.status(200).json({
                 status:true,
@@ -83,7 +83,7 @@ class UserControler {
             });
             res.status(200).json({
                 status: true,
-                data:users
+                data:result
             })
         }
         catch (error)
