@@ -5,10 +5,6 @@ const express = require('express');
 const router = express.Router();
 
 
-// function isLoggedIn(req, res, next){
-  //   req.user ? next() : res.sendStatus(401);
-  // }
-
 /* ROUTES */
 router.get('/', (req, res) => {
   res.redirect('http://localhost:5173/');
