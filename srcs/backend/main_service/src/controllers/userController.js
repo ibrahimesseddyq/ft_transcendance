@@ -1,5 +1,4 @@
 const userService = require('../services/userService');
-const UserService = require('../services/userService');
 
 class UserControler {
     async createUser(req,res,next)

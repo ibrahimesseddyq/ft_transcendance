@@ -1,22 +1,20 @@
-const prisma =  require('../config/prisma');
+const {prisma} =  require('../config/prisma');
 
 
 class UserRepository
 {
     async create(userData)
     {
-        return await prisma.user.create(
+        return await prisma.users.create(
             {
                 data : userData,
-                include : {
-                    
-                }
             }
         )
     }
+
     async findById(userId)
     {
-        return await prisma.user.findUniqe({
+        return await prisma.users.findUnique({
             where : {id : userId},
             include: {}
         })
@@ -24,7 +22,7 @@ class UserRepository
 
     async findByEmail(email)
     {
-        return await prisma.user.findUnique(
+        return await prisma.users.findUnique(
             {
                 where :{email :email }
             }
@@ -33,7 +31,7 @@ class UserRepository
 
     async update(userId , updateData)
     {
-        return await prisma.user.update({
+        return await prisma.users.update({
             where : {id : userId},
             data: updateData,
             include : {
@@ -44,29 +42,29 @@ class UserRepository
 
     async delete (userId)
     {
-        return await prisma.user.delete(
+        return await prisma.users.delete(
             {
                 where : {id : userId}
             }
         )
     }
 
-    async findMany({ page = 1, limit = 10, role, search }){
+    async findMany({skip = 0 , take = 10 , role, search }){
         const where = {};
         if (role) where.role = role;
         if (search)
         {
             where.OR = [
                 {first_name: {contains: search}},
-                {lastt_name : {contains: search}},
-                {email : {conatins: search}}
+                {last_name : {contains: search}},
+                {email : {contains: search}}
             ];
         }
-        return await  prisma.user.findMany({
+        return await  prisma.users.findMany({
             where,
-            page,
-            limit,
-            orderBy : {created_at:' desc'}
+            take,
+            skip,
+            orderBy : {created_at:'desc'}
         })
 
     }
@@ -75,4 +73,5 @@ class UserRepository
 }
 
 const userRepository = new UserRepository();
+
 module.exports =  userRepository;

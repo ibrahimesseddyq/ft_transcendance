@@ -1,23 +1,24 @@
 const userRepository = require('../repositories/userRepository')
-const env = require('../config/env');
+const config = require('../config/env');
 const bcrypt = require('bcrypt');
 
 class UserService {
 
-    async createUser({email,password,first_name,last_name,role = "condidate"}) // should add more data if needed
+    async createUser({email,password,first_name,last_name,role = "candidate"}) // should add more data if needed
     {
         if (password.length < 8)
             throw Error('Password must be at least 8 characters')
-        const password_hash = bcrypt.hash(password , env.BCRYPT_ROUNDS); // BCRYPT_ROUNDS should be defined in configs
+        const password_hash = await bcrypt.hash(password , config.BCRYPT_ROUNDS); // BCRYPT_ROUNDS should be defined in configs
         const user = await userRepository.create(
             {
                 email : email.toLowerCase(),
                 password_hash,
                 first_name,
                 last_name,
-                role,
+                role
             }
         )
+        delete user.password;
         return user;
     }
     async getUserById(userId)
