@@ -1,5 +1,5 @@
-
-
+import { ActiveJobStatus } from "@/components/ActiveJobStatus";
+import {RecentActivity} from "@/components//RecentActivity"
 export function Dashboard(){
    const TotalStatistics = () =>{
     return (
@@ -47,7 +47,7 @@ export function Dashboard(){
                 [&::-webkit-scrollbar-track]:bg-transparent
                 [&::-webkit-scrollbar-thumb]:bg-white
                 [&::-webkit-scrollbar-thumb]:rounded-full">
-                {/* <ActiveJobStatus /> */}
+                <ActiveJobStatus />
               </div>
     
             
@@ -62,7 +62,7 @@ export function Dashboard(){
                 [&::-webkit-scrollbar-thumb]:bg-white
                 [&::-webkit-scrollbar-thumb]:h-5
                 [&::-webkit-scrollbar-thumb]:rounded-full">
-                {/* <RecentActivity /> */}
+                <RecentActivity />
               </div>
               
               <div className="col-span-1 lg:col-span-5 lg:row-span-3 w-full h-full

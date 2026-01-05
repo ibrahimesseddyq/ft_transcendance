@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { BadgeCheck, History, ChartNoAxesCombined,Plus } from 'lucide-react';
 
 interface Student {
   name: string;
@@ -19,7 +18,7 @@ const Etudients: Student[] = [
 ];
 function Studentcard(object:Student) {
   return (
-      <div className='flex flex-col w-[80%] h-[120px] rounded-md bg-[#09122C]'>
+      <div className='flex flex-col  rounded-md bg-[#09122C] p-2'>
         <div className='flex gap-2'>
           <img
             src="../src/assets/icons/profile.png"
@@ -47,8 +46,8 @@ export function Condidates(){
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-4 gap-2 w-full h-full  border border-[#5F88B8] rounded-md ">
-      <div className='col-span-2 row-span-1 px-5'>
-        <div className='flex flex-col gap-2 h-full w-[50%] justify-between px-10 py-3'>
+      <div className='flex flex-col justify-between col-span-2 row-span-1 px-5 '>
+        <div className='flex items-center my-auto'>
           <div className='flex gap-2'>
               <img
                 src="../src/assets/icons/profile.png"
@@ -57,15 +56,58 @@ export function Condidates(){
                 />
                 <div className='flex flex-col'></div>
           </div>
-          <div className='flex gap-5 '>
-            <div className='h-6 w-20 border border-[#5F88B8] rounded'></div>
-            <div className='h-6 w-20 border border-[#5F88B8] rounded'></div>
-            <div className='h-6 w-20 border border-[#5F88B8] rounded'></div>
-            <div className='h-6 w-20 border border-[#5F88B8] rounded'></div>
+          <div className='flex gap-10 mx-auto'>
+            <div className='h-20 w-28 border border-[#5F88B8] rounded items-center'>
+              <div className='flex flex-col gap-1 mx-auto my-auto'>
+                <p className='text-center text-sm text-white font-light '>Total condidates</p>
+                <p className='text-center text-5xl text-white font-normal border border-white'>20</p>
+              </div>
+            </div>
+            <div className='h-20 w-28 border border-[#5F88B8] rounded items-center'>
+              <div className='flex flex-col gap-1 mx-auto my-auto'>
+                <p className='text-center text-sm text-white font-light '>In pipeline</p>
+                <p className='text-center text-5xl text-white font-normal '>30</p>
+              </div>
+            </div>
+            <div className='h-20 w-28 border border-[#5F88B8] rounded items-center'>
+              <div className='flex flex-col gap-1 mx-auto my-auto'>
+                <p className='text-center text-sm text-white font-light '>Hired</p>
+                <p className='text-center text-5xl text-white font-normal'>5</p>
+              </div>
+            </div>
+            <div className='h-20 w-28 border border-[#5F88B8] rounded items-center'>
+              <div className='flex flex-col gap-1 mx-auto my-auto'>
+                <p className='text-center text-sm text-white font-light '>Rejected</p>
+                <p className='text-center text-5xl text-white font-normal '>3</p>
+              </div>
+            </div>
           </div>          
         </div>
-        <div className='flex gap-2 h-full w-[50%]'>
-
+        <div className='flex gap-2 items-center'>
+            <div className='flex h-10 w-24 border border-[#5F88B8] rounded items-center'>
+              <div className='flex gap-1 mx-auto'>
+                <BadgeCheck className='w-6 h-6 text-white'/>
+                <p className='text-center text-white font-normal '>Open</p>
+              </div>
+            </div>
+            <div className='flex h-10 w-24 border border-[#5F88B8] rounded items-center'>
+              <div className='flex gap-1 mx-auto'>
+                <History className='w-6 h-6 text-white'/>
+                <p className='text-center text-white font-normal '>Full-time</p>
+              </div>
+            </div>
+            <div className='flex h-10 w-24 border border-[#5F88B8] rounded items-center'>
+              <div className='flex gap-1 mx-auto'>
+                <ChartNoAxesCombined className='w-6 h-6 text-white'/>
+                <p className='text-center text-white font-normal '>Senior</p>
+              </div>
+            </div>
+            <div className='flex h-10 w-24 items-center'>
+              <div className='flex gap-1 mx-auto'>
+                <Plus className='w-6 h-6 text-white'/>
+                <p className='text-center text-white font-normal '>Add tags</p>
+              </div>
+            </div>
         </div>
       </div>
       <div className='col-span-2 row-span-3 border border-[#5F88B8] rounded-md overflow-hidden'>
