@@ -3,69 +3,13 @@ import { useState, useEffect } from "react";
 import { MessageSquareText } from 'lucide-react';
 
 export function OnlineFriends() {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [users, setUsers] = useState([
+        {id:1, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Back-end', status:'Online'},
+        {id:2, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Online'},
+        {id:3, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Online'},
+        {id:4, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Online'},
+        {id:5, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Online'},]);
 
-    useEffect(() => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        const fetchUsers = async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const response = await fetch('http://localhost:3000/api/users', { signal });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const fetcheddata = await response.json();
-                
-                // Handle different API response formats
-                if (Array.isArray(fetcheddata)) {
-                    setUsers(fetcheddata);
-                } else if (fetcheddata && Array.isArray(fetcheddata.data)) {
-                    setUsers(fetcheddata.data);
-                } else if (fetcheddata && Array.isArray(fetcheddata.users)) {
-                    setUsers(fetcheddata.users);
-                } else {
-                    console.error("Unexpected API response format:", fetcheddata);
-                    throw new Error("API returned data in unexpected format");
-                }
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.error("Error fetching users:", err);
-                    setError(err.message);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchUsers();
-
-        return () => {
-            controller.abort();
-        };
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="bg-[#1E212A] text-white p-4 h-24 flex items-center justify-center">
-                <p>Loading Online Friends...</p>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="bg-[#1E212A] text-red-400 p-4 h-24 flex flex-col items-center justify-center">
-                <p>Error: Could not load users. ({error})</p>
-                <p className="text-sm mt-2">Please check your server and data format.</p>
-            </div>
-        );
-    }
 
     return (
         <div className="bg-[#1E212A]">
@@ -77,19 +21,14 @@ export function OnlineFriends() {
             </div>
 
             <div className="space-y-2 p-4 overflow-hidden">
-                {!Array.isArray(users) || users.length === 0 ? (
-                    <div className="text-gray-400 p-2">No friends are currently online.</div>
-                ) : (
-                    users.map((friend, index) => {
-                        const userDetails = friend.User; 
-                        const name = userDetails.name;
-                        const status = userDetails.status;
-                        const login = userDetails.login;
+                    {users.map((item) => {
 
                         return (
                             <div 
-                                key={login}
-                                className="flex items-center rounded-md border border-yellow-600 bg-gradient-to-r from-[#2A2D3C] via-[#242735] to-[#1E212A] p-2 justify-between pt-3 transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_15px_3px_rgba(252,211,77,0.3)]"
+                                key={item.id}
+                                className="flex items-center rounded-md border border-yellow-600 bg-gradient-to-r 
+                                from-[#2A2D3C] via-[#242735] to-[#1E212A] p-2 justify-between pt-3 transition-all 
+                                duration-200 hover:scale-[1.02] hover:shadow-[0_0_15px_3px_rgba(252,211,77,0.3)]"
                             >
                                 <div className="space-x-3 flex items-center">
                                     <div className="relative hidden md:block">
@@ -97,15 +36,15 @@ export function OnlineFriends() {
                                             <User className="h-4 w-4 text-white" /> 
                                         </div>
                                         <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-[#1E212A] ${
-                                            status === "online" ? "bg-yellow-400" : "bg-gray-500"
+                                            item.status === "online" ? "bg-yellow-400" : "bg-gray-500"
                                         }`} />
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-sm text-white font-electrolize">{name}</span>
+                                        <span className="text-sm text-white font-electrolize">{item.firstName}</span>
                                         <span className={`text-sm font-electrolize ${
-                                            status === "online" ? "text-yellow-400" : "text-gray-500"
+                                            item.status === "online" ? "text-yellow-400" : "text-gray-500"
                                         }`}>
-                                            {status}
+                                            {item.status}
                                         </span>
                                     </div>
                                 </div>
@@ -119,8 +58,7 @@ export function OnlineFriends() {
                                 </div>
                             </div>
                         );
-                    })
-                )}
+                    })}
             </div>
         </div>
     );

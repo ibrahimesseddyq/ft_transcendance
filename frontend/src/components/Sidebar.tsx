@@ -24,7 +24,7 @@ export function Sidebar() {
         <div
             className="
                 flex flex-col mt-28
-                bg-transparent relative h-full w-[250px]"
+                bg-transparent relative h-full w-auto md:w-[250px]"
         >
             {/* Navigation */}
             <nav className=" 
@@ -42,16 +42,16 @@ export function Sidebar() {
                                 isCurrent
                                     ? "text-green-600" 
                                     : "text-[#666875]", 
-                                "group flex h-full w-full pl-14 rounded-lg transition-all duration-200"
+                                "group flex h-full w-full md:pl-14 rounded-lg transition-all duration-200"
                             )}
                         >
-                            <div className='flex gap-2'>
+                            <div className='flex gap-2 hover:text-green-600'>
                                 <Icon 
                                     className={cn(
                                         "h-[30px] w-[30px] fill-[#666875]  transition-all duration-200"
                                 )}
                                 />
-                                <p className='text-[20px] font-bold'>{item.name}</p> 
+                                <p className='hidden md:flex text-[20px] font-bold'>{item.name}</p> 
                             </div>
                         </Link>
                     );
