@@ -1,0 +1,178 @@
+version: '3.8'
+
+# ============================================================================
+# Backup & Archive Infrastructure
+# Recruitment Platform
+# ============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # MySQL Primary Database (Main Service)
+  # --------------------------------------------------------------------------
+  mysql-main:
+    image: mysql:8.0
+    container_name: recruitment-mysql-main
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: recruitment_main
+    volumes:
+      - mysql_main_data:/var/lib/mysql
+      - ./archive/01_archive_tables.sql:/docker-entrypoint-initdb.d/02_archive_tables.sql
+      - ./archive/02_archive_procedures.sql:/docker-entrypoint-initdb.d/03_archive_procedures.sql
+      - ./config/mysql-main.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - recruitment-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # MySQL Quiz Service Database
+  # --------------------------------------------------------------------------
+  mysql-quiz:
+    image: mysql:8.0
+    container_name: recruitment-mysql-quiz
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: recruitment_quiz
+    volumes:
+      - mysql_quiz_data:/var/lib/mysql
+      - ./config/mysql-quiz.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3307:3306"
+    networks:
+      - recruitment-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # MySQL Archive Database (Warm Storage)
+  # --------------------------------------------------------------------------
+  mysql-archive:
+    image: mysql:8.0
+    container_name: recruitment-mysql-archive
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: recruitment_archive
+    volumes:
+      - mysql_archive_data:/var/lib/mysql
+      - ./config/mysql-archive.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3308:3306"
+    networks:
+      - recruitment-network
+
+  # --------------------------------------------------------------------------
+  # Backup Service (Cron-based)
+  # --------------------------------------------------------------------------
+  backup-service:
+    build:
+      context: ./backup
+      dockerfile: Dockerfile.backup
+    container_name: recruitment-backup
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql-main
+      MYSQL_BACKUP_USER: backup_user
+      MYSQL_BACKUP_PASSWORD: ${MYSQL_BACKUP_PASSWORD}
+      REMOTE_STORAGE_ENABLED: ${REMOTE_STORAGE_ENABLED:-false}
+      S3_BUCKET: ${S3_BUCKET:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      SLACK_WEBHOOK: ${SLACK_WEBHOOK:-}
+    volumes:
+      - backup_data:/var/backups/mysql
+      - backup_logs:/var/log/mysql-backup
+      - ./backup/backup.sh:/scripts/backup.sh
+      - ./backup/restore.sh:/scripts/restore.sh
+    depends_on:
+      mysql-main:
+        condition: service_healthy
+      mysql-quiz:
+        condition: service_healthy
+    networks:
+      - recruitment-network
+
+  # --------------------------------------------------------------------------
+  # MinIO (S3-Compatible Object Storage for Cold Storage)
+  # --------------------------------------------------------------------------
+  minio:
+    image: minio/minio:latest
+    container_name: recruitment-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - recruitment-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # --------------------------------------------------------------------------
+  # Adminer (Database Management UI)
+  # --------------------------------------------------------------------------
+  adminer:
+    image: adminer:latest
+    container_name: recruitment-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - recruitment-network
+    depends_on:
+      - mysql-main
+      - mysql-quiz
+
+  # --------------------------------------------------------------------------
+  # Monitoring (Optional - Prometheus + Grafana)
+  # --------------------------------------------------------------------------
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: recruitment-mysql-exporter
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: "exporter:${MYSQL_EXPORTER_PASSWORD}@(mysql-main:3306)/"
+    ports:
+      - "9104:9104"
+    networks:
+      - recruitment-network
+    depends_on:
+      mysql-main:
+        condition: service_healthy
+
+networks:
+  recruitment-network:
+    driver: bridge
+
+volumes:
+  mysql_main_data:
+    driver: local
+  mysql_quiz_data:
+    driver: local
+  mysql_archive_data:
+    driver: local
+  backup_data:
+    driver: local
+  backup_logs:
+    driver: local
+  minio_data:
+    driver: local
