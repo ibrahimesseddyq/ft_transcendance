@@ -1,4 +1,4 @@
-import { BadgeCheck, History, ChartNoAxesCombined,Plus } from 'lucide-react';
+import { BadgeCheck, History, ChartNoAxesCombined, Plus, ChevronDown , MapPin, BadgeDollarSign, CalendarDays  } from 'lucide-react';
 import { useState } from 'react';
 
 interface Student {
@@ -42,17 +42,49 @@ function Studentcard(object:Student) {
   );
 }
 export function Condidates(){
+  const Student = {
+  name: 'Abdellatif EL Fagrouch',
+  category: 'Devops Developer',
+  lucation: 'Morocco, Khouribga',
+  type: 'Full-time',
+  accepted: 'yes',
+  time: ', oct 16, 2025'
+};
   const [tags, setTags] = useState([
     {id:1, icon:BadgeCheck, name:'Open'},
     {id:2, icon:History, name:'Full-time'},
     {id:3, icon:ChartNoAxesCombined, name:'Senior'}
   ]);
-  const [etudients, setEtudients] = useState<Student[]>([
-    { id: 1, name: 'Abdellatif EL Fagrouch', category: 'Devops Developer', lucation: 'Morocco, Khouribga', type: 'Full-time', accepted: 'yes', time: ', oct 16, 2025' },
-    { id: 2, name: 'Abdellatif EL Fagrouch', category: 'Devops Developer', lucation: 'Morocco, Khouribga', type: 'Full-time', accepted: 'yes', time: ', oct 16, 2025' },
-    { id: 3, name: 'Abdellatif EL Fagrouch', category: 'Devops Developer', lucation: 'Morocco, Khouribga', type: 'Full-time', accepted: 'yes', time: ', oct 16, 2025' },
-    { id: 4, name: 'Abdellatif EL Fagrouch', category: 'Devops Developer', lucation: 'Morocco, Khouribga', type: 'Full-time', accepted: 'yes', time: ', oct 16, 2025' }
-  ]);
+  const [panding, setPanding] = useState<Student[]>(
+  Array.from({ length: 8 }, (_, i) => ({
+    id: i + 1,
+    ...Student
+  }))
+  );
+  const [reviewed, setReviewed] = useState<Student[]>(
+  Array.from({ length: 4 }, (_, i) => ({
+    id: i + 1,
+    ...Student
+  }))
+  );
+  const [testTask, setTestTask] = useState<Student[]>(
+  Array.from({ length: 4 }, (_, i) => ({
+    id: i + 1,
+    ...Student
+  }))
+  );
+  const [iterview, setIterview] = useState<Student[]>(
+  Array.from({ length: 2 }, (_, i) => ({
+    id: i + 1,
+    ...Student
+  }))
+  );
+  const [hired, setHired] = useState<Student[]>(
+  Array.from({ length: 1 }, (_, i) => ({
+    id: i + 1,
+    ...Student
+  }))
+  );
   const handleAddTags = () => {
     const newTags = prompt("Enter new Tags:");
     if (newTags && newTags.trim()) {
@@ -63,9 +95,7 @@ export function Condidates(){
   const handleDeleteTag = (id:Number) => {
     setTags(tags.filter(tags => tags.id !== id));
   };
-  const handleDeleteEtudent = (id:Number) => {
-    setEtudients(etudients.filter(etudients => etudients.id !== id));
-  };
+  
 
   const Panding = ()=>{
     return(
@@ -80,7 +110,7 @@ export function Condidates(){
               [&::-webkit-scrollbar-thumb]:bg-green-500
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
-             {etudients.map((item) => (
+             {panding.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
               </div>
@@ -93,7 +123,7 @@ export function Condidates(){
     return(
       <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
-              Reviewed (2)
+              Reviewed <span>({reviewed.length})</span>
         </p>
         <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
             [&::-webkit-scrollbar]:w-2
@@ -102,7 +132,7 @@ export function Condidates(){
               [&::-webkit-scrollbar-thumb]:bg-green-500
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
-             {etudients.map((item) => (
+             {reviewed.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
               </div>
@@ -115,7 +145,7 @@ export function Condidates(){
     return(
       <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
-              Test Task (3)
+              Test Task <span>({testTask.length})</span>
         </p>
         <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
             [&::-webkit-scrollbar]:w-2
@@ -124,7 +154,7 @@ export function Condidates(){
               [&::-webkit-scrollbar-thumb]:bg-green-500
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
-             {etudients.map((item) => (
+             {testTask.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
               </div>
@@ -137,7 +167,7 @@ export function Condidates(){
     return(
       <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
-              Iterview (3)
+              Iterview <span>({iterview.length})</span>
         </p>
         <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
             [&::-webkit-scrollbar]:w-2
@@ -146,7 +176,7 @@ export function Condidates(){
               [&::-webkit-scrollbar-thumb]:bg-green-500
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
-             {etudients.map((item) => (
+             {iterview.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
               </div>
@@ -159,7 +189,7 @@ export function Condidates(){
     return(
       <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
-              Hired (3)
+              Hired <span>({hired.length})</span>
         </p>
         <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
             [&::-webkit-scrollbar]:w-2
@@ -169,7 +199,7 @@ export function Condidates(){
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
 
-            {etudients.map((item) => (
+            {hired.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
               </div>
@@ -194,20 +224,24 @@ export function Condidates(){
                 <div className='flex flex-col'>
                   <div className='flex'>
                     <h1 className='text-xl text-white font-bold '>RH Offer</h1>
+                    <ChevronDown  className='h-8 w-8 text-white'/>
                   </div>
-                  <div className='flex'>
+                  <div className='flex gap-1'>
+                    <MapPin className='h-5 w-5 text-white'/>
                     <h1 className='text-sm text-white font-light '>Morocco, Khouribga</h1>
                   </div>
-                  <div className='flex'>
+                  <div className='flex gap-1'>
+                    <BadgeDollarSign className='h-5 w-5 text-white'/>
                     <h1 className='text-sm text-white font-light '>10 000, 15 000</h1>
                   </div>
-                  <div className='flex'>
+                  <div className='flex gap-1'>
+                    <CalendarDays className='h-5 w-5 text-white'/>
                     <h1 className='text-sm text-white font-light '>Posted, oct 16, 2025</h1>
                   </div>
                 </div>
           </div>
           <div className='flex gap-10 mx-auto'>
-            <div className='h-20 w-28 border border-[#5F88B8] rounded items-center'>
+            <div className='h-20 w-28 bg-green-900 border border-[#5F88B8] rounded items-center'>
               <div className='flex flex-col gap-1 mx-auto my-auto'>
                 <p className='text-center text-sm text-white font-light '>Total condidates</p>
                 <p className='text-center text-5xl font-bold text-black [text-stroke:1px_white] [-webkit-text-stroke:1px_white]'>20</p>
