@@ -1,0 +1,402 @@
+E-RH Connect Design System Architecture 
+🎨 Color Palette
+Primary Colors (Modern Professional)
+Primary Indigo:   #6366F1  (rgb(99, 102, 241))   - indigo-500
+Primary Purple:   #9333EA  (rgb(147, 51, 234))    - purple-600
+Primary Violet:   #8B5CF6  (rgb(139, 92, 246))    - violet-500
+Background Colors (Deep Professional)
+Base Background:  #030712  (gray-950)   - Deep charcoal
+Secondary BG:     #111827  (gray-900)   - Dark slate
+Overlay BG:       #1F2937  (gray-800)   - Medium dark
+Surface:          rgba(17, 24, 39, 0.4)  - glass effect
+Glass Effect:     backdrop-blur-xl with 40-80% opacity
+Gradient Backgrounds
+Main Gradient:    from-gray-950 via-gray-900 to-indigo-950
+Primary Gradient: from-indigo-500 to-purple-600
+Accent Gradient:  from-violet-500 to-purple-600
+Card Gradient:    from-white to-gray-300 (for text)
+Text Colors (High Contrast)
+Primary Text:     #FFFFFF  (white)           - Headings, important
+Secondary Text:   #9CA3AF  (gray-400)        - Body, labels
+Tertiary Text:    #6B7280  (gray-500)        - Helper, timestamps
+Disabled Text:    #4B5563  (gray-600)        - Disabled state
+Border Colors (Subtle Professional)
+Primary Border:   rgba(31, 41, 55, 0.6)  - gray-800/60
+Hover Border:     rgba(99, 102, 241, 0.6) - indigo-500/60
+Active Border:    rgba(99, 102, 241, 0.4) - indigo-500/40
+Subtle Border:    rgba(31, 41, 55, 0.5)  - gray-800/50
+Status Colors (Clear & Professional)
+Success:          #10B981  (emerald-500)
+Success Light:    #34D399  (emerald-400)
+Success BG:       rgba(16, 185, 129, 0.1)
+Success Border:   rgba(16, 185, 129, 0.3)
+
+Error:            #EF4444  (red-500)
+Error Light:      #F87171  (red-400)
+Error BG:         rgba(239, 68, 68, 0.1)
+Error Border:     rgba(239, 68, 68, 0.3)
+
+Warning:          #F59E0B  (amber-500)
+Warning BG:       rgba(245, 158, 11, 0.1)
+
+Info:             #6366F1  (indigo-500)
+Info BG:          rgba(99, 102, 241, 0.1)
+Info Border:      rgba(99, 102, 241, 0.3)
+Semantic Colors
+Online:           #10B981  (emerald-400)
+Offline:          #9CA3AF  (gray-400)
+Pending:          #6366F1  (indigo-400)
+Accepted:         #10B981  (emerald-400)
+Rejected:         #EF4444  (red-400)
+In Progress:      #8B5CF6  (violet-500)
+📝 Typography
+Font Family
+Primary Font:     -apple-system, BlinkMacSystemFont, "Segoe UI", 
+                  "Roboto", "Oxygen", "Ubuntu", "Cantarell", 
+                  "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
+
+Alternative:      "Inter", "SF Pro Display", sans-serif (if available)
+Font Sizes (Refined Scale)
+xs:   0.75rem   (12px)   - Micro text, badges
+sm:   0.875rem  (14px)   - Small body, captions
+base: 1rem      (16px)   - Body text
+lg:   1.125rem  (18px)   - Large body
+xl:   1.25rem   (20px)   - Section titles
+2xl:  1.5rem    (24px)   - Page titles
+3xl:  1.875rem  (30px)   - Hero text
+4xl:  2.25rem   (36px)   - Display stats
+Font Weights
+Regular:    400  - Body text
+Medium:     500  - Labels, nav items
+Semibold:   600  - Subheadings, emphasis
+Bold:       700  - Headings, stats
+Line Heights
+Tight:      1.25  - Headings, display
+Normal:     1.5   - Body text
+Relaxed:    1.75  - Long content
+🔲 Component Specifications
+Borders & Radius (Modern Rounded)
+Border Width:
+  thin:     1px    - Standard borders
+  medium:   2px    - Emphasis borders
+  thick:    4px    - Heavy emphasis
+
+Border Radius:
+  sm:       0.375rem  (6px)    - Small elements
+  md:       0.5rem    (8px)    - Tags, badges
+  lg:       0.75rem   (12px)   - Icons, small cards
+  xl:       1rem      (16px)   - Standard cards
+  2xl:      1.5rem    (24px)   - Large cards
+  full:     9999px             - Circular
+Spacing Scale (Consistent 8px Base)
+0:    0
+1:    0.25rem   (4px)
+2:    0.5rem    (8px)
+3:    0.75rem   (12px)
+4:    1rem      (16px)
+5:    1.25rem   (20px)
+6:    1.5rem    (24px)
+8:    2rem      (32px)
+10:   2.5rem    (40px)
+12:   3rem      (48px)
+16:   4rem      (64px)
+Shadows & Glow Effects
+Card Shadow:
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+              0 2px 4px -2px rgba(0, 0, 0, 0.4);
+
+Elevated Shadow:
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
+              0 8px 10px -6px rgba(0, 0, 0, 0.4);
+
+Glow Effect (Primary):
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+Glow Effect (Success):
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+
+Icon Glow:
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+🧩 Component Architecture
+Card Component
+css
+Background:       bg-gray-900/40 backdrop-blur-xl
+Border:           border border-gray-800/60
+Border Radius:    rounded-2xl (24px)
+Padding:          p-6 (24px)
+Hover:            hover:border-indigo-500/40
+Transition:       transition-all duration-300
+Shadow:           shadow-lg (optional)
+Stat Card
+css
+Background:       bg-gray-900/40 backdrop-blur-xl
+Border:           border border-gray-800/60
+Border Radius:    rounded-2xl
+Padding:          p-6
+Value Text:       bg-gradient-to-br from-white to-gray-300
+                  bg-clip-text text-transparent
+Icon Container:   p-2 bg-indigo-500/10 rounded-lg
+Hover:            hover:border-indigo-500/40
+Button Component
+Primary Button:
+
+css
+Background:       bg-gradient-to-r from-indigo-500 to-purple-600
+Text:             text-white font-semibold
+Padding:          px-6 py-3
+Border Radius:    rounded-xl (16px)
+Shadow:           shadow-lg shadow-indigo-500/30
+Hover:            hover:shadow-xl hover:scale-102
+Transition:       transition-all duration-200
+Secondary Button:
+
+css
+Background:       bg-gray-800/60
+Border:           border border-gray-700/60
+Text:             text-gray-300 font-medium
+Padding:          px-6 py-3
+Border Radius:    rounded-xl
+Hover:            hover:bg-gray-700/60 hover:text-white
+                  hover:border-indigo-500/40
+Icon Button:
+
+css
+Background:       bg-gray-900/60 backdrop-blur-xl
+Border:           border border-gray-800/60
+Padding:          p-3 (12px)
+Border Radius:    rounded-xl (16px)
+Hover:            hover:border-indigo-500/60
+Transition:       transition-all duration-200
+Input Component
+css
+Background:       bg-gray-900/60 backdrop-blur-xl
+Border:           border border-gray-800/60
+Text:             text-white placeholder-gray-500
+Padding:          px-4 py-3 (with icon: pl-12)
+Border Radius:    rounded-xl (16px)
+Focus:            focus:border-indigo-500/60 
+                  focus:ring-2 focus:ring-indigo-500/20
+Transition:       transition-all duration-200
+Badge/Status Component
+css
+Background:       bg-emerald-500/10 (status dependent)
+Border:           border border-emerald-500/30
+Text:             text-emerald-400 font-medium
+Font Size:        text-xs
+Padding:          px-2.5 py-1
+Border Radius:    rounded-lg (12px)
+
+Variants:
+Success:  bg-emerald-500/10 border-emerald-500/30 text-emerald-400
+Error:    bg-red-500/20 border-red-500/30 text-red-400
+Info:     bg-indigo-500/20 border-indigo-500/30 text-indigo-400
+Neutral:  bg-gray-700/50 border-gray-600/30 text-gray-400
+Avatar Component
+css
+Size:             w-10 h-10 or w-12 h-12
+Border Radius:    rounded-xl (16px) or rounded-lg (12px)
+Background:       bg-gradient-to-br from-indigo-500 to-purple-600
+                  OR from-violet-500 to-purple-600
+Shadow:           shadow-lg shadow-indigo-500/20
+Text:             text-white font-bold text-sm
+Display:          flex items-center justify-center
+Sidebar Navigation
+css
+Width:            w-64 (256px)
+Background:       bg-gray-900/80 backdrop-blur-xl
+Border:           border-r border-gray-800/50
+Position:         fixed left-0 top-0 h-full
+Padding:          p-6
+
+Active Nav Item:
+  Background:     bg-gradient-to-r from-indigo-500/20 to-purple-500/20
+  Text:           text-indigo-400
+  Border:         border border-indigo-500/40
+  Shadow:         shadow-lg shadow-indigo-500/10
+  Border Radius:  rounded-xl
+  
+Inactive Nav Item:
+  Text:           text-gray-400
+  Hover BG:       hover:bg-gray-800/60
+  Hover Text:     hover:text-white
+  Border Radius:  rounded-xl
+Icon Container
+css
+Background:       bg-indigo-500/10
+Padding:          p-2
+Border Radius:    rounded-lg (12px)
+Icon Color:       text-indigo-400
+Size:             size={20} or size={24}
+Status Indicator (Dot)
+css
+Online:
+  Background:     bg-emerald-500/10
+  Text:           text-emerald-400
+  Border:         border-emerald-500/30
+  Dot:            bg-emerald-400 shadow-lg shadow-emerald-400/50
+
+Offline:
+  Background:     bg-gray-700/50
+  Text:           text-gray-400
+  Border:         border-gray-600/30
+  Dot:            bg-gray-400
+
+Dot Size:         w-1.5 h-1.5 rounded-full
+Container:        px-2.5 py-1 rounded-lg text-xs font-medium
+🎭 Advanced Glassmorphism
+Glass Card (Enhanced)
+css
+background:       rgba(17, 24, 39, 0.4)
+backdrop-filter:  blur(40px) saturate(150%)
+border:           1px solid rgba(31, 41, 55, 0.6)
+box-shadow:       0 8px 32px 0 rgba(0, 0, 0, 0.4)
+Glass Overlay
+css
+background:       rgba(17, 24, 39, 0.6)
+backdrop-filter:  blur(20px)
+border:           1px solid rgba(31, 41, 55, 0.5)
+⚡ Transitions & Animations
+Standard Transitions
+css
+Quick:            transition-all duration-150 ease-in-out
+Standard:         transition-all duration-200 ease-in-out
+Smooth:           transition-all duration-300 ease-in-out
+Slow:             transition-all duration-500 ease-in-out
+Transform Animations
+css
+Scale Up:         hover:scale-102 (subtle)
+Scale Up More:    hover:scale-105 (prominent)
+Translate:        hover:-translate-y-1
+Hover Effects
+css
+Border Glow:      hover:border-indigo-500/60
+Shadow Enhance:   hover:shadow-xl hover:shadow-indigo-500/20
+Background:       hover:bg-gray-800/70
+Text Color:       hover:text-white
+Focus States
+css
+Ring:             focus:ring-2 focus:ring-indigo-500/20
+Border:           focus:border-indigo-500/60
+Outline:          focus:outline-none
+📱 Responsive Design
+Breakpoints
+css
+sm:    640px   - Mobile landscape
+md:    768px   - Tablets
+lg:    1024px  - Desktop
+xl:    1280px  - Large desktop
+2xl:   1536px  - Extra large screens
+Grid Layouts
+css
+Stats Grid:
+  Mobile:         grid-cols-1
+  Tablet:         md:grid-cols-2
+  Desktop:        lg:grid-cols-4
+
+Content Grid:
+  Mobile:         grid-cols-1
+  Desktop:        lg:grid-cols-3
+🎯 Icon System
+Icon Library
+Lucide React (https://lucide.dev)
+
+Icon Sizes
+Small:      16px  - Inline text
+Medium:     20px  - Nav, buttons
+Large:      24px  - Headers, emphasis
+XLarge:     32px  - Hero sections
+Icon Colors & States
+Default:    text-gray-400
+Primary:    text-indigo-400
+Success:    text-emerald-400
+Error:      text-red-400
+Warning:    text-amber-400
+Hover:      hover:text-white
+Container:  bg-indigo-500/10 p-2 rounded-lg
+🔐 Accessibility Standards
+Contrast Ratios (WCAG 2.1)
+Normal Text:      Minimum 4.5:1
+Large Text:       Minimum 3:1
+UI Components:    Minimum 3:1
+Focus Indicators
+All interactive elements must have:
+
+Visible focus ring (ring-2)
+Color change on focus
+Outline removed (focus:outline-none)
+Color Independence
+Never rely on color alone for information:
+
+Use icons with status colors
+Provide text labels
+Add borders for emphasis
+💡 Design Principles (Enterprise Grade)
+Professional Depth: Use sophisticated grays with indigo/purple accents
+Glassmorphism: Backdrop blur with strategic opacity for modern depth
+Subtle Gradients: Text and backgrounds use refined gradients
+Consistent Shadows: Layered shadows with glows for premium feel
+Icon Containers: Background containers for visual hierarchy
+Border Emphasis: Subtle borders that glow on interaction
+Status Clarity: Icons + text + color for all status indicators
+Smooth Interactions: 200ms transitions with scale and glow effects
+Typography Hierarchy: Gradient text for stats and emphasis
+Professional Polish: Every detail refined for enterprise quality
+🎨 Color Psychology
+Indigo/Purple Palette Reasoning:
+
+Trust & Professionalism: Deep indigo conveys reliability
+Innovation: Purple suggests creativity and forward-thinking
+Tech Industry: Modern tech companies use these hues
+Gender Neutral: Appeals to all demographics
+Premium Feel: Associated with luxury and quality
+Easy on Eyes: Less harsh than pure blues in dark themes
+📦 Component Hierarchy
+Layout:
+├── DashboardLayout (main container)
+├── Sidebar (navigation)
+└── Header (search + notifications + profile)
+
+Data Display:
+├── StatCard (with gradient text)
+├── ActivityFeed (recent actions)
+├── JobStatusList (active positions)
+└── DataTable (future implementation)
+
+Interactive:
+├── SearchBar (with icon)
+├── PrimaryButton (gradient)
+├── SecondaryButton (glass)
+├── IconButton (minimal)
+└── NavItem (sidebar)
+
+Feedback:
+├── StatusBadge (with border)
+├── StatusDot (with glow)
+├── Notification (badge)
+└── Toast (future)
+
+Micro-interactions:
+├── IconContainer (bg + rounded)
+├── GlowEffect (on hover)
+└── ScaleTransform (subtle)
+🚀 Implementation Guidelines
+CSS Framework
+Tailwind CSS v3.3+ with custom configuration
+
+Key Technical Decisions
+Backdrop blur for all glass surfaces
+Strategic use of opacity (40-80%)
+Gradient text for statistics
+Icon containers for visual weight
+Border emphasis over heavy shadows
+Subtle scale transforms (102-105%)
+Performance Optimization
+Use transform for animations (GPU)
+Minimize backdrop-blur usage on mobile
+Lazy load images and icons
+Optimize gradient rendering
+Use CSS containment where applicable
+Browser Support
+Modern browsers (2020+)
+CSS backdrop-filter support required
+Fallback: solid backgrounds for older browsers
