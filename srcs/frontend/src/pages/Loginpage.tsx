@@ -89,7 +89,7 @@ export function LoginPage(){
                         </button>
                 </div>
                 <div className="flex flex-col gap-2 h-full w-[90%] place-content-center">
-                    <form action="http://localhost:3000/signin" encType='application/json' method="POST">
+                    <form action="http://localhost:3000/api/signin" encType='application/json' method="POST">
                         <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your email"
@@ -118,7 +118,7 @@ export function LoginPage(){
                             Log in
                         </button>
                     </form>
-                    <a  href="http://localhost:3000/auth/google" 
+                    <a  href="http://localhost:3000/api/auth/google" 
                             className="h-[50px]  flex gap-5  rounded-full w-full mt-5 mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"
@@ -258,7 +258,7 @@ export function LoginPage(){
                             Log in
                         </button>
                     </form>
-                    <a href='http://localhost:3000/auth/google'
+                    <a href='http://localhost:3000/api/auth/google'
                             className="h-[50px] flex gap-5 rounded-full w-full mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
                         <img    className="h-8 w-8 ml-10" 
                                 src="src/assets/icons/google1.png"

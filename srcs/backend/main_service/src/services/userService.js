@@ -23,7 +23,7 @@ class UserService {
     }
     async getUserById(userId)
     {
-        const user = await userRepository.getUserById(userId);
+        const user = await userRepository.findById(userId);
         if (!user)
             throw new Error("user not found");
         delete user.password;
