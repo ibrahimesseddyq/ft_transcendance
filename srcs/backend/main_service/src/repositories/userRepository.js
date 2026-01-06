@@ -38,13 +38,18 @@ class UserRepository
 
     async update(userId , updateData)
     {
-        return await prisma.users.update({
-            where : {id : userId},
-            data: updateData,
-            include : {
-
-            }
-        })
+        if (await this.findById(userId))
+        {
+            return await prisma.users.update({
+                where : {id : userId},
+                data: updateData,
+                include : {
+    
+                }
+            })
+        }
+        else
+            return new Error("user not found");
     }
 
     async delete (userId)
