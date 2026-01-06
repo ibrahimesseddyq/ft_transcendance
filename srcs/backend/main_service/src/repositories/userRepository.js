@@ -8,7 +8,6 @@ class UserRepository
     {
         return await prisma.users.findUnique({
             where : {id : userId},
-            include: {}
         })
     }
 

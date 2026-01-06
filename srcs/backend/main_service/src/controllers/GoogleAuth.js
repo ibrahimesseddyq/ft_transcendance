@@ -1,26 +1,26 @@
 const passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth2' ).Strategy; //do not use var (deprecated)
 const env = require('../config/env')
-const { prisma } = require('../../generated/prisma');
+const {prisma} = require('../config/prisma');
 
 console.log("CALLBACK_URL : *" + env.GOOGLE_CLIENT_ID + "*");
 console.log("CALLBACK_URL : *" + env.GOOGLE_CLIENT_SECRET + "*");
 console.log("CALLBACK_URL : *" + env.CALLBACK_URL + "*");
 
 passport.use(new GoogleStrategy({ 
-    clientID: env.GOOGLE_CLIENT_ID || '103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com',
-    clientSecret: env.GOOGLE_CLIENT_SECRET || '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',
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    clientID: env.GOOGLE_CLIENT_ID ,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+    callbackURL:`http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`
   },
   async function(request, accessToken, refreshToken, profile, done) {
     try {
       const nameParts = profile.displayName.split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-
+      console.log(typeof prisma.users);
       const user = await prisma.users.upsert({
         // search for user with google id
-        where: { id: profile.id },
+        where: { email: profile.emails?.[0]?.value },
         // update the user data if already exist
         update: {
           first_name: firstName,
@@ -29,7 +29,6 @@ passport.use(new GoogleStrategy({
         },
         // create user if not exist in the database
         create: {
-          id: profile.id,
           email: profile.emails?.[0]?.value || '',
           first_name: firstName,
           last_name: lastName,
@@ -39,6 +38,7 @@ passport.use(new GoogleStrategy({
         }
       });
       
+      console.log(user);
       return done(null, user);
     } catch (err) {
       console.error('Google auth error:', err);

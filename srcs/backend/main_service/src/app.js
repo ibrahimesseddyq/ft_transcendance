@@ -1,6 +1,6 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const app =  express();
+const bodyParser = require('body-parser');
 const passport = require('passport');
 const helmet =  require('helmet');
 const cors =  require('cors');
@@ -38,7 +38,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // routes
-app.use('/auth', authRoutes); 
+app.use('/api/auth', authRoutes); 
 app.use('/api/users',userRoutes);
 
 module.exports = app;
