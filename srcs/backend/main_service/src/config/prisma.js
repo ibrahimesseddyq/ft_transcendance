@@ -1,12 +1,34 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('../../generated/prisma'); 
+const config = require('./env')
+let prismaInstance = null;
 
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'], 
-});
+const  getPrismaClient = () =>
+{
+    if (!prismaInstance)
+    {
+        prismaInstance = new PrismaClient({
+        log: [
+        { level: 'query', emit:  'event' },
+        { level: 'error', emit: 'stdout' },
+        { level: 'warn', emit: 'stdout' },
+        { level: 'info', emit: 'stdout' } 
+      ],
+       errorFormat: 'pretty'
+    });
+    }
+    return prismaInstance;
+}
 
-// Test connection
-prisma.$connect()
-  .then(() => console.log('✅ Prisma connected to MySQL'))
-  .catch(err => console.error('❌ Prisma connection failed:', err));
+const   disconnect = async () =>
+{
+    if (prismaInstance)
+    {
+        await prismaInstance.$disconnect();
+        prismaInstance = null;
 
-module.exports = prisma;
+    }
+}
+
+const prisma  =  getPrismaClient();
+
+module.exports = {prisma , disconnect };

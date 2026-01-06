@@ -1,19 +1,15 @@
 const passport = require('passport');
-require('dotenv').config();
-var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../..', '.env') });
+var GoogleStrategy = require('passport-google-oauth2' ).Strategy; //do not use var (deprecated)
+const env = require('../config/env')
+const { prisma } = require('../../generated/prisma');
 
-// const { PrismaClient } = require('../../generated/prisma');
+console.log("CALLBACK_URL : *" + env.GOOGLE_CLIENT_ID + "*");
+console.log("CALLBACK_URL : *" + env.GOOGLE_CLIENT_SECRET + "*");
+console.log("CALLBACK_URL : *" + env.CALLBACK_URL + "*");
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-console.log("CALLBACK_URL : *" + process.env.GOOGLE_CLIENT_ID + "*")
-console.log("CALLBACK_URL : *" + process.env.GOOGLE_CLIENT_SECRET + "*")
-console.log("CALLBACK_URL : *" + process.env.CALLBACK_URL + "*")
 passport.use(new GoogleStrategy({ 
-    clientID: process.env.GOOGLE_CLIENT_ID || '103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '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',
+    clientID: env.GOOGLE_CLIENT_ID || '103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com',
+    clientSecret: env.GOOGLE_CLIENT_SECRET || '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',
     callbackURL: 'http://localhost:3000/auth/google/callback'
   },
   async function(request, accessToken, refreshToken, profile, done) {
@@ -67,4 +63,5 @@ passport.deserializeUser(async (id, done) => {
     done(err, null);
   }
 });
+
 module.exports = passport;
