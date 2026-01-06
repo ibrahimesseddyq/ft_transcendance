@@ -19,7 +19,8 @@ class UserControler {
                 data: user
             })
 
-        }catch(error)
+        }
+        catch(error)
         {
             next(error);
         }
