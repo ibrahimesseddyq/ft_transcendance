@@ -3,14 +3,6 @@ const {prisma} =  require('../config/prisma');
 
 class UserRepository
 {
-    async create(userData)
-    {
-        return await prisma.users.create(
-            {
-                data : userData,
-            }
-        )
-    }
 
     async findById(userId)
     {
@@ -29,6 +21,21 @@ class UserRepository
         )
     }
 
+    async create(userData)
+    {
+        if (!await this.findByEmail(userData.email))
+        {
+            return await prisma.users.create(
+                {
+                    data : userData,
+                }
+            )
+        }
+        else
+            return new Error("user alredy eists");
+    }
+
+
     async update(userId , updateData)
     {
         return await prisma.users.update({
@@ -42,11 +49,16 @@ class UserRepository
 
     async delete (userId)
     {
-        return await prisma.users.delete(
-            {
-                where : {id : userId}
-            }
-        )
+        if (await this.findById(userId))
+        {
+            return await prisma.users.delete(
+               {
+                   where : {id : userId}
+               }
+            )
+        }
+        else
+            return new Error("user does not exists");
     }
 
     async findMany({skip = 0 , take = 10 , role, search }){
