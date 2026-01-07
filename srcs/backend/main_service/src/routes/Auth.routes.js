@@ -8,14 +8,27 @@ router.get('/', (req, res) => {
   res.redirect('http://localhost:5173/');
 });
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+router.get('/login', (req, res) => {
+  console.log("login route")
+});
+router.get('/signup', (req, res) => {
+  console.log("signup route")
+});
+
+router.post('/login', (req, res) => {
+  console.log(req.body)
+  res.redirect('http://localhost:5173/dashboard')
+});
+router.post('/signup', (req, res) => {
+  console.log(req.body)
+  res.redirect('http://localhost:5173/dashboard')
+});
+
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback', passport.authenticate('google',
   { successReturnToOrRedirect: 'http://localhost:5173/dashboard', failureRedirect: 'http://localhost:5173' }),
-  (req, res) => {
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-  }
 );
   
 router.get("/status", (req, res) => {
