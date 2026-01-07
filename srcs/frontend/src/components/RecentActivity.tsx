@@ -12,8 +12,8 @@ export function RecentActivity() {
         {id:5, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Accepted'},]);
       
     return (
-        <div className="bg-[#1E212A] h-full w-full">
-            <div className="flex items-center justify-between p-2 px-4 sticky top-0 bg-[#1E212A] z-10">
+        <div className="bg-transparent h-full w-full">
+            <div className="flex items-center justify-between p-2 px-4 sticky top-0 bg-[#21252E] z-10">
                 <h3 className="text-xl 2xl:text-2xl font-medium text-white">Recent Activity</h3>
             </div>
 
