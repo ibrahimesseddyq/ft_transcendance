@@ -31,14 +31,18 @@ export function Main () {
     }
   return (
       <div className="flex flex-col h-screen w-screen bg-black overflow-hidden ">
-          <div className="h-[10%] max-h-32 w-full bg-[#242B3A] border-b-2 border-[#5F88B8]">
+          <div className="h-full max-h-32 w-full bg-[#242B3A] border-b-2 border-[#5F88B8]">
               <Header/>
           </div>
-          <div className="flex w-full h-[90%] bg-[#21252E] bg-no-repeat bg-center bg-cover pb-20 lg:pb-0">
+          <div className="flex w-full h-full bg-[#21252E] bg-no-repeat bg-center bg-cover pb-20 lg:pb-0">
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-hidden mx-auto mt-2 p-1">
+                <main className="w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-auto mx-auto mt-2 p-1
+                [&::-webkit-scrollbar]:w-2
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:bg-green-400
+                [&::-webkit-scrollbar-thumb]:rounded-full">
                     <Routes>
                       <Route element={<ProtectedRoutes />}>
                         <Route path="/Dashboard" element={<Dashboard />} />

@@ -12,8 +12,6 @@ const authRoutes = require('./routes/Auth.routes.js');
 const env = require('./config/env');
 
 
-
-
 app.use(helmet());
 app.use(cors({
     origin: "http://localhost:5173", 

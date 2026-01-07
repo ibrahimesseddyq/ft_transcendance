@@ -89,7 +89,7 @@ export function LoginPage(){
                         </button>
                 </div>
                 <div className="flex flex-col gap-2 h-full w-[90%] place-content-center">
-                    <form action="http://localhost:3000/api/signin" encType='application/json' method="POST">
+                    <form action="http://localhost:3000/api/auth/login" method="POST">
                         <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-full">
                             <input
                                 placeholder="Enter your email"
@@ -99,7 +99,7 @@ export function LoginPage(){
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                                 required/>
-                            <Mail className="h-10 w-14 pr-5 text-white" />
+                            <Mail className="h-10 w-14 text-white px-3" />
                         </div>
                         <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-full">
                             <input
@@ -110,7 +110,7 @@ export function LoginPage(){
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
                                 required/>
-                            <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 pr-5 text-white'/>
+                            <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 px-3 text-white'/>
                         </div>
                         <a href='#' className='pl-[70%]  text-[#44BC19] text-sm font-semibold hover:underline hover:cursor-pointer w-28 '>Forgot Password?</a>
                         <button type="submit"
@@ -186,7 +186,7 @@ export function LoginPage(){
                         </button>
                 </div>
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
-                    <form action="http://localhost:3000/signup" encType='application/json' method="POST"
+                    <form action="http://localhost:3000/api/auth/signup" encType='application/json' method="POST"
                         className='flex flex-col gap-2 w-full'>
                         <div className='flex gap-4 h-[50px] w-full '>
                             <input
@@ -195,7 +195,8 @@ export function LoginPage(){
                                 name='FirstName'
                                 value={formData.FirstName}
                                 onChange={handleChange}
-                                className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
+                                className=" w-full lg:w-[60%] text-sm text-white outline-none 
+                                    placeholder-white mx-auto px-3 border  border-[#405673] rounded-full  bg-transparent"
                                 required/>
                             <input
                                 placeholder="Last Name"
@@ -203,13 +204,14 @@ export function LoginPage(){
                                 name='LastName'
                                 value={formData.LastName}
                                 onChange={handleChange}
-                                className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
+                                className=" w-full lg:w-[60%] text-sm text-white outline-none placeholder-white 
+                                    mx-auto px-3 border border-[#405673] rounded-full  bg-transparent"
                                 required/>
                         </div>
                         <div className='flex gap-4 h-[50px] w-full'>
                             <select value={selectValue} onChange={handleSelectChange}  name="User" id="User"
                                 className=" w-full lg:w-[60%] text-sm text-white outline-none 
-                                placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent">
+                                placeholder-white mx-auto px-3 border  border-[#405673] rounded-full  bg-transparent">
                                     <option value="organization" className='text-black'>organization</option>
                                     <option value="Developer" className='text-black'>Developer</option>
                             </select>
@@ -219,7 +221,7 @@ export function LoginPage(){
                                 name='Number'
                                 value={formData.Number}
                                 onChange={handleChange}
-                                className="w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
+                                className="w-full lg:w-[60%] text-sm text-white outline-none placeholder-white mx-auto px-3 border border-[#405673] rounded-full  bg-transparent"
                                 required/>
                         </div>
                         <div className='flex h-[50px] w-full border border-[#405673] rounded-full bg-transparent items-center justify-between'>
@@ -243,7 +245,7 @@ export function LoginPage(){
                             name='email'
                             value={formData.email}
                             onChange={handleChange}
-                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border border-[#405673] rounded-full  bg-transparent"
+                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto px-3 border border-[#405673] rounded-full  bg-transparent"
                             required/>
                         <input
                             placeholder="Enter Your Password"
@@ -251,7 +253,7 @@ export function LoginPage(){
                             name='password'
                             value={formData.password}
                             onChange={handleChange}
-                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto pl-3 border  border-[#405673] rounded-full  bg-transparent"
+                            className="h-[50px] w-full text-sm text-white outline-none placeholder-white mx-auto px-3 border  border-[#405673] rounded-full  bg-transparent"
                             required/>
                         <button  type="submit"
                                 className="text-white font-bold w-full mx-auto h-[50px] rounded-full bg-[#44BC19]">
