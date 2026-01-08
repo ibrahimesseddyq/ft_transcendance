@@ -11,13 +11,13 @@ export function Header() {
         <img
           src="../src/assets/icons/logo.png"
           alt="My logo"
-          className="h-full w-full"
+          className="h-full w-full bg-no-repeat bg-center bg-cover"
         />
       </Link>
   {/*search bar */}
-  <div className="w-full flex  justify-center h-[60%] mt-auto">
-    <div className=" w-[50%]  h-[80%]">
-      {/* <Search className=" left-3 top-1/2 h-4 w-4  2xl:h-8 2xl:w-8 translate-y-1/2 text-muted-foreground" /> */}
+  <div className="w-full flex  justify-center h-16 mt-auto items-center">
+    <div className="flex w-[50%]  h-12 items-center">
+      <Search className=" h-4 w-4  2xl:h-8 2xl:w-8  text-[#94999A]" />
       <input
         placeholder="Search"
         type='search'
