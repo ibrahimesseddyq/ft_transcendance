@@ -3,24 +3,24 @@ import {RecentActivity} from "@/components//RecentActivity"
 export function Dashboard(){
    const TotalStatistics = () =>{
     return (
-      <div className="h-full w-full flex flex-wrap md:justify-between items-center ">
-        <div className="pl-5 py-2  mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
-          <p className="text-[14px] text-white">Active Job Opening</p>
+      <div className="h-full w-full flex flex-wrap md:justify-between items-center gap-2">
+        <div className="px-3 py-3  mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[12px] font-bold text-white">Active Job Opening</p>
           <p className="text-xl text-white">20</p>
           <p className="text-xs text-gray-400">+3 last 30 days</p>
         </div>
-        <div className="pl-5 py-2 mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
-          <p className="text-[14px] text-white">Total Active Condidates</p>
+        <div className="px-3 py-3 mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[12px] font-bold text-white">Total Active Condidates</p>
           <p className="text-xl text-white">215</p>
           <p className="text-xs text-gray-400">+3 last 30 days</p>
         </div>
-        <div className="pl-5 py-2  mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
-          <p className="text-[14px] text-white">New Condidates (last day)</p>
+        <div className="px-3 py-3  mx-auto flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[12px] font-bold text-white">New Condidates (last day)</p>
           <p className="text-xl text-white">48</p>
           <p className="text-xs text-gray-400">12% from last week</p>
         </div>
-        <div className="pl-5 py-2 mx-auto m flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
-          <p className="text-[14px] text-white">Average Time To Hire</p>
+        <div className="px-3 py-3 mx-auto m flex flex-col justify-between h-[95px] w-[180px] text-lg text-white border border-[#5F88B8] rounded-md">
+          <p className="text-[12px] font-bold text-white">Average Time To Hire</p>
           <p className="text-xl text-white">20</p>
           <p className="text-xs text-gray-400">5 days from last month</p>
         </div>
