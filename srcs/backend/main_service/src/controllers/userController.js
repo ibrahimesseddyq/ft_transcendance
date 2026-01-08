@@ -1,6 +1,7 @@
 const userService = require('../services/userService');
 
 class UserControler {
+
     async createUser(req,res,next)
     {
         try
@@ -29,8 +30,7 @@ class UserControler {
     async getUserById(req,res,next)
     {
         try {
-            const {id} = req.params;
-            const user = await userService.getUserById(id);
+            const user = await userService.getUserById(req.params.id);
             res.status(200).json({
                 status : true,
                 data : user
@@ -41,12 +41,10 @@ class UserControler {
             next(error)
         }
     }
-    async udateUser(req,res,next)
+    async updateUser(req,res,next)
     {
         try{
-            const {id} = req.params;
-            const updateData =  req.body;
-            const user = await userService.updateUser(id,updateData);
+            const user = await userService.updateUser(req.params.id,req.body);
             res.status(200).json({
                 status:true,
                 message:"user update successfully",
@@ -59,12 +57,8 @@ class UserControler {
     async deleteUser(req,res,next)
     {
         try{
-            const {id} = req.params;
-            await userService.deleteUser(id);
-            res.status(200).json({
-                status:true,
-                message:"user deleted successfully"
-            })
+            await userService.deleteUser(req.params.id);
+            res.status(204).end();
         }
         catch(error)
         {

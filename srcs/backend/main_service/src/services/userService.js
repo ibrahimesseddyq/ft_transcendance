@@ -1,14 +1,13 @@
 const userRepository = require('../repositories/userRepository')
-const config = require('../config/env');
-const bcrypt = require('bcrypt');
+const argon2 = require('argon2');
 
 class UserService {
 
     async createUser({email,password,first_name,last_name,role = "candidate"}) // should add more data if needed
     {
-        if (password.length < 8)
-            throw Error('Password must be at least 8 characters')
-        const password_hash = await bcrypt.hash(password , config.BCRYPT_ROUNDS); // BCRYPT_ROUNDS should be defined in configs
+        if (!password || password.length < 8)
+            throw new HttpException(400,'Password must be at least 8 characters');
+        const password_hash = await argon2.hash(password);
         const user = await userRepository.create(
             {
                 email : email.toLowerCase(),
@@ -18,20 +17,22 @@ class UserService {
                 role
             }
         )
-        delete user.password;
+        delete user.password_hash;
         return user;
     }
+    
     async getUserById(userId)
     {
         const user = await userRepository.findById(userId);
         if (!user)
-            throw new Error("user not found");
-        delete user.password;
+            throw new HttpException(404, "User not found");
+        delete user.password_hash;
         return user;
     }
 
     async updateUser(userId, updateData)
     {
+        await this.getUserById(userId);
         const allowedFields = ['first_name', 'last_name', 'phone', 'avatar_url'];
         const filteredData = {};
 
@@ -40,12 +41,13 @@ class UserService {
                 filteredData[field] = updateData[field];
         })
         if(Object.keys(filteredData).length === 0)
-            throw new Error('No valid fields to update');
+            throw new HttpException(400,'No valid fields to update');
         return await userRepository.update(userId,filteredData);
     }
 
     async deleteUser(userId){
-       await userRepository.delete(userId);
+        await this.getUserById(userId);
+        await userRepository.delete(userId);
     }
 
     async listUsers(filters){

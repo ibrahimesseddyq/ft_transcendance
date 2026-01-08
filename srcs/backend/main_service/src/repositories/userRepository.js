@@ -22,47 +22,33 @@ class UserRepository
 
     async create(userData)
     {
-        if (!await this.findByEmail(userData.email))
-        {
-            return await prisma.users.create(
-                {
-                    data : userData,
-                }
-            )
-        }
-        else
-            return new Error("user alredy eists");
+        return await prisma.users.create(
+            {
+                data : userData,
+            }
+        )
     }
 
 
     async update(userId , updateData)
     {
-        if (await this.findById(userId))
-        {
-            return await prisma.users.update({
-                where : {id : userId},
-                data: updateData,
-                include : {
-    
-                }
-            })
-        }
-        else
-            return new Error("user not found");
+
+        return await prisma.users.update({
+            where : {id : userId},
+            data: updateData,
+            include : {
+
+            }
+        })
     }
 
     async delete (userId)
     {
-        if (await this.findById(userId))
-        {
-            return await prisma.users.delete(
-               {
-                   where : {id : userId}
-               }
-            )
-        }
-        else
-            return new Error("user does not exists");
+        return await prisma.users.delete(
+            {
+                where : {id : userId}
+            }
+        )
     }
 
     async findMany({skip = 0 , take = 10 , role, search }){
