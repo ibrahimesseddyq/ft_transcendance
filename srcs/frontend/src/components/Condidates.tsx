@@ -15,7 +15,7 @@ const RH_data = {name:'', lucation:'', };
 
 function Studentcard(object:Student) {
   return (
-      <div className='flex flex-col  rounded-md bg-[#09122C] p-2'>
+      <div className='flex flex-col  rounded-md bg-[#09122C] p-2 w-[200px]'>
         <div className='flex gap-2'>
           <div className="flex justify-center items-center">
                   <img 
@@ -99,29 +99,31 @@ export function Condidates(){
 
   const Panding = ()=>{
     return(
-      <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
-        <p className='py-4 text-white font-bold text-center'>
-              Pending (3)
-        </p>
-        <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
-            [&::-webkit-scrollbar]:w-2
+     
+        <div className='h-full w-full col-span-5 lg:col-span-1 flex flex-col scrollbar-hide overflow-auto'>
+          <p className='py-4 text-white font-bold text-center'>
+                Pending (3)
+          </p>
+          <div className='flex  flex-wrap lg:flex-col gap-4 overflow-y-auto p-2 scrollbar-hid
+              [&::-webkit-scrollbar]:w-2
               [&::-webkit-scrollbar-track]:bg-transparent
               [&::-webkit-scrollbar-track]:rounded-full
               [&::-webkit-scrollbar-thumb]:bg-green-500
               [&::-webkit-scrollbar-thumb]:h-5
               [&::-webkit-scrollbar-thumb]:rounded-full'>
-             {panding.map((item) => (
-              <div key={item.id} className="w-full flex justify-center">
-                <Studentcard {...item} />
-              </div>
-            ))}
+               {panding.map((item) => (
+                 <div key={item.id} className="flex justify-center">
+                  <Studentcard {...item} />
+                </div>
+              ))}
+          </div>
         </div>
-      </div>
+      
     );
   }
   const Reviewed = ()=>{
     return(
-      <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
+      <div className='col-span-5 lg:col-span-1 h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
               Reviewed <span>({reviewed.length})</span>
         </p>
@@ -143,7 +145,7 @@ export function Condidates(){
   }
   const TestTask  = ()=>{
     return(
-      <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
+      <div className='col-span-5 lg:col-span-1 h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
               Test Task <span>({testTask.length})</span>
         </p>
@@ -165,7 +167,7 @@ export function Condidates(){
   }
   const Iterview = ()=>{
     return(
-      <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
+      <div className='col-span-5 lg:col-span-1 h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
               Iterview <span>({iterview.length})</span>
         </p>
@@ -187,7 +189,7 @@ export function Condidates(){
   }
   const Hired = ()=>{
     return(
-      <div className='h-full w-full flex flex-col scrollbar-hide overflow-auto'>
+      <div className='col-span-5 lg:col-span-1 h-full w-full flex flex-col scrollbar-hide overflow-auto'>
         <p className='py-4 text-white font-bold text-center'>
               Hired <span>({hired.length})</span>
         </p>
@@ -211,7 +213,7 @@ export function Condidates(){
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-4 gap-2 w-full h-full  border border-[#5F88B8] rounded-md ">
-      <div className='flex flex-col justify-between col-span-2 row-span-1 px-5 '>
+      <div className='flex flex-col justify-between grid-cols-1 lg:col-span-2 row-span-1 px-5 '>
         <div className='flex items-center my-auto'>
           <div className='flex gap-2'>
                 <div className="flex justify-center items-center">
@@ -286,7 +288,7 @@ export function Condidates(){
             </div>
         </div>
       </div>
-      <div className='col-span-2 row-span-3 border border-[#5F88B8] rounded-md overflow-hidden mx-5'>
+      <div className='lg:col-span-2 lg:row-span-3 border border-[#5F88B8] rounded-md overflow-hidden mx-5 w-full h-full'>
         <div className='w-full h-full grid grid-cols-5 divide-x divide-[#5F88B8]'>
           <Panding/>
           <Reviewed/>
