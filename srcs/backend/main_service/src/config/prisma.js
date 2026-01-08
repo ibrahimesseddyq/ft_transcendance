@@ -29,6 +29,7 @@ const   disconnect = async () =>
     }
 }
 
+
 const prisma  =  getPrismaClient();
 
-module.exports = {prisma , disconnect };
+module.exports = {prisma, disconnect};
