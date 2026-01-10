@@ -147,7 +147,7 @@ const sendVerificationEmail = async (email, token) => {
 
 const sendOTPEmail = async (email) => {
     try {
-        const user = await prisma.users.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
             throw new Error('User not found');
@@ -157,7 +157,7 @@ const sendOTPEmail = async (email) => {
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
         // Save token to database
-        await prisma.users.update({
+        await prisma.user.update({
             where: { email },
             data: {
                 emailVerificationToken: verificationToken,
@@ -189,7 +189,7 @@ const verifyEmail = async (req, res) => {
         }
 
         // Find user with valid token
-        const user = await prisma.users.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 emailVerificationToken: token,
                 emailVerificationTokenExpires: { gt: new Date() }
@@ -205,7 +205,7 @@ const verifyEmail = async (req, res) => {
         }
 
         // Update user as verified
-        const updatedUser = await prisma.users.update({
+        const updatedUser = await prisma.user.update({
             where: { id: user.id },
             data: {
                 isEmailVerified: true,
@@ -249,7 +249,7 @@ const resendVerificationEmail = async (req, res) => {
             return res.status(400).json({ message: 'Email is required' });
         }
 
-        const user = await prisma.users.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
