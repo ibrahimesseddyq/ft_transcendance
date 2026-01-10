@@ -1,23 +1,15 @@
 const userRepository = require('../repositories/userRepository')
 const argon2 = require('argon2');
+const HttpException = require('../utils/httpExceptions');
 
 class UserService {
 
-    async createUser({email,password,first_name,last_name,role = "candidate"}) // should add more data if needed
+    async createUser(userData)
     {
-        if (!password || password.length < 8)
-            throw new HttpException(400,'Password must be at least 8 characters');
-        const password_hash = await argon2.hash(password);
-        const user = await userRepository.create(
-            {
-                email : email.toLowerCase(),
-                password_hash,
-                first_name,
-                last_name,
-                role
-            }
-        )
-        delete user.password_hash;
+        const {password, ...data} = userData;
+        const passwordHash = await argon2.hash(data.pa);
+        const user = await userRepository.create({passwordHash, ...data})
+        delete user.passwordHash;
         return user;
     }
     
@@ -26,14 +18,14 @@ class UserService {
         const user = await userRepository.findById(userId);
         if (!user)
             throw new HttpException(404, "User not found");
-        delete user.password_hash;
+        delete user.passwordHash;
         return user;
     }
 
     async updateUser(userId, updateData)
     {
         await this.getUserById(userId);
-        const allowedFields = ['first_name', 'last_name', 'phone', 'avatar_url'];
+        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl'];
         const filteredData = {};
 
         allowedFields.forEach(field => {

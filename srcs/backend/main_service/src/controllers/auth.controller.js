@@ -14,7 +14,7 @@ const {
 
 const signUp = async (req, res) => {
     try {
-        const IsExist = await prisma.users.findUnique({
+        const IsExist = await prisma.user.findUnique({
             where: {
                 email: req.body.email,
             },
@@ -25,13 +25,13 @@ const signUp = async (req, res) => {
         }
                 
         const hashedPassword = await argon2.hash(req.body.password);
-        const newUser = await prisma.users.create({
+        const newUser = await prisma.user.create({
             data: {
-                first_name: req.body.first_name,
-                last_name: req.body.last_name,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
                 email: req.body.email,
                 phone: req.body.phone,
-                password: hashedPassword,
+                hashedPassword: hashedPassword,
                 role: req.body.role || 'candidate'
             },
         });
@@ -53,8 +53,8 @@ const signUp = async (req, res) => {
             user: {
             id: newUser.id,
             email: newUser.email,
-            first_name: newUser.first_name,
-            last_name: newUser.last_name,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
             role: newUser.role
             }
         });
@@ -80,7 +80,7 @@ const refreshAccessToken = async (req, res) => {
         const decoded = await verifyRefreshToken(refreshToken);
 
         // Get user and verify token version
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: { id: decoded.userId }
         });
 
@@ -115,7 +115,7 @@ const logout = async (req, res) => {
         clearRefreshTokenCookie(res);
         
         // Optional: Increment tokenVersion to invalidate all existing tokens
-        // await prisma.users.update({
+        // await prisma.user.update({
         //     where: { id: req.user.userId },
         //     data: { tokenVersion: { increment: 1 } }
         // });

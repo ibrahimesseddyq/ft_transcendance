@@ -17,23 +17,23 @@ passport.use(new GoogleStrategy({
       const nameParts = profile.displayName.split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-      console.log(typeof prisma.users);
-      const user = await prisma.users.upsert({
+      console.log(typeof prisma.user);
+      const user = await prisma.user.upsert({
         // search for user with google id
         where: { email: profile.emails?.[0]?.value },
         // update the user data if already exist
         update: {
-          first_name: firstName,
-          last_name: lastName,
-          avatar_url: profile.photos?.[0]?.value || null
+          firstName: firstName,
+          lastName: lastName,
+          avatarUrl: profile.photos?.[0]?.value || null
         },
         // create user if not exist in the database
         create: {
           email: profile.emails?.[0]?.value || '',
-          first_name: firstName,
-          last_name: lastName,
-          avatar_url: profile.photos?.[0]?.value || null,
-          password_hash: '',
+          firstName: firstName,
+          lastName: lastName,
+          avatarUrl: profile.photos?.[0]?.value || null,
+          passwordHash: '',
           role: 'candidate'
         }
       });
@@ -54,7 +54,7 @@ passport.serializeUser((user, done) => {
 // Deserialize: Find the actual user from the DB using that ID
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await prisma.users.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({ where: { id } });
     if (user)
       done(null, user);
     else

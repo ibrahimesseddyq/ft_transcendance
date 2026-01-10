@@ -28,7 +28,7 @@ const login = async (req, res) => {
                 const decoded = await verifyRefreshToken(existingRefreshToken);
                 
                 // Get user from decoded token
-                const existingUser = await prisma.users.findUnique({
+                const existingUser = await prisma.user.findUnique({
                     where: { id: decoded.userId }
                 });
 
@@ -57,7 +57,7 @@ const login = async (req, res) => {
         }
 
         // Find user by email
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: { email }
         });
 

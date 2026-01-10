@@ -1,7 +1,7 @@
 const { z } = require('zod');
 const signupSchema = z.object({
     
-    first_name: z.string()
+    firstName: z.string()
     .pipe(
         z.string()
         .trim()
@@ -14,7 +14,7 @@ const signupSchema = z.object({
 
     ),
     
-    last_name: z.string()
+    lastName: z.string()
     .min(1, "The Last Name is required")
     .pipe(
         z.string()
@@ -43,7 +43,7 @@ const signupSchema = z.object({
         )
     ),
 
-    password: z.string()
+    passwordHash: z.string()
     .min(1, "The Password is required")
     .pipe(
         z.string()
