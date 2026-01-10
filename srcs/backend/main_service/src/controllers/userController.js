@@ -6,12 +6,12 @@ class UserControler {
     {
         try
         {
-            const {email,password,first_name,last_name,role} = req.body;
+            const {email,password,firstName,lastName,role} = req.body;
             const user = await userService.createUser({
                 email,
                 password,
-                first_name,
-                last_name,
+                firstName,
+                lastName,
                 role
             });
             res.status(201).json({

@@ -6,14 +6,14 @@ class UserRepository
 
     async findById(userId)
     {
-        return await prisma.users.findUnique({
+        return await prisma.user.findUnique({
             where : {id : userId},
         })
     }
 
     async findByEmail(email)
     {
-        return await prisma.users.findUnique(
+        return await prisma.user.findUnique(
             {
                 where :{email :email }
             }
@@ -22,7 +22,7 @@ class UserRepository
 
     async create(userData)
     {
-        return await prisma.users.create(
+        return await prisma.user.create(
             {
                 data : userData,
             }
@@ -33,7 +33,7 @@ class UserRepository
     async update(userId , updateData)
     {
 
-        return await prisma.users.update({
+        return await prisma.user.update({
             where : {id : userId},
             data: updateData,
             include : {
@@ -44,7 +44,7 @@ class UserRepository
 
     async delete (userId)
     {
-        return await prisma.users.delete(
+        return await prisma.user.delete(
             {
                 where : {id : userId}
             }
@@ -57,16 +57,16 @@ class UserRepository
         if (search)
         {
             where.OR = [
-                {first_name: {contains: search}},
-                {last_name : {contains: search}},
+                {firstName: {contains: search}},
+                {lastName : {contains: search}},
                 {email : {contains: search}}
             ];
         }
-        return await  prisma.users.findMany({
+        return await  prisma.user.findMany({
             where,
             take,
             skip,
-            orderBy : {created_at:'desc'}
+            orderBy : {createdAt:'desc'}
         })
 
     }
