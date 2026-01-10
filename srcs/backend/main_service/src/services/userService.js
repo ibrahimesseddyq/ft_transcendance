@@ -22,6 +22,15 @@ class UserService {
         return user;
     }
 
+    async  getUserByEmail(email)
+    {
+        const user = await userRepository.findByEmail(email);
+        if (!user)
+            throw new HttpException(404, "User not found");
+        delete user.passwordHash;
+        return user;
+    }
+
     async updateUser(userId, updateData)
     {
         await this.getUserById(userId);
