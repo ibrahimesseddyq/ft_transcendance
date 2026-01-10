@@ -1,5 +1,5 @@
 const {z} = require('zod');
-const {UsersRole} = require('../config/prisma');
+const {UserRole} = require('../../generated/prisma');
 
 const createUserSchema = z.object({
     firstName: z.string()
@@ -30,55 +30,22 @@ const createUserSchema = z.object({
         .regex(/^\+?[1-9]\d{1,14}$/,{ message:  "Must be a valid phone number" })
         .optional()
         .nullable(),
-    role: z.nativeEnum(UsersRole)
-        .default(usersRole.candidate)
+    role: z.nativeEnum(UserRole)
+        .default(UserRole.candidate)
         .optional(),
 
     avatarUrl: z.string()
         .url({ message: "Must be a valid URL" })
         .optional()
         .nullable(),
+    refreshToken: z.string()
+        .optional(),
 });
 
-const updateUserSchema = z.object({
-    firstName: z.string()
-        .min(1, { message: "First name cannot be empty" })
-        .max(100)
-        .trim()
-        .optional(),
-    
-    lastName: z.string()
-        .min(1, { message: "Last name cannot be empty" })
-        .max(100)
-        .trim()
-        .optional(),
-    
-    email: z.string()
-        .email({ message: "Must be a valid email address" })
-        .toLowerCase()
-        .trim()
-        .optional(),
-    
-    phone: z.string()
-        .regex(phoneRegex, { message: "Must be a valid phone number" })
-        .optional()
-        .nullable(),
-    
-    avatarUrl: z.string()
-        .url({ message: "Must be a valid URL" })
-        .optional()
-        .nullable(),
-    
-    password: z.string()
-        .min(8, { message: "Password must be at least 8 characters long" })
-        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
-        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
-        .regex(/[0-9]/, { message: "Password must contain at least one number" })
-        .regex(/[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/, {
-            message: "Password must contain at least one special character"})
-        .regex(/^\S+$/, { message: "Password must not contain spaces" })
-        .optional(),
-}).refine(data => Object.keys(data).length > 0, {
+const updateUserSchema = createUserSchema
+    .partial()
+    .omit({password : true})
+    .refine(data => Object.keys(data).length > 0, {
     message: "At least one field must be provided for update"
 });
 
@@ -145,7 +112,7 @@ const changePasswordSchema = z.object({
 const listUsersQuerySchema = z.object({
   page: z.string().regex(/^\d+$/).transform(Number).optional().default('1'),
   limit: z.string().regex(/^\d+$/).transform(Number).optional().default('10'),
-  role: z.nativeEnum(UsersRole).optional(),
+  role: z.nativeEnum(UserRole).optional(),
   search: z.string().optional(),
   sortBy: z.enum(['createdAt', 'firstName', 'lastName', 'email']).optional().default('createdAt'),
   order: z.enum(['asc', 'desc']).optional().default('desc'),
@@ -156,7 +123,6 @@ module.exports = {
   updateUserSchema,
   registerUserSchema,
   loginUserSchema,
-  loginUserFlexibleSchema,
   verifyEmailSchema,
   passwordResetRequestSchema,
   passwordResetSchema,
