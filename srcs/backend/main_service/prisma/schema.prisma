@@ -9,10 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// MODELS
-// ============================================
-
 model ApplicationPhase {
   id            String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   applicationId String    @db.Char(36)
@@ -206,27 +202,23 @@ model PhaseTest {
 }
 
 model User {
-  id           String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  email        String    @unique @db.VarChar(255)
-  passwordHash String    @db.VarChar(255)
-  role         UserRole  @default(candidate)
-  firstName    String    @db.VarChar(100)
-  lastName     String    @db.VarChar(100)
-  phone        String?   @db.VarChar(20)
-  avatarUrl    String?   @db.Text
-  createdAt    DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt    DateTime? @default(now()) @db.Timestamp(0)
-
+  id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  email                 String                 @unique @db.VarChar(255)
+  passwordHash          String                 @db.VarChar(255)
+  role                  UserRole               @default(candidate)
+  firstName             String                 @db.VarChar(100)
+  lastName              String                 @db.VarChar(100)
+  phone                 String?                @db.VarChar(20)
+  avatarUrl             String?                @db.Text
+  createdAt             DateTime?              @default(now()) @db.Timestamp(0)
+  updatedAt             DateTime?              @default(now()) @db.Timestamp(0)
+  refreshToken          String?                @db.Text
   applications          Application[]
   candidateProfile      CandidateProfile?
   interviewParticipants InterviewParticipant[]
   jobs                  Job[]
   notifications         Notification[]
 }
-
-// ============================================
-// ENUMS
-// ============================================
 
 enum InterviewMode {
   online
