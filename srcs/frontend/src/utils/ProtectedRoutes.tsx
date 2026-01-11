@@ -29,6 +29,7 @@ const ProtectedRoutes = () => {
 
     //     checkAuth();
     // }, []);
+    
     return user ? <Outlet /> : <Navigate to="/" />;
 };
 

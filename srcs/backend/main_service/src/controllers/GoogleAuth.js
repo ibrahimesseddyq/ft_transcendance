@@ -1,5 +1,5 @@
 const passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth2' ).Strategy; //do not use var (deprecated)
+var GoogleStrategy = require('passport-google-oauth2' ).Strategy;
 const env = require('../config/env')
 const {prisma} = require('../config/prisma');
 
@@ -21,13 +21,11 @@ passport.use(new GoogleStrategy({
       const user = await prisma.user.upsert({
         // search for user with google id
         where: { email: profile.emails?.[0]?.value },
-        // update the user data if already exist
         update: {
           firstName: firstName,
           lastName: lastName,
           avatarUrl: profile.photos?.[0]?.value || null
         },
-        // create user if not exist in the database
         create: {
           email: profile.emails?.[0]?.value || '',
           firstName: firstName,

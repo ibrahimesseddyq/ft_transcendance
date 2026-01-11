@@ -13,8 +13,6 @@ const authRoutes = require('./routes/authRoutes');
 const env = require('./config/env');
 const {HttpException} = require('./utils/httpExceptions')
 
-
-
 app.use(helmet());
 app.use(cors({
     origin: "http://localhost:5173", 
