@@ -1,7 +1,7 @@
 const { ZodError } = require('zod');
 const { HttpValidationExceptions } = require('../utils/httpExceptions')
 
-const ValidateRequest = (schema) => {
+const validateRequest = (schema) => {
     return (req,res,next) => {
         try
         {
@@ -21,4 +21,4 @@ const ValidateRequest = (schema) => {
     }
 }
 
-module.exports =  ValidateRequest;
+module.exports =  validateRequest;

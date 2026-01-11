@@ -8,13 +8,13 @@ const morgan = require('morgan');
 const session = require('express-session');
 const cokieParser =  require('cookie-parser');
 const errorHandler = require('./middleware/ErrorHandler');
-const userRoutes =  require('./routes/user.routes');
-const authRoutes = require('./routes/auth.routes');
+const userRoutes =  require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 const env = require('./config/env');
+const {HttpException} = require('./utils/httpExceptions')
 
 
 
-app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
     origin: "http://localhost:5173", 
@@ -47,7 +47,5 @@ app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
 })
 app.use(errorHandler);
-
-
 
 module.exports = app;

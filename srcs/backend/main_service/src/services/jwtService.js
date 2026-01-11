@@ -2,12 +2,6 @@ const jwt = require('jsonwebtoken');
 const httpExceptions = require('../utils/httpExceptions');
 const env = require('../config/env');
 
-
-const AuthTokens = {
-  accessToken,
-  refreshToken
-};
-
 class JwtService {
    constructor()
    {
