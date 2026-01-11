@@ -6,7 +6,7 @@ const errorFactory = (err,res) =>
 {
     if (err instanceof CustomError)
     {
-        if (err.isLoging)
+        if (err.isLogging)
         {
             console.log(JSON.stringify(
                 {
@@ -21,6 +21,7 @@ const errorFactory = (err,res) =>
         res.status(err.statusCode).json({
             errors : err.errors
         });
+        return true;
     }
     if (err instanceof Prisma.PrismaClientKnownRequestError)
     {
@@ -28,14 +29,15 @@ const errorFactory = (err,res) =>
         res.statusCode(400).json({
             errors:['bad request']
         });
+        return true;
     }
-    return null;
+    return false;
 }
 
 const errorHandler = (err,req,res,next) =>
 {
     const handled = errorFactory(err,res);
-    if (!handled)
+    if (handled) return;
         console.log('unhandled error',err);
     res.status(500).json({
         errors : ['internal server error']

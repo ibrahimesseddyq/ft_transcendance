@@ -35,7 +35,7 @@ const register = async (req, res, next) =>
 {
     try 
     {
-        const {user , accessToken , refreshToken} = await authService.register(req.body);
+        const {user , accessToken , refreshToken} = await authService.register(req.body)
         res
         .cookie('jwt',refreshToken,cookieOptions)
         .status(201)

@@ -1,13 +1,13 @@
 const userRepository = require('../repositories/userRepository')
 const argon2 = require('argon2');
-const HttpException = require('../utils/httpExceptions');
+const {HttpException} = require('../utils/httpExceptions');
 
 class UserService {
 
     async createUser(userData)
     {
         const {password, ...data} = userData;
-        const passwordHash = await argon2.hash(data.pa);
+        const passwordHash = await argon2.hash(password);
         const user = await userRepository.create({passwordHash, ...data})
         delete user.passwordHash;
         return user;
@@ -25,9 +25,9 @@ class UserService {
     async  getUserByEmail(email)
     {
         const user = await userRepository.findByEmail(email);
-        if (!user)
-            throw new HttpException(404, "User not found");
-        delete user.passwordHash;
+        // if (!user)
+        //     throw new HttpException(404, "User not found");
+        // delete user.passwordHash;
         return user;
     }
 
