@@ -1,4 +1,4 @@
-class CustomError extends Error{
+class CustomError extends Error {
     constructor(message , statusCode = 500,errors = [], isLogging = false)
     {
         super(message);
