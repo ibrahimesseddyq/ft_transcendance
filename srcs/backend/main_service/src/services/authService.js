@@ -18,7 +18,7 @@ const login = async (data) =>
         email: user.email,
         role: user.role
     });
-    await userService.updateUser(user.id,tokens.refreshToken);
+    await userService.updateUser(user.id,{refreshToken :tokens.refreshToken});
     delete user.passwordHash;
     return {
         user,
@@ -53,7 +53,11 @@ const refresh = async  (refreshToken) =>
         throw new HttpException(403, "Forbidden");
     if (user.refreshToken !== refreshToken)
         throw new HttpException(403, "Forbidden");
-    const {accessToken} = jwtService.generateAuthTokens(refreshToken);
+    const {accessToken} = jwtService.generateAuthTokens({
+        id : user.id,
+        email : user.email,
+        role: user.role
+    });
     delete user.passwordHash;
     delete user.refreshToken;
     return {
