@@ -56,7 +56,7 @@ const refresh =  async (req, res, next) =>
 {
     try 
     {
-        const refreshToken = req.cookie.jwt;
+        const refreshToken = req.cookies.jwt;
         if (!refreshToken)
         {
             res
