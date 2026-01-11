@@ -1,10 +1,10 @@
-const {customError} = require('../utils/httpExceptions');
-const {prisma} = require('@prisma/client');
+const {CustomError} = require('../utils/httpExceptions');
+const {Prisma} = require('../../generated/prisma');
 
 
 const errorFactory = (err,res) =>
 {
-    if (err instanceof customError)
+    if (err instanceof CustomError)
     {
         if (err.isLoging)
         {
@@ -22,7 +22,7 @@ const errorFactory = (err,res) =>
             errors : err.errors
         });
     }
-    if (err instanceof prisma.PrismaClientKnownRequestError)
+    if (err instanceof Prisma.PrismaClientKnownRequestError)
     {
         console.log(JSON.stringify(err,null,2))
         res.statusCode(400).json({
