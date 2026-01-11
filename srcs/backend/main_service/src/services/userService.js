@@ -34,7 +34,7 @@ class UserService {
     async updateUser(userId, updateData)
     {
         await this.getUserById(userId);
-        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl'];
+        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken'];
         const filteredData = {};
 
         allowedFields.forEach(field => {

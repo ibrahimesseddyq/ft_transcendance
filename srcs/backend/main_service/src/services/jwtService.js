@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const httpExceptions = require('../utils/httpExceptions');
+const {httpExceptions} = require('../utils/httpExceptions');
 const env = require('../config/env');
 
 class JwtService {
@@ -24,9 +24,9 @@ class JwtService {
             }
         ) 
         return {accessToken , refreshToken};  
-    }3
+    }
 
-    verify(token, secret)
+    async verify(token, secret)
     {
         return new Promise((resolve,reject) => {
             jwt.verify(token,secret, (err, decoded) =>
