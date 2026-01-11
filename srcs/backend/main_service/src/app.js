@@ -25,7 +25,17 @@ app.use(cors({
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
+// --- ADD THIS SECTION ---
 
+// 1. Create a token named 'body' to parse the request body
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body);
+});
+
+// 2. Use morgan with a custom format string including the ':body' token
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+
+// --- END SECTION ---
 // Session middleware for using Passport
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
