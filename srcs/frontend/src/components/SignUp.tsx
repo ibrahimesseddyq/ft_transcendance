@@ -4,13 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 
-interface SigninProps {
-  getTabClasses: (tab: string) => string;
-  getTextColor: (tab: string) => string;
-  setActiveAuth: (tab: 'signin' | 'signup') => void;
-}
-const Signup = ({getTabClasses, getTextColor, setActiveAuth}:SigninProps) => {
-        const [selectValue, setSelectValue] = useState('');
+
+const Signup = () => {
         const {
           register,
           handleSubmit,
@@ -68,66 +63,56 @@ const Signup = ({getTabClasses, getTextColor, setActiveAuth}:SigninProps) => {
         }
 
         return(
-            <div className=" flex flex-col w-full h-full items-center p-2 border rounded-md bg-[#0e1732]">
-                <div className="w-full ml-4">
-                    <h2 className="text-[#FFCE22] font-electrolize text-sm ">Welcome!</h2>
-                    <h1 className="text-md font-electrolize text-white">
-                        We are happy to have you. 
-                    </h1>
-                </div>
-                <div className='flex mt-3 h-[60px] w-[90%] border border-[#405673] rounded-full bg-transparent items-center justify-between'>
-                        <button type="button"
-                            onClick={() => {setActiveAuth('signin');}}
-                            className={getTabClasses('signin')}
-                            >
-                            <h1 className={`text-sm font-bold ${getTextColor('signin')}`}>Sign In</h1>
-                        </button>
-                        <button type="button"
-                            onClick={() => {setActiveAuth('signup');}}
-                            className={getTabClasses('signup')}
-                        >
-                            <h1 className={`text-sm font-bold ${getTextColor('signup')}`}>Sign Up</h1>
-                        </button>
-                </div>
-                <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
-                    <form onSubmit={handleSubmit(SignUpSubmit)}
-                        className='flex flex-col gap-2 w-full'>
-                        <InputField 
-                            name="firstName" 
-                            placeholder="First Name"
-                            register={register}
-                            error={errors.firstName?.message}
-                        />
-                        <InputField 
-                            name="lastName" 
-                            placeholder="Last Name"
-                            register={register}
-                            error={errors.lastName?.message}
-                        />
-                        <InputField 
-                            name="email" 
-                            placeholder="Enter Your Email"
-                            register={register}
-                            error={errors.email?.message}
-                        />
-                        <InputField 
-                            name="password" 
-                            placeholder="Enter Your Password"
-                            register={register}
-                            error={errors.password?.message}
-                        />
-                        <button  type="submit"
-                                className="text-white font-bold w-full mx-auto h-[50px] rounded-full bg-[#44BC19]">
-                            register
-                        </button>
-                    </form>
-                    <a href='http://localhost:3000/api/auth/google'
-                            className="h-[50px] flex gap-5 rounded-full w-full mx-auto border border-[#405673] bg-transparent text-white hover:text-black hover:bg-white items-center">
-                        <img    className="h-8 w-8 ml-10" 
-                                src="src/assets/icons/google1.png"
-                                alt="Google icon"/>
-                        <h1>Log in with Google </h1>
-                    </a>
+            <div className="w-full h-full flex flex-col  items-center p-4">
+                <div className='my-auto h-[500px] w-full max-w-[350px]'>
+                    <div className="w-full ml-4">
+                        <h2 className="text-[#FFCE22] font-electrolize text-sm ">Welcome!</h2>
+                        <h1 className="text-md font-electrolize text-white">
+                            We are happy to have you. 
+                        </h1>
+                    </div>
+                    <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
+                        <form onSubmit={handleSubmit(SignUpSubmit)}
+                            className='flex flex-col gap-2 w-full'>
+                            <InputField 
+                                name="firstName" 
+                                placeholder="First Name"
+                                register={register}
+                                error={errors.firstName?.message}
+                            />
+                            <InputField 
+                                name="lastName" 
+                                placeholder="Last Name"
+                                register={register}
+                                error={errors.lastName?.message}
+                                />
+                            <InputField 
+                                name="email" 
+                                placeholder="Enter Your Email"
+                                register={register}
+                                error={errors.email?.message}
+                                />
+                            <InputField 
+                                name="password" 
+                                placeholder="Enter Your Password"
+                                register={register}
+                                error={errors.password?.message}
+                                />
+                            <button  type="submit"
+                                    className="h-[45px] w-[80%] text-white font-bold mx-auto  rounded-full bg-[#44BC19]">
+                                register
+                            </button>
+                        </form>
+                        <a href='http://localhost:3000/api/auth/google'
+                                className="h-[45px] w-[80%] flex gap-5 rounded-full
+                                border border-[#405673] justify-center
+                                bg-transparent text-white hover:text-black hover:bg-white items-center">
+                            <img    className="h-8 w-8" 
+                                    src="src/assets/icons/google1.png"
+                                    alt="Google icon"/>
+                            <h1>Log in with Google </h1>
+                        </a>
+                    </div>
                 </div>
             </div>
         );

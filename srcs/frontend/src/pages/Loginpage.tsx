@@ -5,40 +5,37 @@ import Signin from "@/components/SignIn"
 import Signup from "@/components/SignUp"
 
 export function LoginPage(){
-    const [activeAuth, setActiveAuth] = useState('signin');
+    const [activeCard, setActiveCard] = useState<String>('signin');
     
 
     const getTabClasses = (tabName: String) => {
-        const baseClasses = "h-[90%] w-[50%] rounded-full flex items-center justify-center transition-colors duration-300";
-        return activeAuth === tabName 
-            ? `${baseClasses} bg-[#44BC19] m-1` 
-            : `${baseClasses} bg-transparent m-1`; 
+        const baseClasses = " relative lg:absolute h-[550px] w-full max-w-[470px] lg:max-w-[370px] lg:h-full  \
+                border border-transparent hover:border-[#14cdb4]\
+                rounded-3xl bg-[#0e1732]\
+                place-content-center place-items-center  inset-0 duration-700 ease-in-out";
+        if (activeCard === tabName)
+            console.log("z-index of " + tabName + " 20");
+        else
+            console.log("z-index of " + tabName + " 10");
+        return activeCard !== tabName 
+            ? `${baseClasses} z-20 translate-x-5  scale-100 opacity-100` 
+            : `${baseClasses} z-10 -translate-x-5  scale-90 opacity-90 grayscale-[20%]`; 
     };
-    
-    const getTextColor = (tabName: String) => {
-        const baseClasses = "`text-sm font-bold"
-        return activeAuth === tabName
-            ? `${baseClasses} text-white` 
-            : `${baseClasses} text-[#A8A2A2]`; 
-    };
-
 
     return(
         <div className={`h-full w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center`}>
-            <div className="grid-cols-1  lg:col-span-2 lg:row-span-1 lg:justify-end h-full w-full bg-zinc-200 items-center place-content-center">
-                <div className='h-[80%] w-[80%] mx-auto shadow-[0px_0px_25px_-1px_#000000]'>
-                    {activeAuth === 'signin' ?
-                        <Signin 
-                            getTabClasses={getTabClasses} 
-                            getTextColor={getTextColor} 
-                            setActiveAuth={setActiveAuth} 
-                        /> : 
-                        <Signup 
-                            getTabClasses={getTabClasses} 
-                            getTextColor={getTextColor} 
-                            setActiveAuth={setActiveAuth} 
-                        />
-                    }
+            <div className="grid-cols-1  lg:col-span-2 lg:row-span-1 lg:justify-end p-5 mx-auto
+                h-full w-full items-center">
+                <div className='relative h-full w-full mx-auto 
+                     items-center '>
+                    <div onClick={() => {setActiveCard('signup'); }}
+                        className={getTabClasses('signin')}>
+                        <Signup/>
+                    </div>
+                    <div onClick={() => {setActiveCard('signin'); }}
+                        className={getTabClasses('signup')}>
+                        <Signin/>
+                    </div>
                 </div>
             </div>
             <div className='grid-cols-1  lg:col-span-4 lg:row-span-1 lg:justify-start h-full w-full'>

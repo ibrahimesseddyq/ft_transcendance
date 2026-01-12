@@ -23,7 +23,7 @@ function Studentcard(object:Student) {
                     alt="student logo" 
                     className="h-10 w-10 rounded-full object-cover" 
                   />
-                </div>
+          </div>
           <div className='flex flex-col items-center'>
             <h1 className='text-white font-light text-sm'>{object.name}</h1>
             <p className='text-gray-400 font-light text-sm'>{object.category}</p>
