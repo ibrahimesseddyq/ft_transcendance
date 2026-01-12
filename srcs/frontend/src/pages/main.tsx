@@ -19,8 +19,8 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center p-3">
-              {/* {<OTPpage/>} */}
+            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
+              {/* {<SimpleSignUp/>} */}
               {/* {<ResetPassword/>} */}
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
@@ -38,11 +38,7 @@ export function Main () {
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="w-full h-full lg:w-[90%] max-w-[1500px] overflow-auto mx-auto mt-2 p-1
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
+                <main className="w-full h-full lg:w-[90%] max-w-[1500px] mx-auto mt-2 p-1 overflow-auto custom-scrollbar">
                     <Routes>
                       <Route element={<ProtectedRoutes />}>
                         <Route path="/Dashboard" element={<Dashboard />} />

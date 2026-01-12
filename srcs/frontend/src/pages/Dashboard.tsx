@@ -34,19 +34,11 @@ export function Dashboard(){
               </div>
             {/* Left Column - Main Content */}
               <div className="col-span-1 lg:col-span-5 lg:row-span-3 h-[500px] lg:h-full w-full place-content-center
-                border border-[#5F88B8] rounded-xl  justify-between overflow-auto bg-transparent
-                  [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
+                border border-[#5F88B8] rounded-xl  justify-between bg-transparent overflow-auto custom-scrollbar">
                 {/* <HeroSection />    */}
               </div>
               <div className="col-span-1 lg:col-span-3 lg:row-span-3 h-[500px] lg:h-full w-full items-center
-                border border-[#5F88B8] rounded-xl  justify-between overflow-auto bg-transparent 
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
+                border border-[#5F88B8] rounded-xl  justify-between overflow-auto custom-scrollbar bg-transparent">
                 <ActiveJobStatus />
               </div>
     
@@ -54,22 +46,14 @@ export function Dashboard(){
             {/* Right Column - Sidebar Content */}
 
               <div className="col-span-1 lg:col-span-3 lg:row-span-3 h-[500px] lg:h-full w-full
-                border border-[#5F88B8] rounded-lg overflow-auto
-                bg-transparent
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
+                border border-[#5F88B8] rounded-lg overflow-auto custom-scrollbar
+                bg-transparent">
                 <RecentActivity />
               </div>
               
               <div className="col-span-1 lg:col-span-5 lg:row-span-3 h-[500px] lg:h-full w-full
-                border border-[#5F88B8] rounded-lg overflow-auto
-                bg-transparent
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
+                border border-[#5F88B8] rounded-lg overflow-auto custom-scrollbar
+                bg-transparent">
                 {/* <SourceOfHire /> */}
               </div>
         </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
