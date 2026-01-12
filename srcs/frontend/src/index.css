@@ -8,6 +8,9 @@
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+    .pramary-text{
+      color: #10B77F;
+    }
   .custom-scrollbar {
     &::-webkit-scrollbar {
       width: 8px; 
