@@ -1,22 +1,23 @@
-const { ZodError } = require('zod');
-const { HttpValidationExceptions } = require('../utils/httpExceptions')
+const {z, ZodError } = require('zod');
+const { HttpValidationException } = require('../utils/httpExceptions')
 
 const validateRequest = (schema) => {
     return (req,res,next) => {
         try
         {
             schema.parse(req.body);
-            next();
         }catch (error)
         {
             if(error instanceof ZodError)
             {
-                const errorMessages = err.errors.map(
-                (error) => `${error.path.join(".")} is 
-                ${error.message.toLowerCase()}`);
-                next(new HttpValidationExceptions(errorMessages));
+                const errorMessages = error.issues.map((issue) => 
+                    `${issue.path.join(".")} is ${issue.message.toLowerCase()}`
+                );
+               return next(new HttpValidationException(errorMessages));
             }
+           return next(error);
         }
+        next();
         
     }
 }
