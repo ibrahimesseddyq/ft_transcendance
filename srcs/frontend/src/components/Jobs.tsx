@@ -65,11 +65,7 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
   return (
     <div className="flex flex-col  h-full w-full gap-5 overflow-auto m-auto">
        <div className="Title font-extrabold text-white pl-36 pt-14">Jobs For You:</div>
-       <div className="flex flex-col items-center gap-5 overflow-auto
-          [&::-webkit-scrollbar]:w-2
-          [&::-webkit-scrollbar-track]:bg-transparent
-          [&::-webkit-scrollbar-thumb]:bg-green-500
-          [&::-webkit-scrollbar-thumb]:rounded-full">
+       <div className="flex flex-col items-center gap-5 overflow-auto custom-scrollbar">
           {jobsArray.map((item) => {
             return (
               <div

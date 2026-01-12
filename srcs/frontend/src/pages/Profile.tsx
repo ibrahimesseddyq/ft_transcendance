@@ -211,11 +211,7 @@ export function Profile(){
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 p-2 gap-4 w-full h-full ">
       <div className="col-span-1 row-span-3">
         <div className='flex flex-col h-full w-full border border-[#5F88B8] rounded justify-between 
-              overflow-y-scroll
-              [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-            [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+              overflow-auto custom-scrollbar'>
           <div className='flex flex-col gap-5 py-5'>
             <div className="h-28 w-28 mx-auto overflow-hidden rounded-full bg-gray-700">
               {/* <img className='h-full w-full bg-cover flex items-center justify-center rounded-full' src='../src/assets/profile.png'></img> */}
@@ -251,19 +247,11 @@ export function Profile(){
                 onChange={(e) => setDescription(e.target.value)}
                 className='h-full w-full font-medium text-white text-base bg-transparent
                   border border-[#5F88B8] rounded p-4 outline-none resize-none
-                  overflow-auto
-                  [&::-webkit-scrollbar]:w-2
-                  [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                  [&::-webkit-scrollbar-thumb]:rounded-full'
+                  overflow-auto custom-scrollbar'
               />
             ) : (
               <p className='h-full w-full font-medium text-white  break-words p-4
-                  overflow-auto
-                  [&::-webkit-scrollbar]:w-2
-                  [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                  [&::-webkit-scrollbar-thumb]:rounded-full'>
+                  overflow-auto custom-scrollbar'>
                 {description}
               </p>
             )}
@@ -295,11 +283,7 @@ export function Profile(){
                       <Plus size={20} />
                     </button>
                   </div>
-                  <div className='px-3 flex gap-2 h-full flex-wrap overflow-auto
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
+                  <div className='px-3 flex gap-2 h-full flex-wrap overflow-auto custom-scrollbar'>
                       {skills.map((item) => {
                         return (
                           <div
@@ -327,11 +311,7 @@ export function Profile(){
                       <Plus size={20} />
                     </button>
                   </div>
-                  <div className='px-3 flex flex-col h-full overflow-auto
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
+                  <div className='px-3 flex flex-col h-full overflow-auto custom-scrollbar'>
                       {education.map((item) => {
                         return (
                           <div

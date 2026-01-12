@@ -104,13 +104,7 @@ export function Condidates(){
           <p className='py-4 text-white font-bold text-center'>
                 Pending (3)
           </p>
-          <div className='flex  flex-wrap lg:flex-col gap-4 overflow-y-auto p-2 scrollbar-hid
-              [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-track]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:h-5
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+          <div className='flex  flex-wrap lg:flex-col gap-4 overflow-auto custom-scrollbar'>
                {panding.map((item) => (
                  <div key={item.id} className="flex justify-center">
                   <Studentcard {...item} />
@@ -127,13 +121,7 @@ export function Condidates(){
         <p className='py-4 text-white font-bold text-center'>
               Reviewed <span>({reviewed.length})</span>
         </p>
-        <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
-            [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-track]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:h-5
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+        <div className='flex-1 flex flex-col gap-4 overflow-auto custom-scrollbar'>
              {reviewed.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
@@ -149,13 +137,7 @@ export function Condidates(){
         <p className='py-4 text-white font-bold text-center'>
               Test Task <span>({testTask.length})</span>
         </p>
-        <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
-            [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-track]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:h-5
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+        <div className='flex-1 flex flex-col gap-4 overflow-auto custom-scrollbar'>
              {testTask.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
@@ -171,13 +153,7 @@ export function Condidates(){
         <p className='py-4 text-white font-bold text-center'>
               Iterview <span>({iterview.length})</span>
         </p>
-        <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
-            [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-track]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:h-5
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+        <div className='flex-1 flex flex-col gap-4 overflow-auto custom-scrollbar'>
              {iterview.map((item) => (
               <div key={item.id} className="w-full flex justify-center">
                 <Studentcard {...item} />
@@ -193,13 +169,7 @@ export function Condidates(){
         <p className='py-4 text-white font-bold text-center'>
               Hired <span>({hired.length})</span>
         </p>
-        <div className='flex-1 flex flex-col gap-4 overflow-y-auto p-2 scrollbar-hide
-            [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-track]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:h-5
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+        <div className='flex-1 flex flex-col gap-4 overflow-auto custom-scrollbar'>
 
             {hired.map((item) => (
               <div key={item.id} className="w-full flex justify-center">

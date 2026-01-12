@@ -18,7 +18,7 @@ export function ActiveJobStatus() {
                 <h3 className="text-xl 2xl:text-2xl font-medium text-white">Active Job Status</h3>
             </div>
 
-            <div className="space-y-2 p-4 overflow-hidden">
+            <div className="space-y-2 p-4 overflow-auto custom-scrollbar">
                     {users.map((item) => {
 
                         return (

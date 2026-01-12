@@ -3,11 +3,7 @@ import { Trash2 } from 'lucide-react';
 export default function ProfessionalInformations({career, del}:any){
   return (
     
-        <div className='flex flex-col gap-2 h-full w-full overflow-y-scroll  
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
+        <div className='flex flex-col gap-2 h-full w-full overflow-auto custom-scrollbar'>
                   {career.map((item:any) => {
                     return (
                       <div className='relative flex-shrink-0 h-[100px] w-full rounded border border-[#5F88B8] overflow-hidden'>

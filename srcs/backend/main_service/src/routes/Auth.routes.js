@@ -17,11 +17,11 @@ router.get('/signup', (req, res) => {
 
 router.post('/login', (req, res) => {
   console.log(req.body)
-  res.redirect('http://localhost:5173/dashboard')
+  // res.redirect('http://localhost:5173/dashboard')
 });
 router.post('/signup', (req, res) => {
   console.log(req.body)
-  res.redirect('http://localhost:5173/dashboard')
+  // res.redirect('http://localhost:5173/dashboard')
 });
 
 
