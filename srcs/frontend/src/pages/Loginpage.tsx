@@ -4,43 +4,67 @@ import {LoginInformations} from "@/components/LoginInformations"
 import Signin from "@/components/SignIn"
 import Signup from "@/components/SignUp"
 
-export function LoginPage(){
-    const [activeCard, setActiveCard] = useState<String>('signin');
+export function LoginPage() {
+  const [activeCard, setActiveCard] = useState<string>('signin');
     
+  const getTabClasses = (tabName: string) => {
+    const baseClasses = "absolute transition-all duration-500 ease-out cursor-pointer " +
+                        "border border-transparent hover:border-[#14cdb4] " +
+                        "rounded-3xl bg-[#131D34] flex flex-col items-center shadow-2xl overflow-hidden " +
+                        "top-1/2 -translate-y-1/2 h-full";
 
-    const getTabClasses = (tabName: String) => {
-        const baseClasses = " relative lg:absolute h-[550px] w-full max-w-[470px] lg:max-w-[370px] lg:h-full  \
-                border border-transparent hover:border-[#14cdb4]\
-                rounded-3xl bg-[#0e1732]\
-                place-content-center place-items-center  inset-0 duration-700 ease-in-out";
-        if (activeCard === tabName)
-            console.log("z-index of " + tabName + " 20");
-        else
-            console.log("z-index of " + tabName + " 10");
-        return activeCard !== tabName 
-            ? `${baseClasses} z-20 translate-x-5  scale-100 opacity-100` 
-            : `${baseClasses} z-10 -translate-x-5  scale-90 opacity-90 grayscale-[20%]`; 
-    };
+    const isActive = activeCard === tabName;
+    const isLeftBox = tabName === 'signin';
 
-    return(
-        <div className={`h-full w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center`}>
-            <div className="grid-cols-1  lg:col-span-2 lg:row-span-1 lg:justify-end p-5 mx-auto
-                h-full w-full items-center">
-                <div className='relative h-full w-full mx-auto 
-                     items-center '>
-                    <div onClick={() => {setActiveCard('signup'); }}
-                        className={getTabClasses('signin')}>
-                        <Signup/>
-                    </div>
-                    <div onClick={() => {setActiveCard('signin'); }}
-                        className={getTabClasses('signup')}>
-                        <Signin/>
-                    </div>
-                </div>
-            </div>
-            <div className='grid-cols-1  lg:col-span-4 lg:row-span-1 lg:justify-start h-full w-full'>
-                <LoginInformations/>
-            </div>
+    if (isLeftBox) {
+      if (isActive) {
+        return `${baseClasses} lg:left-0 z-30 opacity-100 w-[70%]`;
+      } else {
+        return `${baseClasses} lg:left-0 z-10 opacity-60 w-[85px]`;
+      }
+    } else {
+      if (isActive) {
+        return `${baseClasses} lg:right-[50px] z-30 opacity-100 w-[70%]`; 
+      } else {
+        return `${baseClasses} lg:right-[50px] z-10 opacity-60 w-[85px]`;
+      }
+    }
+  };
+
+  return (
+    <div className="h-screen w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center ">
+      <div className="grid-cols-1 lg:col-span-2 lg:row-span-1 lg:justify-end p-5 mx-auto h-full w-full items-center">
+        <div className="relative w-full h-[600px] lg:h-full flex flex-col gap-2 lg:flex-row justify-center items-center">
+          <div 
+            onClick={() => setActiveCard('signin')} 
+            className={getTabClasses('signin')}
+          >
+            {activeCard === 'signin' ? (
+              <Signin />
+            ) : (
+              <h1 className="my-auto lg:mt-10 h-4 w-10 text-white tex-sm font-bold text-center ">
+                SignIn
+              </h1>
+            )}
+          </div>
+
+          <div 
+            onClick={() => setActiveCard('signup')} 
+            className={getTabClasses('signup')}
+          >
+            {activeCard === 'signup' ? (
+              <Signup />
+            ) : (
+              <h1 className="my-auto lg:mt-10 h-4 w-10 text-white text-sm font-bold text-center">
+                SignUp
+              </h1>
+            )}
+          </div>
         </div>
-    );
+      </div>
+      <div className="grid-cols-1 lg:col-span-4 lg:row-span-1 lg:justify-start h-full w-full">
+        <LoginInformations />
+      </div>
+    </div>
+  );
 }

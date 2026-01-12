@@ -19,7 +19,7 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center">
+            <main className="h-screen w-screen overflow-auto bg-[#0a1128] items-center place-content-center">
               {/* {<SimpleSignUp/>} */}
               {/* {<ResetPassword/>} */}
                 <Routes>
@@ -31,10 +31,10 @@ export function Main () {
     }
   return (
       <div className="flex flex-col h-screen w-screen bg-black overflow-hidden ">
-          <div className="h-20 fixed right-0 left-0 top-0 w-full bg-[#242B3A] border-b-2 border-[#5F88B8]">
+          <div className="h-20 fixed right-0 left-0 top-0 w-full bg-[#0a1128] border-b-2 border-[#5F88B8]">
               <Header/>
           </div>
-          <div className="flex w-full h-full bg-[#21252E]  my-20 pb-20 lg:pb-0">
+          <div className="flex w-full h-full bg-[#0a1128]  my-20 pb-20 lg:pb-0">
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
