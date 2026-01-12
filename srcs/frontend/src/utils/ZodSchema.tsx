@@ -24,9 +24,9 @@ export const RegisterSchema = z.object({
         .regex(/^\S+$/, { message: "Password must not contain spaces" }),
 });
 export const LoginSchema = z.object({
-    email: z.string().email({ message: "Must be a valid email address" })
+    email: z.string().trim()
         .toLowerCase()
-        .trim(),
+        .email({ message: "Must be a valid email address" }),
     password: z.string()
         .min(8, {message: "Password must be at least 8 characters long"})
         .max(100, { message: "Password must be less than 100 characters" })
