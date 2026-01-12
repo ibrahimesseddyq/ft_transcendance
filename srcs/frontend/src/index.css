@@ -4,3 +4,20 @@
 @tailwind utilities;
 
 
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      width: 8px; 
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #4ade80; 
+      border-radius: 9999px; /* rounded-full */
+    }
+  }
+}
