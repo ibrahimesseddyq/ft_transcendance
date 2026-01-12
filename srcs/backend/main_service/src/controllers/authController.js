@@ -85,7 +85,7 @@ const logout =  async (req, res, next) =>
 {
     try
     {
-        refreshToken = req.cookie.jwt;
+        refreshToken = req.cookies.jwt;
         if (!refreshToken)
         {
             return res.sendStatus(204);

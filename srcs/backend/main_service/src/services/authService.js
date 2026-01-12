@@ -37,7 +37,7 @@ const  register = async (data) =>
         email : user.email,
         role: user.role
     })
-    await userService.updateUser(user.id, tokens.refreshToken);
+    await userService.updateUser(user.id,{refreshToken : tokens.refreshToken});
     delete user.passwordHash;
     return {
         user,
