@@ -11,38 +11,38 @@ export function LoginPage() {
     const baseClasses = "absolute transition-all duration-500 ease-out cursor-pointer " +
                         "border border-transparent hover:border-[#14cdb4] " +
                         "rounded-3xl bg-[#131D34] flex flex-col items-center shadow-2xl overflow-hidden " +
-                        "top-1/2 -translate-y-1/2 h-full";
+                        "lg:top-1/2 lg:-translate-y-1/2 h-full";
 
     const isActive = activeCard === tabName;
     const isLeftBox = tabName === 'signin';
 
     if (isLeftBox) {
       if (isActive) {
-        return `${baseClasses} lg:left-0 z-30 opacity-100 w-[70%]`;
+        return `${baseClasses} top-[50px] lg:left-0 z-30 opacity-100 h-full w-full lg:h-full lg:w-[70%]`;
       } else {
-        return `${baseClasses} lg:left-0 z-10 opacity-60 w-[85px]`;
+        return `${baseClasses} top-[50px] lg:left-0 z-10 opacity-60 w-full h-[85px] lg-h-full lg:w-[85px]`;
       }
     } else {
       if (isActive) {
-        return `${baseClasses} lg:right-[50px] z-30 opacity-100 w-[70%]`; 
+        return `${baseClasses} bottom-0 lg:right-[50px] z-30 opacity-100 w-full h-full  lg:h-full lg:w-[70%]`; 
       } else {
-        return `${baseClasses} lg:right-[50px] z-10 opacity-60 w-[85px]`;
+        return `${baseClasses} bottom-0 lg:right-[50px] z-10 opacity-60 w-full h-[85px] lg:h-full lg:w-[85px]`;
       }
     }
   };
 
   return (
-    <div className="h-screen w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center ">
+    <div className="h-screen w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center gap-20">
       <div className="grid-cols-1 lg:col-span-2 lg:row-span-1 lg:justify-end p-5 mx-auto h-full w-full items-center">
-        <div className="relative w-full h-[600px] lg:h-full flex flex-col gap-2 lg:flex-row justify-center items-center">
+        <div className="relative w-full h-[500px] lg:h-full flex flex-col gap-2 lg:flex-row justify-center items-center">
           <div 
             onClick={() => setActiveCard('signin')} 
-            className={getTabClasses('signin')}
+            className={getTabClasses('signin') + 'justify-end'}
           >
             {activeCard === 'signin' ? (
               <Signin />
             ) : (
-              <h1 className="my-auto lg:mt-10 h-4 w-10 text-white tex-sm font-bold text-center ">
+              <h1 className="bg-white lg:mt-10 h-4 w-10 text-white tex-sm font-bold ">
                 SignIn
               </h1>
             )}
@@ -55,7 +55,7 @@ export function LoginPage() {
             {activeCard === 'signup' ? (
               <Signup />
             ) : (
-              <h1 className="my-auto lg:mt-10 h-4 w-10 text-white text-sm font-bold text-center">
+              <h1 className="m-3 lg:mt-10 h-4 w-10 text-white text-sm font-bold ">
                 SignUp
               </h1>
             )}
