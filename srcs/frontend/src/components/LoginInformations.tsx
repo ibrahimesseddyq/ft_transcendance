@@ -2,22 +2,19 @@ import { Info, Briefcase, Search, Users, User } from 'lucide-react';
 
 interface InfoContent {
     title: string,
-    titlecolor: string,
     description: string,
     icon?: any,
 }
 
-const Info1 = ({ title, titlecolor, description, icon }: InfoContent) => {
+const InfoCard = ({ title, description, icon }: InfoContent) => {
     return (
-        <div className="h-auto w-full lg:h-[250px] lg:w-[600px] flex flex-col lg:flex-row justify-between rounded-md 
+        <div className="h-auto w-full lg:h-[250px] lg:w-[600px] flex flex-col gap-5 justify-between rounded-md 
             border border-[#1E2E52] bg-[#131D34] items-center transition-all p-5 place-content-center"
         >
             {icon && (
                 <div className="
-                    flex justify-start lg:justify-end items-center">
-                  <img 
-                    src={icon}
-                  />
+                    flex items-center pramary-text">
+                  {icon}
                 </div>
             )}
 
@@ -44,39 +41,34 @@ export const LoginInformations = () => {
                     Powerful tools designed to accelerate your career growth.
                 </p>
             </div>
-            <Info1
+            <InfoCard
                 title="Let the right people know you're open to work"
-                titlecolor="#F54300"
                 description="With the Open To Work feature, you can privately tell recruiters or publicly share with the community that you are looking for new job opportunities."
-                icon={Info}
+                icon={<Info width={40} height={40}/>}
             />
 
-            <Info1
+            <InfoCard
                 title="Build a profile that stands out"
-                titlecolor="#000000"
                 description="Your profile is your digital business card. Showcase your skills, experience, and education to catch the eye of top employers."
-                icon={Briefcase}
+                icon={<Briefcase width={40} height={40}/>}
             />
 
-            <Info1
+            <InfoCard
                 title="Connect with your professional community"
-                titlecolor="#F54300"
                 description="Expand your horizons by following industry leaders and connecting with peers who share your professional interests."
-                icon={Search}
+                icon={<Search width={40} height={40}/>}
             />
 
-            <Info1
+            <InfoCard
                 title="Stay updated on the latest industry news"
-                titlecolor="#000000"
                 description="Access personalized news feeds and join conversations that matter to your career growth and industry knowledge."
-                icon={Users} 
+                icon={<Users width={40} height={40}/>} 
             />
 
-            <Info1
+            <InfoCard
                 title="Never miss a new opportunity"
-                titlecolor="#F54300"
                 description="Set up custom job alerts and be the first to apply when a position that matches your criteria becomes available."
-                icon={User} 
+                icon={<User width={40} height={40}/>} 
             />
         </div>
     );
