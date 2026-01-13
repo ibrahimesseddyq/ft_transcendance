@@ -23,7 +23,7 @@ const verifyToken = async (req, res, next) => {
    
 }
 
-const verifyRoles = async (allowedRoles) => {
+const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
         if(!req.user || !req.user.role)
