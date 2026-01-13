@@ -54,15 +54,15 @@ const Signin = () => {
 
         return(
 
-            <div className="w-full h-full flex flex-col  items-center p-4">
+            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
                 <div className='my-auto h-[370px] w-full max-w-[350px]'>
-                    <div className="w-full ml-4">
+                    <div className="w-64 h-12 ml-4 overflow-hidden ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm ">Welcome Back!</h2>
                         <h1 className="text-md font-electrolize text-white">
                             We are happy to see you again. 
                         </h1>
                     </div>
-                    <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center ">
+                    <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden ">
                         <form  onSubmit={handleSubmit(LoginSubmit, (errors) => console.log("Validation Errors:", errors))}
                             className='flex flex-col gap-2 w-full'>
                             <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-md">
