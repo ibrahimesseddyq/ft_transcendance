@@ -1,52 +1,94 @@
-const { verifyAccessToken } = require('../utils/jwt');
+const {jwt} =  require('jsonwebtoken');
+const env  = require('../config/env')
+const {HttpException} = require('../utils/httpExceptions');
+const {jwtService} = require('../services/jwtService');
+const { getPermissionsByRoles } = require('../config/permissions');
+const { email } = require('zod');
 
-const verifyJWT = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-        
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Access token required' });
+        const {authorization} = req.headers;
+        if (!authorization) throw new HttpException(401,"Unauthorized");
+        const {type, token} = authorization.split(" ");
+        if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
+        const decoded = await jwtService.verifyAccessToken(token);
+        req.user = {
+            id : decoded.id,
+            email : decoded.email,
+            role:decoded.role
         }
-
-        const token = authHeader.split(' ')[1];
-        const decoded = await verifyAccessToken(token);
-        
-        req.user = decoded;
-        next();
-        
+        next()
     } catch (error) {
-        if (error.code === 'ERR_JWT_EXPIRED') {
-            return res.status(401).json({ 
-                message: 'Token expired',
-                code: 'TOKEN_EXPIRED'
-            });
-        }
-        if (error.code === 'ERR_JWT_INVALID') {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-        if (error.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED') {
-            return res.status(401).json({ message: 'Token validation failed' });
-        }
-        console.error('JWT verification error:', error);
-        return res.status(500).json({ message: 'Authentication error' });
+        next(error);
     }
-};
+   
+}
 
-const optionalJWT = async (req, res, next) => {
-    try {
-        const authHeader = req.headers.authorization;
-        
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-            const token = authHeader.split(' ')[1];
-            const decoded = await verifyAccessToken(token);
-            req.user = decoded;
-        }
-        
-        next();
-    } catch (error) {
-        // Continue without authentication
+const verifyRoles = async (...allowedRoles) => {
+    return (req, res, next) =>
+    {
+        if(!req.user || !req.user.role)
+            throw new HttpException(403, "Forbidden");
+        if(!allowedRoles.includes(req.user.role))
+            throw new HttpException(403,"Forbidden");
         next();
     }
-};
+}
 
-module.exports = { verifyJWT, optionalJWT };
+const verifyPermissions = (permission) => {
+    return (req, res, next) =>
+    {
+        if(!req.user || !req.user.role)
+            throw new HttpException(403,"Forbidden");
+        const userPermissions = getPermissionsByRoles([req.user.role]);
+        if (!userPermissions || !userPermissions.includes(permission))
+            throw new HttpException(403, `You are forbidden to ${permission}`);
+        next();
+    }
+}
+
+const optionalAuth = async (req, res, next) => {
+    try {
+        const {authorization} = req.headers;
+        if (authorization)
+        {
+            const {type, token} = authorization.split(' ');
+            if (type === "Bearer")
+            {
+                const decoded = jwtService.verifyAccessToken(token);
+                req.user = {
+                    id : decoded.id,
+                    email : decoded.email,
+                    role: decoded.role
+                }
+            }
+
+        }
+        next();
+    } catch (error) {
+        next();
+    }
+}
+
+const verifyOwnership = (req, res, next) =>
+{
+    if (!req.user)
+        throw new HttpException(401, "Unauthorized");
+    const resourceUserId = req.params.id || req.params.userId;
+    if (user.id !== resourceUserId && req.user.role !== 'admin')
+    {
+           throw new HttpException(403, 'Forbidden:  You can only access your own resources');
+    }
+    next();
+}
+
+
+module.exports = {
+  verifyToken,
+  verifyRoles,
+  verifyPermissions,
+  optionalAuth,
+  verifyOwnership,
+  authenticate: verifyToken,
+  authorize: verifyRoles,
+};
