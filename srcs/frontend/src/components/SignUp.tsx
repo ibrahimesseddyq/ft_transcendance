@@ -63,15 +63,16 @@ const Signup = () => {
         }
 
         return(
-            <div className="w-full h-full flex flex-col  items-center p-4">
-                <div className='my-auto h-[500px] w-full max-w-[350px]'>
-                    <div className="w-full ml-4">
+            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
+                <div className='my-auto h-[500px] w-full max-w-[350px] overflow-hidden'>
+                    <div className="w-full ml-4 overflow-hidden">
                         <h2 className="text-[#10B77F] font-electrolize text-sm ">Welcome!</h2>
                         <h1 className="text-md font-electrolize text-white">
                             We are happy to have you. 
                         </h1>
                     </div>
-                    <div className="flex flex-col ml-4 h-full w-[90%] items-center gap-2 place-content-center ">
+                    <div className="flex flex-col ml-4 h-full w-[90%] 
+                        items-center gap-2 place-content-center overflow-hidden">
                         <form onSubmit={handleSubmit(SignUpSubmit)}
                             className='flex flex-col gap-2 w-full'>
                             <InputField 

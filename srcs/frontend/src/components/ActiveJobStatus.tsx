@@ -14,8 +14,8 @@ export function ActiveJobStatus() {
 
     return (
         <div className="h-full w-full border  maincard overflow-auto custom-scrollbar ">
-            <div className="flex items-center justify-between p-5 
-                pl-5 sticky top-0 card-color z-10 #131D34">
+            <div className="flex items-center justify-between 
+                p-5 pl-5 sticky top-0 z-10 bg-[#131D34]">
                 <h3 className="header-title">Active Job Status</h3>
             </div>
 
