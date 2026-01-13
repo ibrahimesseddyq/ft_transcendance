@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const cokieParser =  require('cookie-parser');
 const userRoutes =  require('./routes/user.routes');
-const authRoutes = require('./routes/Auth.routes.js');
+const authRoutes = require('./routes/Auth.routes');
 const env = require('./config/env');
 
 
@@ -28,7 +28,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false // true only in HTTPS
+      secure: false
     }}));
 // Initialize Passport
 app.use(passport.initialize());

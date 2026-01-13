@@ -19,7 +19,7 @@ export function Header() {
         placeholder="Search"
         type='search'
         className="flex h-full w-full max-h-10 rounded-xl outline-none placeholder-[#94999A]
-           text-white bg-[#1F2027] pl-10  border border-[#5F88B8]"
+           text-white bg-[#1F2027] pl-10  border border-[#5F88B8] px-5"
       />
     </div>
   </div>
