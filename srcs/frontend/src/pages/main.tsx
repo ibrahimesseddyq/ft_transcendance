@@ -19,7 +19,7 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen overflow-auto bg-[#0a1128] items-center place-content-center">
+            <main className="h-full w-full lg:h-screen lg:w-screen  overfolw-auto custom-scrollbar bg-[#0a1128] place-items-center place-content-center">
               {/* {<SimpleSignUp/>} */}
               {/* {<ResetPassword/>} */}
                 <Routes>
