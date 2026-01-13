@@ -99,10 +99,10 @@ const Signin = () => {
                                 className="h-[45px] w-[90%] flex gap-5 rounded-lg
                                 border border-[#405673] justify-center
                                 bg-transparent text-white hover:text-black hover:bg-white items-center">
-                            <img    className="h-8 w-8" 
+                            <img    className="h-8 w-8 " 
                                     src="src/assets/icons/google1.png"
                                     alt="Google icon"/>
-                            <h1>Log in with Google </h1>
+                            <h1 className='text-xs lg:text-sm xl:text-md'>Log in with Google </h1>
                         </a>
                     </div>
                 </div>
