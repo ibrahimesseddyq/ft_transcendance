@@ -8,41 +8,47 @@ export function LoginPage() {
   const [activeCard, setActiveCard] = useState<string>('signin');
     
   const getTabClasses = (tabName: string) => {
-    const baseClasses = "absolute transition-all duration-500 ease-out cursor-pointer " +
-                        "border border-transparent hover:border-[#14cdb4] " +
-                        "rounded-3xl bg-[#131D34] flex flex-col items-center shadow-2xl overflow-hidden " +
-                        "lg:top-1/2 lg:-translate-y-1/2 h-full";
+    const baseClasses = "h-full w-full flex lg:flex-row flex-col gap-2 \
+                        border border-transparent hover:border-[#14cdb4] rounded-xl bg-[#131D34] shadow-2xl \
+                        transition-all duration-500 ease-out cursor-pointer overflow-hidden";
 
-    const isActive = activeCard === tabName;
-    const isLeftBox = tabName === 'signin';
-
-    if (isLeftBox) {
-      if (isActive) {
-        return `${baseClasses} top-[50px] lg:left-0 z-30 opacity-100 h-full w-full lg:h-full lg:w-[70%]`;
-      } else {
-        return `${baseClasses} top-[50px] lg:left-0 z-10 opacity-60 w-full h-[85px] lg-h-full lg:w-[85px]`;
-      }
-    } else {
-      if (isActive) {
-        return `${baseClasses} bottom-0 lg:right-[50px] z-30 opacity-100 w-full h-full  lg:h-full lg:w-[70%]`; 
-      } else {
-        return `${baseClasses} bottom-0 lg:right-[50px] z-10 opacity-60 w-full h-[85px] lg:h-full lg:w-[85px]`;
-      }
+    if (tabName === "signin" && activeCard !== "signin"){
+      return `${baseClasses} top-0 lg:left-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[80%]`;
+    }
+    else if (tabName === "signin" && activeCard === "signin"){
+      return `${baseClasses} top-0 lg:left-0 z-10 scale-60 h-[10%] w-[100%] lg:h-[100%] lg:w-[20%] lg:max-w-[85px]`;
+    } 
+    else if (tabName === "signup" && activeCard !== "signup"){
+      return `${baseClasses} button-0 lg:right-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[80%]`;
+    }
+    else {
+      return `${baseClasses} button-0 lg:right-0 z-10 scale-60 h-[10%] w-[100%] lg:h-[100%] lg:w-[20%] lg:max-w-[85px]`;
     }
   };
 
   return (
-    <div className="h-screen w-full grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-1 items-center gap-20">
-      <div className="grid-cols-1 lg:col-span-2 lg:row-span-1 lg:justify-end p-5 mx-auto h-full w-full items-center">
-        <div className="relative w-full h-[500px] lg:h-full flex flex-col gap-2 lg:flex-row justify-center items-center">
+    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] flex flex-col lg:flex-row gap-5 p-2">
+      <div className="overfolw-auto custom-scrollbar">
+        <LoginInformations />
+      </div>
+      <div className=" p-5 w-full h-full flex flex-col gap-5 items-center">
+        <div className='w-fit h-fit'>
+          <h1 className=' text-center text-white text-xl font-medium'>Welcome to 
+            <span className='font-bold text-xl pramary-text'> Hire Me</span> website,<br/>
+            let build Your career.
+          </h1>
+        </div>
+        <div className="w-full max-w-[400px] h-[550px] my-auto
+            lg:w-full lg:max-w-[550px] lg:h-full lg:max-h-[700px]
+            flex flex-col gap-2 lg:flex-row">
           <div 
             onClick={() => setActiveCard('signin')} 
-            className={getTabClasses('signin') + 'justify-end'}
+            className={getTabClasses('signup')}
           >
             {activeCard === 'signin' ? (
               <Signin />
             ) : (
-              <h1 className="bg-white lg:mt-10 h-4 w-10 text-white tex-sm font-bold ">
+              <h1 className="mt-4 mx-auto lg:mt-10 h-4 w-10 text-white tex-sm font-bold items-center">
                 SignIn
               </h1>
             )}
@@ -50,20 +56,17 @@ export function LoginPage() {
 
           <div 
             onClick={() => setActiveCard('signup')} 
-            className={getTabClasses('signup')}
+            className={getTabClasses('signin')}
           >
             {activeCard === 'signup' ? (
               <Signup />
             ) : (
-              <h1 className="m-3 lg:mt-10 h-4 w-10 text-white text-sm font-bold ">
+              <h1 className="mt-4 mx-auto lg:mt-10 h-4 w-10 text-white text-sm font-bold items-center">
                 SignUp
               </h1>
             )}
           </div>
         </div>
-      </div>
-      <div className="grid-cols-1 lg:col-span-4 lg:row-span-1 lg:justify-start h-full w-full">
-        <LoginInformations />
       </div>
     </div>
   );
