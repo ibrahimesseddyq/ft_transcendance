@@ -26,7 +26,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] flex flex-col lg:flex-row gap-5 p-2">
+    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] flex flex-col lg:flex-row gap-5 p-2 ">
       <div className=" order-last lg:order-first overfolw-auto custom-scrollbar">
         <LoginInformations />
       </div>
