@@ -9,15 +9,40 @@
         display: none;
     }
     .pramary-text{
+      font-weight: 500;
       color: #10B77F;
     }
-    .card-color{
-      background-color: #131D34;
-      
+    .secondary-text{
+      /* color: #10B77F; */
     }
-    .card-border{
+    .theard-text{
+      /* color: #10B77F; */
+    }
+    .header-title{
+        font-size: 1.25rem /* 20px */;
+        line-height: 1.75rem /* 28px */;
+        font-weight: 500;
+        --tw-text-opacity: 1;
+        color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+    }
+    @media (min-width: 1536px) {
+        .\32xl\:text-2xl {
+        font-size: 1.5rem /* 24px */;
+        line-height: 2rem /* 32px */;
+        }
+    }
+    .maincard{
+      background-color: #131D34;
       border-color: #1E2E52;
       border-radius: 0.375rem;
+    }
+    .maincard:hover{
+      border-color: #10B77F;
+    }
+    .childcard{
+      /* background-color: #131D34;
+      border-color: #1E2E52;
+      border-radius: 0.375rem; */
     }
   .custom-scrollbar {
     &::-webkit-scrollbar {

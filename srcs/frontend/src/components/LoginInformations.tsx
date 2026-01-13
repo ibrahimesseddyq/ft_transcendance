@@ -9,8 +9,7 @@ interface InfoContent {
 const InfoCard = ({ title, description, icon }: InfoContent) => {
     return (
         <div className="h-auto w-full lg:h-[250px] lg:w-[600px] flex flex-col gap-5 justify-between
-            border border-transparent hover:border-[#14cdb4] card-border card-color 
-            bg-[#131D34] items-center transition-all p-5 place-content-center"
+            border maincard bg-[#131D34] items-center transition-all p-5 place-content-center"
         >
             {icon && (
                 <div className=" hover:scale-105

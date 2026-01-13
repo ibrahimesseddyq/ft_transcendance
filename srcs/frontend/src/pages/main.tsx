@@ -30,7 +30,7 @@ export function Main () {
         );
     }
   return (
-      <div className="flex flex-col h-screen w-screen bg-black overflow-auto">
+      <div className="flex flex-col h-screen w-screen bg-black">
           <div className="h-20 fixed right-0 left-0 top-0 w-full bg-[#0a1128] border-b-2 border-[#5F88B8]">
               <Header/>
           </div>

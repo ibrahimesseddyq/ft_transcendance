@@ -2,7 +2,7 @@
 export function SourceOfHire() {
  
   return (
-    <div className="h-full w-full border border-[#10B77F] rounded-lg card-color overflow-auto">
+    <div className="h-full w-full border maincard  overflow-auto ">
         
     </div>
   );

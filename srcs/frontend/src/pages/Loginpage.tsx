@@ -8,8 +8,7 @@ export function LoginPage() {
   const [activeCard, setActiveCard] = useState<string>('signin');
     
   const getTabClasses = (tabName: string) => {
-    const baseClasses = "flex lg:flex-row flex-col gap-2 \
-                        border border-transparent hover:border-[#14cdb4] rounded-xl bg-[#131D34] shadow-2xl \
+    const baseClasses = "flex lg:flex-row flex-col gap-2 border maincard shadow-2xl \
                         transition-all duration-500 ease-out cursor-pointer overflow-hidden";
 
     if (tabName === "signin" && activeCard !== "signin"){
@@ -34,7 +33,7 @@ export function LoginPage() {
       <div className="order-first lg:order-last p-5 w-full h-full flex flex-col gap-5 items-center">
         <div className='w-fit h-fit'>
           <h1 className=' text-center text-white text-xl font-medium'>Welcome to 
-            <span className='font-bold text-xl pramary-text'> Hire Me</span> website,<br/>
+            <span className='text-xl pramary-text'> Hire Me</span> website,<br/>
             let build Your career.
           </h1>
         </div>

@@ -12,9 +12,10 @@ export function RecentActivity() {
         {id:5, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Accepted'},]);
       
     return (
-        <div className="h-full w-full border border-[#10B77F] rounded-lg card-color overflow-auto">
-            <div className="flex items-center justify-between p-2 px-4 sticky top-0 card-color z-10">
-                <h3 className="text-xl 2xl:text-2xl font-medium text-white">Recent Activity</h3>
+        <div className="h-full w-full border maincard overflow-auto custom-scrollbar ">
+            <div className="flex items-center justify-between 
+                p-5 pl-5 sticky top-0 z-10 bg-[#131D34]">
+                <h3 className="header-title">Recent Activity</h3>
             </div>
 
             <div className="space-y-2 p-4 overflow-hidden">

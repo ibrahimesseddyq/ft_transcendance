@@ -24,7 +24,7 @@ export function Sidebar() {
         <div
             className="
                 flex flex-col mt-28
-                bg-transparent relative h-full w-auto md:w-[250px]"
+                bg-transparent  h-full w-auto md:w-[250px]"
         >
             {/* Navigation */}
             <nav className=" 
