@@ -39,8 +39,6 @@ router.get('/logout', (req, res) => {
   });
 });
 
-//need to be refactored
-
 router.post('/signup', validate(signupSchema), async (req, res) => {
     await signUp(req, res);
 });
