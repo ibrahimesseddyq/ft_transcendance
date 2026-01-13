@@ -19,7 +19,8 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-full w-full lg:h-screen lg:w-screen  overfolw-auto custom-scrollbar bg-[#0a1128] place-items-center place-content-center">
+            <main className="h-screen w-screen  overflow-auto custom-scrollbar 
+              bg-[#0a1128] place-items-center place-content-center">
               {/* {<SimpleSignUp/>} */}
               {/* {<ResetPassword/>} */}
                 <Routes>
@@ -30,15 +31,15 @@ export function Main () {
         );
     }
   return (
-      <div className="flex flex-col h-screen w-screen bg-black">
-          <div className="h-20 fixed right-0 left-0 top-0 w-full bg-[#0a1128] border-b-2 border-[#5F88B8]">
+      <div className="flex flex-col h-screen w-screen overflow-auto bg-[#0a1128] custom-scrollbar ">
+          <div className="w-full h-20 fixed right-0 left-0 top-0 bg-[#0a1128] border-b-2 border-[#5F88B8]">
               <Header/>
           </div>
-          <div className="flex w-full h-full bg-[#0a1128]  my-20 pb-20 lg:pb-0">
+          <div className="flex w-full h-full pt-20 bg-[#0a1128]">
               {/* Sidebar */}
                 <Sidebar />
               {/* Main Content */}
-                <main className="w-full h-full lg:w-[90%] lg:max-w-[1500px] lg:max-h-[1000px] mx-auto mt-2 p-1 overflow-auto custom-scrollbar">
+                <main className="w-full h-full lg:w-[90%] lg:max-w-[1500px] lg:max-h-[1000px] mx-auto p-1 overflow-auto custom-scrollbar">
                     <Routes>
                       <Route element={<ProtectedRoutes />}>
                         <Route path="/Dashboard" element={<Dashboard />} />
