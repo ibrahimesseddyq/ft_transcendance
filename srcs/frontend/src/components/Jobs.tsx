@@ -69,8 +69,7 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
           {jobsArray.map((item) => {
             return (
               <div
-                className="flex flex-col w-[600px] h-[150px] border border-transparent hover:border-[#14cdb4]
-                  card-border card-color pl-10 pt-4 gap-3"
+                className="flex flex-col w-[600px] h-[150px] border maincard  pl-10 pt-4 gap-3"
               >
                 <p className="text-white font-medium bg-[#44BC19] w-fit px-2 py-[1px] rounded-sm">{item.category}</p>
                 <div className="flex flex-col gap-0">
