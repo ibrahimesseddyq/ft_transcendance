@@ -12,6 +12,8 @@ const userRoutes =  require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const env = require('./config/env');
 const {HttpException} = require('./utils/httpExceptions')
+const {verifyToken,verifyRoles} = require('./middleware/auth');
+const {UserRole} = require('../generated/prisma')
 
 app.use(helmet());
 app.use(cors({
@@ -49,7 +51,10 @@ app.use(passport.session());
 
 // routes
 app.use('/api/auth', authRoutes); 
-app.use('/api/users',userRoutes);
+app.use('/api/users',
+  verifyToken,
+  verifyRoles([UserRole.recruiter,UserRole.admin]),
+  userRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
