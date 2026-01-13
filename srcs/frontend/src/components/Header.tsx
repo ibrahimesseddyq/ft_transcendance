@@ -7,17 +7,14 @@ export function Header() {
   <header className="flex h-full w-full  items-center justify-center">
        <Link
         to={"/Dashboard"}
-        className="hidden sm:flex h-full w-[300px] items-center justify-center border-r-2 border-[#5F88B8]">
-        <img
-          src="../src/assets/icons/logo.png"
-          alt="My logo"
-          className="h-full w-full bg-no-repeat bg-center bg-cover"
-        />
+        className="hidden sm:flex h-full w-[300px]  border-r-2 border-[#5F88B8] 
+        place-content-center place-items-center">
+        <h1 className="hover:scale-105 text-xl text-center text-white">RH-<span className="pramary-text font-bold">Connect</span></h1>
       </Link>
   {/*search bar */}
   <div className="w-full flex  justify-center h-16 mt-auto items-center">
     <div className="flex w-[50%]  h-12 items-center">
-      <Search className=" h-4 w-4  2xl:h-8 2xl:w-8  text-[#94999A]" />
+      {/* <Search className=" h-4 w-4  2xl:h-8 2xl:w-8  text-[#94999A]" /> */}
       <input
         placeholder="Search"
         type='search'

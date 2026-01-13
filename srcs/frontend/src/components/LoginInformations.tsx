@@ -8,18 +8,19 @@ interface InfoContent {
 
 const InfoCard = ({ title, description, icon }: InfoContent) => {
     return (
-        <div className="h-auto w-full lg:h-[250px] lg:w-[600px] flex flex-col gap-5 justify-between rounded-md 
-            border border-[#1E2E52] bg-[#131D34] items-center transition-all p-5 place-content-center"
+        <div className="h-auto w-full lg:h-[250px] lg:w-[600px] flex flex-col gap-5 justify-between
+            border border-transparent hover:border-[#14cdb4] card-border card-color 
+            bg-[#131D34] items-center transition-all p-5 place-content-center"
         >
             {icon && (
-                <div className="
+                <div className=" hover:scale-105
                     flex items-center pramary-text">
                   {icon}
                 </div>
             )}
 
             <div className="">
-                <h1 className="text-lg font-semibold text-center text-white hover:pramary-text">
+                <h1 className="text-lg font-semibold text-center text-white">
                     {title}
                 </h1>
                 <p className="text-sm text-[#94A3B8] font-medium text-center leading-relaxed">
@@ -35,7 +36,7 @@ export const LoginInformations = () => {
         <div className="w-full h-full flex flex-col gap-4 justify-between items-center overflow-auto no-scrollbar p-5">
             <div className='h-auto w-full lg:h-[250px] lg:w-[600px] items-center place-content-center'>
                 <h1 className="text-lg font-semibold text-white">
-                    Everything you need to <span className='font-bold text-[#10B77F]'>succeed</span>
+                    Everything you need to <span className='font-bold pramary-text'>succeed</span>
                 </h1>
                 <p className="text-sm text-[#94A3B8] font-medium leading-relaxed">
                     Powerful tools designed to accelerate your career growth.
