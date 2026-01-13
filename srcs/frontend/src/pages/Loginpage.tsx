@@ -8,7 +8,7 @@ export function LoginPage() {
   const [activeCard, setActiveCard] = useState<string>('signin');
     
   const getTabClasses = (tabName: string) => {
-    const baseClasses = "h-full w-full flex lg:flex-row flex-col gap-2 \
+    const baseClasses = "flex lg:flex-row flex-col gap-2 \
                         border border-transparent hover:border-[#14cdb4] rounded-xl bg-[#131D34] shadow-2xl \
                         transition-all duration-500 ease-out cursor-pointer overflow-hidden";
 
@@ -28,10 +28,10 @@ export function LoginPage() {
 
   return (
     <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] flex flex-col lg:flex-row gap-5 p-2">
-      <div className="overfolw-auto custom-scrollbar">
+      <div className="order-last lg:order-first overfolw-auto custom-scrollbar">
         <LoginInformations />
       </div>
-      <div className=" p-5 w-full h-full flex flex-col gap-5 items-center">
+      <div className="order-first lg:order-last p-5 w-full h-full flex flex-col gap-5 items-center">
         <div className='w-fit h-fit'>
           <h1 className=' text-center text-white text-xl font-medium'>Welcome to 
             <span className='font-bold text-xl pramary-text'> Hire Me</span> website,<br/>
