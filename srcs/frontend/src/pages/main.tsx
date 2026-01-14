@@ -40,7 +40,7 @@ export function Main () {
                border-[#5F88B8] border-opacity-30">
                 <Header/>
             </div>
-            <div className="container mx-auto flex h-full max-w-screen-xl
+            <div className="container mx-auto flex h-full max-w-screen-2xl
                 items-center justify-between px-4 sm:px-8 overflow-hidden">
                 <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
                    border-r border-[#5F88B8] border-opacity-30">
