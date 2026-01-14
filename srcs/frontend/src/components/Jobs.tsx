@@ -14,7 +14,7 @@ interface Job {
 
 const Job = {
   category: "Enginering",
-  title: "Front-End UX Engineer",
+  title: "Front-End",
   description: "jhdsjii9oi iuudsufhudsu dsfosdiof 8e uuhdjs 8 udf isd ofu",
   type: "Full-time",
   location: "Remote",
@@ -65,17 +65,13 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
   return (
     <div className="flex flex-col  h-full w-full gap-5 overflow-auto m-auto">
        <div className="Title font-extrabold text-white pl-36 pt-14">Jobs For You:</div>
-       <div className="flex flex-col items-center gap-5 overflow-auto
-          [&::-webkit-scrollbar]:w-2
-          [&::-webkit-scrollbar-track]:bg-transparent
-          [&::-webkit-scrollbar-thumb]:bg-green-500
-          [&::-webkit-scrollbar-thumb]:rounded-full">
+       <div className="flex flex-col items-center gap-5 overflow-auto custom-scrollbar">
           {jobsArray.map((item) => {
             return (
               <div
-                className="flex flex-col w-[600px] h-[150px] rounded-md pl-10 pt-4 gap-3 bg-[#09122C]"
+                className="flex flex-col w-[600px] h-[150px] border maincard  pl-10 pt-4 gap-3"
               >
-                <p className="text-white font-extralight bg-[#44BC19] w-fit px-2 py-[1px] rounded-sm">{item.category}</p>
+                <p className="text-white font-medium bg-[#44BC19] w-fit px-2 py-[1px] rounded-sm">{item.category}</p>
                 <div className="flex flex-col gap-0">
                   <p className="text-white font-bold">{item.title}</p>
                   <p className="text-gray-400 font-light">{item.description}</p>
@@ -87,7 +83,7 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
                     <p className="text-[#6E6E6E]">{item.salary}</p>
                   </div>
                   <div className="flex gap-1 pr-10">
-                    <a href="#" className="text-[#44BC19] hover:underline">view job</a>
+                    <a href="#" className="pramary-text hover:underline">view job</a>
                   </div>
                 </div>
               </div>

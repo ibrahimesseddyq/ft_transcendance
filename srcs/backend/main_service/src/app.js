@@ -17,15 +17,14 @@ const {UserRole} = require('../generated/prisma')
 
 app.use(helmet());
 app.use(cors({
-    origin: "http://localhost:5173", 
-    credentials: true,           
+    origin: 'http://localhost:5173',
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    credentials: true 
 }));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
-// --- ADD THIS SECTION ---
+
 
 // 1. Create a token named 'body' to parse the request body
 morgan.token('body', (req) => {
@@ -43,7 +42,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false // true only in HTTPS
+      secure: false
     }}));
 // Initialize Passport
 app.use(passport.initialize());
