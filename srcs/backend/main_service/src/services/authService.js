@@ -4,7 +4,6 @@ const userService = require('./userService');
 const jwtService = require('./jwtService');
 const argon2 = require('argon2');
 const { HttpException } = require('../utils/httpExceptions');
-const { email } = require('zod');
 
 
 const login = async (data) =>

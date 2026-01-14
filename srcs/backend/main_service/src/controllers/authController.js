@@ -1,5 +1,5 @@
-const authService = require('../services/authService');
 const env =  require('../config/env');
+const authService = require('../services/authService');
 
 const cookieOptions = {
     httponly: true,
@@ -99,9 +99,27 @@ const logout =  async (req, res, next) =>
     }
 }
 
+const getAuthStatus = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.status(200).json({ loggedIn: true, user: req.user });
+    } else {
+        res.status(401).json({ loggedIn: false });
+    }
+};
+
+const googleCallback = (req, res) => {
+    res.redirect('http://localhost:5173/dashboard');
+};
+
+
 module.exports = {
+    logout,
+    getAuthStatus,
+    googleCallback,
     login,
     register,
     refresh,
     logout
 }
+
+
