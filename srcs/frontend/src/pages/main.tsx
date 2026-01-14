@@ -31,26 +31,35 @@ export function Main () {
         );
     }
   return (
-      <div className="flex flex-col h-screen w-screen overflow-auto bg-[#0a1128] custom-scrollbar ">
-          <div className="w-full h-20 fixed right-0 left-0 top-0 bg-[#0a1128] border-b-2 border-[#5F88B8]">
-              <Header/>
-          </div>
-          <div className="flex w-full h-full pt-20 bg-[#0a1128]">
-              {/* Sidebar */}
-                <Sidebar />
-              {/* Main Content */}
-                <main className="w-full h-full lg:w-[90%] lg:max-w-[1500px] lg:max-h-[1000px] mx-auto p-1 overflow-auto custom-scrollbar">
-                    <Routes>
-                      <Route element={<ProtectedRoutes />}>
-                        <Route path="/Dashboard" element={<Dashboard />} />
-                        <Route path="/Jobs" element={<Jobs />} />
-                        <Route path="/Condidates" element={<Condidates />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/Messages" element={<NotFound />} />
-                      </Route>
-                    </Routes>
+      <div className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar">
+        <div className='h-full w-full flex flex-col mx-auto
+          custom-scrollbar'>
+            {/* Sidebar */}
+            <div className="h-full w-full max-h-20 
+              sticky top-0 z-50 border-b
+               border-[#5F88B8] border-opacity-30">
+                <Header/>
+            </div>
+            <div className="container mx-auto flex h-full max-w-screen-xl
+                items-center justify-between px-4 sm:px-8 overflow-hidden">
+                <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
+                   border-r border-[#5F88B8] border-opacity-30">
+                  <Sidebar />
+                </div>
+                {/* Main Content */}
+                  <main className="w-full h-full items-center overflow-auto custom-scrollbar">
+                      <Routes>
+                        <Route element={<ProtectedRoutes />}>
+                          <Route path="/Dashboard" element={<Dashboard />} />
+                          <Route path="/Jobs" element={<Jobs />} />
+                          <Route path="/Condidates" element={<Condidates />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/Messages" element={<NotFound />} />
+                        </Route>
+                      </Routes>
 
-                </main>
+                  </main>
+            </div>
           </div>
         </div>    
   );
