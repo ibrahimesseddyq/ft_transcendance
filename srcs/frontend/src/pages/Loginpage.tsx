@@ -9,19 +9,19 @@ export function LoginPage() {
     
   const getTabClasses = (tabName: string) => {
     const baseClasses = "flex lg:flex-row flex-col gap-2 border maincard shadow-3xl \
-                        duration-1000  cursor-pointer overflow-hidden";
+                        duration-1000 cursor-pointer overflow-hidden";
 
     if (tabName === "signin" && activeCard !== "signin"){
-      return `${baseClasses} top-0 lg:left-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[80%]`;
+      return `${baseClasses} top-0 lg:left-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[85%]`;
     }
     else if (tabName === "signin" && activeCard === "signin"){
-      return `${baseClasses} top-0 lg:left-0 z-10 scale-60 h-[10%] w-[100%] lg:h-[95%] lg:w-[15%] lg:max-w-[85px]`;
+      return `${baseClasses} top-0 lg:left-0 z-10 scale-90 h-[10%] w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
     } 
     else if (tabName === "signup" && activeCard !== "signup"){
-      return `${baseClasses} button-0 lg:right-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[80%]`;
+      return `${baseClasses} button-0 lg:right-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[85%]`;
     }
     else {
-      return `${baseClasses} button-0 lg:right-0 z-10 scale-60 h-[10%] w-[100%] lg:h-[95%] lg:w-[15%] lg:max-w-[85px]`;
+      return `${baseClasses} button-0 lg:right-0 z-10 scale-90 h-[10%] w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
     }
   };
 
@@ -37,9 +37,9 @@ export function LoginPage() {
             let build Your career.
           </h1>
         </div>
-        <div className="w-full max-w-[400px] h-[550px] my-auto place-content-center
+        <div className=" w-full max-w-[400px] h-[550px] my-auto place-content-center
             lg:w-full lg:max-w-[550px] lg:h-full lg:max-h-[700px] place-items-center
-            flex flex-col gap-2 lg:flex-row overflow-auto">
+            flex flex-col gap-2 lg:flex-row">
           <div 
             onClick={() => setActiveCard('signin')} 
             className={getTabClasses('signup')}

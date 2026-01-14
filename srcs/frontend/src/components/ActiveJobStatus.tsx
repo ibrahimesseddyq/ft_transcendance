@@ -25,24 +25,24 @@ export function ActiveJobStatus() {
                         return (
                             <div 
                                 key={item.id}
-                                className="flex items-center  
-                                p-2 justify-between pt-3 transition-all duration-200
-                                hover:scale-[1.02] hover:shadow-[0_0_15px_3px_rgba(0,128,0,0.3)]"
+                                className="flex items-center childcard
+                                p-2 justify-between pt-3  duration-200
+                                hover:scale-[1.02] "
                             >
                                 <div className="space-x-3 flex items-center">
-                                    <div className="relative hidden md:flex">
+                                    <div className="relative ">
                                         <div className="h-12 w-12 rounded-full bg-cover bg-center"
                                           style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}/>
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-sm text-white font-bold">{item.firstName} {item.lastName}</span>
-                                        <span className="text-sm font-light text-gray-500">
+                                        <span className="text-xs xl:text-sm text-white font-bold">{item.firstName} {item.lastName}</span>
+                                        <span className="text-xs xl:text-sm font-light text-gray-100">
                                             {item.profil} Developer
                                         </span>
                                     </div>
                                 </div>
                                 <div className="flex gap-1 items-center">
-                                  <div className={`h-3 w-3 rounded-full ${
+                                  <div className={`h-3 w-3 rounded-full hidden xl:block ${
                                             item.status === "Online" ? "bg-green-400" : "bg-gray-500"
                                     }`} />
                                   <h3 className={`text-sm font-semibold ${
