@@ -3,7 +3,6 @@ const env  = require('../config/env')
 const {HttpException} = require('../utils/httpExceptions');
 const {jwtService} = require('../services/jwtService');
 const { getPermissionsByRoles } = require('../config/permissions');
-const { email } = require('zod');
 
 const verifyToken = async (req, res, next) => {
     try {
