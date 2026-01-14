@@ -37,7 +37,7 @@ export function LoginPage() {
             let build Your career.
           </h1>
         </div>
-        <div className=" w-full max-w-[400px] h-[550px] my-auto place-content-center
+        <div className=" w-full max-w-[400px] h-[600px] my-auto place-content-center
             lg:w-full lg:max-w-[550px] lg:h-full lg:max-h-[700px] place-items-center
             flex flex-col gap-2 lg:flex-row">
           <div 
