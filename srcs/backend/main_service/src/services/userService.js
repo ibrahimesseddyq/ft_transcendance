@@ -1,65 +1,66 @@
 const userRepository = require('../repositories/userRepository')
-const config = require('../config/env');
-const bcrypt = require('bcrypt');
-const { prisma } = require('../config/prisma');
-
-const findUserOrCreate = async (profile) => {
-    const nameParts = profile.displayName.split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
-
-    return await prisma.users.upsert({
-        where: { email: profile.emails?.[0]?.value },
-        update: {
-            first_name: firstName, 
-            last_name: lastName,  
-            avatar_url: profile.photos?.[0]?.value 
-        },
-        create: {
-            email: profile.emails?.[0]?.value || '',
-            first_name: firstName,
-            last_name: lastName,
-            avatar_url: profile.photos?.[0]?.value,
-            password_hash: '',
-            role: 'candidate'
-        }
-    });
-};
-
-
-
+const argon2 = require('argon2');
+const {HttpException} = require('../utils/httpExceptions');
+const crypto = require('crypto');
 
 class UserService {
-    
-    async createUser({email,password,first_name,last_name,role = "candidate"})
+
+    async createUser(userData)
     {
-        if (password.length < 8)
-            throw Error('Password must be at least 8 characters')
-        const password_hash = await bcrypt.hash(password , config.BCRYPT_ROUNDS);
-        const user = await userRepository.create(
-            {
-                email : email.toLowerCase(),
-                password_hash,
-                first_name,
-                last_name,
-                role
-            }
-        )
-        delete user.password;
+        const {password, ...data} = userData;
+        const passwordHash = await argon2.hash(password);
+        const user = await userRepository.create({passwordHash, ...data})
+        delete user.passwordHash;
         return user;
     }
+
+    async findUserOrCreate(profile) {
+        const email = profile.emails[0].value. toLowerCase().trim();
+        let user = await userRepository.findByEmail(email);
+        if (user) {
+        delete user.passwordHash;
+        delete user.refreshToken;
+        return user;
+        }
+        const randomPassword = crypto.randomBytes(32).toString('hex');
+        const passwordHash = await argon2.hash(randomPassword);
+
+        user = await userRepository.create({
+        email,
+        firstName: profile.name.givenName || profile.displayName. split(' ')[0] || 'User',
+        lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
+        passwordHash,
+        avatarUrl: profile.photos?.[0]?.value || null,
+        role: 'candidate',
+        });
+
+        delete user.passwordHash;
+        delete user.refreshToken;
+        return user;
+  }
+    
     async getUserById(userId)
     {
         const user = await userRepository.findById(userId);
         if (!user)
-            throw new Error("user not found");
-        delete user.password;
+            throw new HttpException(404, "User not found");
+        delete user.passwordHash;
+        return user;
+    }
+
+    async  getUserByEmail(email)
+    {
+        const user = await userRepository.findByEmail(email);
+        // if (!user)
+        //     throw new HttpException(404, "User not found");
+        // delete user.passwordHash;
         return user;
     }
     
     async updateUser(userId, updateData)
     {
-        const allowedFields = ['first_name', 'last_name', 'phone', 'avatar_url'];
+        await this.getUserById(userId);
+        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken'];
         const filteredData = {};
         
         allowedFields.forEach(field => {
@@ -67,11 +68,12 @@ class UserService {
                 filteredData[field] = updateData[field];
         })
         if(Object.keys(filteredData).length === 0)
-            throw new Error('No valid fields to update');
+            throw new HttpException(400,'No valid fields to update');
         return await userRepository.update(userId,filteredData);
     }
     
     async deleteUser(userId){
+        await this.getUserById(userId);
         await userRepository.delete(userId);
     }
     
@@ -81,5 +83,4 @@ class UserService {
     
 }
 
-module.exports = {findUserOrCreate};
 module.exports = new UserService();

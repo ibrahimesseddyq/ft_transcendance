@@ -1,6 +1,7 @@
 const data = require('../config/env');
 const {prisma} = require('../config/prisma');
 
+
 class JobRepository {
     async findById(jobId)
     {
@@ -11,6 +12,7 @@ class JobRepository {
             }
         )
     }
+    
     async create(jobData)
     {
         if(!await this.findById(jobData.id))
