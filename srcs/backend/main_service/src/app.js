@@ -7,10 +7,13 @@ const cors =  require('cors');
 const morgan = require('morgan');
 const session = require('express-session');
 const cokieParser =  require('cookie-parser');
-const userRoutes =  require('./routes/user.routes');
-const authRoutes = require('./routes/Auth.routes');
+const errorHandler = require('./middleware/ErrorHandler');
+const userRoutes =  require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 const env = require('./config/env');
-
+const {HttpException} = require('./utils/httpExceptions')
+const {verifyToken,verifyRoles} = require('./middleware/auth');
+const {UserRole} = require('../generated/prisma')
 
 app.use(helmet());
 app.use(cors({
@@ -21,6 +24,17 @@ app.use(cors({
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
+
+
+// 1. Create a token named 'body' to parse the request body
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body);
+});
+
+// 2. Use morgan with a custom format string including the ':body' token
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+
+// --- END SECTION ---
 // Session middleware for using Passport
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
@@ -36,6 +50,14 @@ app.use(passport.session());
 
 // routes
 app.use('/api/auth', authRoutes); 
-app.use('/api/users',userRoutes);
+app.use('/api/users',
+  verifyToken,
+  verifyRoles([UserRole.recruiter,UserRole.admin]),
+  userRoutes);
+
+app.use((req,res,next) => {
+  next(new HttpException(404, "Route not found"));
+})
+app.use(errorHandler);
 
 module.exports = app;

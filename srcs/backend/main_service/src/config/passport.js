@@ -2,15 +2,17 @@ const env = require('../config/env');
 const passport = require('passport');
 const { prisma } = require('./prisma');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
-const { findUserOrCreate } = require('../services/userService');
+const userService = require('../services/userService');
+console.log(`http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`);
 
+const callbackURL = `http://${env.HOST}:${env.PORT}${env. CALLBACK_URL}`;
 passport.use(new GoogleStrategy({
     clientID: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`
+    callbackURL
 }, async (request, accessToken, refreshToken, profile, done) => {
     try {
-        const user = await findUserOrCreate(profile);
+        const user = await userService.findUserOrCreate(profile);
         return done(null, user);
     } catch (err) {
         return done(err, null);
