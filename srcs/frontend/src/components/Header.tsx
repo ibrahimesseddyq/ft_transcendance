@@ -9,26 +9,39 @@ export function Header() {
     <Link
         to={"/Dashboard"}
         className="h-full w-64 place-content-center">
-        <h1 className="hover:scale-105 text-md text-center text-white">RH-<span className="pramary-text font-bold">Connect</span></h1>
+        <h1 className="hover:scale-105 text-md text-center p-3 logo">
+          RH-<span className="pramary-text font-bold">Connect</span>
+        </h1>
     </Link>
   {/*search bar */}
   <div className="w-full h-9 flex justify-center items-center">
     <button className="flex sm:hidden childcard w-10 h-10 items-center justify-center">
-      <Search className=" h-4 w-4  2xl:h-8 2xl:w-8  text-[#94999A]" />
+      <Search className="h-4 w-4 text-[#94999A] hover:text-green-600" />
+      <div className="sm:flex h-full w-60 items-center hidden rounded-md
+        bg-[#1F2027] pl-5  border border-[#5F88B8] px-5 gap-2">
+        <button className="h-6 w-6 cursor-pointer">
+          <Search className="h-full w-full text-[#94999A] hover:text-green-600" />
+        </button>
+        <input
+          id="searchBar"
+          placeholder="Search"
+          type='search'
+          className="flex h-full w-full max-h-10 outline-none 
+            placeholder-[#94999A]text-white bg-transparent"
+        />
+      </div>
+    </button>
+    <div className="sm:flex h-full w-60 items-center hidden rounded-md
+        bg-[#1F2027] pl-5  border border-[#5F88B8] px-5 gap-2">
+      <button className="h-6 w-6 cursor-pointer">
+          <Search className="h-full w-full text-[#94999A] hover:text-green-600" />
+        </button>
       <input
         id="searchBar"
         placeholder="Search"
         type='search'
-        className="h-full w-full max-h-10 rounded-xl outline-none placeholder-[#94999A]
-           text-white bg-[#1F2027] pl-10  border border-[#5F88B8] px-5 hidden"
-      />
-    </button>
-    <div className="sm:flex h-full w-60 items-center hidden">
-      <input
-        placeholder="Search"
-        type='search'
-        className="flex h-full w-full max-h-10 rounded-xl outline-none placeholder-[#94999A]
-           text-white bg-[#1F2027] pl-10  border border-[#5F88B8] px-5"
+        className="flex h-full w-full max-h-10 outline-none placeholder-[#94999A]
+           text-white bg-transparent"
       />
     </div>
   </div>

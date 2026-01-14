@@ -57,8 +57,12 @@ const Signin = () => {
         return(
 
             <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
+                <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
+                    whitespace-nowrap overflow-hidden'>
+                    <h1 className='text-white'>Sign In</h1>
+                </div>
                 <div className='my-auto h-[370px] w-full max-w-[350px]'>
-                    <div className="w-64 h-12 ml-4 overflow-hidden ">
+                    <div className="w-64 h-12 overflow-hidden ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm ">Welcome Back!</h2>
                         <h1 className="text-md font-electrolize text-white">
                             We are happy to see you again. 
@@ -67,36 +71,46 @@ const Signin = () => {
                     <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden ">
                         <form  onSubmit={handleSubmit(LoginSubmit, (errors) => console.log("Validation Errors:", errors))}
                             className='flex flex-col gap-2 w-full'>
-                            <div className="flex justify-between items-center h-[50px] w-full mt-5 border border-[#405673]  rounded-md">
+                            <div className="flex justify-between items-center h-[50px] px-5
+                                w-full border border-[#405673]  rounded-md">
                                 <input
                                     {...register("email", { required: true })}
                                     placeholder="Enter your Email"
-                                    className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
+                                    className="w-full h-full text-white whitespace-nowrap 
+                                    outline-none placeholder-white  bg-transparent overflow-hidden"
                                     />
-                                <Mail className="h-10 w-14 text-white px-3" />
+                                <Mail className="h-8 w-8 text-white whitespace-nowrap overflow-hidden" />
                             </div>
                             {errors.email && <p className="pl-5 text-red-500">{errors.email.message}</p>}
-                            <div className="flex justify-between items-center h-[50px] w-full mt-3  border border-[#405673]  rounded-md">
+
+                            <div className="flex justify-between items-center h-[50px] 
+                                w-full border border-[#405673] rounded-md px-5">
                                 <input
                                     {...register("password", { required: true })}
                                     placeholder="Enter your Password"
                                     type={passtype}
-                                    className="w-full h-full text-white outline-none placeholder-white pl-5 bg-transparent"
+                                    className="w-full h-full text-white whitespace-nowrap
+                                    outline-none placeholder-white bg-transparent overflow-hidden"
                                     />
-                                <Icon onClick={handleToggle} className='cursor-pointer h-10 w-14 px-3 text-white'/>
+                                <Icon onClick={handleToggle}
+                                className='cursor-pointer h-8 w-8 text-white whitespace-nowrap overflow-hidden'/>
                             </div>
                             {errors.password && <p className="pl-5 text-red-500">{errors.password.message}</p>}
+
                             <button 
                               type="button"
                               className="w-full text-right text-[#10B77F] text-xs font-semibold hover:underline hover:cursor-pointer"
                             >
                               Forgot Password?
                             </button>
+
                             <button  type="submit"
-                                    className="h-[45px] w-[90%] text-black font-bold mx-auto  rounded-lg bg-[#10B77F]">
+                                    className="h-[45px] w-[90%] text-black font-bold whitespace-nowrap
+                                        mx-auto  rounded-lg bg-[#10B77F] overflow-hidden">
                                 Log in
                             </button>
                         </form>
+
                         <a href='http://localhost:3000/api/auth/google'
                                 className="h-[45px] w-[90%] flex gap-5 rounded-lg
                                 border border-[#405673] justify-center
@@ -104,7 +118,7 @@ const Signin = () => {
                             <img    className="h-8 w-8 " 
                                     src="src/assets/icons/google1.png"
                                     alt="Google icon"/>
-                            <h1 className='text-xs lg:text-sm xl:text-md'>Log in with Google </h1>
+                            <h1 className='text-xs lg:text-sm xl:text-md whitespace-nowrap overflow-hidden'>Log in with Google </h1>
                         </a>
                     </div>
                 </div>
