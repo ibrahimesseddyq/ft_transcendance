@@ -5,7 +5,7 @@ import {Link } from 'react-router-dom';
 export function Header() {
   return (
   <header className="container mx-auto flex justify-between 
-  h-full max-w-screen-xl items-center px-4 sm:px-8 ">
+  h-full max-w-screen-2xl items-center px-4 sm:px-8 ">
     <Link
         to={"/Dashboard"}
         className="h-full w-64 place-content-center">
