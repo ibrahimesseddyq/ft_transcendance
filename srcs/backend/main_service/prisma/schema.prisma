@@ -1,268 +1,275 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-  engineType    = "binary"
+  provider   = "prisma-client-js"
+  output     = "../generated/prisma"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
 }
 
-model application_phases {
-  id             String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  application_id String       @db.Char(36)
-  phase_id       String       @db.Char(36)
-  status         String?      @default("pending") @db.VarChar(20)
-  started_at     DateTime?    @db.Timestamp(0)
-  completed_at   DateTime?    @db.Timestamp(0)
-  notes          String?      @db.Text
-  score          Int?
-  applications   applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "application_phases_ibfk_1")
-  job_phases     job_phases   @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "application_phases_ibfk_2")
-  interviews     interviews[]
+model ApplicationPhase {
+  id            String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  applicationId String    @db.Char(36)
+  phaseId       String    @db.Char(36)
+  status        String?   @default("pending") @db.VarChar(20)
+  startedAt     DateTime? @db.Timestamp(0)
+  completedAt   DateTime? @db.Timestamp(0)
+  notes         String?   @db.Text
+  score         Int?
 
-  @@unique([application_id, phase_id], map: "unique_app_phase")
-  @@index([application_id, status], map: "idx_application_phases_status")
-  @@index([phase_id], map: "phase_id")
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  jobPhase    JobPhase    @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  interviews  Interview[]
+
+  @@unique([applicationId, phaseId])
+  @@index([applicationId, status])
+  @@index([phaseId])
 }
 
-model applications {
-  id                 String               @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  job_id             String               @db.Char(36)
-  candidate_id       String               @db.Char(36)
-  status             applications_status? @default(pending)
-  current_phase_id   String?              @db.Char(36)
-  applied_at         DateTime?            @default(now()) @db.Timestamp(0)
-  updated_at         DateTime?            @default(now()) @db.Timestamp(0)
-  application_phases application_phases[]
-  jobs               jobs                 @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "applications_ibfk_1")
-  users              users                @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "applications_ibfk_2")
-  job_phases         job_phases?          @relation(fields: [current_phase_id], references: [id], onUpdate: Restrict, map: "applications_ibfk_3")
-  offers             offers?
-
-  @@unique([job_id, candidate_id], map: "unique_application")
-  @@index([current_phase_id], map: "current_phase_id")
-  @@index([candidate_id], map: "idx_applications_candidate")
-  @@index([job_id], map: "idx_applications_job")
-  @@index([status], map: "idx_applications_status")
-}
-
-model candidate_profiles {
-  user_id             String    @id @db.Char(36)
-  resume_url          String?   @db.Text
-  linkedin_url        String?   @db.VarChar(255)
-  portfolio_url       String?   @db.VarChar(255)
-  current_company     String?   @db.VarChar(255)
-  current_title       String?   @db.VarChar(255)
-  years_experience    Int?
-  skills              String?   @db.LongText
-  preferred_locations String?   @db.LongText
-  salary_expectation  String?   @db.VarChar(50)
-  available_from      DateTime? @db.Date
-  users               users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "candidate_profiles_ibfk_1")
-}
-
-model interview_participants {
-  id           String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  interview_id String     @db.Char(36)
-  user_id      String     @db.Char(36)
-  role         String?    @db.VarChar(50)
-  joined_at    DateTime?  @db.Timestamp(0)
-  left_at      DateTime?  @db.Timestamp(0)
-  interviews   interviews @relation(fields: [interview_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interview_participants_ibfk_1")
-  users        users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interview_participants_ibfk_2")
-
-  @@unique([interview_id, user_id], map: "unique_participant")
-  @@index([user_id], map: "user_id")
-}
-
-model interviews {
-  id                     String                    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  application_phase_id   String                    @db.Char(36)
-  scheduled_at           DateTime                  @db.Timestamp(0)
-  duration_minutes       Int?                      @default(60)
-  interview_mode         interviews_interview_mode
-  location               String?                   @db.VarChar(255)
-  whiteboard_session_id  String?                   @db.Char(36)
-  status                 interviews_status?        @default(scheduled)
-  started_at             DateTime?                 @db.Timestamp(0)
-  ended_at               DateTime?                 @db.Timestamp(0)
-  created_at             DateTime?                 @default(now()) @db.Timestamp(0)
-  interview_participants interview_participants[]
-  application_phases     application_phases        @relation(fields: [application_phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "interviews_ibfk_1")
-
-  @@index([application_phase_id], map: "application_phase_id")
-  @@index([scheduled_at, status], map: "idx_interviews_scheduled")
-  @@index([status], map: "idx_interviews_status")
-}
-
-model job_phases {
-  id                 String                @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  job_id             String                @db.Char(36)
-  phase_type         job_phases_phase_type
-  name               String                @db.VarChar(100)
-  description        String?               @db.Text
-  order_index        Int
-  is_required        Boolean?              @default(true)
-  duration_minutes   Int?
-  created_at         DateTime?             @default(now()) @db.Timestamp(0)
-  application_phases application_phases[]
-  applications       applications[]
-  jobs               jobs                  @relation(fields: [job_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "job_phases_ibfk_1")
-  phase_interviews   phase_interviews?
-  phase_tests        phase_tests?
-
-  @@unique([job_id, order_index], map: "unique_job_order")
-}
-
-model jobs {
-  id              String         @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  title           String         @db.VarChar(255)
-  department      String?        @db.VarChar(100)
-  description     String?        @db.Text
-  requirements    String?        @db.LongText
-  location        String?        @db.VarChar(255)
-  is_remote       Boolean?       @default(false)
-  employment_type String?        @db.VarChar(50)
-  salary_min      Int?
-  salary_max      Int?
-  salary_currency String?        @default("USD") @db.VarChar(3)
-  status          jobs_status?   @default(open)
-  created_by      String?        @db.Char(36)
-  created_at      DateTime?      @default(now()) @db.Timestamp(0)
-  updated_at      DateTime?      @default(now()) @db.Timestamp(0)
-  closed_at       DateTime?      @db.Timestamp(0)
-  applications    applications[]
-  job_phases      job_phases[]
-  users           users?         @relation(fields: [created_by], references: [id], onUpdate: Restrict, map: "jobs_ibfk_1")
-
-  @@index([created_by], map: "created_by")
-  @@index([status], map: "idx_jobs_status")
-}
-
-model notifications {
+model Application {
   id             String             @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  user_id        String             @db.Char(36)
-  type           notifications_type
-  title          String             @db.VarChar(255)
-  message        String?            @db.Text
-  reference_type String?            @db.VarChar(50)
-  reference_id   String?            @db.Char(36)
-  is_read        Boolean?           @default(false)
-  created_at     DateTime?          @default(now()) @db.Timestamp(0)
-  users          users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "notifications_ibfk_1")
+  jobId          String             @db.Char(36)
+  candidateId    String             @db.Char(36)
+  status         ApplicationStatus? @default(pending)
+  currentPhaseId String?            @db.Char(36)
+  appliedAt      DateTime?          @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?          @default(now()) @db.Timestamp(0)
 
-  @@index([user_id, is_read], map: "idx_notifications_user_unread")
+  applicationPhases ApplicationPhase[]
+  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidate         User               @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  currentPhase      JobPhase?          @relation(fields: [currentPhaseId], references: [id])
+  offer             Offer?
+
+  @@unique([jobId, candidateId])
+  @@index([currentPhaseId])
+  @@index([candidateId])
+  @@index([jobId])
+  @@index([status])
 }
 
-model offers {
-  id               String         @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  application_id   String         @unique(map: "application_id") @db.Char(36)
-  title            String         @db.VarChar(255)
-  department       String?        @db.VarChar(100)
-  salary           Int
-  salary_currency  String?        @default("USD") @db.VarChar(3)
-  bonus            Int?
-  equity           String?        @db.VarChar(100)
-  start_date       DateTime?      @db.Date
-  benefits         String?        @db.Text
-  additional_terms String?        @db.Text
-  status           offers_status? @default(pending)
-  sent_at          DateTime?      @default(now()) @db.Timestamp(0)
-  expires_at       DateTime?      @db.Timestamp(0)
-  responded_at     DateTime?      @db.Timestamp(0)
-  response_notes   String?        @db.Text
-  applications     applications   @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "offers_ibfk_1")
+model CandidateProfile {
+  userId             String    @id @db.Char(36)
+  resumeUrl          String?   @db.Text
+  linkedinUrl        String?   @db.VarChar(255)
+  portfolioUrl       String?   @db.VarChar(255)
+  currentCompany     String?   @db.VarChar(255)
+  currentTitle       String?   @db.VarChar(255)
+  yearsExperience    Int?
+  skills             String?   @db.LongText
+  preferredLocations String?   @db.LongText
+  salaryExpectation  String?   @db.VarChar(50)
+  availableFrom      DateTime? @db.Date
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model phase_interviews {
-  phase_id       String                          @id @db.Char(36)
-  interview_mode phase_interviews_interview_mode
-  location       String?                         @db.VarChar(255)
-  has_whiteboard Boolean?                        @default(false)
-  job_phases     job_phases                      @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "phase_interviews_ibfk_1")
+model InterviewParticipant {
+  id          String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  interviewId String    @db.Char(36)
+  userId      String    @db.Char(36)
+  role        String?   @db.VarChar(50)
+  joinedAt    DateTime? @db.Timestamp(0)
+  leftAt      DateTime? @db.Timestamp(0)
+
+  interview Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([interviewId, userId])
+  @@index([userId])
 }
 
-model phase_tests {
-  phase_id   String     @id @db.Char(36)
-  test_id    String     @db.Char(36)
-  job_phases job_phases @relation(fields: [phase_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "phase_tests_ibfk_1")
+model Interview {
+  id                  String           @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  applicationPhaseId  String           @db.Char(36)
+  scheduledAt         DateTime         @db.Timestamp(0)
+  durationMinutes     Int?             @default(60)
+  interviewMode       InterviewMode
+  location            String?          @db.VarChar(255)
+  whiteboardSessionId String?          @db.Char(36)
+  status              InterviewStatus? @default(scheduled)
+  startedAt           DateTime?        @db.Timestamp(0)
+  endedAt             DateTime?        @db.Timestamp(0)
+  createdAt           DateTime?        @default(now()) @db.Timestamp(0)
+
+  participants     InterviewParticipant[]
+  applicationPhase ApplicationPhase       @relation(fields: [applicationPhaseId], references: [id], onDelete: Cascade)
+
+  @@index([applicationPhaseId])
+  @@index([scheduledAt, status])
+  @@index([status])
 }
 
-model users {
-  id                     String                   @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  email                  String                   @unique(map: "email") @db.VarChar(255)
-  password_hash          String                   @db.VarChar(255)
-  role                   users_role               @default(candidate)
-  first_name             String                   @db.VarChar(100)
-  last_name              String                   @db.VarChar(100)
-  phone                  String?                  @db.VarChar(20)
-  avatar_url             String?                  @db.Text
-  created_at             DateTime?                @default(now()) @db.Timestamp(0)
-  updated_at             DateTime?                @default(now()) @db.Timestamp(0)
-  applications           applications[]
-  candidate_profiles     candidate_profiles?
-  interview_participants interview_participants[]
-  jobs                   jobs[]
-  notifications          notifications[]
+model JobPhase {
+  id              String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  jobId           String    @db.Char(36)
+  phaseType       PhaseType
+  name            String    @db.VarChar(100)
+  description     String?   @db.Text
+  orderIndex      Int
+  isRequired      Boolean?  @default(true)
+  durationMinutes Int?
+  createdAt       DateTime? @default(now()) @db.Timestamp(0)
+
+  applicationPhases ApplicationPhase[]
+  applications      Application[]
+  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  phaseInterview    PhaseInterview?
+  phaseTest         PhaseTest?
+
+  @@unique([jobId, orderIndex])
 }
 
-enum phase_interviews_interview_mode {
+model Job {
+  id             String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  title          String     @db.VarChar(255)
+  department     String?    @db.VarChar(100)
+  description    String?    @db.Text
+  requirements   String?    @db.LongText
+  location       String?    @db.VarChar(255)
+  isRemote       Boolean?   @default(false)
+  employmentType String?    @db.VarChar(50)
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String?    @default("USD") @db.VarChar(3)
+  status         JobStatus? @default(open)
+  createdBy      String?    @db.Char(36)
+  createdAt      DateTime?  @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
+  closedAt       DateTime?  @db.Timestamp(0)
+
+  applications Application[]
+  jobPhases    JobPhase[]
+  creator      User?         @relation(fields: [createdBy], references: [id])
+
+  @@index([createdBy])
+  @@index([status])
+}
+
+model Notification {
+  id            String           @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  userId        String           @db.Char(36)
+  type          NotificationType
+  title         String           @db.VarChar(255)
+  message       String?          @db.Text
+  referenceType String?          @db.VarChar(50)
+  referenceId   String?          @db.Char(36)
+  isRead        Boolean?         @default(false)
+  createdAt     DateTime?        @default(now()) @db.Timestamp(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model Offer {
+  id              String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  applicationId   String       @unique @db.Char(36)
+  title           String       @db.VarChar(255)
+  department      String?      @db.VarChar(100)
+  salary          Int
+  salaryCurrency  String?      @default("USD") @db.VarChar(3)
+  bonus           Int?
+  equity          String?      @db.VarChar(100)
+  startDate       DateTime?    @db.Date
+  benefits        String?      @db.Text
+  additionalTerms String?      @db.Text
+  status          OfferStatus? @default(pending)
+  sentAt          DateTime?    @default(now()) @db.Timestamp(0)
+  expiresAt       DateTime?    @db.Timestamp(0)
+  respondedAt     DateTime?    @db.Timestamp(0)
+  responseNotes   String?      @db.Text
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model PhaseInterview {
+  phaseId       String        @id @db.Char(36)
+  interviewMode InterviewMode
+  location      String?       @db.VarChar(255)
+  hasWhiteboard Boolean?      @default(false)
+
+  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+}
+
+model PhaseTest {
+  phaseId String @id @db.Char(36)
+  testId  String @db.Char(36)
+
+  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  email                 String                 @unique @db.VarChar(255)
+  passwordHash          String                 @db.VarChar(255)
+  role                  UserRole               @default(candidate)
+  firstName             String                 @db.VarChar(100)
+  lastName              String                 @db.VarChar(100)
+  phone                 String?                @db.VarChar(20)
+  avatarUrl             String?                @db.Text
+  createdAt             DateTime?              @default(now()) @db.Timestamp(0)
+  updatedAt             DateTime?              @default(now()) @db.Timestamp(0)
+  refreshToken          String?                @db.Text
+  applications          Application[]
+  candidateProfile      CandidateProfile?
+  interviewParticipants InterviewParticipant[]
+  jobs                  Job[]
+  notifications         Notification[]
+}
+
+enum InterviewMode {
   online
   onsite
 }
 
-enum job_phases_phase_type {
+enum PhaseType {
   test
   interview
 }
 
-enum notifications_type {
-  application_received
-  phase_started
-  test_completed
-  interview_scheduled
+enum NotificationType {
+  applicationReceived
+  phaseStarted
+  testCompleted
+  interviewScheduled
   accepted
   rejected
-  offer_sent
-  offer_response
+  offerSent
+  offerResponse
 }
 
-enum users_role {
+enum UserRole {
   candidate
   recruiter
   admin
 }
 
-enum applications_status {
+enum ApplicationStatus {
   pending
-  in_progress
+  inProgress
   accepted
   rejected
   withdrawn
 }
 
-enum interviews_interview_mode {
-  online
-  onsite
-}
-
-enum interviews_status {
+enum InterviewStatus {
   scheduled
-  in_progress
+  inProgress
   completed
   cancelled
-  no_show
+  noShow
 }
 
-enum jobs_status {
+enum JobStatus {
   open
   closed
   archived
 }
 
-enum offers_status {
+enum OfferStatus {
   pending
   accepted
   declined
