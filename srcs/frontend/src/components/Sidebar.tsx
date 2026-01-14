@@ -21,10 +21,10 @@ export function Sidebar() {
     const currentPath = location.pathname;
 
     return (
-        <div
-            className="flex flex-col h-full w-auto md:w-[250px] place-content-center">
+        <div className="flex flex-col h-full w-full  items-center
+            ">
             {/* Navigation */}
-            <nav className="flex flex-col gap-5 ">
+            <nav className="flex flex-col gap-5 mt-36">
                 
                 {navigation.map((item) => {
                     const Icon = item.icon;
@@ -38,7 +38,7 @@ export function Sidebar() {
                                 isCurrent
                                     ? "text-green-600" 
                                     : "text-[#666875]", 
-                                "group flex h-full w-full md:pl-14 rounded-lg hover:duration-200 hover:scale-110"
+                                "group flex h-full w-full md:pl-5 rounded-lg hover:duration-200 hover:scale-110"
                             )}
                         >
                             <div className='flex gap-2 hover:text-green-600'>
@@ -47,7 +47,7 @@ export function Sidebar() {
                                         "h-[30px] w-[30px] fill-[#666875]"
                                 )}
                                 />
-                                <p className='hidden md:flex text-[20px] font-bold'>{item.name}</p> 
+                                <p className='flex text-[20px] font-bold'>{item.name}</p> 
                             </div>
                         </Link>
                     );
