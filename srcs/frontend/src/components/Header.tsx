@@ -35,7 +35,7 @@ export function Header() {
         bg-[#1F2027] pl-5  border border-[#5F88B8] px-5 gap-2">
       <button className="h-6 w-6 cursor-pointer">
           <Search className="h-full w-full text-[#94999A] hover:text-green-600" />
-        </button>
+      </button>
       <input
         id="searchBar"
         placeholder="Search"

@@ -6,26 +6,26 @@ import {RecuiretmentStatus} from "@/components/RecuiretmentStatus"
 export function Dashboard(){
    const TotalStatistics = () =>{
     return (
-      <div className="lg:h-full h-auto w-full flex flex-wrap lg:flex-row  md:justify-between items-center gap-2">
-        <div className="pl-3 p-1  m-auto flex flex-col justify-between h-full w-full min-h-28 max-h-28 max-w-36 
+      <div className="h-full h-auto w-full  flex flex-wrap lg:flex-row  md:justify-between items-center gap-2">
+        <div className="pl-3 p-1  m-auto flex flex-col justify-between h-full w-full
             text-lg text-white bg-[#131D34]  border border-[#10B77F] card-color rounded-md">
           <p className="text-sm font-bold text-white">Active Job Opening</p>
           <p className="text-md text-white">20</p>
           <p className="text-xs text-gray-400">+3 last 30 days</p>
         </div>
-        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full min-h-28 max-h-28 max-w-36    
+        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full   
             text-lg text-white bg-[#131D34]  border border-[#10B77F] card-color rounded-md">
           <p className="text-sm font-bold text-white">Total Active Condidates</p>
           <p className="text-md text-white">215</p>
           <p className="text-xs text-gray-400">+3 last 30 days</p>
         </div>
-        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full min-h-28 max-h-28 max-w-36    
+        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full   
             text-lg text-white bg-[#131D34]  border border-[#10B77F] card-color rounded-md">
           <p className="text-sm font-bold text-white">New Condidates</p>
           <p className="text-md text-white">48</p>
           <p className="text-xs text-gray-400">12% from last week</p>
         </div>
-        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full min-h-28 max-h-28 max-w-36    
+        <div className="pl-3 p-1 mx-auto flex flex-col justify-between h-full w-full   
             text-lg text-white bg-[#131D34]  border border-[#10B77F] card-color rounded-md">
           <p className="text-sm font-bold text-white">Average Time To Hire</p>
           <p className="text-md text-white">20</p>
@@ -36,13 +36,12 @@ export function Dashboard(){
   }
   return (
         <div className="w-full h-full p-2 grid grid-cols-1 lg:grid-cols-8 lg:grid-rows-7 gap-4">
-              <div className="w-full h-full col-span-1 lg:col-span-8 lg:row-span-1 ">
-                
-                  <TotalStatistics/>
+              <div className="w-full lg:h-full col-span-1 lg:col-span-8 lg:row-span-1 ">
+                  {/* <TotalStatistics/> */}
               </div>
             {/* Left Column - Main Content */}
               <div className="col-span-1 lg:col-span-5 lg:row-span-3 h-[500px] lg:h-full w-full place-content-center justify-between ">
-                <RecuiretmentStatus />   
+                <RecuiretmentStatus /> 
               </div>
               <div className="col-span-1 lg:col-span-3 lg:row-span-3 h-[500px] lg:h-full w-full items-center
                   justify-between ">
