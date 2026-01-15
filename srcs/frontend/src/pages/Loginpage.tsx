@@ -26,19 +26,21 @@ export function LoginPage() {
   };
 
   return (
-    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] flex flex-col lg:flex-row gap-5 p-2 ">
-      <div className=" order-last lg:order-first overfolw-auto custom-scrollbar">
+    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] overflow-hidden
+      flex flex-col lg:flex-row gap-5 p-2 items-center">
+      <div className="h-full order-last lg:order-first overfolw-auto custom-scrollbar">
         <LoginInformations />
       </div>
-      <div className="order-first lg:order-last p-5 w-full h-full flex flex-col gap-5 items-center">
+      <div className="order-first lg:order-last p-5 w-full h-full 
+        flex flex-col gap-5 items-center overfolw-auto custom-scrollbar">
         <div className='w-fit h-fit'>
           <h1 className=' text-center text-white text-xl font-medium'>Welcome to 
             <span className='text-xl pramary-text'> Hire Me</span> website,<br/>
             let build Your career.
           </h1>
         </div>
-        <div className=" w-full max-w-[400px] h-[600px] my-auto place-content-center
-            lg:w-full lg:max-w-[550px] lg:h-full lg:max-h-[700px] place-items-center
+        <div className=" w-full max-w-[400px] h-[600px] my-auto
+            lg:w-full lg:max-w-[550px] lg:h-full items-center 
             flex flex-col gap-2 lg:flex-row">
           <div 
             onClick={() => setActiveCard('signin')} 

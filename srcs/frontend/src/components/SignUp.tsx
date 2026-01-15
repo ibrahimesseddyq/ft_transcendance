@@ -26,29 +26,35 @@ const Signup = () => {
                     body: JSON.stringify(data),
                 });
             
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log("Success:", result);
-                    alert("Form submitted successfully!");
-                }else{
+                if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
+                const result = await response.json();
+                if (result.redirectUrl) {
+                    window.location.href = result.redirectUrl;
+                }
+                console.log("Success:", result);
+                alert("Form submitted successfully!");
             
 
             } catch (error) {
                 console.error("Submission failed:", error);
                 alert("Something went wrong. Please try again.");
+            } finally{
+
             }
             reset();
         };
 
         return(
-            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
+            <div className="w-full h-full flex flex-col  items-center 
+                p-4 overflo overflow-auto scrollbar">
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
                     <h1 className='text-white'>Sign Up</h1>
                 </div>
-                <div className='my-auto h-[500px] w-full max-w-[350px] overflow-hidden'>
+                <div className='h-[500px] w-full max-w-[350px] flex flex-col  gap-4 
+                    overflow-hidden my-auto'>
                     <div className="w-full overflow-hidden">
                         <h2 className="text-[#10B77F] font-electrolize text-sm
                             whitespace-nowrap overflow-hidden">
@@ -60,7 +66,7 @@ const Signup = () => {
                         </h1>
                     </div>
                     <div className="flex flex-col h-full w-[90%] 
-                        items-center gap-2 place-content-center overflow-hidden">
+                        items-center gap-2 place-content-center overflow-hidden ">
                         <form onSubmit={handleSubmit(SignUpSubmit)}
                             className='flex flex-col gap-2 w-full'>
 
@@ -88,6 +94,7 @@ const Signup = () => {
                             <input
                                 {...register("password", { required: true })}
                                 placeholder="Enter Your Password"
+                                type='password'
                                 className="h-[45px] w-full text-sm text-white outline-none whitespace-nowrap overflow-hidden
                                 placeholder-white mx-auto px-3 border border-[#405673] rounded-md bg-transparent"/>
                             {errors.password && <p className="pl-5 text-red-500 text-xs">{errors.password.message}</p>}

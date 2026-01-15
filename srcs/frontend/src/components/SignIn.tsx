@@ -46,14 +46,17 @@ const Signin = () => {
                     window.location.href = result.redirectUrl;
                 }
                 console.log("Success:", result);
-                alert("Form submitted successfully!"); 
+                alert("Form submitted successfully!");
+            
+
             } catch (error) {
                 console.error("Submission failed:", error);
                 alert("Something went wrong. Please try again.");
+            } finally{
+
             }
             reset();
         };
-
         return(
 
             <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">

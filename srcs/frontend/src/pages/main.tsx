@@ -41,13 +41,14 @@ export function Main () {
                 <Header/>
             </div>
             <div className="container mx-auto flex h-full max-w-screen-2xl
-                items-center justify-between px-4 sm:px-8 overflow-hidden">
+                items-center justify-between overflow-hidden">
                 <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
                    border-r border-[#5F88B8] border-opacity-30">
                   <Sidebar />
                 </div>
                 {/* Main Content */}
-                  <main className="w-full h-full items-center overflow-auto custom-scrollbar">
+                  <main className="w-full h-full items-center
+                    overflow-auto custom-scrollbar p-0 md:pl-8">
                       <Routes>
                         <Route element={<ProtectedRoutes />}>
                           <Route path="/Dashboard" element={<Dashboard />} />
@@ -57,7 +58,6 @@ export function Main () {
                           <Route path="/Messages" element={<NotFound />} />
                         </Route>
                       </Routes>
-
                   </main>
             </div>
           </div>
