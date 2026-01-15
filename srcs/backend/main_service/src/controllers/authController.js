@@ -1,8 +1,8 @@
-const authService = require('../services/authService');
 const env =  require('../config/env');
+const authService = require('../services/authService');
 
 const cookieOptions = {
-    httponly: true,
+    httpOnly: true,
     maxAge:7 * 24 * 60 * 60 * 1000,
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production"
@@ -59,7 +59,7 @@ const refresh =  async (req, res, next) =>
         const refreshToken = req.cookies.jwt;
         if (!refreshToken)
         {
-            res
+            return res
             .status(401)
             .json({
                 error: 'refreshToken not provided'
@@ -85,7 +85,7 @@ const logout =  async (req, res, next) =>
 {
     try
     {
-        refreshToken = req.cookies.jwt;
+        const refreshToken = req.cookies.jwt;
         if (!refreshToken)
         {
             return res.sendStatus(204);
@@ -99,9 +99,26 @@ const logout =  async (req, res, next) =>
     }
 }
 
+const getAuthStatus = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.status(200).json({ loggedIn: true, user: req.user });
+    } else {
+        res.status(401).json({ loggedIn: false });
+    }
+};
+
+const googleCallback = (req, res) => {
+    res.redirect('http://localhost:5173/dashboard');
+};
+
+
 module.exports = {
+    getAuthStatus,
+    googleCallback,
     login,
     register,
     refresh,
     logout
 }
+
+

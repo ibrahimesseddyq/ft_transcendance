@@ -19,8 +19,9 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen overflow-auto bg-[#21252E] items-center place-content-center p-3">
-              {/* {<OTPpage/>} */}
+            <main className="h-screen w-screen  overflow-auto custom-scrollbar 
+              bg-[#0a1128] place-items-center place-content-center">
+              {/* {<SimpleSignUp/>} */}
               {/* {<ResetPassword/>} */}
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
@@ -30,30 +31,35 @@ export function Main () {
         );
     }
   return (
-      <div className="flex flex-col h-screen w-screen bg-black overflow-hidden ">
-          <div className="h-full max-h-32 w-full bg-[#242B3A] border-b-2 border-[#5F88B8]">
-              <Header/>
-          </div>
-          <div className="flex w-full h-full bg-[#21252E] bg-no-repeat bg-center bg-cover pb-20 lg:pb-0">
-              {/* Sidebar */}
-                <Sidebar />
-              {/* Main Content */}
-                <main className="w-full h-auto  lg:w-[90%] max-w-[2400px] overflow-auto mx-auto mt-2 p-1
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:bg-green-400
-                [&::-webkit-scrollbar-thumb]:rounded-full">
-                    <Routes>
-                      <Route element={<ProtectedRoutes />}>
-                        <Route path="/Dashboard" element={<Dashboard />} />
-                        <Route path="/Jobs" element={<Jobs />} />
-                        <Route path="/Condidates" element={<Condidates />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/Messages" element={<NotFound />} />
-                      </Route>
-                    </Routes>
+      <div className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar">
+        <div className='h-full w-full flex flex-col mx-auto
+          custom-scrollbar'>
+            {/* Sidebar */}
+            <div className="h-full w-full max-h-20 
+              sticky top-0 z-50 border-b
+               border-[#5F88B8] border-opacity-30">
+                <Header/>
+            </div>
+            <div className="container mx-auto flex h-full max-w-screen-2xl
+                items-center justify-between px-4 sm:px-8 overflow-hidden">
+                <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
+                   border-r border-[#5F88B8] border-opacity-30">
+                  <Sidebar />
+                </div>
+                {/* Main Content */}
+                  <main className="w-full h-full items-center overflow-auto custom-scrollbar">
+                      <Routes>
+                        <Route element={<ProtectedRoutes />}>
+                          <Route path="/Dashboard" element={<Dashboard />} />
+                          <Route path="/Jobs" element={<Jobs />} />
+                          <Route path="/Condidates" element={<Condidates />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/Messages" element={<NotFound />} />
+                        </Route>
+                      </Routes>
 
-                </main>
+                  </main>
+            </div>
           </div>
         </div>    
   );
