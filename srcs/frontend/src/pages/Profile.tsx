@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Trash2, Pencil, Save } from 'lucide-react';
+import ProfessionalInformations from '@/components/ProfitionalInformations';
 
 export default function ProfileForm() {
   const [formData, setFormData] = useState({
@@ -80,6 +81,7 @@ export default function ProfileForm() {
 }
 
 export function Profile(){
+  const [editIcon, setEditIcon] = useState(true);
   const [skills, setSkills] = useState([
     {id:1, type:'HTML/CSS'},
     {id:2, type:'Figma'},
@@ -190,6 +192,13 @@ export function Profile(){
     setCareer(career.filter(career => career.id !== id));
   };
 
+  const handleDescIcon = ()=>{
+    if (editIcon === true){
+      setEditIcon(false);
+    }else{
+      setEditIcon(true);
+    }
+  }
   const handleEditDescription = () => {
     setIsEditingDescription(true);
   };
@@ -202,11 +211,7 @@ export function Profile(){
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 p-2 gap-4 w-full h-full ">
       <div className="col-span-1 row-span-3">
         <div className='flex flex-col h-full w-full border border-[#5F88B8] rounded justify-between 
-              overflow-y-scroll
-              [&::-webkit-scrollbar]:w-2
-              [&::-webkit-scrollbar-track]:bg-transparent
-            [&::-webkit-scrollbar-thumb]:bg-green-500
-              [&::-webkit-scrollbar-thumb]:rounded-full'>
+              overflow-auto custom-scrollbar'>
           <div className='flex flex-col gap-5 py-5'>
             <div className="h-28 w-28 mx-auto overflow-hidden rounded-full bg-gray-700">
               {/* <img className='h-full w-full bg-cover flex items-center justify-center rounded-full' src='../src/assets/profile.png'></img> */}
@@ -216,39 +221,46 @@ export function Profile(){
             </div>
             <ProfileForm/>
           </div>
-          <div className='flex gap-10 mx-auto mb-10'>
+          <div className='flex flex-wrap gap-10 mx-auto mb-10 justify-center'>
             <button className='w-[130px] h-[40px] text-white font-semibold bg-[#09122C] hover:bg-green-600 border border-[#5F88B8] rounded'>Save Change</button>
             <button className='w-[130px] h-[40px] text-white border border-[#5F88B8] rounded'>Cancel</button>
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-span-1 flex border border-[#5F88B8] rounded">
+      <div className="col-span-2 row-span-1 flex border border-[#5F88B8] rounded h-full w-full">
         <div className='w-full h-full grid grid-cols-1 grid-rows-5 gap-4'>
           <div className='col-span-1 row-span-1 flex justify-between items-center p-2'>
-            <h1 className='font-bold text-white text-lg'>Description:</h1>
+            <h1 className='font-bold text-white text-lg pl-3'>Description:</h1>
             <button 
               onClick={isEditingDescription ? handleSaveDescription : handleEditDescription}
               className='text-white hover:text-green-500 transition-colors pt-5 '
             >
-              <Plus size={30} />
+              <button onClick={handleDescIcon}>
+                {editIcon ? <Pencil/> : <Save/>}
+              </button>
             </button>
           </div>
-          <div className='col-span-1 row-span-4 mx-10'>
+          <div className='col-span-1 row-span-4 mx-10 overflow-hidden'>
             {isEditingDescription ? (
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className='h-full w-full font-medium text-white text-base bg-transparent border border-[#5F88B8] rounded p-4 outline-none resize-none'
+                className='h-full w-full font-medium text-white text-base bg-transparent
+                  border border-[#5F88B8] rounded p-4 outline-none resize-none
+                  overflow-auto custom-scrollbar'
               />
             ) : (
-              <h1 className='h-full w-full font-medium text-white text-base overflow-hidden'>{description}</h1>
+              <p className='h-full w-full font-medium text-white  break-words p-4
+                  overflow-auto custom-scrollbar'>
+                {description}
+              </p>
             )}
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-span-2 flex border border-[#5F88B8] rounded h-full w-full p-4">
-        <div className='grid grid-cols-5 grid-rows-9 gap-4 rounded h-full w-full'>
-            <div className='col-span-5 row-span-1 flex justify-between items-center p-2'>
+      <div className="col-span-1 lg:col-span-2 lg:row-span-2 flex border border-[#5F88B8] rounded h-full w-full p-4">
+        <div className='grid grid-cols-1  lg:grid-cols-5 lg:grid-rows-9 gap-4 rounded h-full w-full'>
+            <div className='col-span-1 lg:col-span-5 lg:row-span-1 flex justify-between items-center p-2'>
                     <h1 className='font-bold text-white text-lg'>Professional Informations:</h1>
                     <button 
                       onClick={handleAddCareer}
@@ -257,41 +269,10 @@ export function Profile(){
                       <Plus size={20} />
                     </button>
               </div>
-            <div className='col-span-3 row-span-8 gap-2 h-full  w-full'>
-                <div className='flex flex-col gap-2 h-full w-full overflow-y-scroll  
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
-                  {career.map((item) => {
-                    return (
-                      <div className='relative flex-shrink-0 h-[100px] w-full rounded border border-[#5F88B8] overflow-hidden'>
-                        <button 
-                                onClick={() => handleDeleteCareer(item.id)}
-                                className='absolute top-2 right-2 text-white  group-hover:opacity-100 transition-opacity hover:text-red-500'
-                              >
-                              <Trash2 size={14} />
-                        </button>
-                        <div
-                          key={item.id}
-                          className="flex flex-col gap-2 h-full w-full place-content-center"
-                          >
-                          <div className='font-extrabold text-white text-xl pl-6'>{item.company}</div>
-                          <div className='flex flex-col'> 
-                            <div className='font-semibold text-gray-400 text-sm pl-6'>{item.lucation}</div>
-                            <div className='flex justify-between'>
-                              <div className='font-semibold text-gray-400 text-sm pl-6'>{item.start}</div>
-                              <div className='font-semibold text-gray-400 text-sm pl-6 pr-6'>{item.end}</div>
-                            </div>
-                          </div>
-
-                        </div>
-                    </div>
-                    );
-                  })}   
-                </div>
+            <div className='col-span-1 lg:col-span-3 lg:row-span-8 gap-2 h-full  w-full'>
+                <ProfessionalInformations career={career} del={handleDeleteCareer}/>
             </div>
-            <div className='col-span-2 row-span-8 flex flex-col gap-2 h-full w-full'>
+            <div className='col-span-1 lg:col-span-2 lg:row-span-8 flex flex-col gap-2 h-full w-full'>
               <div className='w-full h-[170px] flex flex-col gap-4 border border-[#5F88B8] rounded'>
                   <div className='flex justify-between items-center p-2'>
                     <h1 className='font-bold text-white text-lg'>Skills:</h1>
@@ -302,11 +283,7 @@ export function Profile(){
                       <Plus size={20} />
                     </button>
                   </div>
-                  <div className='px-3 flex gap-2 h-full flex-wrap overflow-auto
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
+                  <div className='px-3 flex gap-2 h-full flex-wrap overflow-auto custom-scrollbar'>
                       {skills.map((item) => {
                         return (
                           <div
@@ -334,11 +311,7 @@ export function Profile(){
                       <Plus size={20} />
                     </button>
                   </div>
-                  <div className='px-3 flex flex-col h-full overflow-auto
-                        [&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                      [&::-webkit-scrollbar-thumb]:bg-green-500
-                        [&::-webkit-scrollbar-thumb]:rounded-full'>
+                  <div className='px-3 flex flex-col h-full overflow-auto custom-scrollbar'>
                       {education.map((item) => {
                         return (
                           <div

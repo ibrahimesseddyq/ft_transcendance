@@ -1,8 +1,8 @@
-const {jwt} =  require('jsonwebtoken');
+const jwt =  require('jsonwebtoken');
 const env  = require('../config/env')
 const {HttpException} = require('../utils/httpExceptions');
-const {jwtService} = require('../services/jwtService');
-const { getPermissionsByRoles } = require('../config/permissions');
+const jwtService = require('../services/jwtService');
+const { getPermissionsByRole } = require('../config/permissions');
 
 const verifyToken = async (req, res, next) => {
     try {
@@ -23,7 +23,7 @@ const verifyToken = async (req, res, next) => {
    
 }
 
-const verifyRoles = async (...allowedRoles) => {
+const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
         if(!req.user || !req.user.role)
@@ -39,7 +39,7 @@ const verifyPermissions = (permission) => {
     {
         if(!req.user || !req.user.role)
             throw new HttpException(403,"Forbidden");
-        const userPermissions = getPermissionsByRoles([req.user.role]);
+        const userPermissions = getPermissionsByRole(req.user.role);
         if (!userPermissions || !userPermissions.includes(permission))
             throw new HttpException(403, `You are forbidden to ${permission}`);
         next();
@@ -74,7 +74,7 @@ const verifyOwnership = (req, res, next) =>
     if (!req.user)
         throw new HttpException(401, "Unauthorized");
     const resourceUserId = req.params.id || req.params.userId;
-    if (user.id !== resourceUserId && req.user.role !== 'admin')
+    if (req.user.id !== resourceUserId && req.user.role !== 'admin')
     {
            throw new HttpException(403, 'Forbidden:  You can only access your own resources');
     }
