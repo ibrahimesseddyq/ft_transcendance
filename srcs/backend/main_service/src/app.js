@@ -11,9 +11,9 @@ const errorHandler = require('./middleware/ErrorHandler');
 const userRoutes =  require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const env = require('./config/env');
-const {HttpException} = require('./utils/httpExceptions')
+const {HttpException} = require('./utils/httpExceptions');
 const {verifyToken,verifyRoles} = require('./middleware/auth');
-const {UserRole} = require('../generated/prisma')
+const {UserRole} = require('../generated/prisma');
 
 app.use(helmet());
 app.use(cors({

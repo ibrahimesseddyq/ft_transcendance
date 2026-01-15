@@ -1,5 +1,3 @@
-const env = require('../config/env');
-const {UserRole} = require('../../generated/prisma');
 const userService = require('./userService');
 const jwtService = require('./jwtService');
 const argon2 = require('argon2');
@@ -70,11 +68,11 @@ const logout = async (refreshToken) =>
 {
     try
     {
-        const decoded = jwtService.verifyRefreshToken(refreshToken);
-        const user = userService.getUserById(decoded.id);
+        const decoded = await jwtService.verifyRefreshToken(refreshToken);
+        const user = await userService.getUserById(decoded.id);
         if(user && user.refreshToken === refreshToken)
         {
-            await userService.update(user.id, { refreshToken: null});
+            await userService.updateUser(user.id, { refreshToken: null});
         }
     }
     catch(error)
