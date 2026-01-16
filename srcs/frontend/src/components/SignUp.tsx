@@ -51,11 +51,11 @@ const Signup = () => {
                 p-4 overflo overflow-auto scrollbar">
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
-                    <h1 className='text-white'>Sign Up</h1>
+                    <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign Up</h1>
                 </div>
-                <div className='h-[500px] w-full max-w-[350px] flex flex-col  gap-4 
+                <div className='h-auto w-full max-w-[350px] flex flex-col  gap-4 
                     overflow-hidden my-auto'>
-                    <div className="w-full overflow-hidden">
+                    <div className="w-full h-auto ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm
                             whitespace-nowrap overflow-hidden">
                             Welcome!
@@ -66,9 +66,9 @@ const Signup = () => {
                         </h1>
                     </div>
                     <div className="flex flex-col h-full w-[90%] 
-                        items-center gap-2 place-content-center overflow-hidden ">
+                        items-center gap-2 place-content-center ">
                         <form onSubmit={handleSubmit(SignUpSubmit)}
-                            className='flex flex-col gap-2 w-full'>
+                            className='flex flex-col gap-2 w-full h-auto'>
 
                             <input
                                 {...register("firstName", { required: true })}
@@ -98,6 +98,13 @@ const Signup = () => {
                                 className="h-[45px] w-full text-sm text-white outline-none whitespace-nowrap overflow-hidden
                                 placeholder-white mx-auto px-3 border border-[#405673] rounded-md bg-transparent"/>
                             {errors.password && <p className="pl-5 text-red-500 text-xs">{errors.password.message}</p>}
+                            <input
+                                {...register("confirmPassword", { required: true })}
+                                placeholder="Confirm Password"
+                                type='password'
+                                className="h-[45px] w-full text-sm text-white outline-none whitespace-nowrap overflow-hidden
+                                placeholder-white mx-auto px-3 border border-[#405673] rounded-md bg-transparent"/>
+                            {errors.confirmPassword && <p className="pl-5 text-red-500 text-xs">{errors.confirmPassword.message}</p>}
 
                             <button  type="submit"
                                     className="h-[45px] w-[90%] text-black font-bold mx-auto  rounded-lg bg-[#10B77F]">

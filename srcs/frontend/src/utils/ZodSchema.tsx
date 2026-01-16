@@ -22,7 +22,14 @@ export const RegisterSchema = z.object({
         .regex(/[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/, {
             message: "Password must contain at least one special character"})
         .regex(/^\S+$/, { message: "Password must not contain spaces" }),
+    confirmPassword: z.string()
+        .min(1,{message : "First name is required"}),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
+
+
 export const LoginSchema = z.object({
     email: z.string().trim()
         .toLowerCase()

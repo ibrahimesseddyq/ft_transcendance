@@ -12,26 +12,26 @@ export function LoginPage() {
                         duration-1000 cursor-pointer overflow-hidden";
 
     if (tabName === "signin" && activeCard !== "signin"){
-      return `${baseClasses} top-0 lg:left-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[85%]`;
+      return `${baseClasses} top-0 lg:left-0 z-30 scale-100 h-auto min-h-[600px]  w-[100%] lg:h-[100%] lg:w-[85%]`;
     }
     else if (tabName === "signin" && activeCard === "signin"){
-      return `${baseClasses} top-0 lg:left-0 z-10 scale-90 h-[10%] w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
+      return `${baseClasses} top-0 lg:left-0 z-10 scale-90 h-14 w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
     } 
     else if (tabName === "signup" && activeCard !== "signup"){
-      return `${baseClasses} button-0 lg:right-0 z-30 scale-100 h-[90%] w-[100%] lg:h-[100%] lg:w-[85%]`;
+      return `${baseClasses} button-0 lg:right-0 z-30 scale-100 h-auto min-h-[600px]  w-[100%] lg:h-[100%] lg:w-[85%]`;
     }
     else {
-      return `${baseClasses} button-0 lg:right-0 z-10 scale-90 h-[10%] w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
+      return `${baseClasses} button-0 lg:right-0 z-10 scale-90 h-14 w-[100%] lg:h-[100%] lg:w-[15%] lg:max-w-[85px]`;
     }
   };
 
   return (
-    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] overflow-hidden
+    <div className="h-full w-full lg:max-w-[1500px] lg:max-h-[1000px] overfolw-auto custom-scrollbar
       flex flex-col lg:flex-row gap-5 p-2 items-center">
       <div className="h-full order-last lg:order-first overfolw-auto custom-scrollbar">
         <LoginInformations />
       </div>
-      <div className="order-first lg:order-last p-5 w-full h-full 
+      <div className="order-first lg:order-last p-5 w-full h-full
         flex flex-col gap-5 items-center overfolw-auto custom-scrollbar">
         <div className='w-fit h-fit'>
           <h1 className=' text-center text-white text-xl font-medium'>Welcome to 
@@ -39,7 +39,7 @@ export function LoginPage() {
             let build Your career.
           </h1>
         </div>
-        <div className=" w-full max-w-[400px] h-[600px] my-auto
+        <div className=" w-full max-w-[400px] h-auto
             lg:w-full lg:max-w-[550px] lg:h-full items-center 
             flex flex-col gap-2 lg:flex-row">
           <div 
