@@ -13,8 +13,9 @@ const login = async (req, res, next) =>
     try
     {
         const {user, accessToken, refreshToken} = await authService.login(req.body);
+        console.log(user, accessToken, refreshToken);
         res
-        .cookie('jwt', refreshToken,cookieOptions)
+        .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)
         .json(
             {
