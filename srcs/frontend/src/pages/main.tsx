@@ -48,7 +48,7 @@ export function Main () {
                 </div>
                 {/* Main Content */}
                   <main className="w-full h-full items-center
-                    overflow-auto custom-scrollbar p-0 md:pl-8">
+                    overflow-auto no-scrollbar p-0 md:pl-8">
                       <Routes>
                         <Route element={<ProtectedRoutes />}>
                           <Route path="/Dashboard" element={<Dashboard />} />

@@ -62,9 +62,9 @@ const Signin = () => {
             <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
-                    <h1 className='text-white'>Sign In</h1>
+                    <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
                 </div>
-                <div className='my-auto h-[370px] w-full max-w-[350px]'>
+                <div className='my-auto h-auto w-full max-w-[350px]'>
                     <div className="w-64 h-12 overflow-hidden ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm ">Welcome Back!</h2>
                         <h1 className="text-md font-electrolize text-white">

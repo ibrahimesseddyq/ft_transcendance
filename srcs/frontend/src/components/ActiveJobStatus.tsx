@@ -13,24 +13,25 @@ export function ActiveJobStatus() {
 
 
     return (
-        <div className="h-full w-full border  maincard overflow-auto custom-scrollbar ">
-            <div className="flex items-center justify-between 
-                p-5 pl-5 sticky top-0 z-10 bg-[#131D34]">
-                <h3 className="header-title">Active Job Status</h3>
-            </div>
+        <div className="flex flex-col h-full w-full border  maincard overflow-hidden">
+            <header className="flex items-center justify-between
+                h-full w-full max-h-16 sticky top-0 z-20">
+                <h3 className="header-title ml-5 m-3">Active Job Status</h3>
+            </header>
 
-            <div className="space-y-2 p-4 overflow-auto custom-scrollbar">
+            <div className="flex flex-col gap-2 
+                p-3 overflow-auto custom-scrollbar">
                     {users.map((item) => {
 
                         return (
                             <div 
                                 key={item.id}
                                 className="flex items-center childcard
-                                p-2 justify-between pt-3  duration-200
-                                hover:scale-[1.02] "
+                                p-2 justify-between pt-3 duration-200
+                                hover:scale-[1.02]"
                             >
-                                <div className="space-x-3 flex items-center">
-                                    <div className="relative ">
+                                <div className=" flex gap-3 items-center">
+                                    <div className="">
                                         <div className="h-12 w-12 rounded-full bg-cover bg-center"
                                           style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}/>
                                     </div>
