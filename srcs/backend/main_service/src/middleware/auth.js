@@ -6,9 +6,13 @@ const { getPermissionsByRole } = require('../config/permissions');
 
 const verifyToken = async (req, res, next) => {
     try {
+        console.log(req.headers)
         const {authorization} = req.headers;
-        if (!authorization) throw new HttpException(401,"Unauthorized");
-        const {type, token} = authorization.split(" ");
+        if (!authorization)
+            throw new HttpException(401,"Unauthorized");
+        const [type, token] = authorization.split(" ");
+        console.log(type)
+        console.log(token)
         if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
         const decoded = await jwtService.verifyAccessToken(token);
         req.user = {

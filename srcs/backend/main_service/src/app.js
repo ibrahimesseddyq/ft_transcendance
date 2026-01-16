@@ -15,24 +15,27 @@ const {HttpException} = require('./utils/httpExceptions');
 const {verifyToken,verifyRoles} = require('./middleware/auth');
 const {UserRole} = require('../generated/prisma');
 
+
+// app.use(cors({
+  //   origin: 'http://localhost:5173',
+  //   methods: ["GET", "POST", "PUT", "DELETE"],
+  //   credentials: true 
+  // }));
 app.use(helmet());
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true 
-}));
+// app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
 
 
+
 // 1. Create a token named 'body' to parse the request body
-morgan.token('body', (req) => {
-  return JSON.stringify(req.body);
-});
+// morgan.token('body', (req) => {
+//   return JSON.stringify(req.body);
+// });
 
 // 2. Use morgan with a custom format string including the ':body' token
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 // --- END SECTION ---
 // Session middleware for using Passport
