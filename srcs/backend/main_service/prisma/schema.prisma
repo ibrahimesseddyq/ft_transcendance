@@ -218,6 +218,7 @@ model User {
   interviewParticipants InterviewParticipant[]
   jobs                  Job[]
   notifications         Notification[]
+  isVerified            Boolean?               @default(false)
 }
 
 enum InterviewMode {
