@@ -1,5 +1,7 @@
 const userService = require('./userService');
 const jwtService = require('./jwtService');
+const env = require('../config/env');
+const crypto =  require('crypto');
 const argon2 = require('argon2');
 const { HttpException } = require('../utils/httpExceptions');
 
@@ -30,9 +32,7 @@ const  register = async (data) =>
         throw new HttpException(409, 'Email already exists');
     const user = await userService.createUser(data);
     const tokens = jwtService.generateAuthTokens({
-        id : user.id,
         email : user.email,
-        role: user.role
     })
     await userService.updateUser(user.id,{refreshToken : tokens.refreshToken});
     delete user.passwordHash;
@@ -79,6 +79,12 @@ const logout = async (refreshToken) =>
     {
 
     }
+}
+const initiateEmailVerification = (user) => {
+
+}
+const verify =  () => {
+    
 }
 
 module.exports = {
