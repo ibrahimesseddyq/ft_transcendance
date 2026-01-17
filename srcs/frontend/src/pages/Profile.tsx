@@ -19,10 +19,10 @@ export default function ProfileForm() {
   };
 
   return (
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-4 px-4 items-center">
         <h1 className="font-bold text-white text-lg">My Information:</h1>
-        <div className="flex flex-wrap lg:flex-col gap-2">
-          <div className="relative w-full max-w-64">
+        <div className="flex flex-wrap lg:flex-col gap-2 place-content-center">
+          <div className="relative w-full max-w-64 ">
             <label className="absolute top-2 left-3 text-xs text-gray-400">First Name</label>
             <input 
               type='text' 
@@ -207,7 +207,7 @@ export function Profile(){
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 p-2 gap-4 w-full h-full ">
-      <div className="col-span-1 row-span-3 border maincard h-full w-full">
+      <div className="col-span-1 lg:col-span-1 lg:row-span-3 border maincard h-full w-full">
         <div className='flex flex-col h-full w-full  rounded justify-between 
               overflow-auto custom-scrollbar'>
           <div className='flex flex-col gap-5 py-5'>
@@ -221,7 +221,7 @@ export function Profile(){
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-span-1 flex border maincard h-full w-full">
+      <div className="col-span-1 lg:col-span-2 lg:row-span-1 flex border maincard h-full w-full">
         <div className='w-full h-full grid grid-cols-1 grid-rows-5 gap-4'>
           <div className='col-span-1 row-span-1 flex justify-between items-center p-2'>
             <h1 className='font-bold text-white text-lg pl-3'>Description:</h1>
@@ -234,7 +234,7 @@ export function Profile(){
               </button>
             </button>
           </div>
-          <div className='col-span-1 row-span-4 mx-10 overflow-hidden'>
+          <div className='col-span-1 row-span-4 mx-5 overflow-hidden'>
             {isEditingDescription ? (
               <textarea
                 value={description}
