@@ -36,9 +36,13 @@ const errorFactory = (err,res) =>
 
 const errorHandler = (err,req,res,next) =>
 {
+    console.log("START ERROR")
+    console.log('unhandled error',err);
+    console.log("END ERROR")
+
     const handled = errorFactory(err,res);
     if (handled) return;
-        console.log('unhandled error',err);
+
     res.status(500).json({
         errors : ['internal server error']
     })

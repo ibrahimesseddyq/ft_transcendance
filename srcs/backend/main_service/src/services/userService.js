@@ -43,17 +43,15 @@ class UserService {
     {
         const user = await userRepository.findById(userId);
         if (!user)
-            throw new HttpException(404, "User not found");
-        delete user.passwordHash;
+           return;
         return user;
     }
 
     async  getUserByEmail(email)
     {
         const user = await userRepository.findByEmail(email);
-        // if (!user)
-        //     throw new HttpException(404, "User not found");
-        // delete user.passwordHash;
+        if (!user)
+           return;
         return user;
     }
     
@@ -72,8 +70,10 @@ class UserService {
         return await userRepository.update(userId,filteredData);
     }
     
-    async deleteUser(userId){
+    async deleteUser(userId)
+    {
         await this.getUserById(userId);
+        //handle failure
         await userRepository.delete(userId);
     }
     

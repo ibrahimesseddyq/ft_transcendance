@@ -4,15 +4,15 @@ const ROLE_PERMISSIONS = {
 	[UserRole.candidate]:[
     'job:read',
     'application:create',
-    'application:read: own',
+    'application:read:own',
     'application:withdraw:own',
     'profile:read:own',
     'profile:update:own',
     'profile:delete:own',
-    'notification:read: own',
+    'notification:read:own',
     'notification:mark-read:own',
     'interview:read:own',
-    'interview: join:own',
+    'interview:join:own',
 	],
 	[UserRole.recruiter]:[
 	// Jobs (full control)
@@ -39,19 +39,19 @@ const ROLE_PERMISSIONS = {
     
     // Interviews (full control)
     'interview:create',
-    'interview: read',
+    'interview:read',
     'interview:update',
     'interview:delete',
     'interview:schedule',
     'interview:reschedule',
-    'interview: cancel',
+    'interview:cancel',
     'interview:add-participant',
     'interview:remove-participant',
     
     // Offers (full control)
     'offer:create',
     'offer:read',
-    'offer: update',
+    'offer:update',
     'offer:delete',
     'offer:send',
     'offer:withdraw',
@@ -80,7 +80,7 @@ const getPermissionsByRole = (role) => {
 
 const hasPermission = (role, permission) => {
 	if (role === UserRole.admin)
-		true;
+		return true;
 	const permissions = ROLE_PERMISSIONS[role] || [];
 	return permissions.includes(permission);
 }
@@ -89,7 +89,7 @@ const canAccessResource = (userRole, userId, resourceUserId, permission) =>
 {
 	if (userRole === UserRole.admin)
 		return true;
-	if (userRole === UserRole.recruiter && !permission.startWith('user:'))
+	if (userRole === UserRole.recruiter && !permission.startsWith('user:'))
 		return true;
 	if (permission.endsWith(':own')  && userId === resourceUserId)
 		return hasPermission(userRole, permission);
@@ -97,11 +97,11 @@ const canAccessResource = (userRole, userId, resourceUserId, permission) =>
 }
 
 const PERMISSION_CATEGORIES = {
-  JOB: ['job:create', 'job:read', 'job:update', 'job:delete', 'job:close', 'job:reopen', 'job: archive', 'job:restore'],
-  APPLICATION: ['application:create', 'application:read', 'application: read:own', 'application:update', 'application:delete', 'application:withdraw: own', 'application:advance-phase', 'application:reject', 'application:accept'],
+  JOB: ['job:create', 'job:read', 'job:update', 'job:delete', 'job:close', 'job:reopen', 'job:archive', 'job:restore'],
+  APPLICATION: ['application:create', 'application:read', 'application: read:own', 'application:update', 'application:delete', 'application:withdraw:own', 'application:advance-phase', 'application:reject', 'application:accept'],
   INTERVIEW: ['interview:create', 'interview:read', 'interview:read:own', 'interview:update', 'interview: delete', 'interview:schedule', 'interview:cancel', 'interview:join:own'],
   OFFER:  ['offer:create', 'offer:read', 'offer:update', 'offer:delete', 'offer:send', 'offer:withdraw'],
-  USER: ['user:create', 'user:read', 'user: update', 'user:delete', 'user:change-role', 'user:suspend', 'user:activate'],
+  USER: ['user:create', 'user:read', 'user:update', 'user:delete', 'user:change-role', 'user:suspend', 'user:activate'],
   PROFILE: ['profile:read', 'profile:read:own', 'profile:update', 'profile:update:own', 'profile:delete', 'profile:delete:own'],
   NOTIFICATION: ['notification:create', 'notification:read', 'notification:read:own', 'notification:update', 'notification:delete', 'notification:send', 'notification:broadcast'],
   ANALYTICS: ['analytics:view', 'report:generate', 'report:export'],
