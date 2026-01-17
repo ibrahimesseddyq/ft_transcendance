@@ -1,7 +1,8 @@
 const nodemailer = require('nodemailer');
-const env = require('../config/env')
+const env = require('../config/env');
+const {HttpException} = require('../utils/httpExceptions')
 
-const sendingMail =  async ({from,to,subject,message}) =>
+const sendMail =  async ({from,to,subject,message}) =>
 {
     try {
         let emailOptions = {
@@ -20,7 +21,10 @@ const sendingMail =  async ({from,to,subject,message}) =>
             }
         )
         return await transporter.sendMail(emailOptions)
-    } catch (error) {
-        
+    } 
+    catch (error) {
+        throw new HttpException(500,"oopa something went wrong");  
     }
 }
+
+module.exports = sendMail;

@@ -76,6 +76,25 @@ class JwtService {
         })
         return {accessToken};
     }
+
+    async verifyVerificationToken(token)
+    {
+        const decoded = await this.verify(token,this.accessTokenSecret);
+        if (!decoded || decoded.type !== 'email_verification')
+            throw new HttpException(403, 'Invalid token type');
+        return decoded;
+    }
+
+    async generateVerificationToken(userId, email)
+    {
+        const payload = {
+            id : userId,
+            email: email,
+            type: 'email_verification'
+        }
+        const token = this.sign(payload,this.accessTokenSecret,{expiresIn: "24h"});
+        return token;
+    }
    
 }
 const jwtService = new JwtService()
