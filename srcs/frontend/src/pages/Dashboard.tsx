@@ -1,6 +1,7 @@
 import { ActiveJobStatus } from "@/components/ActiveJobStatus";
 import {RecentActivity} from "@/components/RecentActivity"
 import {SourceOfHire} from "@/components/SourceOfHire"
+import {ToastContainer} from "react-toastify";
 import {RecuiretmentStatus} from "@/components/RecuiretmentStatus"
 
 export function Dashboard(){
@@ -8,6 +9,7 @@ export function Dashboard(){
     return (
       <div className="flex flex-col lg:flex-row md:justify-between 
         items-center gap-2 h-full w-full">
+          <ToastContainer />
         <div className="pl-3 p-1  m-auto flex flex-col justify-between 
           h-full w-full overflow-hidden max-h-24 text-lg text-white 
           bg-[#131D34]  border border-[#10B77F] card-color rounded-md">

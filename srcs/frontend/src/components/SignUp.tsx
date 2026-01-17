@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
-import {ToastContainer} from "react-toastify";
 import Notification from "@/utils/TostifyNotification"
 
 
@@ -36,12 +35,8 @@ const Signup = () => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-                const result = await response.json();
-                if (result.redirectUrl) {
-                    window.location.href = result.redirectUrl;
-                }
-                console.log("Success:", result);
                 Notification("succes Sign Up", "success");
+                window.location.href = '/dashboard'
             } catch (error) {
                 console.error("Submission failed:", error);
                 Notification("error Sign Up", "error");
@@ -54,7 +49,6 @@ const Signup = () => {
         return(
             <div className="w-full h-full flex flex-col  items-center 
                 p-4 overflo overflow-auto scrollbar">
-                <ToastContainer />
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
                     <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign Up</h1>
