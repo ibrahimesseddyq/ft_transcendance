@@ -4,12 +4,16 @@ const env = require('../config/env');
 const crypto =  require('crypto');
 const argon2 = require('argon2');
 const { HttpException } = require('../utils/httpExceptions');
+const emailServce = require('./emailService');
+const { email } = require('zod');
 
 
 const login = async (data) =>
 {
     const {email , password} = data;
     const user =  await userService.getUserByEmail(email);
+    if (!user.isVerified) 
+        throw new HttpException(403, "Please verify your email before logging in");
     if (!user || !(await argon2.verify(user.passwordHash, password)))
         throw new HttpException(400, "Wrong credentials");
     const tokens = jwtService.generateAuthTokens({
@@ -31,10 +35,11 @@ const  register = async (data) =>
     if (existingUser)
         throw new HttpException(409, 'Email already exists');
     const user = await userService.createUser(data);
-    const tokens = jwtService.generateAuthTokens({
-        email : user.email,
-    })
-    await userService.updateUser(user.id,{refreshToken : tokens.refreshToken});
+
+    const verificationToken =await jwtService.generateVerificationToken(user.id,user.email);
+    const subject = "verification email";
+    const message = `${env.FRONTEND_URL}/${verificationToken}`;
+    await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
     delete user.passwordHash;
     return {
         user,
@@ -80,16 +85,42 @@ const logout = async (refreshToken) =>
 
     }
 }
-const initiateEmailVerification = (user) => {
+
+const verifyEmail = async(token) =>
+{
+    const decoded = jwtService.verifyVerificationToken(token);
+    const user = userService.getUserById(decoded.id);
+    if (!user)
+        throw new HttpException(404,"user not found");
+    if (decoded.email !== user.email)
+        throw new HttpException(400, "email mismatch");
+    if (user.isVerified)
+         throw new HttpException(400, "email already verified");
+    await userService.updateUser(user.id, {isVerified : true});
+    delete user.passwordHash;
+    return user;
+}
+const resendVerification = async (email) =>
+{
+    const user =await userService.getUserByEmail(email);
+    if (!user)
+        throw new HttpException(404, "user with this email not found");
+    if (user.isVerified)
+        throw new HttpException(400,"email already verified");
+    const verificationToken = await jwtService.generateVerificationToken(user.id, email);
+    const subject = "verification email";
+    const message = `${env.FRONTEND_URL}/${verificationToken}`;
+    await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
+    return { message: 'Verification email sent' };
 
 }
-const verify =  () => {
-    
-}
+
 
 module.exports = {
     login,
     register,
     refresh,
-    logout
+    logout,
+    verifyEmail,
+    resendVerification
 }
