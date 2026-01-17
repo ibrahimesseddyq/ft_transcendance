@@ -1,14 +1,18 @@
-const {jwt} =  require('jsonwebtoken');
+const jwt =  require('jsonwebtoken');
 const env  = require('../config/env')
 const {HttpException} = require('../utils/httpExceptions');
-const {jwtService} = require('../services/jwtService');
+const jwtService = require('../services/jwtService');
 const { getPermissionsByRole } = require('../config/permissions');
 
 const verifyToken = async (req, res, next) => {
     try {
+        console.log(req.headers)
         const {authorization} = req.headers;
-        if (!authorization) throw new HttpException(401,"Unauthorized");
-        const {type, token} = authorization.split(" ");
+        if (!authorization)
+            throw new HttpException(401,"Unauthorized");
+        const [type, token] = authorization.split(" ");
+        console.log(type)
+        console.log(token)
         if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
         const decoded = await jwtService.verifyAccessToken(token);
         req.user = {
@@ -74,7 +78,7 @@ const verifyOwnership = (req, res, next) =>
     if (!req.user)
         throw new HttpException(401, "Unauthorized");
     const resourceUserId = req.params.id || req.params.userId;
-    if (user.id !== resourceUserId && req.user.role !== 'admin')
+    if (req.user.id !== resourceUserId && req.user.role !== 'admin')
     {
            throw new HttpException(403, 'Forbidden:  You can only access your own resources');
     }

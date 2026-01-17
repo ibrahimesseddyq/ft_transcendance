@@ -40,7 +40,7 @@ const createUserSchema = z.object({
         .nullable(),
     refreshToken: z.string()
         .optional(),
-});
+}).strict();
 
 const updateUserSchema = createUserSchema
     .partial()

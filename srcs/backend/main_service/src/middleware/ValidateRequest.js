@@ -6,6 +6,7 @@ const validateRequest = (schema) => {
         try
         {
             schema.parse(req.body);
+
         }catch (error)
         {
             if(error instanceof ZodError)

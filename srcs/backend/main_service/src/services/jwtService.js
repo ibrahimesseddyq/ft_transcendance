@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {httpExceptions} = require('../utils/httpExceptions');
+const {HttpException} = require('../utils/httpExceptions');
 const env = require('../config/env');
 
 class JwtService {
@@ -34,11 +34,11 @@ class JwtService {
                 if(err)
                 {
                     if (err.name === 'TokenExpiredError')
-                        reject(new httpExceptions(401,'Token expired'));
+                        reject(new HttpException(401,'Token expired'));
                     else if (err.name === 'JsonWebTokenError')
-                        reject(new httpExceptions(403,'Invalid token'));
+                        reject(new HttpException(403,'Invalid token'));
                     else
-                        reject(new httpExceptions(403,'Forbidden'));
+                        reject(new HttpException(403,'Forbidden'));
 
                 }
                 else
@@ -71,7 +71,7 @@ class JwtService {
     {
         const decoded = await this.verifyRefreshToken(refreshToken);
         const { iat, exp, ...payload } = decoded;
-        const accessToken = this.sign(payload, this.accessTokenExpiry, {
+        const accessToken = this.sign(payload, this.accessTokenSecret, {
             expiresIn : this.accessTokenExpiry
         })
         return {accessToken};
