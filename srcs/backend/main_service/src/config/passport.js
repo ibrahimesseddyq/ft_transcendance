@@ -1,6 +1,5 @@
 const env = require('../config/env');
 const passport = require('passport');
-const { prisma } = require('./prisma');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const userService = require('../services/userService');
 

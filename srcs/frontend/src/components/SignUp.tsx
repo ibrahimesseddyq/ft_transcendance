@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
-import { Path } from 'react-hook-form';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
+import Notification from "@/utils/TostifyNotification"
 
 
 const Signup = () => {
@@ -16,6 +16,12 @@ const Signup = () => {
         } = useForm<z.infer<typeof RegisterSchema>>({
           resolver: zodResolver(RegisterSchema),
         });
+
+
+        const GoogleSubmit = async () => {
+            window.location.href = 'http://localhost:3000/api/auth/google';
+            Notification("succes login to Google", "success");
+        }
         const SignUpSubmit = async (data: any) => {
             try {
                 const response = await fetch("http://localhost:3000/api/auth/register", {
@@ -26,30 +32,30 @@ const Signup = () => {
                     body: JSON.stringify(data),
                 });
             
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log("Success:", result);
-                    alert("Form submitted successfully!");
-                }else{
+                if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-            
-
+                Notification("succes Sign Up", "success");
+                window.location.href = '/dashboard'
             } catch (error) {
                 console.error("Submission failed:", error);
-                alert("Something went wrong. Please try again.");
+                Notification("error Sign Up", "error");
+            } finally{
+                
             }
             reset();
         };
 
         return(
-            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
+            <div className="w-full h-full flex flex-col  items-center 
+                p-4 overflo overflow-auto scrollbar">
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
-                    <h1 className='text-white'>Sign Up</h1>
+                    <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign Up</h1>
                 </div>
-                <div className='my-auto h-[500px] w-full max-w-[350px] overflow-hidden'>
-                    <div className="w-full overflow-hidden">
+                <div className='h-auto w-full max-w-[350px] flex flex-col  gap-4 
+                    overflow-hidden my-auto'>
+                    <div className="w-full h-auto ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm
                             whitespace-nowrap overflow-hidden">
                             Welcome!
@@ -60,9 +66,9 @@ const Signup = () => {
                         </h1>
                     </div>
                     <div className="flex flex-col h-full w-[90%] 
-                        items-center gap-2 place-content-center overflow-hidden">
+                        items-center gap-2 place-content-center ">
                         <form onSubmit={handleSubmit(SignUpSubmit)}
-                            className='flex flex-col gap-2 w-full'>
+                            className='flex flex-col gap-2 w-full h-auto'>
 
                             <input
                                 {...register("firstName", { required: true })}
@@ -88,9 +94,17 @@ const Signup = () => {
                             <input
                                 {...register("password", { required: true })}
                                 placeholder="Enter Your Password"
+                                type='password'
                                 className="h-[45px] w-full text-sm text-white outline-none whitespace-nowrap overflow-hidden
                                 placeholder-white mx-auto px-3 border border-[#405673] rounded-md bg-transparent"/>
                             {errors.password && <p className="pl-5 text-red-500 text-xs">{errors.password.message}</p>}
+                            <input
+                                {...register("confirmPassword", { required: true })}
+                                placeholder="Confirm Password"
+                                type='password'
+                                className="h-[45px] w-full text-sm text-white outline-none whitespace-nowrap overflow-hidden
+                                placeholder-white mx-auto px-3 border border-[#405673] rounded-md bg-transparent"/>
+                            {errors.confirmPassword && <p className="pl-5 text-red-500 text-xs">{errors.confirmPassword.message}</p>}
 
                             <button  type="submit"
                                     className="h-[45px] w-[90%] text-black font-bold mx-auto  rounded-lg bg-[#10B77F]">
@@ -98,7 +112,7 @@ const Signup = () => {
                             </button>
                         </form>
 
-                        <a href='http://localhost:3000/api/auth/google'
+                        <button onClick={GoogleSubmit}
                                 className="h-[45px] w-[90%] flex gap-5 rounded-lg
                                 border border-[#405673] justify-center
                                 bg-transparent text-white hover:text-black hover:bg-white items-center">
@@ -106,7 +120,7 @@ const Signup = () => {
                                     src="src/assets/icons/google1.png"
                                     alt="Google icon"/>
                             <h1 className='text-xs lg:text-sm xl:text-md whitespace-nowrap overflow-hidden'>Log in with Google </h1>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

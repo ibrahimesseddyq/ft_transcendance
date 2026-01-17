@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {LoginSchema } from "@/utils/ZodSchema";
+import {ToastContainer} from "react-toastify";
+import Notification from "@/utils/TostifyNotification"
 
 const Signin = () => {
         const [passtype, setPasstype] = useState('password');
@@ -41,27 +43,24 @@ const Signin = () => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-                const result = await response.json();
-                if (result.redirectUrl) {
-                    window.location.href = result.redirectUrl;
-                }
-                console.log("Success:", result);
-                alert("Form submitted successfully!"); 
+                Notification("succes Login", "success");
+                window.location.href = '/dashboard'
             } catch (error) {
                 console.error("Submission failed:", error);
-                alert("Something went wrong. Please try again.");
+                Notification("error Login", "error");
+            } finally{
+
             }
             reset();
         };
-
         return(
 
-            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden">
+            <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden ">
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
-                    <h1 className='text-white'>Sign In</h1>
+                    <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
                 </div>
-                <div className='my-auto h-[370px] w-full max-w-[350px]'>
+                <div className='h-auto w-full max-w-[350px] my-auto'>
                     <div className="w-64 h-12 overflow-hidden ">
                         <h2 className="text-[#10B77F] font-electrolize text-sm ">Welcome Back!</h2>
                         <h1 className="text-md font-electrolize text-white">

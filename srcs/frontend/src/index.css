@@ -25,7 +25,7 @@
         --tw-text-opacity: 1;
         color: rgb(255 255 255 / var(--tw-text-opacity, 1))
     }
-    @media (min-width: 1536px) {
+    @media (min-width: 636px) {
         .\32xl\:text-2xl {
         font-size: 1.5rem /* 24px */;
         line-height: 2rem /* 32px */;
@@ -49,7 +49,7 @@
       border-color: #10B77F;
     }
     .childcard{
-      background-color: #1a3648;
+      background-color: #1e3249;
       border-width: 1px;
       --tw-border-opacity: 1;
       --tw-border-opacity: 0.3;

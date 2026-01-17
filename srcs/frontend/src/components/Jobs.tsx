@@ -63,35 +63,32 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
     setJobsArray(jobsArray.filter(jobsArray => jobsArray.id !== id));
   };
   return (
-    <div className="flex flex-col  h-full w-full gap-5 overflow-auto m-auto">
-       <div className="Title font-extrabold text-white pl-36 pt-14">Jobs For You:</div>
-       <div className="flex flex-col items-center gap-5 overflow-auto custom-scrollbar">
+    <div className="relative flex flex-col  h-full w-full gap-5 overflow-auto items-center">
+       <div className="Title font-extrabold text-white pt-14 mx-auto">Jobs For You:</div>
+       <div className="h-full w-full flex flex-col items-center gap-5 overflow-auto 
+        custom-scrollbar mx-auto">
           {jobsArray.map((item) => {
             return (
               <div
-                className="flex flex-col w-[600px] h-[150px] border maincard  pl-10 pt-4 gap-3"
-              >
-                <p className="text-white font-medium bg-[#44BC19] w-fit px-2 py-[1px] rounded-sm">{item.category}</p>
-                <div className="flex flex-col gap-0">
+                className="flex flex-col w-full max-w-[600px] h-auto border maincard  pl-10 p-4 gap-3">
+
+                <p className="text-white font-medium bg-[#44BC19] w-fit px-2 rounded-sm">{item.category}</p>
+                <div className="flex flex-col">
                   <p className="text-white font-bold">{item.title}</p>
-                  <p className="text-gray-400 font-light">{item.description}</p>
+                  <p className="text-gray-400 font-light text-xs sm:text-lg">{item.description}</p>
                 </div>
                 <div className="flex justify-between">
-                  <div className="flex gap-10">
-                    <p className="text-[#6E6E6E]">{item.type}</p>
-                    <p className="text-[#6E6E6E]">{item.location}</p>
-                    <p className="text-[#6E6E6E]">{item.salary}</p>
-                  </div>
-                  <div className="flex gap-1 pr-10">
-                    <a href="#" className="pramary-text hover:underline">view job</a>
-                  </div>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.type}</p>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.location}</p>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.salary}</p>
+                    <a href="#" className="pramary-text hover:underline text-xs sm:text-lg">view job</a>
                 </div>
-              </div>
+              </div> 
             );
         })}
 
        </div>
-       <button onClick={handleAddJob} className='fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 
+       <button onClick={handleAddJob} className=' absolute bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 
         text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-colors duration-200">'>
           Post Job
         </button>
