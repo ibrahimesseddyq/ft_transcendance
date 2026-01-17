@@ -19,13 +19,11 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen  overflow-auto custom-scrollbar 
-              bg-[#0a1128] place-items-center place-content-center">
-              {/* {<SimpleSignUp/>} */}
-              {/* {<ResetPassword/>} */}
+            <main className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar
+              place-content-center place-items-center">
+              {/* <OTPpage/> */}
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
-                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
         );
@@ -36,19 +34,19 @@ export function Main () {
           custom-scrollbar'>
             {/* Sidebar */}
             <div className="h-full w-full max-h-20 
-              sticky top-0 z-50 border-b
+              sticky top-0 z-50 border-b bg-[#1e3249] 
                border-[#5F88B8] border-opacity-30">
                 <Header/>
             </div>
             <div className="container mx-auto flex h-full max-w-screen-2xl
                 items-center justify-between overflow-hidden">
                 <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
-                   border-r border-[#5F88B8] border-opacity-30">
+                  border-r border-[#5F88B8] border-opacity-30">
                   <Sidebar />
                 </div>
                 {/* Main Content */}
-                  <main className="w-full h-full items-center
-                    overflow-auto no-scrollbar p-0 md:pl-8">
+                  <main className="w-full h-full items-center justify-center lg:max-h-[1100px]
+                    overflow-auto no-scrollbar p-0 md:pl-8 ">
                       <Routes>
                         <Route element={<ProtectedRoutes />}>
                           <Route path="/Dashboard" element={<Dashboard />} />
