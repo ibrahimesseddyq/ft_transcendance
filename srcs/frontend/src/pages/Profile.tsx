@@ -19,11 +19,10 @@ export default function ProfileForm() {
   };
 
   return (
-    <div className="bg-transparent">
-      <div className="flex flex-col gap-4 pl-10">
+      <div className="flex flex-col gap-4 px-4 items-center">
         <h1 className="font-bold text-white text-lg">My Information:</h1>
-        <div className="flex flex-col gap-2">
-          <div className="relative w-[70%]">
+        <div className="flex flex-wrap lg:flex-col gap-2 place-content-center">
+          <div className="relative w-full max-w-64 ">
             <label className="absolute top-2 left-3 text-xs text-gray-400">First Name</label>
             <input 
               type='text' 
@@ -34,7 +33,7 @@ export default function ProfileForm() {
             />
           </div>
           
-          <div className="relative w-[70%]">
+          <div className="relative w-full max-w-64">
             <label className="absolute top-2 left-3 text-xs text-gray-400">Last Name</label>
             <input 
               type='text' 
@@ -44,7 +43,7 @@ export default function ProfileForm() {
               className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
             />
           </div>
-          <div className="relative w-[70%]">
+          <div className="relative w-full max-w-64">
             <label className="absolute top-2 left-3 text-xs text-gray-400">Email</label>
             <input 
               type='text' 
@@ -54,7 +53,7 @@ export default function ProfileForm() {
               className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
             />
           </div>
-          <div className="relative w-[70%]">
+          <div className="relative w-full max-w-64">
             <label className="absolute top-2 left-3 text-xs text-gray-400">Phone Number</label>
             <input 
               type='text' 
@@ -64,7 +63,7 @@ export default function ProfileForm() {
               className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
             />
           </div>
-          <div className="relative w-[70%]">
+          <div className="relative w-full max-w-64">
             <label className="absolute top-2 left-3 text-xs text-gray-400">Position</label>
             <input 
               type='text' 
@@ -76,7 +75,6 @@ export default function ProfileForm() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
@@ -209,16 +207,12 @@ export function Profile(){
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 p-2 gap-4 w-full h-full ">
-      <div className="col-span-1 row-span-3">
-        <div className='flex flex-col h-full w-full border border-[#5F88B8] rounded justify-between 
+      <div className="col-span-1 lg:col-span-1 lg:row-span-3 border maincard h-full w-full">
+        <div className='flex flex-col h-full w-full  rounded justify-between 
               overflow-auto custom-scrollbar'>
           <div className='flex flex-col gap-5 py-5'>
-            <div className="h-28 w-28 mx-auto overflow-hidden rounded-full bg-gray-700">
-              {/* <img className='h-full w-full bg-cover flex items-center justify-center rounded-full' src='../src/assets/profile.png'></img> */}
-              <div className="h-full w-full flex items-center justify-center text-white text-4xl">
-                AE
-              </div>
-            </div>
+            <div style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}
+            className="mx-auto h-28 w-28 rounded-full bg-cover bg-center justify-center"/>
             <ProfileForm/>
           </div>
           <div className='flex flex-wrap gap-10 mx-auto mb-10 justify-center'>
@@ -227,7 +221,7 @@ export function Profile(){
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-span-1 flex border border-[#5F88B8] rounded h-full w-full">
+      <div className="col-span-1 lg:col-span-2 lg:row-span-1 flex border maincard h-full w-full">
         <div className='w-full h-full grid grid-cols-1 grid-rows-5 gap-4'>
           <div className='col-span-1 row-span-1 flex justify-between items-center p-2'>
             <h1 className='font-bold text-white text-lg pl-3'>Description:</h1>
@@ -240,7 +234,7 @@ export function Profile(){
               </button>
             </button>
           </div>
-          <div className='col-span-1 row-span-4 mx-10 overflow-hidden'>
+          <div className='col-span-1 row-span-4 mx-5 overflow-hidden'>
             {isEditingDescription ? (
               <textarea
                 value={description}
@@ -258,7 +252,7 @@ export function Profile(){
           </div>
         </div>
       </div>
-      <div className="col-span-1 lg:col-span-2 lg:row-span-2 flex border border-[#5F88B8] rounded h-full w-full p-4">
+      <div className="col-span-1 lg:col-span-2 lg:row-span-2 flex border maincard h-full w-full p-4">
         <div className='grid grid-cols-1  lg:grid-cols-5 lg:grid-rows-9 gap-4 rounded h-full w-full'>
             <div className='col-span-1 lg:col-span-5 lg:row-span-1 flex justify-between items-center p-2'>
                     <h1 className='font-bold text-white text-lg'>Professional Informations:</h1>
@@ -288,7 +282,7 @@ export function Profile(){
                         return (
                           <div
                           key={item.id}
-                          className="relative group rounded h-[35px] w-[85px] bg-[#5F88B8] border border-[#5F88B8] flex items-center justify-center overflow-hidden">
+                          className="relative group rounded h-[35px] w-fit min-w-16 p-2 bg-[#5F88B8] border border-[#5F88B8] flex items-center justify-center overflow-hidden">
                               <p className='text-sm text-white'>{item.type}</p>
                               <button 
                                 onClick={() => handleDeleteSkill(item.id)}

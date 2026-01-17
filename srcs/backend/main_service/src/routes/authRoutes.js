@@ -10,11 +10,18 @@ router.post('/register',validateRequest(registerUserSchema),authController.regis
 router.post('/refresh',authController.refresh);
 router.post('/logout',authController.logout);
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }),
+    (req, res) =>{
+        console.log(req.user);
+        console.log(res.user);
+    }
+);
 router.get('/google/callback', 
     passport.authenticate('google', { successReturnToOrRedirect: 'http://localhost:5173/dashboard', 
     failureRedirect: 'http://localhost:5173' }),
-    authController.googleCallback
+    (req, res) =>{
+        authController.googleCallback
+    }
 );
 
 
