@@ -43,14 +43,8 @@ const Signin = () => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-                const result = await response.json();
-                if (result.redirectUrl) {
-                    window.location.href = result.redirectUrl;
-                }
-                console.log("Success:", result);
                 Notification("succes Login", "success");
-            
-
+                window.location.href = '/dashboard'
             } catch (error) {
                 console.error("Submission failed:", error);
                 Notification("error Login", "error");
@@ -62,7 +56,6 @@ const Signin = () => {
         return(
 
             <div className="w-full h-full flex flex-col  items-center p-4 overflow-hidden ">
-                <ToastContainer />
                 <div className='border rounded-xl px-5 border-[#1e2e52] bg-[#121b31]
                     whitespace-nowrap overflow-hidden'>
                     <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
