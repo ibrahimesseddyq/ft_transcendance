@@ -75,15 +75,15 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
                 <p className="text-white font-medium bg-[#44BC19] w-fit px-2 rounded-sm">{item.category}</p>
                 <div className="flex flex-col">
                   <p className="text-white font-bold">{item.title}</p>
-                  <p className="text-gray-400 font-light text-xs md:text-lg">{item.description}</p>
+                  <p className="text-gray-400 font-light text-xs sm:text-lg">{item.description}</p>
                 </div>
                 <div className="flex justify-between">
-                    <p className="text-[#6E6E6E] text-xs md:text-lg">{item.type}</p>
-                    <p className="text-[#6E6E6E] text-xs md:text-lg">{item.location}</p>
-                    <p className="text-[#6E6E6E] text-xs md:text-lg">{item.salary}</p>
-                    <a href="#" className="pramary-text hover:underline text-xs md:text-lg">view job</a>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.type}</p>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.location}</p>
+                    <p className="text-[#6E6E6E] text-xs sm:text-lg">{item.salary}</p>
+                    <a href="#" className="pramary-text hover:underline text-xs sm:text-lg">view job</a>
                 </div>
-              </div>
+              </div> 
             );
         })}
 

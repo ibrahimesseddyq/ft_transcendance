@@ -1,6 +1,5 @@
 const env = require('../config/env');
 const passport = require('passport');
-const { prisma } = require('./prisma');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const userService = require('../services/userService');
 console.log(`http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`);
@@ -12,6 +11,7 @@ passport.use(new GoogleStrategy({
     callbackURL
 }, async (request, accessToken, refreshToken, profile, done) => {
     try {
+        console.log(request.body);
         const user = await userService.findUserOrCreate(profile);
         return done(null, user);
     } catch (err) {
@@ -24,7 +24,7 @@ passport.serializeUser((user, done) =>{
 });
     
 passport.deserializeUser(async (id, done) => {
-    const user = await prisma.users.findUnique({ where: { id } });
+    const user = await userService.getUserById(id);
     done(null, user);
 });
 
