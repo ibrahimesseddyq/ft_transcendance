@@ -5,17 +5,16 @@ const crypto =  require('crypto');
 const argon2 = require('argon2');
 const { HttpException } = require('../utils/httpExceptions');
 const emailServce = require('./emailService');
-const { email } = require('zod');
 
 
 const login = async (data) =>
 {
     const {email , password} = data;
     const user =  await userService.getUserByEmail(email);
-    if (!user.isVerified) 
-        throw new HttpException(403, "Please verify your email before logging in");
     if (!user || !(await argon2.verify(user.passwordHash, password)))
         throw new HttpException(400, "Wrong credentials");
+    if (!user.isVerified) 
+        throw new HttpException(403, "Please verify your email before logging in");
     const tokens = jwtService.generateAuthTokens({
         id : user.id,
         email: user.email,
@@ -41,10 +40,7 @@ const  register = async (data) =>
     const message = `${env.FRONTEND_URL}/${verificationToken}`;
     await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
     delete user.passwordHash;
-    return {
-        user,
-        ...tokens
-    }
+    return user;
 }
 
 const refresh = async  (refreshToken) =>
@@ -112,7 +108,6 @@ const resendVerification = async (email) =>
     const message = `${env.FRONTEND_URL}/${verificationToken}`;
     await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
     return { message: 'Verification email sent' };
-
 }
 
 

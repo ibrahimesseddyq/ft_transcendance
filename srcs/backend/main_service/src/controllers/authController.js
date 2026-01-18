@@ -1,3 +1,4 @@
+const { email } = require('zod');
 const env =  require('../config/env');
 const authService = require('../services/authService');
 
@@ -35,9 +36,8 @@ const register = async (req, res, next) =>
 {
     try 
     {
-        const {user , accessToken , refreshToken} = await authService.register(req.body)
+        const user = await authService.register(req.body)
         res
-        .cookie('jwt',refreshToken,cookieOptions)
         .status(201)
         .json({
             message : 'user registered successfully',
@@ -111,6 +111,32 @@ const googleCallback = (req, res) => {
     res.redirect('http://localhost:5173/dashboard');
 };
 
+const verifyEmail = async (req, res, next) => {
+    try {
+        const token = req.params.token;
+        const message = await authService.verifyEmail(token);
+        res.status(200).json({ 
+            message:"Email verified successfully!  You can now log in.",
+            date : {
+                email : user.email
+            }
+
+         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const resendVerification = async (req, res, next) => {
+    try {
+        const email = req.body.email;
+        const message = await authService.resendVerification(email);
+        res.status(200).json({ message });
+    } catch (error) {
+        next(error);
+    }
+};  
+
 
 module.exports = {
     getAuthStatus,
@@ -118,7 +144,9 @@ module.exports = {
     login,
     register,
     refresh,
-    logout
+    logout,
+    verifyEmail,
+    resendVerification
 }
 
 
