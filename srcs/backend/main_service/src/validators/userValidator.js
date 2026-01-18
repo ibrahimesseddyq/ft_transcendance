@@ -26,6 +26,8 @@ const createUserSchema = z.object({
             message: "Password must contain at least one special character"})
         .regex(/^\S+$/, { message: "Password must not contain spaces" }),
 
+    confirmpassword: z.string().optional(),
+
     phone: z.string()
         .regex(/^\+?[1-9]\d{1,14}$/,{ message:  "Must be a valid phone number" })
         .optional()
@@ -51,7 +53,8 @@ const updateUserSchema = createUserSchema
 
 const registerUserSchema = createUserSchema.omit({ 
     role: true,
-    avatarUrl: true 
+    avatarUrl: true,
+    confirmpassword:true
 });
 
 const loginUserSchema = z.object({
