@@ -2,58 +2,61 @@ const env = require('../config/env');
 const {prisma} = require('../config/prisma');
 
 
-class JobRepository {
-    async findById(jobId)
-    {
-        return await prisma.jobs.findUnique(
-            {
-                where : {id : jobId},
-                include : {}
-            }
-        )
-    }
-    
-    async create(jobData)
-    {
-        if(!await this.findById(jobData.id))
+const findJobById = async (jobId) =>
+{
+    return await prisma.job.findUnique(
         {
-            return await prisma.jobs.create({
-                data : jobData 
-            })
+            where : {id : jobId},
+            include : {}
         }
-    }
+    )
+}
 
-    async update(jobId, updateData)
+const createJob = async  (jobData) =>
+{
+    if(!await this.findById(jobData.id))
     {
-        if (await this.findById(jobId))
-        {
-            return await prisma.jobs.update({
-                where : {id : jobId},
-                data: updateData,
-                include : {
-
-                }
-            })
-        }
-        else 
-            return new Error("job does not exists");
-    }
-
-    async delete (jobId)
-    {
-        if (await this.findById(jobId))
-        {
-            return await prisma.jobs.delete(jobId);
-        }
-        else
-            return new Error("job does not exists");
-    }
-
-    async findMany(skip = 0, take = 10)
-    {
-        
+        return await prisma.job.create({
+            data : jobData 
+        })
     }
 }
 
-const jobRepository = new JobRepository();
-module.exports = jobRepository;
+const updateJob = async (jobId, updateData) =>
+{
+    if (await this.findById(jobId))
+    {
+        return await prisma.job.update({
+            where : {id : jobId},
+            data: updateData,
+            include : {
+
+            }
+        })
+    }
+    else 
+        return new Error("job does not exists");
+}
+
+const deleteJob = async (jobId) =>
+{
+    if (await this.findById(jobId))
+    {
+        return await prisma.job.delete(jobId);
+    }
+    else
+        return new Error("job does not exists");
+}
+
+const findManyJobs = async (skip = 0, take = 10, filter =[]) =>
+{
+    
+}
+
+module.exports = {
+    findManyJobs,
+    deleteJob,
+    updateJob,
+    createJob,
+    findJobById
+};
