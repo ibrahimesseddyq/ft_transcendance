@@ -15,8 +15,8 @@ const sendMail =  async ({from,to,subject,message}) =>
             {
                 service: "gmail",
                 auth : {
-                    user: env.EMAIL,
-                    pass:env.EMAIL_PASS
+                    user: env.USER_EMAIL,
+                    pass:env.USER_PASSWORD
                 }
             }
         )
