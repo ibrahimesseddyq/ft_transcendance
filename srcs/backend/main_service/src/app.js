@@ -1,6 +1,5 @@
 const express = require('express');
 const app =  express();
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const helmet =  require('helmet');
 const cors =  require('cors');
@@ -10,6 +9,7 @@ const cokieParser =  require('cookie-parser');
 const errorHandler = require('./middleware/ErrorHandler');
 const userRoutes =  require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const jobRoutes = require('./routes/jobRoutes');
 const env = require('./config/env');
 const {HttpException} = require('./utils/httpExceptions');
 const {verifyToken,verifyRoles} = require('./middleware/auth');
@@ -57,6 +57,7 @@ app.use('/api/users',
   verifyToken,
   verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
+app.use('/api/jobs',jobRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

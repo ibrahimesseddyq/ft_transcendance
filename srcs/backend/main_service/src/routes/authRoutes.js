@@ -9,7 +9,8 @@ router.post('/login',validateRequest(loginUserSchema),authController.login);
 router.post('/register',validateRequest(registerUserSchema),authController.register);
 router.post('/refresh',authController.refresh);
 router.post('/logout',authController.logout);
-
+router.get('/verify-email/:token',authController.verifyEmail);
+router.post('/resend-verification',authController.resendVerification);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }),
     (req, res) =>{
         console.log(req.user);
