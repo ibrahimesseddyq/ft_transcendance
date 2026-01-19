@@ -57,7 +57,9 @@ app.use('/api/users',
   verifyToken,
   verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
-app.use('/api/jobs',jobRoutes);
+app.use('/api/jobs',  verifyToken,
+          verifyRoles([UserRole.recruiter,UserRole.admin]),
+          jobRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

@@ -86,8 +86,8 @@ const logout = async (refreshToken) =>
 
 const verifyEmail = async(token) =>
 {
-    const decoded = jwtService.verifyVerificationToken(token);
-    const user = userService.getUserById(decoded.id);
+    const decoded = await jwtService.verifyVerificationToken(token);
+    const user = await userService.getUserById(decoded.id);
     if (!user)
         throw new HttpException(404,"user not found");
     if (decoded.email !== user.email)
@@ -100,15 +100,20 @@ const verifyEmail = async(token) =>
 }
 const resendVerification = async (email) =>
 {
-    const user =await userService.getUserByEmail(email);
+    const user = await userService.getUserByEmail(email);
     if (!user)
         throw new HttpException(404, "user with this email not found");
     if (user.isVerified)
         throw new HttpException(400,"email already verified");
     const verificationToken = await jwtService.generateVerificationToken(user.id, email);
     const subject = "verification email";
-    const message = `${env.FRONTEND_URL}/${verificationToken}`;
-    await sendMail(env.USER_EMAIL,user.email,subject,message);
+    const message = `${env.FRONTEND_URL}/api/auth/verify-email/${verificationToken}`;
+    await sendMail({
+        from : env.USER_EMAIL,
+        to : user.email,
+        subject,
+        text: message
+    });
     return { message: 'Verification email sent' };
 }
 
