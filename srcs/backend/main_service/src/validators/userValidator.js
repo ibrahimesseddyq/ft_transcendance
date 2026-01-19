@@ -58,7 +58,7 @@ const registerUserSchema = createUserSchema.pick({
     password:true,
     confirmpassword: true
 }).refine(data => data.password === data.confirmpassword,{
-  message: "password does not match",
+  message: "passwords does not match",
   path:['confirmpassword'],
 }).transform(({confirmpassword, ...rest}) => rest);
 

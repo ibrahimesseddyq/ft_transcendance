@@ -6,9 +6,6 @@ const validateRequest = (schema) => {
         try
         {
             req.body = schema.parse(req.body);
-            // console.log('===============================================');
-            //   console.log(req.body);
-            // console.log('===============================================');
 
         }catch (error)
         {

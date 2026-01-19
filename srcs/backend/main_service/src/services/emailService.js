@@ -11,7 +11,6 @@ const sendMail =  async ({from,to,subject,text}) =>
             subject,
             text
         }
-        console.log("email options ",emailOptions);
         const transporter = nodemailer.createTransport(
             {
                 service: "gmail",
@@ -24,7 +23,6 @@ const sendMail =  async ({from,to,subject,text}) =>
         return await transporter.sendMail(emailOptions)
     } 
     catch (error) {
-        console.error('Email error:', error)
         throw new HttpException(500,"internal server error");  
     }
 }

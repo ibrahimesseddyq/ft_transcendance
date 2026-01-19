@@ -31,7 +31,7 @@ const deleteJob =  async(jobId) =>
     await jobRepository.deleteJob(jobId);
 }
 
-const getJobs = async (filers) =>
+const getJobs = async (filters) =>
 {
     console.assert(false, "need to be implemented");
 }
