@@ -2,15 +2,16 @@ const nodemailer = require('nodemailer');
 const env = require('../config/env');
 const {HttpException} = require('../utils/httpExceptions')
 
-const sendMail =  async ({from,to,subject,message}) =>
+const sendMail =  async ({from,to,subject,text}) =>
 {
     try {
         let emailOptions = {
             from,
             to,
             subject,
-            message
+            text
         }
+        console.log("email options ",emailOptions);
         const transporter = nodemailer.createTransport(
             {
                 service: "gmail",
@@ -23,7 +24,8 @@ const sendMail =  async ({from,to,subject,message}) =>
         return await transporter.sendMail(emailOptions)
     } 
     catch (error) {
-        throw new HttpException(500,"oopa something went wrong");  
+        console.error('Email error:', error)
+        throw new HttpException(500,"internal server error");  
     }
 }
 

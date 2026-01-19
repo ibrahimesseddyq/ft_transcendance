@@ -41,10 +41,7 @@ const register = async (req, res, next) =>
         .status(201)
         .json({
             message : 'user registered successfully',
-            data:{
-                user,
-                accessToken
-            }
+            data:user
         });
     }catch(error)
     {
@@ -115,13 +112,7 @@ const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
         const message = await authService.verifyEmail(token);
-        res.status(200).json({ 
-            message:"Email verified successfully!  You can now log in.",
-            date : {
-                email : user.email
-            }
-
-         });
+      res.redirect(`${env.FRONTEND_URL}`);
     } catch (error) {
         next(error);
     }
