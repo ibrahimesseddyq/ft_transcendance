@@ -18,8 +18,12 @@ const envSchema = z.object({
   ACCESS_TOKEN_SECRET: z.string().min(32,'Access token secret must be at least 32 characters'),
   REFRESH_TOKEN_SECRET: z.string().min(32, 'Refresh token secret must be at least 32 characters'),
   ACCESS_TOKEN_EXPIRY: z.string().default('15m'),
-  REFRESH_TOKEN_EXPIRY:z.string().default('7d')
-
+  REFRESH_TOKEN_EXPIRY:z.string().default('7d'),
+  USER_EMAIL:z.string(),
+  USER_PASSWORD:z.string(),
+  VERIFY_SECRET:z.string(),
+  VERIFY_SECRET_EXPIRY:z.string(),
+  FRONTEND_URL: z.string(),
 });
 
 const envVars = envSchema.safeParse(process.env);

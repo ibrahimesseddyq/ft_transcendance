@@ -4,7 +4,7 @@ const env = require('../config/env');
 const crypto =  require('crypto');
 const argon2 = require('argon2');
 const { HttpException } = require('../utils/httpExceptions');
-const emailServce = require('./emailService');
+const sendMail = require('./emailService');
 
 
 const login = async (data) =>
@@ -34,11 +34,13 @@ const  register = async (data) =>
     if (existingUser)
         throw new HttpException(409, 'Email already exists');
     const user = await userService.createUser(data);
-
     const verificationToken =await jwtService.generateVerificationToken(user.id,user.email);
-    const subject = "verification email";
-    const message = `${env.FRONTEND_URL}/${verificationToken}`;
-    await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
+    await sendMail({
+        from: env.USER_EMAIL,
+        to: user.email,
+        subject: "Email Verification",
+        text: `Please verify your email by clicking:  ${env.FRONTEND_URL}/api/auth/verify-email/${verificationToken}`
+    });
     delete user.passwordHash;
     return user;
 }
@@ -106,7 +108,7 @@ const resendVerification = async (email) =>
     const verificationToken = await jwtService.generateVerificationToken(user.id, email);
     const subject = "verification email";
     const message = `${env.FRONTEND_URL}/${verificationToken}`;
-    await emailServce.sendMail(env.USER_EMAIL,user.email,subject,message);
+    await sendMail(env.USER_EMAIL,user.email,subject,message);
     return { message: 'Verification email sent' };
 }
 
