@@ -14,7 +14,7 @@ const findJobById = async (jobId) =>
 
 const createJob = async  (jobData) =>
 {
-    if(!await this.findById(jobData.id))
+    if(!jobData.id || !await findJobById(jobData.id))
     {
         return await prisma.job.create({
             data : jobData 
@@ -24,7 +24,8 @@ const createJob = async  (jobData) =>
 
 const updateJob = async (jobId, updateData) =>
 {
-    if (await this.findById(jobId))
+    console.log(updateData)
+    if (await findJobById(jobId))
     {
         return await prisma.job.update({
             where : {id : jobId},
@@ -40,9 +41,9 @@ const updateJob = async (jobId, updateData) =>
 
 const deleteJob = async (jobId) =>
 {
-    if (await this.findById(jobId))
+    if (await findJobById(jobId))
     {
-        return await prisma.job.delete(jobId);
+        return await prisma.job.delete({where :{ id : jobId} });
     }
     else
         return new Error("job does not exists");

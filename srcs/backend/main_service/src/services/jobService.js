@@ -10,9 +10,9 @@ const createJob = async (jobData) =>
 
 const updateJob = async (jobId, updateData) =>
 {
-    if (!await jobRepository.findJobById(id))
+    if (!await jobRepository.findJobById(jobId))
         throw new HttpException(400, 'job does not exists');
-    const job = await jobRepository.updateJob(jobId, jobData);
+    const job = await jobRepository.updateJob(jobId, updateData);
     return job;
 }
 
