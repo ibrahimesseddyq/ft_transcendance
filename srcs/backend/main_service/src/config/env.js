@@ -24,6 +24,7 @@ const envSchema = z.object({
   VERIFY_SECRET:z.string(),
   VERIFY_SECRET_EXPIRY:z.string(),
   FRONTEND_URL: z.string(),
+  BACKEND_URL:z.string()
 });
 
 const envVars = envSchema.safeParse(process.env);
