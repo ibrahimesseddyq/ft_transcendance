@@ -11,16 +11,22 @@ const createJobSchema = z.object({
     requirements: z.string()
     .min(100, "job requirements is required"),
     location: z.string()
-    .min(1, "job location is need"),
+    .min(1, "job location is required"),
     isRemote: z.boolean().default(false),
     employmentType:z.string(),
-    salaryMin: z.int(),
-    salaryMax: z.int(),
+    salaryMin: z.number().int(),
+    salaryMax: z.number().int(),
     salaryCurrency: z.string()
-    .default('USD')
-    .min(3,)
-    .max(3),
-    status: z.enum(JobStatus)
+    .min(3,"salary currency must be a 3-letter code")
+    .max(3,"salary currency must be a 3-letter code")
+    .default('USD'),
+    status: z.nativeEnum(JobStatus)
     .default(JobStatus.open),
     createdBy:z.string()
 })
+const updateJobSchema = createJobSchema.partial()
+
+module.exports = {
+    createJobSchema,
+    updateJobSchema
+}
