@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 const ProtectedRoutes = () => {
     // const [user, setUser] = useState(null);
     const user = true;
+    const token = localStorage.getItem('token');
+    console.log(token);
     // useEffect(() => {
     //     const checkAuth = async () => {
     //         try {
