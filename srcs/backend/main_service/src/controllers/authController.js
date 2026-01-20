@@ -110,6 +110,7 @@ const googleCallback = (req, res) => {
 const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
+        console.log("token = " , token)
         await authService.verifyEmail(token);
       res.redirect(`${env.FRONTEND_URL}`);
     } catch (error) {
