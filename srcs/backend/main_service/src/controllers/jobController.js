@@ -1,4 +1,3 @@
-const data = require('../config/env');
 const jobService = require('../services/jobService');
 
 
@@ -9,7 +8,7 @@ const createJob = async (req,res,next) =>
 		res.status(201)
 		.json({
 			status:true,
-			message: "job created successfuly",
+			message: "job created successfully",
 			data:job
 		})
 	} catch (error) {

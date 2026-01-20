@@ -1,4 +1,3 @@
-const { email } = require('zod');
 const env =  require('../config/env');
 const authService = require('../services/authService');
 
@@ -111,7 +110,7 @@ const googleCallback = (req, res) => {
 const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
-        const message = await authService.verifyEmail(token);
+        await authService.verifyEmail(token);
       res.redirect(`${env.FRONTEND_URL}`);
     } catch (error) {
         next(error);
