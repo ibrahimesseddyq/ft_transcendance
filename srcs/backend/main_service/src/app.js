@@ -29,16 +29,11 @@ app.use(cokieParser());
 
 
 
-// 1. Create a token named 'body' to parse the request body
-// morgan.token('body', (req) => {
-//   return JSON.stringify(req.body);
-// });
 
-// 2. Use morgan with a custom format string including the ':body' token
-// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-// --- END SECTION ---
-// Session middleware for using Passport
+
+app.use(morgan('combined'));
+
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
     resave: false,
