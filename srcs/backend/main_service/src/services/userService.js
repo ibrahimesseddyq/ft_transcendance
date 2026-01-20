@@ -58,7 +58,7 @@ class UserService {
     async updateUser(userId, updateData)
     {
         await this.getUserById(userId);
-        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken'];
+        const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified"];
         const filteredData = {};
         
         allowedFields.forEach(field => {
