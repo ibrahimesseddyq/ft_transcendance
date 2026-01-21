@@ -1,6 +1,5 @@
 import {Routes, Route} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
-
 import ProtectedRoutes from "@/utils/ProtectedRoutes"
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
@@ -11,7 +10,8 @@ import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
 import { Condidates } from "@/components/Condidates"
 import { OTPpage } from '@/components/OTPpage';
-import { NotFound } from "@/components/NotFound"
+import { NotFound } from "@/components/NotFound";
+import { useTransition as ViewTransition } from 'react';
 
 
 export function Main () {

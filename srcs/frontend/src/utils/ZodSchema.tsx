@@ -45,3 +45,28 @@ export const LoginSchema = z.object({
         .regex(/^\S+$/, { message: "Password must not contain spaces" }),  
 
 });
+
+export const CreateJobSchema = z.object({
+    title: z.string()
+        .min(1, "job should a have a valid title"),
+    department: z.string()
+        .min(1, "job should have a valid department name"),
+    description: z.string()
+        .min(50, "job should have a valid description"),
+    requirements: z.string()
+        .min(100, "job requirements is required"),
+    location: z.string()
+        .min(1, "job location is required"),
+    // isRemote: z.boolean().default(false),
+    employmentType:z.string(),
+    // salaryMin: z.coerce.number()
+    //     .int()
+    //     .nonnegative("Salary cannot be negative"),
+    // salaryMax: z.coerce.number()
+    //     .int()
+    //     .nonnegative("Salary cannot be negative"),
+    // salaryCurrency: z.string()
+    //     .length(3, "Currency must be exactly a 3-letter code (e.g., USD)")
+    //     .default('USD'),
+    createdBy:z.string()
+});
