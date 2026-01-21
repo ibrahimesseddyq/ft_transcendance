@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import JobForm  from "@/components/ui/JobForm"
 
 export function Jobs() {
    
@@ -59,11 +61,9 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
     }
   };
 
-  const handleDeleteJob = (id:Number) => {
-    setJobsArray(jobsArray.filter(jobsArray => jobsArray.id !== id));
-  };
+  
   return (
-    <div className="relative flex flex-col  h-full w-full gap-5 overflow-auto items-center">
+    <div className="relative flex flex-col  h-full w-full gap-5 overflow-auto items-center ">
        <div className="Title font-extrabold text-white pt-14 mx-auto">Jobs For You:</div>
        <div className="h-full w-full flex flex-col items-center gap-5 overflow-auto 
         custom-scrollbar mx-auto">
@@ -88,10 +88,13 @@ const [jobsArray, setJobsArray] = useState<Job[]>(
         })}
 
        </div>
-       <button onClick={handleAddJob} className=' absolute bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 
+       <Link to={"/JobForm"} className=' absolute bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 
         text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-colors duration-200">'>
           Post Job
-        </button>
+        </Link>
+        <div className='h-auto w-full z-50 p-4 mx-auto my-auto '>
+          <JobForm/>
+        </div>
     </div>
     );
 }
