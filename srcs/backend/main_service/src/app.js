@@ -16,11 +16,11 @@ const {verifyToken,verifyRoles} = require('./middleware/auth');
 const {UserRole} = require('../generated/prisma');
 
 
-// app.use(cors({
-  //   origin: 'http://localhost:5173',
-  //   methods: ["GET", "POST", "PUT", "DELETE"],
-  //   credentials: true 
-  // }));
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true 
+  }));
 app.use(helmet());
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
