@@ -57,7 +57,7 @@ const getUserByEmail = async (email) =>
 
 const updateUser = async (userId, updateData) =>
 {
-    await this.getUserById(userId);
+    await getUserById(userId);
     const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified"];
     const filteredData = {};
     
@@ -72,7 +72,7 @@ const updateUser = async (userId, updateData) =>
 
 const deleteUser = async (userId) =>
 {
-    await this.getUserById(userId);
+    await getUserById(userId);
     //handle failure
     await userRepository.deleteUser(userId);
 }
