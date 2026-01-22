@@ -46,6 +46,7 @@ export const LoginSchema = z.object({
 
 });
 
+
 export const CreateJobSchema = z.object({
     title: z.string()
         .min(1, "job should a have a valid title"),
@@ -54,19 +55,10 @@ export const CreateJobSchema = z.object({
     description: z.string()
         .min(50, "job should have a valid description"),
     requirements: z.string()
-        .min(100, "job requirements is required"),
+        .min(10, "job requirements is required"),
     location: z.string()
         .min(1, "job location is required"),
-    // isRemote: z.boolean().default(false),
-    employmentType:z.string(),
-    // salaryMin: z.coerce.number()
-    //     .int()
-    //     .nonnegative("Salary cannot be negative"),
-    // salaryMax: z.coerce.number()
-    //     .int()
-    //     .nonnegative("Salary cannot be negative"),
-    // salaryCurrency: z.string()
-    //     .length(3, "Currency must be exactly a 3-letter code (e.g., USD)")
-    //     .default('USD'),
-    createdBy:z.string()
-});
+    type: z.string()
+        .min(1, "job type should a have a valid title"),
+    salary: z.number().int(),
+})
