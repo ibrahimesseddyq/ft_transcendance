@@ -46,7 +46,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// routes
+// routes 
 app.use('/api/auth', authRoutes); 
 app.use('/api/users',
   verifyToken,
@@ -54,7 +54,7 @@ app.use('/api/users',
   userRoutes);
 app.use('/api/jobs',  verifyToken,
           verifyRoles([UserRole.recruiter,UserRole.admin]),
-          jobRoutes);
+          jobRoutes); 
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

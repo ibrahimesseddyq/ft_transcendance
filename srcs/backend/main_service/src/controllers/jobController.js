@@ -5,6 +5,7 @@ const createJob = async (req,res,next) =>
 {
 	try {
 		const job = await jobService.createJob(req.body)
+		console.log("+++++++++++++++++++++++++", req.body);
 		res.status(201)
 		.json({
 			status:true,
