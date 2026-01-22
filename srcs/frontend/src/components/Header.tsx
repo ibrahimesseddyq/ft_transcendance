@@ -23,7 +23,7 @@ export function Header() {
           <Search className="h-full w-full text-[#94999A] hover:text-green-600" />
         </button>
         <input
-          id="searchBar"
+          id="searchBar1"
           placeholder="Search"
           type='search'
           className="flex h-full w-full max-h-10 outline-none 
@@ -37,7 +37,7 @@ export function Header() {
           <Search className="h-full w-full text-[#94999A] hover:text-green-600" />
       </button>
       <input
-        id="searchBar"
+        id="searchBar2"
         placeholder="Search"
         type='search'
         className="flex h-full w-full max-h-10 outline-none placeholder-[#94999A]
