@@ -135,7 +135,7 @@ model Job {
   salaryMax      Int?
   salaryCurrency String?    @default("USD") @db.VarChar(3)
   status         JobStatus? @default(open)
-  createdBy      String?    @db.Char(36)
+  createdBy      String     @db.Char(36)
   createdAt      DateTime?  @default(now()) @db.Timestamp(0)
   updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
   closedAt       DateTime?  @db.Timestamp(0)
