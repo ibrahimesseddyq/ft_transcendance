@@ -59,7 +59,7 @@ const registerUserSchema = createUserSchema.pick({
     confirmPassword: true
 }).refine(data => data.password === data.confirmPassword,{
   message: "passwords does not match",
-  path:['confirmpassword'],
+  path:['confirmPassword'],
 }).transform(({confirmPassword, ...rest}) => rest);
 
 const loginUserSchema = z.object({
