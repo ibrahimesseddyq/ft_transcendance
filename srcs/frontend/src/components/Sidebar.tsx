@@ -21,11 +21,9 @@ export function Sidebar() {
     const currentPath = location.pathname;
 
     return (
-        <div className="flex flex-col h-full w-full  items-center
-            ">
+        <div className="flex flex-col h-full w-full">
             {/* Navigation */}
-            <nav className="flex flex-col gap-5 mt-36">
-                
+            <nav className="flex flex-col gap-2 px-3 w-full">
                 {navigation.map((item) => {
                     const Icon = item.icon;
                     const isCurrent = currentPath === item.path; 
@@ -35,19 +33,20 @@ export function Sidebar() {
                             key={item.name}
                             to={item.path}
                             className={cn(
+                                "group flex items-center h-12 w-full px-4 rounded-xl transition-all duration-200",
                                 isCurrent
-                                    ? "text-green-600" 
-                                    : "text-[#666875]", 
-                                "group flex h-full w-full md:pl-5 rounded-lg hover:duration-200 hover:scale-110"
+                                    ? " text-[#10B77F]" 
+                                    : "text-[#666875] hover:text-white"
                             )}
                         >
-                            <div className='flex gap-2 hover:text-green-600'>
+                            <div className='flex items-center gap-4'>
                                 <Icon 
                                     className={cn(
-                                        "h-[30px] w-[30px] fill-[#666875]"
-                                )}
+                                        "h-5 w-5 transition-colors",
+                                        isCurrent ? "fill-[#10B77F]" : "fill-[#666875] group-hover:fill-white"
+                                    )}
                                 />
-                                <p className='flex text-[20px] font-bold'>{item.name}</p> 
+                                <p className='text-[15px] font-semibold tracking-wide'>{item.name}</p> 
                             </div>
                         </Link>
                     );
