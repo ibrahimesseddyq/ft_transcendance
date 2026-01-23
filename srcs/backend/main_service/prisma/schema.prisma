@@ -205,7 +205,17 @@ model Session {
   id string @id @default(uuid()) @db.Char(36)
   userId string @db.Char(36)
   refreshToken string @unique @db.Text
-  clientIp     string
+  ipAdress     string?     @db.VarChar(45)
+  userAgent    string?      @db.VarChar(255)
+  expiresAt    DateTime    @db.Timestamp(0)
+  createdAt    DateTime    @default(now()) @db.Timestamp(0)
+  lastUsed      DateTime  @default(now()) @db.Timestamp(0)
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([refreshToken, expiresAt])
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model User {
