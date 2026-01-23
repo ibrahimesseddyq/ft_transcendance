@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import JobForm from "@/components/ui/JobForm";
 import {ToastContainer} from "react-toastify";
+import JobFilter from "@/components/ui/JobFilter"
 
 interface Job {
   id: number;
@@ -79,32 +80,36 @@ export function Jobs() {
           </div>
         </div>
       )}
+      <div className='flex flex-col gap-5 h-full w-full'>
+          <JobFilter/>
+          <div className='flex flex-col '>
+              <div className="pl-5 font-extrabold text-white  text-3xl">Jobs For You</div>
 
-      <div className="Title font-extrabold text-white pt-14 mx-auto text-3xl">Jobs For You</div>
-
-      <div className="h-full w-full flex flex-col items-center gap-5 px-4 mb-24">
-        {jobsArray.length > 0 ? (
-          jobsArray.map((item) => (
-            <div 
-              key={item.id} 
-              className="flex flex-col w-full max-w-[600px] border border-gray-800 bg-gray-900/50 p-6 gap-3 rounded-lg hover:border-gray-600 transition-all"
-            >
-              <p className="text-white font-medium bg-[#44BC19] w-fit px-2 rounded-sm text-xs">
-                {item.department}
-              </p>
-              <p className="text-white font-bold text-xl">{item.title}</p>
-              <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
-              <div className="flex justify-between text-[#6E6E6E] text-xs sm:text-sm mt-2 font-medium">
-                  <span>{item.employmentType}</span>
-                  <span>{item.location}</span>
-                  <span className="text-green-500">${item.salaryMin}</span>
+              <div className="h-full w-full flex flex-col items-center gap-5 px-4 mb-24">
+                {jobsArray.length > 0 ? (
+                  jobsArray.map((item) => (
+                    <div 
+                    key={item.id} 
+                    className="flex flex-col w-full max-w-[600px] border border-gray-800 bg-gray-900/50 p-6 gap-3 rounded-lg hover:border-gray-600 transition-all"
+                    >
+                      <p className="text-white font-medium bg-[#44BC19] w-fit px-2 rounded-sm text-xs">
+                        {item.department}
+                      </p>
+                      <p className="text-white font-bold text-xl">{item.title}</p>
+                      <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                      <div className="flex justify-between text-[#6E6E6E] text-xs sm:text-sm mt-2 font-medium">
+                          <span>{item.employmentType}</span>
+                          <span>{item.location}</span>
+                          <span className="text-green-500">${item.salaryMin}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-gray-500 mt-10 italic">No jobs posted yet.</div>
+                )}
               </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-gray-500 mt-10 italic">No jobs posted yet.</div>
-        )}
-      </div>
+          </div>
+        </div>
 
       <button 
         onClick={() => setIsFormOpen(true)}
