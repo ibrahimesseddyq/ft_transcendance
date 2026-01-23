@@ -41,11 +41,22 @@ const getApplicatications = async (skip = 0, take = 10, filters= []) =>
 	})
 }
 
+const getApplicationByJobAndCondidate = async(jobId, candidateId) =>
+{
+	return await prisma.application.findUnique({
+		where :{
+			jobId: jobId,
+			candidateId:candidateId
+		}
+	})
+}
+
 
 module.exports = {
 	createApplication,
 	getApplicatications,
 	getApplicaticationById,
 	updateApplication,
-	deleteApplication
+	deleteApplication,
+	getApplicationByJobAndCondidate
 }
