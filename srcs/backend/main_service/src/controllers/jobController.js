@@ -4,8 +4,8 @@ const jobService = require('../services/jobService');
 const createJob = async (req,res,next) =>
 {
 	try {
-		const job = await jobService.createJob(req.body)
 		console.log("+++++++++++++++++++++++++", req.body);
+		const job = await jobService.createJob(req.body)
 		res.status(201)
 		.json({
 			status:true,

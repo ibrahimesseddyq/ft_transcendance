@@ -17,19 +17,6 @@ export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }:
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState<typeof MOCK_JOBS>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        if (isMobileSearchVisible) setIsMobileSearchVisible(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMobileSearchVisible, setIsMobileSearchVisible]);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -48,14 +35,13 @@ export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }:
   return (
     <div
       className={`flex-1 flex justify-center items-center relative ${isMobileSearchVisible ? 'w-full' : ''}`}
-      ref={searchRef}
     >
       {!isMobileSearchVisible && (
         <button
           onClick={() => setIsMobileSearchVisible(true)}
           className="flex sm:hidden childcard w-10 h-10 items-center justify-center"
         >
-          <Search className="h-4 w-4 text-[#94999A] hover:text-green-600" />
+          <Search className="h-4 w-4 text-[#060d0f] hover:text-green-600" />
         </button>
       )}
 
@@ -66,7 +52,7 @@ export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }:
           type='text'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => searchQuery.trim() !== "" && setIsOpen(true)} // Re-open if there is text
+          onFocus={() => searchQuery.trim() !== "" && setIsOpen(true)}
           className="flex h-full w-full outline-none placeholder-[#94999A] text-white bg-transparent text-sm"
         />
         {isMobileSearchVisible && (

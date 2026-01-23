@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import JobForm from "@/components/ui/JobForm";
 import {ToastContainer} from "react-toastify";
 
@@ -9,8 +9,8 @@ interface Job {
   description: string,
   requirements: string,
   location: string,
-  type: string,
-  salary: string
+  employmentType: string,
+  salaryMin: string
 }
 
 const MOCK_JOBS: Job[] = [
@@ -21,8 +21,8 @@ const MOCK_JOBS: Job[] = [
     description: "Looking for a React expert to build modern web interfaces.",
     requirements: "",
     location: "Remote",
-    type: "",
-    salary: "10 000-15 000"
+    employmentType: "",
+    salaryMin: "10 000-15 000"
   },
   {
     id: 2,
@@ -31,20 +31,40 @@ const MOCK_JOBS: Job[] = [
     description: "Creative designer needed for mobile app prototyping.",
     requirements: "",
     location: "Casablanca",
-    type: "",
-    salary: "5 000-8 000"
+    employmentType: "",
+    salaryMin: "5 000-8 000"
   }
 ];
 
 export function Jobs() {
   const [jobsArray, setJobsArray] = useState<Job[]>(MOCK_JOBS);
   const [isFormOpen, setIsFormOpen] = useState(false);
+ 
+  useEffect(() => {
+        const GetJobs = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/api/jobs", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                if (response) {
+                    const data = await response.json();
+                    // setJobsArray(data);
+                } else {
+                    console.log("");
+                }
+            } catch (error) {
+                console.error("Auth Get Data", error);
+            }
+        };
 
+        GetJobs();
+    }, []);
   return (
     <div className="relative flex flex-col h-full w-full gap-5 overflow-auto items-center min-h-screen ">
-      <div className='fixed top-0 z-50'>
         <ToastContainer/>
-      </div>
       {isFormOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md  p-4">
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-xl w-full max-w-lg relative shadow-2xl">
@@ -55,13 +75,7 @@ export function Jobs() {
               ✕
             </button>
   
-            <JobForm 
-              onSuccess={(newJob) => {
-                setJobsArray((prev) => [newJob, ...prev]);
-                setIsFormOpen(false);
-              }}
-              onCancel={() => setIsFormOpen(false)}
-            />
+            <JobForm setIsFormOpen={setIsFormOpen}/>
           </div>
         </div>
       )}
@@ -81,9 +95,9 @@ export function Jobs() {
               <p className="text-white font-bold text-xl">{item.title}</p>
               <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
               <div className="flex justify-between text-[#6E6E6E] text-xs sm:text-sm mt-2 font-medium">
-                  <span>{item.type}</span>
+                  <span>{item.employmentType}</span>
                   <span>{item.location}</span>
-                  <span className="text-green-500">${item.salary}</span>
+                  <span className="text-green-500">${item.salaryMin}</span>
               </div>
             </div>
           ))
