@@ -104,10 +104,6 @@ const getAuthStatus = (req, res) => {
     }
 };
 
-const googleCallback = (req, res) => {
-    res.redirect('http://localhost:5173/dashboard');
-};
-
 const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
