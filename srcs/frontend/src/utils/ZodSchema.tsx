@@ -58,7 +58,8 @@ export const CreateJobSchema = z.object({
         .min(10, "job requirements is required"),
     location: z.string()
         .min(1, "job location is required"),
-    type: z.string()
+    employmentType: z.string()
         .min(1, "job type should a have a valid title"),
-    salary: z.number().int(),
+    salaryMin: z.number().int(),
+    // salaryMax: z.number().int(),
 })

@@ -12,19 +12,8 @@ export function Notifications() {
   const [isOpen, setIsOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div className="flex-1 flex justify-center items-center relative" ref={notificationRef}>
+    <div className="flex-1 flex justify-center items-center relative" >
       <button 
         className="relative inline-flex items-center justify-center h-10 w-10 childcard"
         onClick={() => setIsOpen(!isOpen)} >
@@ -32,7 +21,7 @@ export function Notifications() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-11 w-full sm:w-80 bg-[#1F2027] border border-[#5F88B8] rounded-md shadow-2xl z-[100]">
+        <div className="absolute top-11 w-80 bg-[#1F2027] border border-[#5F88B8] rounded-md shadow-2xl z-[100]">
           <div className="max-h-60 overflow-y-auto custom-scrollbar">
             {MOCK_NOTIFICATION.length > 0 ? (
               MOCK_NOTIFICATION.map((item) => (

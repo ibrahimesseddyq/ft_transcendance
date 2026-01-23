@@ -5,12 +5,8 @@ import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
-interface JobFormProps {
-  onSuccess: (newJob: any) => void; 
-  onCancel: () => void;
-}
 
-const JobForm = ({ onSuccess, onCancel }: JobFormProps) => {
+const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) => {
   const {
     register,
     handleSubmit,
@@ -24,24 +20,33 @@ const JobForm = ({ onSuccess, onCancel }: JobFormProps) => {
       description: "",
       requirements: "",
       location: "",
-      type: "",
-      salary: 0,
+      employmentType: "",
+      salaryMin: 0,
     }
   });
 
-  const JobSubmit = (data: JobFormData) => {
-    const mockNewJob = {
-      id: Date.now(),
-      title: data.title,
-      category: data.department || "General", 
-      description: data.description,
-      requirements: data.requirements,
-      location: data.location || "Remote",
-      type: data.type,
-      salary: data.salary, 
-    };
-    Notification("Job added successfully!", "success");
-    onSuccess(mockNewJob); 
+  const JobSubmit = async (data: JobFormData) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/jobs", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+      }
+      Notification("Job added successfully!", "success");
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setIsFormOpen(false);
+      Notification("error Create Job field", "error");
+    } finally{
+      
+    }
     reset();
   };
 
@@ -80,13 +85,13 @@ const JobForm = ({ onSuccess, onCancel }: JobFormProps) => {
 
           <div className='flex flex-col sm:flex-row gap-3'>
             <div className='flex-1'>
-              <input type='number' {...register("salary", { valueAsNumber: true })} placeholder="Salary" className={inputClass} />
-              {errors.salary && <p className="mt-1 text-red-500 text-[10px]">{errors.salary.message}</p>}
+              <input type='number' {...register("salaryMin", { valueAsNumber: true })} placeholder="salaryMin" className={inputClass} />
+              {errors.salaryMin && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryMin.message}</p>}
             </div>
 
             <div className='flex-1'>
-                <input {...register("type")} placeholder="type" className={inputClass} />
-                {errors.type && <p className="mt-1 text-red-500 text-[10px]">{errors.type.message}</p>}
+                <input {...register("employmentType")} placeholder="employmentType" className={inputClass} />
+                {errors.employmentType && <p className="mt-1 text-red-500 text-[10px]">{errors.employmentType.message}</p>}
             </div>
           </div>
 
@@ -96,7 +101,7 @@ const JobForm = ({ onSuccess, onCancel }: JobFormProps) => {
           </div>
 
           <div className="flex gap-3 mt-4">
-            <button type="button" onClick={onCancel} className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">Cancel</button>
+            <button type="button" onClick={()=>{setIsFormOpen(false)}} className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">Cancel</button>
             <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
               Create Job
             </button>
