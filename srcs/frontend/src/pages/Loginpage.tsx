@@ -9,7 +9,7 @@ export function LoginPage() {
     
   const getTabClasses = (tabName: string) => {
     let baseClasses = "flex lg:flex-row flex-col gap-2 border maincard shadow-3xl \
-                         duration-1000 cursor-pointer ";
+                         duration-1000 cursor-pointer";
     let childClass;
     if (tabName === "signin" && activeCard !== "signin"){
       childClass =  'top-0 lg:left-0 z-30 scale-100 h-auto min-h-[600px]  w-[100%] lg:h-[100%] lg:w-[85%]';
