@@ -201,6 +201,13 @@ model PhaseTest {
   jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 }
 
+model Session {
+  id string @id @default(uuid()) @db.Char(36)
+  userId string @db.Char(36)
+  refreshToken string @unique @db.Text
+  clientIp     string
+}
+
 model User {
   id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
   email                 String                 @unique @db.VarChar(255)
