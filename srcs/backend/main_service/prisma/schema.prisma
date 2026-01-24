@@ -247,6 +247,10 @@ enum PhaseType {
   test
   interview
 }
+enum TestType {
+  qcm
+  quiz
+}
 
 enum NotificationType {
   applicationReceived
