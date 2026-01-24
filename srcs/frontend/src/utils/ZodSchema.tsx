@@ -48,18 +48,31 @@ export const LoginSchema = z.object({
 
 
 export const CreateJobSchema = z.object({
-    title: z.string()
-        .min(1, "job should a have a valid title"),
-    department: z.string()
-        .min(1, "job should have a valid department name"),
-    description: z.string()
-        .min(50, "job should have a valid description"),
-    requirements: z.string()
-        .min(10, "job requirements is required"),
-    location: z.string()
-        .min(1, "job location is required"),
-    employmentType: z.string()
-        .min(1, "job type should a have a valid title"),
-    salaryMin: z.number().int(),
-    // salaryMax: z.number().int(),
-})
+  title: z.string()
+    .min(1, "Title is required"),
+  department: z.string()
+    .min(5, "department is required"),
+  description: z.string()
+    .min(20, "description is required"),
+  requirements: z.string()
+    .optional(),
+  location: z.string()
+    .min(1, "location is required"),
+  isRemote: z.boolean()
+    .default(false),
+  employmentType: z.string()
+    .min(1, "employmentType is required"),
+  salaryMin: z.number()
+    .int()
+    .min(1000, "Salary should be at least 1000"),
+  salaryMax: z.number()
+    .int(),
+  salaryCurrency: z.string()
+    .min(3,"salary currency must be a 3-letter code")
+    .max(3,"salary currency must be a 3-letter code")
+    .default('USD'),
+  status: z.enum(["open", "closed", "archived"])
+    .default("open"),
+}).refine((data) => data.salaryMax >= data.salaryMin, {
+  message: "Maximum salary must be greater than or equal to minimum salary",
+  path: ["salaryMax"], });

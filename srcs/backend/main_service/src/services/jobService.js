@@ -33,9 +33,11 @@ const deleteJob =  async(jobId) =>
 
 const getJobs = async (filters) =>
 {
-    console.assert(false, "need to be implemented");
+    console.log("I'm in getJobs function");
+    console.log("this is the filters = ", filters);
+    return await jobRepository.findManyJobs(filters);
 }
-
+ 
 module.exports = {
     getJobs,
     deleteJob,

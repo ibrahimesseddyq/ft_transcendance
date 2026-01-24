@@ -57,20 +57,20 @@ const getJobById = async(req,res,next) =>
 	}
 }
 
-const getJobs = async (req,res,next) => 
-{
-	try {
-		console.assert(false,"getJobs: need to be implemented");
-		const result = await jobService.getJobs(); //should be filled
-		res.status(200)
-		.json({
-			status:true,
-			data: result
-		})
-	} catch (error) {
-		next(error)
-	}
-}
+const getJobs = async (req, res) => {
+  try {
+    const filters = req.query; 
+	console.log("filters : ", filters)
+    const jobs = await jobService.getJobs(filters);
+    
+    res.status(200).json({
+        status: true,
+        data: jobs
+    });
+  } catch (error) {
+    next(error);
+  }
+}; 
 
 module.exports = {
 	createJob,
