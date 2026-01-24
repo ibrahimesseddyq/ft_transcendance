@@ -10,7 +10,6 @@ const MOCK_NOTIFICATION = [
 
 export function Notifications() {
   const [isOpen, setIsOpen] = useState(false);
-  const notificationRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="flex-1 flex justify-center items-center relative" >

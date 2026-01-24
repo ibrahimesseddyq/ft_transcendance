@@ -42,10 +42,22 @@ const deleteJob = async (jobId) =>
     }
 }
 
-const findManyJobs = async (skip = 0, take = 10, filter =[]) =>
-{
-    
-}
+const findManyJobs = async (filters) => {
+  const jobs =  await prisma.job.findMany(
+    {
+        where: { 
+            title: filters.title,
+            department: filters.department,
+            location: filters.location,
+            employmentType: filters.employmentType,
+            status: filters.status,
+            isRemote: (filters.isRemote === "true" ?
+                        true : false),
+        },
+    });
+  console.log("jobs = ", jobs);
+  return (jobs);
+};
 
 module.exports = {
     findManyJobs,
