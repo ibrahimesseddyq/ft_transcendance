@@ -5,9 +5,9 @@ const {createJobSchema, updateJobSchema} = require('../validators/jobValidator')
 const validateRequest = require('../middleware/ValidateRequest')
 
 router.post('/', jobController.createJob);
-router.get('/',jobController.getJobs);
-router.get('/:id',jobController.getJobById);
-router.patch('/:id',validateRequest(updateJobSchema),jobController.updateJob);
-router.delete('/:id',jobController.deleteJob);
+router.get('/', jobController.getJobs);
+router.get('/:id', jobController.getJobById);
+router.patch('/:id', validateRequest(updateJobSchema),jobController.updateJob);
+router.delete('/:id', jobController.deleteJob);
 
 module.exports = router;

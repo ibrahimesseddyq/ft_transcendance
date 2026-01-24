@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, Bell, MapPin, X } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { SearchField } from '@/components/ui/SearchField'
 import { Notifications } from '@/components/ui/Notifications'
@@ -23,8 +22,7 @@ export function Header() {
       {/* SEARCH SECTION */}
       <SearchField 
         isMobileSearchVisible={isMobileSearchVisible}
-        setIsMobileSearchVisible={setIsMobileSearchVisible}
-      />
+        setIsMobileSearchVisible={setIsMobileSearchVisible}/>
 
       {!isMobileSearchVisible && (
         <div className="flex justify-end items-center gap-2 sm:w-[30%]">
