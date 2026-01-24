@@ -41,5 +41,16 @@ const getJobPhases = async(jobId) =>
 {
 	const job = await jobRepository.findJobById(jobId);
 	if (!job)
-		throw new HttpException(404,'job with the provided id does not exists')
+		throw new HttpException(404,'job with the provided id does not exists');
+	const result = await jobPhaseRepository.getJobPhases(jobId);
+	return result;
+}
+
+
+module.exports = {
+	createJobPhase,
+	updateJobPhase,
+	getJobPhaseById,
+	deleteJobPhase,
+	getJobPhases
 }
