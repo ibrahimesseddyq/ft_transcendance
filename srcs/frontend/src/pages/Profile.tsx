@@ -221,20 +221,20 @@ export function Profile(){
           </div>
         </div>
       </div>
-      <div className="col-span-1 lg:col-span-2 lg:row-span-1 flex border maincard h-full w-full">
-        <div className='w-full h-full grid grid-cols-1 grid-rows-5 gap-4'>
-          <div className='col-span-1 row-span-1 flex justify-between items-center p-2'>
-            <h1 className='font-bold text-white text-lg pl-3'>Description:</h1>
+      <div className="col-span-1 lg:col-span-2 lg:row-span-1 p-4 border maincard h-full w-full">
+        <div className='w-full h-full flex flex-col'>
+          <div className='w-full flex justify-between items-center p-2'>
+            <h1 className='font-bold text-white text-lg'>Description:</h1>
             <button 
               onClick={isEditingDescription ? handleSaveDescription : handleEditDescription}
-              className='text-white hover:text-green-500 transition-colors pt-5 '
+              className='text-white hover:text-green-500 transition-colors'
             >
               <button onClick={handleDescIcon}>
                 {editIcon ? <Pencil/> : <Save/>}
               </button>
             </button>
           </div>
-          <div className='col-span-1 row-span-4 mx-5 overflow-hidden'>
+          <div className='overflow-hidden'>
             {isEditingDescription ? (
               <textarea
                 value={description}
