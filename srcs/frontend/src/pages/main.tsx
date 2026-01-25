@@ -8,6 +8,7 @@ import { ResetPassword } from '@/components/ResetPassword';
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
+import { ViewJob } from "@/components/ViewJob"
 import { Condidates } from "@/components/Condidates"
 import { OTPpage } from '@/components/OTPpage';
 import { NotFound } from "@/components/NotFound";
@@ -51,6 +52,7 @@ export function Main () {
                         <Route element={<ProtectedRoutes />}>
                           <Route path="/Dashboard" element={<Dashboard />} />
                           <Route path="/Jobs" element={<Jobs />} />
+                          <Route path="/Jobs/Viewjob" element={<ViewJob />} />
                           <Route path="/Condidates" element={<Condidates />} />
                           <Route path="/profile" element={<Profile />} />
                           <Route path="/Messages" element={<NotFound />} />

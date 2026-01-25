@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import JobForm from "@/components/ui/JobForm";
+import JobForm from "@/components/ui/CreateOrEditJobForm";
+import ApplyJob from "@/components/ui/ApplyJob"
 import {ToastContainer} from "react-toastify";
 import JobFilter from "@/components/ui/JobFilter"
 import JobCards  from '@/components/ui/JobCards'
 
 interface Job {
-  id : number;
   title : string;
   description: string;
   department : string;
@@ -25,6 +25,7 @@ interface Job {
 
 export function Jobs() {
   const [jobsArray, setJobsArray] = useState<Job[]>([]);
+  const [jobItem, setJobItem] = useState<Job | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
  
   return (
@@ -39,24 +40,26 @@ export function Jobs() {
             >
               ✕
             </button>
-            <JobForm setIsFormOpen={setIsFormOpen}/>
+            {/* <JobForm job={jobItem} setIsFormOpen={setIsFormOpen}/> */}
+            <ApplyJob job={jobItem} setIsFormOpen={setIsFormOpen}/>
           </div>
         </div>
       )}
       <div className='flex flex-col gap-5 h-full w-full'>
-          {/* <div className="pl-5 font-extrabold text-white  text-3xl">Jobs For You</div> */}
           <JobFilter
             setJobsArray={setJobsArray}
           />
           <div className='flex flex-col overflow-auto no-scrollbar'>
             <JobCards 
               jobsArray={jobsArray}
+              setJobItem={setJobItem}
+              setIsFormOpen={setIsFormOpen}
             />
           </div>
       </div>
 
       <button 
-        onClick={() => setIsFormOpen(true)}
+        onClick={() => {setJobItem(null); setIsFormOpen(true)}}
         className="fixed bottom-10 right-10 z-50 bg-[#10B77F] hover:bg-[#0d9668] 
           text-black font-bold py-3 px-4 rounded-md 
           shadow-2xl transition-all transform hover:scale-105 active:scale-95">
