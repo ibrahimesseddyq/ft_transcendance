@@ -5,8 +5,13 @@ import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
+interface props{
+  job?: any; 
+  setIsFormOpen: (open: boolean) => void ;
+}
 
-const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) => {
+const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
+  console.log("job = {", job, "}")
   const {
     register,
     handleSubmit,
@@ -14,7 +19,19 @@ const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) 
     formState: { errors }
   } = useForm<JobFormData>({
     resolver: zodResolver(CreateJobSchema) as any,
-    defaultValues: {
+    defaultValues: job ? {
+      title: job.title,
+      department: job.department,
+      description: job.description,
+      requirements: job.requirements,
+      location: job.location,
+      isRemote: job.isRemote,
+      employmentType: job.employmentType,
+      salaryMin: job.salaryMin,
+      salaryMax: job.salaryMax,
+      salaryCurrency: job.salaryCurrency,
+      status: job.status,
+    } : {
       title: "",
       department: "",
       description: "",
@@ -26,26 +43,48 @@ const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) 
       salaryMax: 0,
       salaryCurrency: "USD",
       status: "open",
-    }
+    },
   });
 
   const JobSubmit = async (data: JobFormData) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) throw new Error(`Server error: ${response.status}`);
-      
-      Notification("Job added successfully!", "success");
-      setIsFormOpen(false);
-      reset();
-    } catch (error) {
-      console.error("Submission failed:", error);
-      Notification("Error creating job", "error");
+    if (job){
+      console.log("job id is : ",  job.id);
+      try {
+        const response = await fetch(`http://localhost:3000/api/jobs/${job.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        
+        if (!response.ok)
+          throw new Error(`Server error: ${response.status}`);
+        
+        Notification("Job updated successfully!", "success");
+        setIsFormOpen(false);
+      } catch (error) {
+        console.error("updated failed:", error);
+        Notification("Error updating job", "error");
+      }
+    }else{
+      // console.log("was here 2");
+      try {
+        const response = await fetch("http://localhost:3000/api/jobs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        
+        if (!response.ok)
+          throw new Error(`Server error: ${response.status}`);
+        
+        Notification("Job added successfully!", "success");
+        setIsFormOpen(false);
+      } catch (error) {
+        console.error("Submission failed:", error);
+        Notification("Error creating job", "error");
+      }
     }
+    reset();
   };
 
   const inputClass = "h-11 w-full text-sm text-white outline-none px-3 \
@@ -111,7 +150,7 @@ const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) 
               <select {...register("status")} className={`${selectClass}`}>
                   <option value="open" className="bg-[]">Open</option>
                   <option value="closed">Closed</option>
-                  <option value="draft">archived</option>
+                  <option value="archived">archived</option>
               </select>
             </div>
           </div>
@@ -134,9 +173,15 @@ const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) 
             <button type="button" onClick={() => setIsFormOpen(false)} className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
               Cancel
             </button>
-            <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
-              Create Job
-            </button>
+            {job ? 
+              <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
+                Save
+              </button>
+               : 
+              <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
+                Create Job
+              </button>
+            }
           </div>
         </form>
       </div>
@@ -144,4 +189,4 @@ const JobForm = ({ setIsFormOpen }: { setIsFormOpen: (open: boolean) => void }) 
   );
 }
 
-export default JobForm;
+export default CreateOrEditJobForm;

@@ -61,7 +61,8 @@ export const CreateJobSchema = z.object({
   isRemote: z.boolean()
     .default(false),
   employmentType: z.string()
-    .min(1, "employmentType is required"),
+    .min(1, "employmentType is required")
+    .max(50, "employmentType is too Long"),
   salaryMin: z.number()
     .int()
     .min(1000, "Salary should be at least 1000"),
@@ -76,3 +77,36 @@ export const CreateJobSchema = z.object({
 }).refine((data) => data.salaryMax >= data.salaryMin, {
   message: "Maximum salary must be greater than or equal to minimum salary",
   path: ["salaryMax"], });
+
+export const ApplyJobSchema = z.object({
+  fullName: z.string()
+    .min(3, "Full name must be at least 3 characters")
+    .max(100, "Name is too long"),
+    
+  email: z.string()
+    .email("Invalid email address"),
+    
+  phoneNumber: z.string()
+    .min(10, "Phone number must be at least 10 characters"),
+
+  cv: z.object({
+    url: z.string().url("Invalid CV link"),
+    name: z.string().min(1, "File name is required"),
+    size: z.number().max(5 * 1024 * 1024, "File size must be less than 5MB"), // 5MB limit
+  }),
+
+  coverLetter: z.string()
+    .min(50, "Cover letter should be at least 50 characters")
+    .optional(),
+    
+  portfolioUrl: z.string()
+    .url("Invalid portfolio URL")
+    .optional()
+    .or(z.literal("")),
+
+  linkedinUrl: z.string()
+    .url("Invalid LinkedIn URL")
+    .optional()
+    .or(z.literal("")),
+
+});
