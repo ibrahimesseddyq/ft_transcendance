@@ -92,14 +92,6 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
             <option value="false">No</option>
           </select>
 
-          {/* Location */}
-          <select name="location" value={filters.location} onChange={handleChange} className={selectClass}>
-            <option value="">Locations</option>
-            <option value="khouribga">Khouribga</option>
-            <option value="casablanca">Casablanca</option>
-            <option value="agadir">Agadir</option>
-          </select>
-
           {/* Status */}
           <select name="status" value={filters.status} onChange={handleChange} className={selectClass}>
             <option value="">Status</option>
