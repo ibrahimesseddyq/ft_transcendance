@@ -52,7 +52,7 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-    useEffect(()=>{fetchJobs();}, [])
+    useEffect(()=>{filters;fetchJobs();}, [])
   const selectClass = "text-green-500 text-[10px] h-9 w-full sm:w-28 border border-[#1e2e52] bg-[#1d273e] \
     outline-none focus:border-[#10B77F] transition-colors rounded-lg px-2 cursor-pointer appearance-none";
 
