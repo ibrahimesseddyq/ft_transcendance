@@ -40,8 +40,8 @@ export function Jobs() {
             >
               ✕
             </button>
-            {/* <JobForm job={jobItem} setIsFormOpen={setIsFormOpen}/> */}
-            <ApplyJob job={jobItem} setIsFormOpen={setIsFormOpen}/>
+            <JobForm job={jobItem} setIsFormOpen={setIsFormOpen}/>
+            {/* <ApplyJob job={jobItem} setIsFormOpen={setIsFormOpen}/> */}
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@ import {toast} from "react-toastify";
 
 const Notification = (msg:string, type:string)=>{
     if (type === "success"){
-        toast.success("Form submitted successfully!",{
+        toast.success(msg,{
             position: "top-center",
         })
     }else{
@@ -10,8 +10,6 @@ const Notification = (msg:string, type:string)=>{
             position: "top-center",
         })
     }
-    console.log("was here**************");
-    
 }
 
 export default Notification;

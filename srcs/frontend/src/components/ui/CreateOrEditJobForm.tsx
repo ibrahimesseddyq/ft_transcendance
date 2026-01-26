@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useFormStatus } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
@@ -11,7 +12,7 @@ interface props{
 }
 
 const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
-  console.log("job = {", job, "}")
+  const {pending} = useFormStatus();
   const {
     register,
     handleSubmit,
@@ -170,15 +171,18 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
           </div>
 
           <div className="flex gap-3 mt-2">
-            <button type="button" onClick={() => setIsFormOpen(false)} className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
+            <button type="button" onClick={() => setIsFormOpen(false)} 
+              className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
               Cancel
             </button>
             {job ? 
-              <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
+              <button type="submit"
+                className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
                 Save
               </button>
                : 
-              <button type="submit" className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
+              <button type="submit" 
+                className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
                 Create Job
               </button>
             }
