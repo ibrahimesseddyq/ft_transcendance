@@ -1,5 +1,6 @@
 import { z } from "zod";
-
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = "application/pdf";
 export const RegisterSchema = z.object({
     firstName: z.string()
         .min(1,{message : "First name is required"})
@@ -85,27 +86,22 @@ export const ApplyJobSchema = z.object({
     
   email: z.string()
     .email("Invalid email address"),
-    
-  phoneNumber: z.string()
+  
+  phoneNumber: z.number()
     .min(10, "Phone number must be at least 10 characters"),
 
-  cv: z.object({
-    url: z.string().url("Invalid CV link"),
-    name: z.string().min(1, "File name is required"),
-    size: z.number().max(5 * 1024 * 1024, "File size must be less than 5MB"), // 5MB limit
-  }),
+  cv: z.instanceof(File)
+    .refine((file) => file.size < 2 * 1024 * 1024, 'File size must be less than 2MB'),
 
   coverLetter: z.string()
     .min(50, "Cover letter should be at least 50 characters")
     .optional(),
-    
+
   portfolioUrl: z.string()
-    .url("Invalid portfolio URL")
     .optional()
     .or(z.literal("")),
 
   linkedinUrl: z.string()
-    .url("Invalid LinkedIn URL")
     .optional()
     .or(z.literal("")),
 
