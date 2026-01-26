@@ -26,7 +26,7 @@ const errorFactory = (err,res) =>
     if (err instanceof Prisma.PrismaClientKnownRequestError)
     {
         console.log(JSON.stringify(err,null,2))
-        res.statusCode(400).json({
+        res.status(400).json({
             errors:['bad request']
         });
         return true;
