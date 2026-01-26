@@ -10,6 +10,7 @@ const cookieOptions = {
 
 const login = async (req, res, next) =>
 {
+    console.log("kan hna");
     try
     {
         const {user, accessToken, refreshToken} = await authService.login(req.body);
@@ -101,10 +102,6 @@ const getAuthStatus = (req, res) => {
     } else {
         res.status(401).json({ loggedIn: false });
     }
-};
-
-const googleCallback = (req, res) => {
-    res.redirect('http://localhost:5173/dashboard');
 };
 
 const verifyEmail = async (req, res, next) => {
