@@ -135,7 +135,7 @@ model Job {
   salaryMax      Int?
   salaryCurrency String?    @default("USD") @db.VarChar(3)
   status         JobStatus? @default(open)
-  createdBy      String?    @db.Char(36)
+  createdBy      String     @db.Char(36)
   createdAt      DateTime?  @default(now()) @db.Timestamp(0)
   updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
   closedAt       DateTime?  @db.Timestamp(0)
@@ -201,6 +201,23 @@ model PhaseTest {
   jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 }
 
+model Session {
+  id string @id @default(uuid()) @db.Char(36)
+  userId string @db.Char(36)
+  refreshToken string @unique @db.Text
+  ipAdress     string?     @db.VarChar(45)
+  userAgent    string?      @db.VarChar(255)
+  expiresAt    DateTime    @db.Timestamp(0)
+  createdAt    DateTime    @default(now()) @db.Timestamp(0)
+  lastUsed      DateTime  @default(now()) @db.Timestamp(0)
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([refreshToken, expiresAt])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 model User {
   id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
   email                 String                 @unique @db.VarChar(255)
@@ -229,6 +246,10 @@ enum InterviewMode {
 enum PhaseType {
   test
   interview
+}
+enum TestType {
+  qcm
+  quiz
 }
 
 enum NotificationType {
