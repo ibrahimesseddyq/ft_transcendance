@@ -14,7 +14,7 @@ const findJobById = async (jobId) =>
 
 const createJob = async  (jobData) =>
 {
-
+    console.log("jobData : ", jobData);
     return await prisma.job.create({
         data : jobData 
     })

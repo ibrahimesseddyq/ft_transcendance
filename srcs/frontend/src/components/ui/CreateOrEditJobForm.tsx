@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useFormStatus } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
@@ -11,8 +10,31 @@ interface props{
   setIsFormOpen: (open: boolean) => void ;
 }
 
+interface InputFieldProps {
+  name: keyof JobFormData;
+  register: any;
+  error?: string;
+  placeholder: string;
+  type?: string;
+}
+const inputClass = "h-11 w-full text-sm text-white outline-none px-3 \
+    border border-[#405673] rounded-md bg-transparent focus:border-[#10B77F] transition-colors oveflow-auto custom-scrollbar";
+
+const InputField = ({name, register, error, placeholder, type }: InputFieldProps) => {
+  return(
+    <div className="flex-1">
+      <input
+        id={name}
+        type={type}
+        {...register(name)}
+        placeholder={placeholder}
+        className={inputClass}
+      />
+      {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
+    </div>
+);}
+
 const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
-  const {pending} = useFormStatus();
   const {
     register,
     handleSubmit,
@@ -39,7 +61,7 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
       requirements: "",
       location: "",
       isRemote: false,
-      employmentType: "",
+      employmentType: "Full-time",
       salaryMin: 0,
       salaryMax: 0,
       salaryCurrency: "USD",
@@ -48,6 +70,7 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
   });
 
   const JobSubmit = async (data: JobFormData) => {
+    console.log("iam in JobSubmit");
     if (job){
       console.log("job id is : ",  job.id);
       try {
@@ -88,8 +111,6 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
     reset();
   };
 
-  const inputClass = "h-11 w-full text-sm text-white outline-none px-3 \
-    border border-[#405673] rounded-md bg-transparent focus:border-[#10B77F] transition-colors oveflow-auto custom-scrollbar";
   const selectClass = "h-11 w-full text-sm text-white border bg-[#1d273e] border-[#405673] \
     outline-none focus:border-[#10B77F] transition-colors rounded-md px-3 cursor-pointer appearance-none";
   return (
@@ -102,30 +123,26 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
         <form onSubmit={handleSubmit(JobSubmit)} className='flex flex-col gap-4 w-full'>
           
           {/* Title & Department */}
-          <div className='flex flex-col sm:flex-row gap-3'>
-            <div className='flex-1'>
-              <input {...register("title")} placeholder="Job Title" className={inputClass} />
-              {errors.title && <p className="mt-1 text-red-500 text-[10px]">{errors.title.message}</p>}
+      
+            <div className='flex flex-col sm:flex-row gap-3'>
+              <InputField name="title" 
+                register={register} error={errors.title?.message} placeholder="Job Title" />
+              <InputField name="department" 
+                register={register} error={errors.department?.message} placeholder="Job Department" />
             </div>
-            <div className='flex-1'>
-              <input {...register("department")} placeholder="Department" className={inputClass} />
-              {errors.department && <p className="mt-1 text-red-500 text-[10px]">{errors.department.message}</p>}
-            </div>
-          </div>
 
           {/* Location & Remote Toggle */}
           <div className='flex flex-col sm:flex-row gap-3 items-center'>
-            <div className='flex-2 w-full'>
-              <input {...register("location")} placeholder="Location (City, Country)" className={inputClass} />
-              {errors.location && <p className="mt-1 text-red-500 text-[10px]">{errors.location.message}</p>}
-            </div>
-            <div className='flex-1 flex items-center gap-2 px-2'>
-              <input type="checkbox" {...register("isRemote")} id="isRemote" className="accent-[#10B77F] h-4 w-4" />
-              <label htmlFor="isRemote" className="text-white text-sm cursor-pointer">Remote</label>
-            </div>
+              <InputField name="location" 
+                register={register} error={errors.location?.message} placeholder="Location (City, Country)" />
+                <div className='flex-1 flex items-center gap-2 px-2'>
+                  <input type="checkbox" {...register("isRemote")} id="isRemote" className="accent-[#10B77F] h-4 w-4" />
+                  <label htmlFor="isRemote" className="text-white text-sm cursor-pointer">Remote</label>
+              </div>
           </div>
 
           {/* Salary Min, Max & Currency */}
+
           <div className='flex flex-col sm:flex-row gap-2'>
             <div className='flex-1'>
               <input type='text' {...register("salaryMin", { valueAsNumber: true })} placeholder="Min Salary" className={inputClass} />
@@ -136,20 +153,24 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
               {errors.salaryMax && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryMax.message}</p>}
             </div>
             <div className='w-20'>
-              <input {...register("salaryCurrency")} placeholder="USD" className={inputClass} maxLength={3} />
-              {errors.salaryCurrency && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryCurrency.message}</p>}
+              <InputField name="salaryCurrency" 
+                register={register} error={errors.salaryCurrency?.message} placeholder="USD"/>
             </div>
           </div>
 
           {/* Employment Type & Status */}
           <div className='flex flex-col sm:flex-row gap-3'>
             <div className='flex-1'>
-              <input {...register("employmentType")} placeholder="Full-time, Contract..." className={inputClass} />
-              {errors.employmentType && <p className="mt-1 text-red-500 text-[10px]">{errors.employmentType.message}</p>}
+              <select {...register("employmentType")} className={selectClass}>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+                <option value="Contract">Contract</option>
+              </select>
             </div>
             <div className='flex-1 '>
               <select {...register("status")} className={`${selectClass}`}>
-                  <option value="open" className="bg-[]">Open</option>
+                  <option value="open">Open</option>
                   <option value="closed">Closed</option>
                   <option value="archived">archived</option>
               </select>
