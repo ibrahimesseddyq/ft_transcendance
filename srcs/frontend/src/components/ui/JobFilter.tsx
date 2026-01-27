@@ -80,8 +80,9 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
           {/* Employment Type */}
           <select name="employmentType" value={filters.employmentType} onChange={handleChange} className={selectClass}>
             <option value="">All Types</option>
-            <option value="Fulltime">Full-time</option>
-            <option value="Parttime">Part-time</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Internship">Internship</option>
             <option value="Contract">Contract</option>
           </select>
 
