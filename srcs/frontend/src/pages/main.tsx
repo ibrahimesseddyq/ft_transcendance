@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
 import { ResetPassword } from '@/components/ResetPassword';
+import { ProfileInformations } from "@/components/ProfileInformations"
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
@@ -23,9 +24,12 @@ export function Main () {
             <main className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar
               place-content-center place-items-center">
               {/* <OTPpage/> */}
-                <Routes>
+              <Routes>
+                <Route path="/" element={<ProfileInformations />} />
+              </Routes>
+                {/* <Routes>
                     <Route path="/" element={<LoginPage />} />
-                </Routes>
+                </Routes> */}
             </main>
         );
     }
