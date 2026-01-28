@@ -50,7 +50,7 @@ model Application {
   @@index([status])
 }
 
-model CandidateProfile {
+model Profile {
   userId             String    @id @db.Char(36)
   resumeUrl          String?   @db.Text
   linkedinUrl        String?   @db.VarChar(255)
@@ -202,14 +202,14 @@ model PhaseTest {
 }
 
 model Session {
-  id string @id @default(uuid()) @db.Char(36)
-  userId string @db.Char(36)
-  refreshToken string @unique @db.Text
-  ipAdress     string?     @db.VarChar(45)
-  userAgent    string?      @db.VarChar(255)
-  expiresAt    DateTime    @db.Timestamp(0)
-  createdAt    DateTime    @default(now()) @db.Timestamp(0)
-  lastUsed      DateTime  @default(now()) @db.Timestamp(0)
+  id           String   @id @default(uuid()) @db.Char(36)
+  userId       String   @db.Char(36)
+  refreshToken String   @unique @db.VarChar(512)
+  ipAdress     String?  @db.VarChar(45)
+  userAgent    String?  @db.VarChar(255)
+  expiresAt    DateTime @db.Timestamp(0)
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  lastUsed     DateTime @default(now()) @db.Timestamp(0)
 
   user User? @relation(fields: [userId], references: [id])
 
@@ -231,11 +231,12 @@ model User {
   updatedAt             DateTime?              @default(now()) @db.Timestamp(0)
   refreshToken          String?                @db.Text
   applications          Application[]
-  candidateProfile      CandidateProfile?
+  profile               Profile?
   interviewParticipants InterviewParticipant[]
   jobs                  Job[]
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
+  sessions              Session[]
 }
 
 enum InterviewMode {
@@ -247,6 +248,7 @@ enum PhaseType {
   test
   interview
 }
+
 enum TestType {
   qcm
   quiz
