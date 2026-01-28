@@ -2,9 +2,9 @@ const multer =  require('multer');
 const path =  require('path');
 const {HttpException} = require('../utils/httpExceptions');
 
-const deskStorage =  multer.diskStorage({
+const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = file.filename === 'avatar' ?
+        const uploadPath = file.fieldname === 'avatar' ?
         'upload/avatars':
         'upload/resumes';
         cb(null, uploadPath);
@@ -13,7 +13,7 @@ const deskStorage =  multer.diskStorage({
     {
         const filename = req.params.id || req.user.id;
         const ext = path.extname(file.originalname);
-        cb(null,`${filename}.${ext}`)
+        cb(null,`${filename}${ext}`)
     }                                                                         
 })
 
@@ -25,7 +25,7 @@ const fileFilter = (req, file, cb) => {
         else
             cb(new HttpException(400, "allowed formats are : .jpeg .png .jpg .webp"), false)
     }
-    else if( file.fieldname === resume){
+    else if( file.fieldname === "resume"){
          if (file.mimetype === "application/pdf")
             cb (null, true);
         else
@@ -34,7 +34,7 @@ const fileFilter = (req, file, cb) => {
 }
 
 const upload =  multer({
-    storage: deskStorage,
+    storage: diskStorage,
     fileFilter: fileFilter,
     limits  :{
         fileSize : 10 * 1024 * 1024,
