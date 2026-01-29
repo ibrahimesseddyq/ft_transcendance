@@ -74,6 +74,44 @@ const listUsers = async (req,res,next) => {
         next(error);
     }
 }
+const deleteAvatar =  async (req, res, next) => {
+    try {
+        await userService.detletAvatar(req.params.id);
+        res.status(204)
+        .json({
+            status:true,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const uploadAvatar = async(req, res, next) => {
+    try {
+        const avatar = await userService.uploadAvatar(req.params.id, req.file);
+        res.status(201)
+        .json({
+            status: true,
+            message: 'avatar uploaded successfully',
+            data: avatar
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getAvatar = async (req, res, next) => {
+    try {
+        const avatar =  await userService.getAvatar(req.params.id);
+        res.status(200)
+        .json({
+            status: true,
+            data: avatar
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 module.exports = {
@@ -82,4 +120,7 @@ module.exports = {
     updateUser,
     deleteUser,
     listUsers,
+    deleteAvatar,
+    uploadAvatar,
+    getAvatar
 }
