@@ -6,8 +6,9 @@ import Notification from "@/utils/TostifyNotification";
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
-  job?: any; 
+  jobItem?: any; 
   setIsFormOpen: (open: boolean) => void ;
+  setJobsArray: (open: any) => void ;
 }
 
 interface InputFieldProps {
@@ -20,21 +21,7 @@ interface InputFieldProps {
 const inputClass = "h-11 w-full text-sm text-white outline-none px-3 \
     border border-[#405673] rounded-md bg-transparent focus:border-[#10B77F] transition-colors oveflow-auto custom-scrollbar";
 
-const InputField = ({name, register, error, placeholder, type }: InputFieldProps) => {
-  return(
-    <div className="flex-1">
-      <input
-        id={name}
-        type={type}
-        {...register(name)}
-        placeholder={placeholder}
-        className={inputClass}
-      />
-      {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
-    </div>
-);}
-
-const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
+const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) => {
   const {
     register,
     handleSubmit,
@@ -42,26 +29,28 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
     formState: { errors }
   } = useForm<JobFormData>({
     resolver: zodResolver(CreateJobSchema) as any,
-    defaultValues: job ? {
-      title: job.title,
-      department: job.department,
-      description: job.description,
-      requirements: job.requirements,
-      location: job.location,
-      isRemote: job.isRemote,
-      employmentType: job.employmentType,
-      salaryMin: job.salaryMin,
-      salaryMax: job.salaryMax,
-      salaryCurrency: job.salaryCurrency,
-      status: job.status,
+    defaultValues: jobItem ? {
+      title: jobItem.title,
+      department: jobItem.department,
+      description: jobItem.description,
+      requirements: jobItem.requirements,
+      skills: jobItem.skills,
+      location: jobItem.location,
+      isRemote: jobItem.isRemote,
+      employmentType: jobItem.employmentType,
+      salaryMin: jobItem.salaryMin,
+      salaryMax: jobItem.salaryMax,
+      salaryCurrency: jobItem.salaryCurrency,
+      status: jobItem.status,
     } : {
       title: "",
-      department: "",
+      department: "engineering",
       description: "",
       requirements: "",
+      skills: "",
       location: "",
       isRemote: false,
-      employmentType: "Full-time",
+      employmentType: "full-time",
       salaryMin: 0,
       salaryMax: 0,
       salaryCurrency: "USD",
@@ -71,10 +60,10 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
 
   const JobSubmit = async (data: JobFormData) => {
     console.log("iam in JobSubmit");
-    if (job){
-      console.log("job id is : ",  job.id);
+    if (jobItem){
+      console.log("job id is : ",  jobItem.id);
       try {
-        const response = await fetch(`http://localhost:3000/api/jobs/${job.id}`, {
+        const response = await fetch(`http://localhost:3000/api/jobs/${jobItem.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -82,8 +71,12 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
         
         if (!response.ok)
           throw new Error(`Server error: ${response.status}`);
-        
+        const result = await response.json();
+        const savedJob = result.data;
         Notification("Job updated successfully!", "success");
+        setJobsArray((prev:any) => 
+            prev.map((job:any) => (job.id === jobItem.id ? savedJob : job))
+          );
         setIsFormOpen(false);
       } catch (error) {
         console.error("updated failed:", error);
@@ -100,7 +93,9 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
         
         if (!response.ok)
           throw new Error(`Server error: ${response.status}`);
-        
+        const result = await response.json();
+        const savedJob = result.data;
+        setJobsArray((prev:any) => [savedJob, ...prev]);
         Notification("Job added successfully!", "success");
         setIsFormOpen(false);
       } catch (error) {
@@ -113,6 +108,7 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
 
   const selectClass = "h-11 w-full text-sm text-white border bg-[#1d273e] border-[#405673] \
     outline-none focus:border-[#10B77F] transition-colors rounded-md px-3 cursor-pointer appearance-none";
+
   return (
     <div className="h-full w-full flex flex-col items-center">
       <div className='border rounded-xl px-5 py-2 border-[#1e2e52] bg-[#121b31] mb-6'>
@@ -123,13 +119,19 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
         <form onSubmit={handleSubmit(JobSubmit)} className='flex flex-col gap-4 w-full'>
           
           {/* Title & Department */}
-      
-            <div className='flex flex-col sm:flex-row gap-3'>
-              <InputField name="title" 
-                register={register} error={errors.title?.message} placeholder="Job Title" />
-              <InputField name="department" 
-                register={register} error={errors.department?.message} placeholder="Job Department" />
+          <div className='flex flex-col sm:flex-row gap-3'>
+            <InputField name="title" register={register} error={errors.title?.message} placeholder="Job Title" />
+            
+            <div className="flex-1">
+              <select {...register("department")} className={selectClass}>
+                <option value="engineering">Engineering</option>
+                <option value="design">Design</option>
+                <option value="marketing">Marketing</option>
+                <option value="sales">Sales</option>
+              </select>
+              {errors.department && <p className="mt-1 text-red-400 text-[10px] italic">{errors.department.message}</p>}
             </div>
+          </div>
 
           {/* Location & Remote Toggle */}
           <div className='flex flex-col sm:flex-row gap-3 items-center'>
@@ -153,7 +155,7 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
               {errors.salaryMax && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryMax.message}</p>}
             </div>
             <div className='w-20'>
-              <InputField name="salaryCurrency" 
+              <InputField name="salaryCurrency"
                 register={register} error={errors.salaryCurrency?.message} placeholder="USD"/>
             </div>
           </div>
@@ -162,30 +164,46 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
           <div className='flex flex-col sm:flex-row gap-3'>
             <div className='flex-1'>
               <select {...register("employmentType")} className={selectClass}>
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Internship">Internship</option>
-                <option value="Contract">Contract</option>
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="internship">Internship</option>
+                <option value="temporary">Temporary</option>
               </select>
             </div>
-            <div className='flex-1 '>
-              <select {...register("status")} className={`${selectClass}`}>
-                  <option value="open">Open</option>
-                  <option value="closed">Closed</option>
-                  <option value="archived">archived</option>
+            <div className='flex-1'>
+              <select {...register("status")} className={selectClass}>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+                <option value="archived">Archived</option>
               </select>
             </div>
           </div>
 
+          {/* Skills / Tags Section */}
+          <div className='flex-1'>
+            <textarea 
+              {...register("skills")} 
+              placeholder="e.g. UI, UX, Figma, React (separate with commas)" 
+              className={`${inputClass} h-auto py-2 resize-none focus:border-[#00adef]`}
+              onChange={(e) => {
+                e.target.value = e.target.value.toLowerCase();
+                register("skills").onChange(e); 
+              }}
+            />
+            {errors.skills && (<p className="text-red-400 text-[10px] italic">{errors.skills.message}</p>)}
+          </div>
+
           {/* Requirements */}
           <div className='flex-1'>
-            <textarea {...register("requirements")} placeholder="Requirements (one per line or comma separated)" rows={2} 
+            <textarea {...register("requirements")}
+              placeholder="Requirements (one per line or comma separated)" rows={2} 
               className={`${inputClass} h-auto py-2 resize-none`} />
           </div>
 
           {/* Description */}
           <div className='flex-1'>
-            <textarea {...register("description")} placeholder="Job Description" rows={4} 
+            <textarea {...register("description")} 
+              placeholder="Job Description" rows={4} 
               className="w-full text-sm text-white outline-none p-3 border border-[#405673] 
                 rounded-md bg-transparent focus:border-[#10B77F] resize-none oveflow-auto custom-scrollbar" />
             {errors.description && <p className="mt-1 text-red-500 text-[10px]">{errors.description.message}</p>}
@@ -196,7 +214,7 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
               className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
               Cancel
             </button>
-            {job ? 
+            {jobItem ? 
               <button type="submit"
                 className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
                 Save
@@ -213,5 +231,19 @@ const CreateOrEditJobForm = ({ job, setIsFormOpen }: props) => {
     </div>
   );
 }
+
+const InputField = ({name, register, error, placeholder, type }: InputFieldProps) => {
+  return(
+    <div className="flex-1">
+      <input
+        id={name}
+        type={type}
+        {...register(name)}
+        placeholder={placeholder}
+        className={inputClass}
+      />
+      {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
+    </div>
+);}
 
 export default CreateOrEditJobForm;

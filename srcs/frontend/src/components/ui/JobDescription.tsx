@@ -7,6 +7,7 @@ interface props{
 }
 
 const JobDescription = ({ jobItem, setJobDescp }: props) => {
+  const SKILLS = jobItem.skills?.split(',');
   const ApplySubmit = async (data: any) => {
     console.log("********hii iam here in job desc*********", data);
     setJobDescp(false);
@@ -53,11 +54,11 @@ const JobDescription = ({ jobItem, setJobDescp }: props) => {
       </div>
       <button
         onClick={() => setJobDescp(false)}
-        className="absolute top-6 right-6 text-gray-100 hover:text-red-600 cursor-pointer">
+        className="absolute top-6 right-6 text-red-600 cursor-pointer">
         ✕
       </button>
 
-      <div className='flex flex-col gap-6 h-full w-full bg-[#121b31]/50 p-8 rounded-2xl 
+      <div className='flex flex-col gap-6 h-full w-full bg-[#121b31]/70 p-8 rounded-2xl 
         border border-[#1e2e52] overflow-y-auto overflow-x-hidden custom-scrollbar shadow-2xl'>
 
         {/* Title */}
@@ -65,11 +66,15 @@ const JobDescription = ({ jobItem, setJobDescp }: props) => {
 
         {/* jobItem Info Badges */}
         <div className="flex flex-wrap gap-3">
-          <MiniBox Icon={CloudUpload} title={jobItem.department} />
-          <MiniBox Icon={CloudUpload} title={jobItem.location} />
-          <MiniBox Icon={CloudUpload} title={jobItem.isRemote ? "Remote" : "On-site"} />
-          <MiniBox Icon={CloudUpload} title={jobItem.employmentType} />
-          <MiniBox Icon={CloudUpload} title={jobItem.status} />
+          {SKILLS && SKILLS.length > 0 ? (
+            SKILLS.map((item: string, index: number) => (
+              <MiniBox 
+                key={index} 
+                Icon={CloudUpload} 
+                title={item.trim()} 
+              />
+            ))
+          ) : null}
         </div>
 
         {/* Salary */}

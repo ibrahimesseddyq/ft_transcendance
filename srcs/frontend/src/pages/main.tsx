@@ -1,7 +1,6 @@
 import {Routes, Route} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 import ProtectedRoutes from "@/utils/ProtectedRoutes"
-import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
 import { ResetPassword } from '@/components/ResetPassword';
@@ -21,51 +20,46 @@ export function Main () {
     const isLoginPage = location.pathname === '/';
     if (isLoginPage) {
         return (
-            <main className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar
+            <main className="h-screen w-screen bg-[#FFFFFF] overflow-auto custom-scrollbar
               place-content-center place-items-center">
               {/* <OTPpage/> */}
-              <Routes>
+              {/* <Routes>
                 <Route path="/" element={<ProfileInformations />} />
-              </Routes>
-                {/* <Routes>
+              </Routes> */}
+                <Routes>
                     <Route path="/" element={<LoginPage />} />
-                </Routes> */}
+                </Routes>
             </main>
         );
     }
   return (
-      <div className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar">
-        <div className='h-full w-full flex flex-col mx-auto
-          custom-scrollbar'>
-            {/* Sidebar */}
-            <div className="h-full w-full max-h-20 
-              sticky top-0 z-50 border-b bg-[#1e3249] 
-               border-[#5F88B8] border-opacity-30">
-                <Header/>
-            </div>
-            <div className="container mx-auto flex h-full max-w-screen-2xl
-                items-center justify-between overflow-hidden">
-                <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
-                  border-r border-[#5F88B8] border-opacity-30">
-                  <Sidebar />
-                </div>
-                {/* Main Content */}
-                  <main className="w-full h-full items-center justify-center lg:max-h-[1100px]
-                    overflow-auto no-scrollbar p-0 md:pl-8 ">
-                      <Routes>
-                        <Route element={<ProtectedRoutes />}>
-                          <Route path="/Dashboard" element={<Dashboard />} />
-                          <Route path="/Jobs" element={<Jobs />} />
-                          <Route path="/Jobs/Viewjob" element={<ViewJob />} />
-                          <Route path="/Condidates" element={<Condidates />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route path="/Messages" element={<NotFound />} />
-                        </Route>
-                      </Routes>
-                  </main>
-            </div>
-          </div>
-        </div>    
+      <div className="h-screen w-screen flex flex-col 
+      bg-[#F0F3FA] overflow-auto custom-scrollbar pt-4 px-4">
+        
+        {/* Sidebar */}
+        <div className="h-full w-full max-h-20
+          sticky top-0 z-50 bg-white rounded-xl shadow-xl shadow-black/10
+           border-[#5F88B8] border-opacity-30">
+            <Header/>
+        </div>
+        <div className="flex h-full max-w-screen-2xl
+             justify-between overflow-hidden">
+            {/* Main Content */}
+              <main className="w-full h-full items-center justify-center
+                overflow-auto no-scrollbar py-5">
+                  <Routes>
+                    <Route element={<ProtectedRoutes />}>
+                      <Route path="/Dashboard" element={<Dashboard />} />
+                      <Route path="/Jobs" element={<Jobs />} />
+                      <Route path="/Jobs/Viewjob" element={<ViewJob />} />
+                      <Route path="/Condidates" element={<Condidates />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/Messages" element={<NotFound />} />
+                    </Route>
+                  </Routes>
+              </main>
+        </div>
+      </div>    
   );
 };
 

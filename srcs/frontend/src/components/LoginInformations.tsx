@@ -34,7 +34,7 @@ export const LoginInformations = () => {
     return (
         <div className="w-full h-full flex flex-col gap-4  overflow-auto no-scrollbar p-5">
             <div className='h-auto w-auto'>
-                <h1 className="text-lg font-semibold text-white">
+                <h1 className="text-lg font-semibold text-blacl">
                     Everything you need to <span className='font-bold pramary-text'>succeed</span>
                 </h1>
                 <p className="text-sm text-[#94A3B8] font-medium leading-relaxed">

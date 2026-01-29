@@ -14,9 +14,9 @@ export function Notifications() {
   return (
     <div className="flex-1 flex justify-center items-center relative" >
       <button 
-        className="relative inline-flex items-center justify-center h-10 w-10 childcard"
+        className="relative inline-flex items-center justify-center h-6 w-6"
         onClick={() => setIsOpen(!isOpen)} >
-        <Bell className={`h-5 w-5 transition-colors ${isOpen ? 'text-green-600' : 'text-gray-300'} hover:text-green-600`} />
+        <Bell className={`h-full w-full transition-colors ${isOpen ? 'text-green-600' : 'text-black'} hover:text-green-600`} />
       </button>
 
       {isOpen && (
