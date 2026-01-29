@@ -7,8 +7,7 @@ const { HttpException } = require('../utils/httpExceptions');
 const sendMail = require('./emailService');
 
 
-const login = async (data) =>
-{
+const login = async (data) => {
     const {email , password} = data;
     const user =  await userService.getUserByEmail(email);
     if (!user || !(await argon2.verify(user.passwordHash, password)))
@@ -28,8 +27,7 @@ const login = async (data) =>
     }
 }
 
-const  register = async (data) =>
-{
+const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
     if (existingUser)
         throw new HttpException(409, 'Email already exists');
@@ -45,8 +43,7 @@ const  register = async (data) =>
     return user;
 }
 
-const refresh = async  (refreshToken) =>
-{
+const refresh = async  (refreshToken) => {
     const decoded = await jwtService.verifyRefreshToken(refreshToken);
     const user = await  userService.getUserById(decoded.id);
     if(!user)
@@ -67,10 +64,8 @@ const refresh = async  (refreshToken) =>
     }
 }
 
-const logout = async (refreshToken) =>
-{
-    try
-    {
+const logout = async (refreshToken) => {
+    try {
         const decoded = await jwtService.verifyRefreshToken(refreshToken);
         const user = await userService.getUserById(decoded.id);
         if(user && user.refreshToken === refreshToken)
@@ -78,14 +73,12 @@ const logout = async (refreshToken) =>
             await userService.updateUser(user.id, { refreshToken: null});
         }
     }
-    catch(error)
-    {
+    catch(error){
 
     }
 }
 
-const verifyEmail = async(token) =>
-{
+const verifyEmail = async(token) => {
     const decoded = await jwtService.verifyVerificationToken(token);
     const user = await userService.getUserById(decoded.id);
     if (!user)
@@ -98,8 +91,7 @@ const verifyEmail = async(token) =>
     delete user.passwordHash;
     return user;
 }
-const resendVerification = async (email) =>
-{
+const resendVerification = async (email) => {
     const user = await userService.getUserByEmail(email);
     if (!user)
         throw new HttpException(404, "user with this email not found");
