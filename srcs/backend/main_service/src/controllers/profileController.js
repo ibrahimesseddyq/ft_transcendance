@@ -78,3 +78,12 @@ const updateResume = async (req, res, next) => {
         next(error)
     }
 }
+
+module.exports = {
+    createProfile,
+    updateProfile,
+    getProfile,
+    deleteProfile,
+    deleteResume,
+    updateResume
+}

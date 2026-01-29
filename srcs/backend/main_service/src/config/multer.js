@@ -9,8 +9,7 @@ const diskStorage =  multer.diskStorage({
         'upload/resumes';
         cb(null, uploadPath);
     },
-    filename:(req, file, cb) =>
-    {
+    filename:(req, file, cb) => {
         const filename = req.params.id || req.user.id;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)
