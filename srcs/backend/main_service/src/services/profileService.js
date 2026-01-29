@@ -24,8 +24,7 @@ const updateProfile = async (userId, profileData) => {
     if (!profile)
         throw new HttpException(404, "profile not found");
     const updateData = {...profileData.body};
-    if (profileData.file)
-    {
+    if (profileData.file) {
         const {resumeUrl} = await fileService.saveResume(userId,profileData.file);
         if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
             await fileService.deleteFile(profile.resumeUrl);
