@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
+import JobDescription from "@/components/ui/JobDescription";
 import JobFilter from "@/components/ui/JobFilter"
 import JobCards  from '@/components/ui/JobCards'
 
@@ -9,6 +10,7 @@ interface Job {
   description: string;
   department : string;
   location : string;
+  skills: string;
   requirements : string; 
   employmentType : string;
   status: string;
@@ -27,10 +29,10 @@ export function Jobs() {
   const [jobItem, setJobItem] = useState<Job | null>(null);
   const [jobDescp, setJobDescp] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
- 
   return (
-    <div className=" flex flex-col h-full w-full gap-5 overflow-hidden items-center">
+    <div className=" flex h-full w-full gap-5 overflow-hidden">
         <ToastContainer/>
+      {/* Job Form */}
       {isFormOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md  p-4">
           <div className="relative bg-gray-900 border border-gray-700 p-6 rounded-xl w-full max-w-lg  shadow-2xl">
@@ -39,26 +41,29 @@ export function Jobs() {
               className="absolute top-6 right-6 text-gray-100 hover:text-white transition-colors">
               ✕
             </button>
-            <JobForm job={jobItem} setIsFormOpen={setIsFormOpen}/>
+            <JobForm jobItem={jobItem} setIsFormOpen={setIsFormOpen} setJobsArray={setJobsArray}/>
           </div>
         </div>
       )}
 
-      <div className='flex flex-col gap-5 h-full w-full'>
-          <JobFilter
+      {/* Job Descriptions */}
+      {jobDescp && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl  p-4">
+            <JobDescription jobItem={jobItem} setJobDescp={setJobDescp}/>
+        </div>
+      )}
+
+      <JobFilter
             setJobsArray={setJobsArray}
-          />
-          <div className='flex flex-col overflow-auto no-scrollbar'>
-            <JobCards 
-              jobsArray={jobsArray}
-              jobItem={jobItem}
-              jobDescp={jobDescp}
-              setJobDescp={setJobDescp}
-              setJobItem={setJobItem}
-              setIsFormOpen={setIsFormOpen}
-            />
-          </div>
-      </div>
+      />
+      
+      <JobCards 
+        jobsArray={jobsArray}
+        setJobsArray={setJobsArray}
+        setJobDescp={setJobDescp}
+        setJobItem={setJobItem}
+        setIsFormOpen={setIsFormOpen}
+      />
 
       <button 
         onClick={() => {setJobItem(null); setIsFormOpen(true)}}

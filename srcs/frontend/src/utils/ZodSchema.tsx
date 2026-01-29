@@ -61,6 +61,8 @@ export const CreateJobSchema = z.object({
     .min(20, "description is required"),
   requirements: z.string()
     .optional(),
+  skills: z.string()
+    .optional(),
   location: z.string()
     .min(1, "location is required"),
   isRemote: z.boolean()
@@ -97,7 +99,6 @@ export const ApplyJobSchema = z.object({
 
   cv: z
     .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) : v))
     .pipe(fileSchema),
 
   coverLetter: z.string()
@@ -125,10 +126,10 @@ export const CandidateProfileSchema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) : v))
     .pipe(fileSchema),
 
-  linkedinUrl: z.url()
+  linkedinUrl: z.string()
     .optional(),
 
-  portfolioUrl: z.url()
+  portfolioUrl: z.string()
     .optional(),
 
   currentCompany: z.string()

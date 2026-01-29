@@ -47,19 +47,29 @@ const findManyJobs = async (filters) => {
         filters.isRemote === "true" ? true : 
         filters.isRemote === "false" ? false : 
         undefined;
-    const jobs =  await prisma.job.findMany(
-      {
-          where: { 
-              title: filters.title || undefined,
-              department: filters.department || undefined,
-              location: filters.location || undefined,
-              employmentType: filters.employmentType || undefined,
-              status: filters.status || undefined,
-              isRemote: isRemote,
-          },
-      });
-    console.log("jobs = ", jobs);
-    return (jobs);
+
+    const statusArray = filters.status ? filters.status.split(',') : undefined;
+    const skillsArray = filters.skills ? filters.skills.split(',') : undefined;
+    const deptArray = filters.department ? filters.department.split(',') : undefined;
+    const typeArray = filters.employmentType ? filters.employmentType.split(',') : undefined;
+
+    const jobs = await prisma.job.findMany({
+        where: { 
+            title: filters.title || undefined,
+            department: deptArray ? { in: deptArray } : undefined,
+            location: filters.location || undefined,
+            employmentType: typeArray ? { in: typeArray } : undefined,
+            status: statusArray ? { in: statusArray } : undefined,
+            isRemote: isRemote,
+            ...(skillsArray && {
+              OR: skillsArray.map(skill => ({
+                skills: {contains: skill.trim()}
+              }))
+            })
+        },
+    });
+
+    return jobs;
 };
 
 module.exports = {
