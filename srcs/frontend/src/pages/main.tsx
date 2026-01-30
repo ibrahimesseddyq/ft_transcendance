@@ -23,12 +23,12 @@ export function Main () {
             <main className="h-screen w-screen bg-[#FFFFFF] overflow-auto custom-scrollbar
               place-content-center place-items-center">
               {/* <OTPpage/> */}
-              {/* <Routes>
+              <Routes>
                 <Route path="/" element={<ProfileInformations />} />
-              </Routes> */}
-                <Routes>
+              </Routes>
+                {/* <Routes>
                     <Route path="/" element={<LoginPage />} />
-                </Routes>
+                </Routes> */}
             </main>
         );
     }

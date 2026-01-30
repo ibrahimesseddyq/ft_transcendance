@@ -116,14 +116,15 @@ export const ApplyJobSchema = z.object({
 });
 
 export const CandidateProfileSchema = z.object({
-  avatar:z
+  avatar: z
     .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) : v))
-    .pipe(fileSchema),
+    .optional()
+    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+    .pipe(fileSchema.optional()),
 
   resume: z
     .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) : v))
+    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
   linkedinUrl: z.string()
