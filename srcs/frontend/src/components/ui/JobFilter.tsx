@@ -87,7 +87,7 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
       </div>
 
       {/* Search Bar */}
-      {/* <div className="relative">
+      <div className="relative">
         <input
           type="text"
           placeholder="Search for a keyword"
@@ -96,10 +96,10 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
-      </div> */}
+      </div>
 
-      {/* <div className="h-[1px] bg-gray-800 w-full" /> */}
-      {/* <SearchField/>   */}
+      <div className="h-[1px] bg-gray-800 w-full" />
+
 
       <div className="flex flex-col gap-6  overflow-auto no-scrollbar">
 

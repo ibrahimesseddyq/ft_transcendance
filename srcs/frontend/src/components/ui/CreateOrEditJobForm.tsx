@@ -147,16 +147,20 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
 
           <div className='flex flex-col sm:flex-row gap-2'>
             <div className='flex-1'>
-              <input type='text' {...register("salaryMin", { valueAsNumber: true })} placeholder="Min Salary" className={inputClass} />
+              <input type='number' {...register("salaryMin", { valueAsNumber: true })} placeholder="Min Salary" className={inputClass} />
               {errors.salaryMin && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryMin.message}</p>}
             </div>
             <div className='flex-1'>
-              <input type='text' {...register("salaryMax", { valueAsNumber: true })} placeholder="Max Salary" className={inputClass} />
+              <input type='number' {...register("salaryMax", { valueAsNumber: true })} placeholder="Max Salary" className={inputClass} />
               {errors.salaryMax && <p className="mt-1 text-red-500 text-[10px]">{errors.salaryMax.message}</p>}
             </div>
             <div className='w-20'>
-              <InputField name="salaryCurrency"
-                register={register} error={errors.salaryCurrency?.message} placeholder="USD"/>
+                <select {...register("salaryCurrency")} className={selectClass}>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="MAD">MAD</option>
+                </select>
+                {errors.salaryCurrency && <p className="mt-1 text-red-400 text-[10px] italic">{errors.salaryCurrency.message}</p>}
             </div>
           </div>
 

@@ -43,7 +43,8 @@ const deleteJob = async (jobId) =>
 }
 
 const findManyJobs = async (filters) => {
-    const isRemote = 
+    const { keyword } = filters;
+    const isRemoteBool = 
         filters.isRemote === "true" ? true : 
         filters.isRemote === "false" ? false : 
         undefined;
@@ -54,18 +55,25 @@ const findManyJobs = async (filters) => {
     const typeArray = filters.employmentType ? filters.employmentType.split(',') : undefined;
 
     const jobs = await prisma.job.findMany({
-        where: { 
-            title: filters.title || undefined,
-            department: deptArray ? { in: deptArray } : undefined,
-            location: filters.location || undefined,
-            employmentType: typeArray ? { in: typeArray } : undefined,
-            status: statusArray ? { in: statusArray } : undefined,
-            isRemote: isRemote,
+        where: {
+            ...(keyword && {
+                OR: [
+                    { title: { contains: keyword,} },
+                    { description: { contains: keyword,} },
+                    { department: { contains: keyword,} },
+                    { employmentType: { contains: keyword,} },
+                    { skills: { contains: keyword,} },
+                ]
+            }),
             ...(skillsArray && {
               OR: skillsArray.map(skill => ({
                 skills: {contains: skill.trim()}
               }))
-            })
+            }),
+            department: deptArray ? { in: deptArray } : undefined,
+            employmentType: typeArray ? { in: typeArray } : undefined,
+            status: statusArray ? { in: statusArray} : undefined,
+            isRemote: isRemoteBool,
         },
     });
 
