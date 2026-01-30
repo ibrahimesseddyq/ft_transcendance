@@ -16,6 +16,8 @@ export function Navbar() {
     return (
         <div className="flex h-full items-center">
             {/* Navigation */}
+
+            <button className='hidden'>Nav</button>
             <nav className="flex gap-2 px-3">
                 {navigation.map((item) => {
                     const Icon = item.icon;
@@ -23,6 +25,7 @@ export function Navbar() {
 
                     return (
                         <Link
+                            id='Nav'
                             key={item.name}
                             to={item.path}
                             className="flex items-center px-4 rounded-xl transition-all duration-200 cursor-pointer">
