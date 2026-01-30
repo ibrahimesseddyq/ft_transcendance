@@ -8,6 +8,4 @@ router.get('/:id', profileController.getProfile)
     .post('/',upload.single("resume"),profileController.createProfile)
     .patch('/:id',upload.single("resume"),profileController.updateProfile);
 
-module.exports =  {
-    router
-}
+module.exports = router;

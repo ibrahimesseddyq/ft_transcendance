@@ -39,9 +39,7 @@ const upload =  multer({
         fileSize : 10 * 1024 * 1024,
         files: 1
     }
-})
+});
 
 
-module.exports = {
-    upload
-}
+module.exports = upload;
