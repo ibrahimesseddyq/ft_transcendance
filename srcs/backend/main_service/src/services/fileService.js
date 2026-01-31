@@ -1,7 +1,5 @@
-const { userInfo } = require('os');
 const {HttpException} = require('../utils/httpExceptions');
 const path =  require('path');
-const { count } = require('console');
 const fs = require('fs').promises;
 
 const saveResume = async (userId, file) => {

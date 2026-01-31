@@ -1,8 +1,8 @@
-const prisma = require('../../generated/prisma');
+const {prisma} = require('../config/prisma');
 
 const createJobPhase = async(phaseData) => {
 	return await prisma.jobphase.create({
-		data:data
+		data : phaseData
 	})
 }
 
@@ -30,7 +30,7 @@ const deleteJobPhase = async (jobPhaseId) => {
 const getJobPhases = async (JobId) => {
 	return await prisma.jobphase.findMany({
 		where : {
-			jobId: jobId
+			jobId: JobId
 		}
 	})
 }
