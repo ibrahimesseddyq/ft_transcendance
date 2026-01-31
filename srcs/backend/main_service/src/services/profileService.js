@@ -1,4 +1,3 @@
-const data = require('../config/env');
 const profileRepository =  require('../repositories/profileRepository');
 const { HttpException } = require('../utils/httpExceptions');
 const fileService = require('./fileService');
@@ -49,7 +48,7 @@ const deleteProfile = async (userId) => {
 }
 
 const deleteResume = async (userId) => {
-    const profile = profileRepository.getProfileById(userId);
+    const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
     await fileService.deleteFile(profile.resumeUrl);
@@ -60,9 +59,9 @@ const updateResume = async (userId, file) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
-    const {resumeUrl} = fileService.saveResume(userId, file);
+    const {resumeUrl} = await fileService.saveResume(userId, file);
     if (!resumeUrl)
-        throw new HttpException(400, "faild to update resume");
+        throw new HttpException(400, "failed to update resume");
     if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
         await fileService.deleteFile(profile.resumeUrl);
     return await profileRepository.updateProfile(userId,{resumeUrl});

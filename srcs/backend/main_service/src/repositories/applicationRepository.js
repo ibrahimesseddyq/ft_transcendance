@@ -1,4 +1,4 @@
-const prisma =  require('../../generated/prisma');
+const {prisma} =  require('../../generated/prisma');
 
 const createApplication =  async (data) => {
 	return await prisma.application.create({
@@ -30,7 +30,7 @@ const getApplicaticationById = async (appliocationId) => {
 }
 
 const getApplicatications = async (skip = 0, take = 10, filters= []) => {
-	return await prisma.findMany({
+	return await prisma.application.findMany({
 
 	})
 }

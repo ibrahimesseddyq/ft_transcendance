@@ -1,4 +1,4 @@
-const jobPhaseRepository = require('../repositories/jobPhaseREpository');
+const jobPhaseRepository = require('../repositories/jobPhaseRepository');
 const jobRepository = require('../repositories/jobRepository');
 const {HttpException} = require('../utils/httpExceptions');
 
