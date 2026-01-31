@@ -1,6 +1,7 @@
 const { userInfo } = require('os');
 const {HttpException} = require('../utils/httpExceptions');
 const path =  require('path');
+const { count } = require('console');
 const fs = require('fs').promises;
 
 const saveResume = async (userId, file) => {
@@ -21,7 +22,7 @@ const saveResume = async (userId, file) => {
 const saveAvatar = async (userId, file) => {
     try {
         const fileExt = path.extname(file.originalname);
-        const filename = filename = `${userId}${fileExt}`;
+        const filename = `${userId}${fileExt}`;
         const avatarPath = '/uploads/avatars/' + filename;
         return {
             avatarUrl: avatarPath,

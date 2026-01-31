@@ -9,7 +9,6 @@ const cookieOptions = {
 }
 
 const login = async (req, res, next) => {
-    console.log("kan hna");
     try {
         const {user, accessToken, refreshToken} = await authService.login(req.body);
         res
