@@ -3,20 +3,22 @@ import { Search } from 'lucide-react';
 import { SearchField } from "@/components/ui/SearchField";
 interface JobsArrayProps {
   setJobsArray: (data: any) => void;
+  setIsLoading: (data: boolean) => void;
 }
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
-const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
+const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
-    status: ['open', 'closed', 'archived'] as string[],
-    skills: SKILLS as string[],
+    status: [] as string[],
+    skills: [] as string[],
     isRemote: null as boolean | null,
   });
 
   const fetchJobs = async () => {
     try {
+      setIsLoading(true);
       const params = new URLSearchParams();
       
       if (search) 
@@ -32,13 +34,19 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const response = await fetch(`http://localhost:3000/api/jobs?${params.toString()}`);
+      const fetchPromise = fetch(`http://localhost:3000/api/jobs?${params.toString()}`);
+  
+      const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+
+      const [response] = await Promise.all([fetchPromise, timerPromise]);
       if (response.ok) {
         const result = await response.json();
         setJobsArray(result.data);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +76,7 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
     const delayDebounce = setTimeout(() => fetchJobs(), 300);
     return () => clearTimeout(delayDebounce);
   }, [filters, search]);
+
 
   return (
     <div className="w-64 bg-[#1e1e1e] text-white p-5 rounded-2xl 
@@ -125,10 +134,10 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
               />
             <Checkbox 
               label="Sales" 
-              count={5} 
+              count={5}
               checked={filters.department.includes("sales")} 
               onChange={() => toggleFilter("department", "sales")}
-              />
+            />
           </FilterSection>
 
           <FilterSection title="Job contract">
@@ -146,7 +155,7 @@ const JobFilter = ({ setJobsArray }: JobsArrayProps) => {
             />
             <Checkbox 
               label="Internship" 
-              count={2} 
+              count={2}
               checked={filters.employmentType.includes("internship")} 
               onChange={() => toggleFilter("employmentType", "internship")}
             />
@@ -220,7 +229,8 @@ const FilterSection = ({ title, children }: { title: string; children: React.Rea
 
 const Checkbox = ({ label, count, checked, onChange }: any) => (
   <label className="flex items-center cursor-pointer group">
-    <div className={`w-4 h-4 rounded border flex items-center justify-center transition ${checked ? 'bg-[#00adef] border-[#00adef]' : 'border-gray-600 bg-transparent'}`}>
+    <div className={`w-4 h-4 rounded border flex items-center justify-center transition 
+        ${checked ? 'bg-[#00adef] border-[#00adef]' : 'border-gray-600 bg-transparent'}`}>
       {checked && <div className="w-1.5 h-1.5 bg-white rounded-sm" />}
     </div>
     <span className={`ml-3 text-xs font-medium transition ${checked ? 'text-[#00adef]' : 'text-gray-400'}`}>
