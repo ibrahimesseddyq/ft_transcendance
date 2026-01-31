@@ -57,6 +57,7 @@ export function Jobs() {
       )}
 
       <JobFilter
+        totalJobs={jobsArray}
         setJobsArray={setJobsArray}
         setIsLoading={setIsLoading}
       />
