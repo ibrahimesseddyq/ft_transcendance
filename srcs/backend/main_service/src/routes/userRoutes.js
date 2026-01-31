@@ -13,7 +13,7 @@ router.get('/',userController.listUsers)
   .post('/',ValidateRequest(createUserSchema),userController.createUser)
   .delete('/:id',userController.deleteUser)
   .patch('/:id', ValidateRequest(updateUserSchema),userController.updateUser)
-  .post('/avatar',upload.single('avatar'),userController.uploadAvatar)
+  .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
   .get('/avatar/:id',userController.getAvatar)
   .delete('/avatar/:id',userController.deleteAvatar)
 

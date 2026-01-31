@@ -51,16 +51,16 @@ model Application {
 }
 
 model Profile {
-  userId             String    @id @db.Char(36)
-  resumeUrl          String?   @db.Text
-  linkedinUrl        String?   @db.VarChar(255)
-  portfolioUrl       String?   @db.VarChar(255)
-  currentCompany     String?   @db.VarChar(255)
-  currentTitle       String?   @db.VarChar(255)
-  yearsExperience    Int?
-  skills             String?   @db.LongText
-  availableFrom      DateTime? @db.Date
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String    @id @db.Char(36)
+  resumeUrl       String?   @db.Text
+  linkedinUrl     String?   @db.VarChar(255)
+  portfolioUrl    String?   @db.VarChar(255)
+  currentCompany  String?   @db.VarChar(255)
+  currentTitle    String?   @db.VarChar(255)
+  yearsExperience Int?
+  skills          String?   @db.LongText
+  availableFrom   DateTime? @db.Date
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model InterviewParticipant {

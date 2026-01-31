@@ -3,7 +3,11 @@ const profileservice = require('../services/profileService');
 
 const createProfile =  async (req, res, next) => {
     try {
-        const profile = await profileservice.createProfile(req.parms.id, req);
+        const id =  req.params?.id || req.body.userId;
+        const profile = await profileservice.createProfile(id, {
+            body: req.body,
+            file:req.file
+        });
         res.status(201)
         .json({
             status: true,
