@@ -50,7 +50,7 @@ model Application {
   @@index([status])
 }
 
-model CandidateProfile {
+model Profile {
   userId             String    @id @db.Char(36)
   resumeUrl          String?   @db.Text
   linkedinUrl        String?   @db.VarChar(255)
@@ -59,10 +59,7 @@ model CandidateProfile {
   currentTitle       String?   @db.VarChar(255)
   yearsExperience    Int?
   skills             String?   @db.LongText
-  preferredLocations String?   @db.LongText
-  salaryExpectation  String?   @db.VarChar(50)
   availableFrom      DateTime? @db.Date
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -136,7 +133,7 @@ model Job {
   salaryMax      Int?
   salaryCurrency String?    @default("USD") @db.VarChar(3)
   status         JobStatus? @default(open)
-  createdBy      String?    @db.Char(36)
+  createdBy      String     @db.Char(36)
   createdAt      DateTime?  @default(now()) @db.Timestamp(0)
   updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
   closedAt       DateTime?  @db.Timestamp(0)
@@ -202,6 +199,23 @@ model PhaseTest {
   jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 }
 
+model Session {
+  id           String   @id @default(uuid()) @db.Char(36)
+  userId       String   @db.Char(36)
+  refreshToken String   @unique @db.VarChar(512)
+  ipAdress     String?  @db.VarChar(45)
+  userAgent    String?  @db.VarChar(255)
+  expiresAt    DateTime @db.Timestamp(0)
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  lastUsed     DateTime @default(now()) @db.Timestamp(0)
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([refreshToken, expiresAt])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 model User {
   id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
   email                 String                 @unique @db.VarChar(255)
@@ -215,11 +229,12 @@ model User {
   updatedAt             DateTime?              @default(now()) @db.Timestamp(0)
   refreshToken          String?                @db.Text
   applications          Application[]
-  candidateProfile      CandidateProfile?
+  profile               Profile?
   interviewParticipants InterviewParticipant[]
   jobs                  Job[]
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
+  sessions              Session[]
 }
 
 enum InterviewMode {
@@ -230,6 +245,11 @@ enum InterviewMode {
 enum PhaseType {
   test
   interview
+}
+
+enum TestType {
+  qcm
+  quiz
 }
 
 enum NotificationType {
