@@ -10,7 +10,6 @@ const createProfile = async  (userId , profileData) => {
         throw new HttpException(404, "user not found");
     const {resumeUrl} = await fileService.saveResume(userId,profileData.file);
     return await profileRepository.createProfile({
-        userId,
         ...profileData.body,
         resumeUrl,
     })

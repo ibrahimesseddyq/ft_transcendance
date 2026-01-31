@@ -96,7 +96,7 @@ const detletAvatar =  async (userId) => {
 }
 
 const getAvatar = async (userId) => {
-    const user =  userRepository.getUserById(userId);
+    const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
     if (!user.avatarUrl)
