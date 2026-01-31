@@ -12,9 +12,9 @@ export function Notifications() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex-1 flex justify-center items-center relative" >
+    <div className="flex-1 flex justify-center items-center relative px-4" >
       <button 
-        className="relative inline-flex items-center justify-center h-6 w-6"
+        className="inline-flex items-center justify-center h-6 w-6"
         onClick={() => setIsOpen(!isOpen)} >
         <Bell className={`h-full w-full transition-colors ${isOpen ? 'text-green-600' : 'text-black'} hover:text-green-600`} />
       </button>
