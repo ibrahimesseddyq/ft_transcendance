@@ -1,67 +1,62 @@
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
-import ProtectedRoutes from "@/utils/ProtectedRoutes"
-import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
-import { ResetPassword } from '@/components/ResetPassword';
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
 import { ViewJob } from "@/components/ViewJob"
 import { Condidates } from "@/components/Condidates"
-import { OTPpage } from '@/components/OTPpage';
 import { NotFound } from "@/components/NotFound";
-import { useTransition as ViewTransition } from 'react';
 
 
-export function Main () {
+export function Main() {
   const location = useLocation();
-    const isLoginPage = location.pathname === '/';
-    if (isLoginPage) {
-        return (
-            <main className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar
-              place-content-center place-items-center">
-              {/* <OTPpage/> */}
-                <Routes>
-                    <Route path="/" element={<LoginPage />} />
-                </Routes>
-            </main>
-        );
-    }
-  return (
-      <div className="h-screen w-screen bg-[#0a1128] overflow-auto custom-scrollbar">
-        <div className='h-full w-full flex flex-col mx-auto
-          custom-scrollbar'>
-            {/* Sidebar */}
-            <div className="h-full w-full max-h-20 
-              sticky top-0 z-50 border-b bg-[#1e3249] 
-               border-[#5F88B8] border-opacity-30">
-                <Header/>
-            </div>
-            <div className="container mx-auto flex h-full max-w-screen-2xl
-                items-center justify-between overflow-hidden">
-                <div className="h-full ps-0 p-8 max-md:hidden md:sticky w-44 top-16 z-10
-                  border-r border-[#5F88B8] border-opacity-30">
-                  <Sidebar />
-                </div>
-                {/* Main Content */}
-                  <main className="w-full h-full items-center justify-center lg:max-h-[1100px]
-                    overflow-auto no-scrollbar p-0 md:pl-8 ">
-                      <Routes>
-                        <Route element={<ProtectedRoutes />}>
-                          <Route path="/Dashboard" element={<Dashboard />} />
-                          <Route path="/Jobs" element={<Jobs />} />
-                          <Route path="/Jobs/Viewjob" element={<ViewJob />} />
-                          <Route path="/Condidates" element={<Condidates />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route path="/Messages" element={<NotFound />} />
-                        </Route>
-                      </Routes>
-                  </main>
-            </div>
-          </div>
-        </div>    
-  );
-};
+  const token = localStorage.getItem("token");
+  
+  const publicPaths = ['/Login', '/reset-password', '/otp'];
+  const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
+  if (!token && !isPublicPage) {
+    return <Navigate to="/Login" state={{ from: location }} replace />;
+  }
+
+  if (isPublicPage) {
+    if (token && location.pathname === '/Login') {
+      return <Navigate to="/Dashboard" replace />;
+    }
+
+    return (
+      <main className="h-screen w-screen bg-white flex items-center justify-center">
+        <Routes>
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/" element={<Navigate to="/Login" replace />} />
+          <Route path="*" element={<Navigate to="/Login" replace />} />
+        </Routes>
+      </main>
+    );
+  }
+
+  return (
+    <div className="h-screen w-screen flex flex-col bg-[#F0F3FA] overflow-hidden pt-4 px-4">
+      {/* Header */}
+      <div className="h-20 w-full sticky top-0 z-50 bg-white rounded-xl shadow-xl shadow-black/10 border-[#5F88B8] border-opacity-30 shrink-0">
+        <Header />
+      </div>
+
+      <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
+        <main className="w-full h-full py-5 overflow-auto no-scrollbar">
+          <Routes>
+            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Jobs" element={<Jobs />} />
+            <Route path="/Jobs/Viewjob" element={<ViewJob />} />
+            <Route path="/Condidates" element={<Condidates />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/Messages" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}
