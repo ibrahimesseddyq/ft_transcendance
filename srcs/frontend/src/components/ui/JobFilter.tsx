@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
 import { SearchField } from "@/components/ui/SearchField";
 interface JobsArrayProps {
+  totalJobs: any,
   setJobsArray: (data: any) => void;
   setIsLoading: (data: boolean) => void;
 }
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
-const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
+const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     department: [] as string[],
@@ -50,6 +51,21 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
     }
   };
 
+  const getCount = (key: any, value: string | boolean) => {
+    return totalJobs.filter(job => {
+      if (typeof value === 'string') {
+        return String(job[key]).toLowerCase() === value.toLowerCase();
+      }
+      return job[key] === value;
+    }).length;
+  };
+
+  const getSkillCount = (skill: string) => {
+    return totalJobs.filter(job => 
+      job.skills?.toLowerCase().includes(skill.toLowerCase())
+    ).length;
+  };
+
   const toggleFilter = (key: 'department' | 'employmentType' | 'skills' | 'status', value: string) => {
   const normalizedValue = value.toLowerCase();
 
@@ -85,7 +101,7 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold">Filter</h2>
-          <p className="text-gray-500 text-xs font-semibold">Total (12)</p>
+          <p className="text-gray-500 text-xs font-semibold">Total ({totalJobs.length})</p>
         </div>
         <button 
           onClick={() => {setSearch(""); setFilters({department: [],employmentType: [], status: [], skills: [], isRemote: null})}}
@@ -116,25 +132,25 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
           <FilterSection title="Job department">
             <Checkbox 
               label="Engineering" 
-              count={12} 
+              count={getCount('department', 'Engineering')}
               checked={filters.department.includes("engineering")} 
               onChange={() => toggleFilter("department", "engineering")}
             />
             <Checkbox 
               label="Design" 
-              count={4} 
+              count={getCount('department', 'Design')} 
               checked={filters.department.includes("design")} 
               onChange={() => toggleFilter("department", "design")}
               />
             <Checkbox 
               label="Marketing" 
-              count={8} 
+              count={getCount('department', 'marketing')}  
               checked={filters.department.includes("marketing")} 
               onChange={() => toggleFilter("department", "marketing")}
               />
             <Checkbox 
               label="Sales" 
-              count={5}
+              count={getCount('department', 'sales')}
               checked={filters.department.includes("sales")} 
               onChange={() => toggleFilter("department", "sales")}
             />
@@ -143,25 +159,25 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
           <FilterSection title="Job contract">
             <Checkbox 
               label="Full-time" 
-              count={6} 
+              count={getCount('employmentType', 'full-time')} 
               checked={filters.employmentType.includes("full-time")} 
               onChange={() => toggleFilter("employmentType", "full-time")}
             />
             <Checkbox 
               label="Part-time" 
-              count={2} 
+              count={getCount('employmentType', 'part-time')} 
               checked={filters.employmentType.includes("part-time")} 
               onChange={() => toggleFilter("employmentType", "part-time")}
             />
             <Checkbox 
               label="Internship" 
-              count={2}
+              count={getCount('employmentType', 'internship')}
               checked={filters.employmentType.includes("internship")} 
               onChange={() => toggleFilter("employmentType", "internship")}
             />
             <Checkbox 
               label="Temporary" 
-              count={2} 
+              count={getCount('employmentType', 'temporary')} 
               checked={filters.employmentType.includes("temporary")} 
               onChange={() => toggleFilter("employmentType", "Temporary")}
             /> 
@@ -171,7 +187,7 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
           <FilterSection title="Location Preference">
             <Checkbox 
               label="Remote" 
-              count={4} 
+              count={getCount('isRemote', true)}
               checked={filters.isRemote === true} 
               onChange={() => setFilters(p => ({...p, isRemote: p.isRemote === true ? null : true}))}
             />
@@ -182,19 +198,19 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
           <FilterSection title="Job status">
             <Checkbox 
               label="open" 
-              count={8} 
+              count={getCount('status', "open")} 
               checked={filters.status.includes("open")} 
               onChange={() => toggleFilter("status", "open")}
               />
             <Checkbox 
               label="closed" 
-              count={0} 
+              count={getCount('status', "closed")} 
               checked={filters.status.includes("closed")} 
               onChange={() => toggleFilter("status", "closed")}
               />
             <Checkbox 
               label="archived" 
-              count={0} 
+              count={getCount('status', "archived")} 
               checked={filters.status.includes("archived")} 
               onChange={() => toggleFilter("status", "archived")}
               />
@@ -206,7 +222,7 @@ const JobFilter = ({ setJobsArray, setIsLoading }: JobsArrayProps) => {
               <Checkbox 
                 key={skill}
                 label={skill} 
-                count={0}
+                count={getSkillCount(skill)}
                 checked={filters.skills.includes(skill)} 
                 onChange={() => toggleFilter("skills", skill)}
               />
