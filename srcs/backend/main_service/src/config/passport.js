@@ -29,3 +29,5 @@ passport.deserializeUser(async (id, done) => {
 });
 
 module.exports = passport;
+
+// [sessarhi] may need to be refactored

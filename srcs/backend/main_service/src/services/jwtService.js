@@ -2,100 +2,89 @@ const jwt = require('jsonwebtoken');
 const {HttpException} = require('../utils/httpExceptions');
 const env = require('../config/env');
 
-class JwtService {
-   constructor()
-   {
-        this.accessTokenSecret = env.ACCESS_TOKEN_SECRET;
-        this.accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;
-        this.refreshTokenSecret = env.REFRESH_TOKEN_SECRET;
-        this.refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
-   }
+const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
+const accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;
+const refreshTokenSecret = env.REFRESH_TOKEN_SECRET;
+const refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
 
-   generateAuthTokens(payload)
-   {
-        const accessToken = this.sign(payload,this.accessTokenSecret,
-            {
-                expiresIn : this.accessTokenExpiry
-            }
-        )
-        const refreshToken = this.sign(payload,this.refreshTokenSecret,
-            {
-                expiresIn: this.refreshTokenExpiry
-            }
-        ) 
-        return {accessToken , refreshToken};  
-    }
 
-    async verify(token, secret)
-    {
-        return new Promise((resolve,reject) => {
-            jwt.verify(token,secret, (err, decoded) =>
-            {
-                if(err)
-                {
-                    if (err.name === 'TokenExpiredError')
-                        reject(new HttpException(401,'Token expired'));
-                    else if (err.name === 'JsonWebTokenError')
-                        reject(new HttpException(403,'Invalid token'));
-                    else
-                        reject(new HttpException(403,'Forbidden'));
-
-                }
-                else
-                    resolve(decoded);
-            })
+const generateAuthTokens =  (payload) => {
+    const accessToken = sign(payload,accessTokenSecret,{
+            expiresIn : accessTokenExpiry
         })
-    }
-
-    verifyAccessToken(token)
-    {
-        return this.verify(token,this.accessTokenSecret);
-    }
-    
-    verifyRefreshToken(token)
-    {
-        return this.verify(token , this.refreshTokenSecret);
-    }
-
-    sign(payload , secret , options = {})
-    {
-        return jwt.sign(payload,secret,options);
-    }
-
-    decode(token)
-    {
-        return jwt.decode(token)
-    }
-
-    async refreshAccessToken(refreshToken)
-    {
-        const decoded = await this.verifyRefreshToken(refreshToken);
-        const { iat, exp, ...payload } = decoded;
-        const accessToken = this.sign(payload, this.accessTokenSecret, {
-            expiresIn : this.accessTokenExpiry
-        })
-        return {accessToken};
-    }
-
-    async verifyVerificationToken(token)
-    {
-        const decoded = await this.verify(token,this.accessTokenSecret);
-        if (!decoded || decoded.type !== 'email_verification')
-            throw new HttpException(403, 'Invalid token type');
-        return decoded;
-    }
-
-    async generateVerificationToken(userId, email)
-    {
-        const payload = {
-            id : userId,
-            email: email,
-            type: 'email_verification'
-        }
-        const token = this.sign(payload,this.accessTokenSecret,{expiresIn: "24h"});
-        return token;
-    }
-   
+    const refreshToken = sign(payload,refreshTokenSecret,{
+            expiresIn: refreshTokenExpiry
+        }) 
+    return {accessToken , refreshToken};  
 }
-const jwtService = new JwtService()
-module.exports = jwtService;
+
+const verify = async (token, secret) => {
+    return new Promise((resolve,reject) => {
+        jwt.verify(token,secret, (err, decoded) => {
+            if(err) {
+                if (err.name === 'TokenExpiredError')
+                    reject(new HttpException(401,'Token expired'));
+                else if (err.name === 'JsonWebTokenError')
+                    reject(new HttpException(403,'Invalid token'));
+                else
+                    reject(new HttpException(403,'Forbidden'));
+            }
+            else
+                resolve(decoded);
+        })
+    })
+}
+
+ const verifyAccessToken = (token) => {
+    return verify(token,accessTokenSecret);
+}
+
+const verifyRefreshToken = (token) => {
+        return verify(token , refreshTokenSecret);
+}
+
+const sign = (payload , secret , options = {}) =>{
+    return jwt.sign(payload,secret,options);
+}
+
+const decode = (token) => {
+    return jwt.decode(token)
+}
+
+const refreshAccessToken = async (refreshToken) => {
+    const decoded = await verifyRefreshToken(refreshToken);
+    const { iat, exp, ...payload } = decoded;
+    const accessToken = sign(payload, accessTokenSecret, {
+        expiresIn : accessTokenExpiry
+    })
+    return {accessToken};
+}
+
+const verifyVerificationToken = async (token) => {
+    const decoded = await verify(token,accessTokenSecret);
+    if (!decoded || decoded.type !== 'email_verification')
+        throw new HttpException(403, 'Invalid token type');
+    return decoded;
+}
+
+const generateVerificationToken = async (userId, email) => {
+    const payload = {
+        id : userId,
+        email: email,
+        type: 'email_verification'
+    }
+    const token = sign(payload,accessTokenSecret,{expiresIn: "24h"});
+    return token;
+}
+
+module.exports = {
+    generateAuthTokens,
+    verify,
+    verifyAccessToken,
+    verifyRefreshToken,
+    sign,
+    decode,
+    refreshAccessToken,
+    verifyVerificationToken,
+    generateVerificationToken,
+};
