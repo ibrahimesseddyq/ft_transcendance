@@ -1,5 +1,4 @@
 const { PrismaClient } = require('../../generated/prisma'); 
-const config = require('./env')
 let prismaInstance = null;
 
 const  getPrismaClient = () => {

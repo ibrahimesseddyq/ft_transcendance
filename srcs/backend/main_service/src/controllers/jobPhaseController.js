@@ -1,4 +1,3 @@
-const data = require('../config/env');
 const jobPhaseService = require('../services/jobPhaseService');
 
 const createJobPhase = async (req, res, next) => {
@@ -52,7 +51,7 @@ const deleteJobPhase = async (req, res, next) => {
 
 const getJobPhases = async(req, res, next) => {
 	try {
-		result = await jobPhaseService.getJobPhases(req.params.id);
+		const result = await jobPhaseService.getJobPhases(req.params.id);
 		res.status(200)
 		.json({
 			status: true,

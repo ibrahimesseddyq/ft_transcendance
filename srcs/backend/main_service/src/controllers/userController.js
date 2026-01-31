@@ -77,10 +77,7 @@ const listUsers = async (req,res,next) => {
 const deleteAvatar =  async (req, res, next) => {
     try {
         await userService.detletAvatar(req.params.id);
-        res.status(204)
-        .json({
-            status:true,
-        })
+        res.status(204).end();
     } catch (error) {
         next(error)
     }
