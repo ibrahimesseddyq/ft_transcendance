@@ -2,44 +2,29 @@ const env = require('../config/env');
 const {prisma} = require('../config/prisma');
 
 
-const findJobById = async (jobId) =>
-{
-    return await prisma.job.findUnique(
-        {
-            where : {id : jobId},
-            include : {}
-        }
-    )
+const findJobById = async (jobId) => {
+    return await prisma.job.findUnique({
+        where : {id : jobId},
+        include : {}
+    })
 }
 
-const createJob = async  (jobData) =>
-{
-    console.log("jobData : ", jobData);
+const createJob = async  (jobData) => {
+
     return await prisma.job.create({
         data : jobData 
     })
 }
 
-const updateJob = async (jobId, updateData) =>
-{
-    if (await findJobById(jobId))
-    {
-        return await prisma.job.update({
-            where : {id : jobId},
-            data: updateData,
-            include : {
-
-            }
-        })
-    }
+const updateJob = async (jobId, updateData) => {
+    return await prisma.job.update({
+        where : {id : jobId},
+        data: updateData,
+    })
 }
 
-const deleteJob = async (jobId) =>
-{
-    if (await findJobById(jobId))
-    {
-        return await prisma.job.delete({where :{ id : jobId} });
-    }
+const deleteJob = async (jobId) => {
+    return await prisma.job.delete({where :{ id : jobId} });
 }
 
 const findManyJobs = async (filters) => {

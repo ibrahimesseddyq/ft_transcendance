@@ -1,79 +1,61 @@
 const {prisma} =  require('../config/prisma');
 
+const getUserById = async (userId)=> {
+    return await prisma.user.findUnique({
+        where : {id : userId},
+    })
+}
 
-class UserRepository
-{
+const getByEmail = async (email) => {
+    return await prisma.user.findUnique({
+        where :{email :email }
+    })
+}
 
-    async findById(userId)
-    {
-        return await prisma.user.findUnique({
-            where : {id : userId},
-        })
+const createUser = async (userData) => {
+    return await prisma.user.create({
+        data : userData,
+    })
+}
+
+const updateUser = async (userId , updateData) => {
+
+    return await prisma.user.update({
+        where : {id : userId},
+        data: updateData,
+    })
+}
+
+const deleteUser = async  (userId) => {
+    return await prisma.user.delete({
+        where : {id : userId}
+    })
+}
+
+const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
+    const where = {};
+    if (role) where.role = role;
+    if (search) {
+        where.OR = [
+            {firstName: {contains: search}},
+            {lastName : {contains: search}},
+            {email : {contains: search}}
+        ];
     }
-
-    async findByEmail(email)
-    {
-        return await prisma.user.findUnique(
-            {
-                where :{email :email }
-            }
-        )
-    }
-
-    async create(userData)
-    {
-        return await prisma.user.create(
-            {
-                data : userData,
-            }
-        )
-    }
-
-
-    async update(userId , updateData)
-    {
-
-        return await prisma.user.update({
-            where : {id : userId},
-            data: updateData,
-            include : {
-
-            }
-        })
-    }
-
-    async delete (userId)
-    {
-        return await prisma.user.delete(
-            {
-                where : {id : userId}
-            }
-        )
-    }
-
-    async findMany({skip = 0 , take = 10 , role, search }){
-        const where = {};
-        if (role) where.role = role;
-        if (search)
-        {
-            where.OR = [
-                {firstName: {contains: search}},
-                {lastName : {contains: search}},
-                {email : {contains: search}}
-            ];
-        }
-        return await  prisma.user.findMany({
-            where,
-            take,
-            skip,
-            orderBy : {createdAt:'desc'}
-        })
-
-    }
-
+    return await  prisma.user.findMany({
+        where,
+        take,
+        skip,
+        orderBy : {createdAt:'desc'}
+    })
 
 }
 
-const userRepository = new UserRepository();
-
-module.exports =  userRepository;
+module.exports =  {
+    getUserById,
+    getByEmail,
+    createUser,
+    updateUser,
+    deleteUser,
+    getUsers
+};
