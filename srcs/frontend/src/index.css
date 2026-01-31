@@ -1,74 +1,63 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 @layer utilities {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
-    .pramary-text{
-      font-weight: 500;
-      color: #10B77F;
-    }
-    .secondary-text{
-      /* color: #10B77F; */
-    }
-    .theard-text{
-      /* color: #10B77F; */
-    }
-    .header-title{
-        font-size: 1.25rem /* 20px */;
-        line-height: 1.75rem /* 28px */;
+
+    .pramary-text {
         font-weight: 500;
-        --tw-text-opacity: 1;
-        color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        color: #00adef; 
     }
-    @media (min-width: 636px) {
-        .\32xl\:text-2xl {
-        font-size: 1.5rem /* 24px */;
-        line-height: 2rem /* 32px */;
+
+    .header-title {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        font-weight: 500;
+        color: rgb(255 255 255);
+    }
+
+    .logo {
+        background-color: #121b31;
+        border-radius: 0.375rem;
+        color: #ffffff;
+        border-color: #1f2937;
+        border-width: 1px;
+    }
+
+    .maincard {
+        background-color: #121b31;
+        border-color: #1f2937; 
+        border-radius: 1rem; 
+    }
+
+    .maincard:hover {
+        border-color: #00adef; 
+    }
+
+
+    .childcard {
+        background-color: #1e293b; 
+        border-width: 1px;
+        border-radius: 0.5rem;
+        border-color: rgba(0, 173, 239, 0.2); /* Soft blue border opacity */
+    }
+
+    .custom-scrollbar {
+        &::-webkit-scrollbar {
+            width: 6px; 
+        }
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #00adef; 
+            border-radius: 9999px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #0086b8; /* Darker blue on hover */
         }
     }
-    .logo{
-      background-color: #121b31;
-      border-radius: 0.375rem /* 6px */;
-      --tw-border-opacity: 1;
-      --tw-text-opacity: 1;
-      color: #ffffff;
-      border-color: #1e2e52;
-      border-width: 1px;
-    }
-    .maincard{
-      background-color: #131D34;
-      border-color: #1E2E52;
-      border-radius: 0.375rem;
-    }
-    .maincard:hover{
-      border-color: #10B77F;
-    }
-    .jobcard{
-      
-    }
-    .childcard{
-      background-color: #1e3249;
-      border-width: 1px;
-      --tw-border-opacity: 1;
-      --tw-border-opacity: 0.3;
-      border-radius: 0.375rem /* 6px */;
-      border-color: #5f88b8; 
-    }
-  .custom-scrollbar {
-    &::-webkit-scrollbar {
-      width: 8px; 
-    }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #4ade80; 
-      border-radius: 9999px;
-    }
-  }
 }

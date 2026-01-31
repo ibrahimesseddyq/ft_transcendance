@@ -126,6 +126,7 @@ model Job {
   description    String?    @db.Text
   requirements   String?    @db.LongText
   location       String?    @db.VarChar(255)
+  skills         String?    @db.Text 
   isRemote       Boolean?   @default(false)
   employmentType String?    @db.VarChar(50)
   salaryMin      Int?
