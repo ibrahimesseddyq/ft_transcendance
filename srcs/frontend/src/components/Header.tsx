@@ -1,45 +1,47 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
+import { Navbar } from "@/components/Navigation";
 import { SearchField } from '@/components/ui/SearchField'
-import { Notifications } from '@/components/ui/Notifications'
-
+import { Notifications } from '@/components/ui/Notifications' 
 
 export function Header() {
-  const [isMobileSearchVisible, setIsMobileSearchVisible] = useState(false);
 
   return (
-    <header className="container mx-auto flex justify-between h-full max-w-screen-2xl items-center py-2 px-4 sm:px-8 relative">
+    <header className="mx-auto flex gap-2 justify-between h-full 
+      max-w-screen-2xl items-center p-2 md:px-8">
       
       {/* Logo */}
-      {!isMobileSearchVisible && (
-        <Link to={"/Dashboard"} className="h-full w-auto sm:w-36 place-content-center">
-          <h1 className="hover:scale-105 text-md text-center p-2 logo">
-            RH-<span className="pramary-text font-bold">Connect</span>
-          </h1>
-        </Link>
-      )}
+      <Link 
+        to="/Dashboard" 
+        className="hover:scale-105  inline-flex items-center gap-2 group transition-all duration-300"
+      >
+        <img 
+          src="/logo.svg" 
+          alt="RH Connect" 
+          className="w-8 h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
+        />
+        <h1 className="text-md text-center p-2 sm:flex hidden">
+          RH-<span className="pramary-text font-bold">Connect</span>
+        </h1>
+      </Link>  
 
-      {/* SEARCH SECTION */}
-      <SearchField 
-        isMobileSearchVisible={isMobileSearchVisible}
-        setIsMobileSearchVisible={setIsMobileSearchVisible}/>
+      {/* Navigation SECTION */}
+      <Navbar />
+      <div className="flex justify-end items-center gap-2 md:gap-5 min-w-fit">
+          <Notifications />
 
-      {!isMobileSearchVisible && (
-        <div className="flex justify-end items-center gap-2 sm:w-[30%]">
-          <Notifications/>
-
-          <Link to="/profile" className="flex items-center space-x-3">
-            <div
-              className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-cover bg-center border border-gray-700"
-              style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}
-            />
+          <Link to="/profile" className="flex items-center gap-3 group">
             <div className="text-right hidden lg:block">
-              <p className="text-sm font-medium text-white">CHIDORI</p>
-              <p className="text-xs text-green-600">@Developer</p>
+              <p className="text-sm font-bold text-black group-hover:text-[#00adef] transition-colors">CHIDORI</p>
+              <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">@Developer</p>
             </div>
+            
+            <div
+              className="h-10 w-10 rounded-full bg-cover bg-center border-2 border-gray-800 group-hover:border-[#00adef] transition-all"
+              style={{ backgroundImage: "url('/icons/profile.png')" }}
+            />
           </Link>
         </div>
-      )}
     </header>
   );
 }
