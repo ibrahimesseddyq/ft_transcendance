@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
 import JobDescription from "@/components/ui/JobDescription";
@@ -29,6 +30,8 @@ export function Jobs() {
   const [jobItem, setJobItem] = useState<Job | null>(null);
   const [jobDescp, setJobDescp] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className=" flex h-full w-full gap-5 overflow-hidden">
         <ToastContainer/>
@@ -54,16 +57,23 @@ export function Jobs() {
       )}
 
       <JobFilter
-            setJobsArray={setJobsArray}
-      />
-      
-      <JobCards 
-        jobsArray={jobsArray}
         setJobsArray={setJobsArray}
-        setJobDescp={setJobDescp}
-        setJobItem={setJobItem}
-        setIsFormOpen={setIsFormOpen}
+        setIsLoading={setIsLoading}
       />
+
+      {isLoading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <Loading />
+        </div>
+      ) : (
+        <JobCards 
+          jobsArray={jobsArray}
+          setJobsArray={setJobsArray}
+          setJobDescp={setJobDescp}
+          setJobItem={setJobItem}
+          setIsFormOpen={setIsFormOpen}
+        />
+      )}
 
       <button 
         onClick={() => {setJobItem(null); setIsFormOpen(true)}}

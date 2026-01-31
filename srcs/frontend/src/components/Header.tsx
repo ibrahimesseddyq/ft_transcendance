@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { Navbar } from "@/components/Navigation";
 import { SearchField } from '@/components/ui/SearchField'
-import { Notifications } from '@/components/ui/Notifications'
-
+import { Notifications } from '@/components/ui/Notifications' 
 
 export function Header() {
 
@@ -12,11 +11,19 @@ export function Header() {
       max-w-screen-2xl items-center p-2 md:px-8">
       
       {/* Logo */}
-      <Link to={"/Dashboard"} className="hidden md:block  h-full w-auto sm:w-36 place-content-center">
-        <h1 className="hover:scale-105 text-md text-center p-2 logo">
+      <Link 
+        to="/Dashboard" 
+        className="hover:scale-105  inline-flex items-center gap-2 group transition-all duration-300"
+      >
+        <img 
+          src="/logo.svg" 
+          alt="RH Connect" 
+          className="w-8 h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
+        />
+        <h1 className="text-md text-center p-2 sm:flex hidden">
           RH-<span className="pramary-text font-bold">Connect</span>
         </h1>
-      </Link>
+      </Link>  
 
       {/* Navigation SECTION */}
       <Navbar />

@@ -1,4 +1,4 @@
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 import ProtectedRoutes from "@/utils/ProtectedRoutes"
 import { Header } from "@/components/Header";
@@ -15,51 +15,53 @@ import { NotFound } from "@/components/NotFound";
 import { useTransition as ViewTransition } from 'react';
 
 
-export function Main () {
+export function Main() {
   const location = useLocation();
-    const isLoginPage = location.pathname === '/';
-    if (isLoginPage) {
-        return (
-            <main className="h-screen w-screen bg-[#FFFFFF] overflow-auto custom-scrollbar
-              place-content-center place-items-center">
-              {/* <OTPpage/> */}
-              <Routes>
-                <Route path="/" element={<ProfileInformations />} />
-              </Routes>
-                {/* <Routes>
-                    <Route path="/" element={<LoginPage />} />
-                </Routes> */}
-            </main>
-        );
-    }
-  return (
-      <div className="h-screen w-screen flex flex-col 
-      bg-[#F0F3FA] overflow-auto custom-scrollbar pt-4 px-4">
-        
-        {/* Sidebar */}
-        <div className="h-full w-full max-h-20
-          sticky top-0 z-50 bg-white rounded-xl shadow-xl shadow-black/10
-           border-[#5F88B8] border-opacity-30">
-            <Header/>
-        </div>
-        <div className="flex h-full max-w-screen-2xl
-             justify-between overflow-hidden">
-            {/* Main Content */}
-              <main className="w-full h-full items-center justify-center
-                overflow-auto no-scrollbar py-5">
-                  <Routes>
-                    <Route element={<ProtectedRoutes />}>
-                      <Route path="/Dashboard" element={<Dashboard />} />
-                      <Route path="/Jobs" element={<Jobs />} />
-                      <Route path="/Jobs/Viewjob" element={<ViewJob />} />
-                      <Route path="/Condidates" element={<Condidates />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/Messages" element={<NotFound />} />
-                    </Route>
-                  </Routes>
-              </main>
-        </div>
-      </div>    
-  );
-};
+  const token = localStorage.getItem("token");
+  
+  const publicPaths = ['/Login', '/reset-password', '/otp'];
+  const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
+  if (!token && !isPublicPage) {
+    return <Navigate to="/Login" state={{ from: location }} replace />;
+  }
+
+  if (isPublicPage) {
+    if (token && location.pathname === '/Login') {
+      return <Navigate to="/Dashboard" replace />;
+    }
+
+    return (
+      <main className="h-screen w-screen bg-white flex items-center justify-center">
+        <Routes>
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/" element={<Navigate to="/Login" replace />} />
+          <Route path="*" element={<Navigate to="/Login" replace />} />
+        </Routes>
+      </main>
+    );
+  }
+
+  return (
+    <div className="h-screen w-screen flex flex-col bg-[#F0F3FA] overflow-hidden pt-4 px-4">
+      {/* Header */}
+      <div className="h-20 w-full sticky top-0 z-50 bg-white rounded-xl shadow-xl shadow-black/10 border-[#5F88B8] border-opacity-30 shrink-0">
+        <Header />
+      </div>
+
+      <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
+        <main className="w-full h-full py-5 overflow-auto no-scrollbar">
+          <Routes>
+            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Jobs" element={<Jobs />} />
+            <Route path="/Jobs/Viewjob" element={<ViewJob />} />
+            <Route path="/Condidates" element={<Condidates />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/Messages" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}

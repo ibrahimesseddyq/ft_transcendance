@@ -4,8 +4,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -15,6 +18,17 @@ const Signup = () => {
     } = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
     });
+
+    useEffect(() => {
+        console.log("Full URL Search String:", window.location.search);
+        const tokenFromUrl = searchParams.get('token');
+        console.log("My google token is, ", tokenFromUrl);
+        if (tokenFromUrl) {
+            localStorage.setItem("token", tokenFromUrl);
+            Notification("Google Login Successful", "success");
+            navigate('/Dashboard', { replace: true });
+        }
+    }, [searchParams, navigate]);
 
     const GoogleSubmit = async () => {
         window.location.href = 'http://localhost:3000/api/auth/google';
@@ -50,7 +64,7 @@ const Signup = () => {
                 <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign Up</h1>
             </div>
 
-            <div className='h-auto w-full max-w-[350px] flex flex-col gap-4 overflow-hidden my-auto'>
+            <div className='h-auto w-full max-w-[350px] flex flex-col gap-4 overflow-y-auto custom-scrollbar my-auto'>
                 <div className="w-full h-auto">
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome!
@@ -122,7 +136,7 @@ const Signup = () => {
                              border-gray-800 justify-center bg-transparent text-white 
                             hover:bg-white hover:text-black transition-all items-center mt-2">
                         <img className="h-6 w-6" 
-                             src="/public/icons/google1.png"
+                             src="/icons/google1.png"
                              alt="Google icon"/>
                         <span className='text-xs lg:text-sm font-semibold whitespace-nowrap'>Log in with Google</span>
                     </button>
