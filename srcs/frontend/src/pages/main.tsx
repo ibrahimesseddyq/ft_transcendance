@@ -1,6 +1,5 @@
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
-import ProtectedRoutes from "@/utils/ProtectedRoutes"
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
 import { ResetPassword } from '@/components/ResetPassword';
