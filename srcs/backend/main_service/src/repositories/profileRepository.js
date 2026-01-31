@@ -6,22 +6,22 @@ const createProfile = async (data) => {
     })
 }
 
-const deleteProfile = async (ProfileId) => {
+const deleteProfile = async (userId) => {
     return await prisma.profile.delete({
-        where : {id : ProfileId}
+        where : {userId : userId}
     })
 }
 
-const updateProfile = async (ProfileId, updateData) => {
+const updateProfile = async (userId, updateData) => {
     return await prisma.profile.update({
-        where: {id : ProfileId},
+        where: {userId : userId},
         data: updateData
     })
 }
 
-const getProfileById = async (ProfileId) => {
+const getProfileById = async (userId) => {
     return await prisma.profile.findUnique({
-        where : {id : ProfileId}
+        where : {userId : userId}
     })
 }
 
