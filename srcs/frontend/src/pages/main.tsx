@@ -2,16 +2,12 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 import { Header } from "@/components/Header";
 import { LoginPage } from "@/pages/Loginpage";
-import { ResetPassword } from '@/components/ResetPassword';
-import { ProfileInformations } from "@/components/ProfileInformations"
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
 import { ViewJob } from "@/components/ViewJob"
 import { Condidates } from "@/components/Condidates"
-import { OTPpage } from '@/components/OTPpage';
 import { NotFound } from "@/components/NotFound";
-import { useTransition as ViewTransition } from 'react';
 
 
 export function Main() {

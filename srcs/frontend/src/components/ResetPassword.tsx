@@ -1,4 +1,3 @@
-import auth from '../assets/icons/passwordreset.svg';
 import { useState, useEffect } from 'react';
 
 
@@ -7,7 +6,7 @@ export function ResetPassword(){
     const Reset = () => {
         return(
             <div className="p-5 flex flex-col w-full h-full gap-10 items-center justify-center  ">
-                <img src={auth} alt="auth image" 
+                <img src={"icons/passwordreset.svg"} alt="auth image" 
                     className='h-28 w-28'/>
                 <div className='flex flex-col gap-1 items-center '>
                     <h1 className='font-bold text-white text-2xl'>Reset you password</h1>

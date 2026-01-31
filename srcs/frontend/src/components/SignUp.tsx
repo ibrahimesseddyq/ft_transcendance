@@ -126,7 +126,8 @@ const Signup = () => {
                         </div>
 
                         <button type="submit"
-                                className="h-[45px] w-full mt-2 text-white font-bold rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-all transform active:scale-95">
+                                className="h-[45px] w-full text-white font-bold whitespace-nowrap
+                                    mx-auto rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-colors overflow-hidden">
                             Register
                         </button>
                     </form>
