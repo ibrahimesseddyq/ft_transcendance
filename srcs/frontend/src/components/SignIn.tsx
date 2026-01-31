@@ -5,11 +5,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { ToastContainer } from "react-toastify";
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const {
         register,
@@ -30,10 +33,21 @@ const Signin = () => {
             setIcon(EyeOff);
         }
     }
-    const GoogleSubmit = async () => {
+
+    useEffect(() => {
+        const tokenFromUrl = searchParams.get('token');
+        console.log("My google token is, ", tokenFromUrl);
+        if (tokenFromUrl) {
+            localStorage.setItem("token", tokenFromUrl);
+            Notification("Google Login Successful", "success");
+            navigate('/Dashboard', { replace: true });
+        }
+    }, [searchParams, navigate]);
+    
+    const GoogleSubmit = () => {
         window.location.href = 'http://localhost:3000/api/auth/google';
-        Notification("succes login to Google", "success");
     }
+
     const LoginSubmit = async (data: any) => {
         try {
             const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -44,29 +58,41 @@ const Signin = () => {
                 body: JSON.stringify(data),
             });
 
+            const result = await response.json();
+
             if (!response.ok) {
-                throw new Error(`Server responded with status: ${response.status}`);
+                throw new Error(result.message || `Status: ${response.status}`);
             }
-            Notification("succes Login", "success");
-            window.location.href = '/dashboard'
-        } catch (error) {
+            const token = result.data?.accessToken;
+            
+            if (token) {
+                console.log("backend accessToken = ",  token);
+                localStorage.setItem("token", token);
+                Notification("Success Login", "success");
+                window.location.href = '/Dashboard';
+            } else {
+                throw new Error("Token not found in response");
+            }
+        } catch (error: any) {
             console.error("Submission failed:", error);
-            Notification("error Login", "error");
+            Notification(error.message || "Error Login", "error");
         }
         reset();
     };
 
     return (
-        <div className="w-full h-full flex flex-col items-center p-4 overflow-hidden">
+        <div className="w-full h-full flex flex-col items-center gap-4 p-4 overflow-auto no-scrollbar">
             <div className='border rounded-xl px-5 border-gray-800 bg-[#121b31]
-                    whitespace-nowrap overflow-hidden'>
+                    whitespace-nowrap overflow-hidden mb-6'>
                 <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
             </div>
             
-            <div className='h-auto w-full max-w-[350px] my-auto'>
-                <div className="w-64 h-12 overflow-hidden">
-                    <h2 className="text-[#00adef] text-sm">Welcome Back!</h2>
-                    <h1 className="text-md text-white">
+            <div className='h-auto w-full max-w-[350px] flex flex-col gap-4 overflow-hidden my-auto'>
+                <div className="w-full h-auto">
+                    <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
+                        Welcome Back!
+                    </h2>
+                    <h1 className="text-md font-electrolize text-white whitespace-nowrap overflow-hidden">
                         We are happy to see you again.
                     </h1>
                 </div>
@@ -120,7 +146,7 @@ const Signin = () => {
                              border-gray-800 justify-center bg-transparent text-white 
                             hover:bg-white hover:text-black transition-all items-center mt-2">
                         <img className="h-6 w-6" 
-                             src="/public/icons/google1.png"
+                             src="/icons/google1.png"
                              alt="Google icon"/>
                         <span className='text-xs lg:text-sm font-semibold whitespace-nowrap'>Log in with Google</span>
                     </button>

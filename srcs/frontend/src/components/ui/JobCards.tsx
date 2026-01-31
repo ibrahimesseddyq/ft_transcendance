@@ -1,5 +1,5 @@
 import Notification from "@/utils/TostifyNotification";
-import { useEffect} from 'react';
+import { useEffect, useState} from 'react';
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -11,7 +11,6 @@ interface props {
 }
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
-  
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
@@ -27,8 +26,6 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
       Notification("Error Deleting job", "error");
     }
   };
-
-  
   
   return (
     <div className="flex-1 h-full w-full overflow-auto no-scrollbar p-6">
@@ -41,7 +38,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
 
-              {/* closed or open */}
+              {/* closed or open or archived*/}
               {item.status === "closed" ? (
                 <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
                   rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
@@ -49,10 +46,17 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                   CLOSED
                 </span>
+              ) : item.status === "archived" ? (
+                <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
+                  rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
+                  text-[10px] font-bold backdrop-blur-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
+                  ARCHIVED
+                </span>
               ) : (
                 <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
                   rounded-full border border-[#00adef]/50 bg-[#00adef]/10 text-[#00adef] 
-                  text-[10px] font-bold  backdrop-blur-sm">
+                  text-[10px] font-bold backdrop-blur-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00adef] animate-pulse" />
                   OPEN
                 </span>
