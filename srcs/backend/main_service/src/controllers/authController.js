@@ -8,17 +8,14 @@ const cookieOptions = {
     secure: env.NODE_ENV === "production"
 }
 
-const login = async (req, res, next) =>
-{
+const login = async (req, res, next) => {
     console.log("kan hna");
-    try
-    {
+    try {
         const {user, accessToken, refreshToken} = await authService.login(req.body);
         res
         .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)
-        .json(
-            {
+        .json({
                 message: 'login successful',
                 data:{
                     user,
@@ -26,16 +23,13 @@ const login = async (req, res, next) =>
                 }
             }
         );
-    }catch(error)
-    {
+    }catch(error) {
         next(error);
     }
 }
 
-const register = async (req, res, next) =>
-{
-    try 
-    {
+const register = async (req, res, next) => {
+    try {
         const user = await authService.register(req.body)
         res
         .status(201)
@@ -43,19 +37,15 @@ const register = async (req, res, next) =>
             message : 'user registered successfully',
             data:user
         });
-    }catch(error)
-    {
+    }catch(error) {
         next(error)
     }
 }
 
-const refresh =  async (req, res, next) => 
-{
-    try 
-    {
+const refresh =  async (req, res, next) => {
+    try {
         const refreshToken = req.cookies.jwt;
-        if (!refreshToken)
-        {
+        if (!refreshToken) {
             return res
             .status(401)
             .json({
@@ -72,25 +62,19 @@ const refresh =  async (req, res, next) =>
                 accessToken
             }
         });
-    }catch(error)
-    {
+    }catch(error) {
         next(error);
     }
 }
 
-const logout =  async (req, res, next) =>
-{
-    try
-    {
+const logout =  async (req, res, next) => {
+    try {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken)
-        {
             return res.sendStatus(204);
-        }
         await authService.logout(refreshToken);
         res.clearCookie('jwt', cookieOptions).sendStatus(204);
-    }catch(error)
-    {
+    }catch(error) {
         res.clearCookie('jwt',cookieOptions).sendStatus(204);
         next(error);
     }
@@ -128,7 +112,6 @@ const resendVerification = async (req, res, next) => {
 
 module.exports = {
     getAuthStatus,
-    googleCallback,
     login,
     register,
     refresh,

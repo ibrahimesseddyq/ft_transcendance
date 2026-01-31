@@ -3,8 +3,7 @@ const jobService = require('./jobService');
 const userService = require('./userService');
 const {HttpException} = require('../utils/httpExceptions');
 
-const submitApplication = async (applicationData) => 
-{
+const submitApplication = async (applicationData) => {
 	const job  = await jobService.getJobById(applicationData.jobId);
 	if (!job)
 		throw new HttpException(404, 'job with the specified id not found');

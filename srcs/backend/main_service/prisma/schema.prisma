@@ -59,10 +59,7 @@ model Profile {
   currentTitle       String?   @db.VarChar(255)
   yearsExperience    Int?
   skills             String?   @db.LongText
-  preferredLocations String?   @db.LongText
-  salaryExpectation  String?   @db.VarChar(50)
   availableFrom      DateTime? @db.Date
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
