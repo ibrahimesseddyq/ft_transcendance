@@ -7,6 +7,9 @@ const createProfile = async  (userId , profileData) => {
     const user = await userService.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
+    const profile = await profileRepository.getProfileById(userId);
+    if (profile)
+            throw new HttpException(400,"profile already exists");
     const {resumeUrl} = await fileService.saveResume(userId,profileData.file);
     return await profileRepository.createProfile({
         ...profileData.body,
