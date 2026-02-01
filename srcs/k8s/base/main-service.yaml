@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: main-service
+  namespace: hirefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-service
+  template:
+    metadata:
+      labels:
+        app: main-service
+    spec:
+      containers:
+        - name: main-service
+          image: main-service:dev
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "main-service"
+            - name: HOST_IP
+              value: "main-service"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: main-service-secret
+                  key: DATABASE_URL
+      initContainers:
+        - name: prisma-db-push
+          image: main-service:dev
+          command: ["sh", "-lc", "npx prisma db push"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: main-service-secret
+                  key: DATABASE_URL
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-service
+  namespace: hirefy
+spec:
+  selector:
+    app: main-service
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
