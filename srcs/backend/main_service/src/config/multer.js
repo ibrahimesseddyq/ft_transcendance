@@ -41,5 +41,16 @@ const upload =  multer({
     }
 });
 
+const uploadProfile = multer({
+    storage: diskStorage,
+    fileFilter: fileFilter,
+    limits : {
+        fileSize : 10 * 1024 * 1024,
+        files: 2
+    } 
+})
 
-module.exports = upload;
+module.exports = {
+    upload,
+    uploadProfile
+};
