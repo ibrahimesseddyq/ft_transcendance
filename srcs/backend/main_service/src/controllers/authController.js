@@ -128,7 +128,6 @@ const resendVerification = async (req, res, next) => {
 
 module.exports = {
     getAuthStatus,
-    googleCallback,
     login,
     register,
     refresh,
