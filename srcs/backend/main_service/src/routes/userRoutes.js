@@ -1,5 +1,5 @@
 const express =  require('express');
-const upload = require('../config/multer')
+const {upload} = require('../config/multer')
 const userController = require('../controllers/userController');
 const ValidateRequest = require('../middleware/ValidateRequest');
 const {

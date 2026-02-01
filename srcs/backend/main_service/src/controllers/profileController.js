@@ -6,7 +6,7 @@ const createProfile =  async (req, res, next) => {
         const id =  req.params?.id || req.body.userId;
         const profile = await profileservice.createProfile(id, {
             body: req.body,
-            file:req.file
+            files:req.files
         });
         res.status(201)
         .json({
@@ -21,7 +21,11 @@ const createProfile =  async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
     try {
-        const updatedProfile = await profileservice.updateProfile(req.params.id,req);
+        const id = req.params?.id || req.body.id;
+        const updatedProfile = await profileservice.updateProfile(id,{
+            body : req.body,
+            files: req.files
+        });
         res.status(200)
         .json({
             status: true,
