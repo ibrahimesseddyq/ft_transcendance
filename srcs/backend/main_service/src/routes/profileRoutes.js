@@ -9,7 +9,7 @@ const {
 } = require('../validators/profileValidator');
 const validateRequest = require('../middleware/ValidateRequest');
 
-router.get('/:id',validateRequest(createProfileschema),
+router.get('/:id/resume',validateRequest(createProfileschema),
     profileController.getProfile)
     .post('/',uploadProfile.fields([
         {name : "avatar" , maxCount: 1},

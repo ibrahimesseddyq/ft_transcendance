@@ -7,12 +7,12 @@ const createProfileschema = z.object({
   avatar: z
     .any()
     .optional()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+    .transform((v) => (v instanceof File ? v.item(0) ?? undefined : v))
     .pipe(fileSchema.optional()),
 
   resume: z
     .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+    .transform((v) => (v instanceof File ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
   linkedinUrl: z.string()
@@ -37,14 +37,11 @@ const createProfileschema = z.object({
     .optional(),
 
   salaryExpectation: z.string()
-    .optional(),
-
-  availableFrom: z.iso.date()
-    .optional(),
-});
+    .optional()
+}).strict();
 
 
-const updateProfileschema = createProfileschema.partial();
+const updateProfileschema = createProfileschema.partial().strict();
 
 module.exports = {
     createProfileschema,
