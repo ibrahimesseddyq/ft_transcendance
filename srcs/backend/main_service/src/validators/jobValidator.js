@@ -3,28 +3,39 @@ const {JobStatus} = require('../../generated/prisma');
 
 const createJobSchema = z.object({
     title: z.string()
-    .min(1, "job should a have a valid title"),
+      .min(1, "Title is required"),
     department: z.string()
-    .min(1, "job should have a valid department name"),
+      .min(5, "department is required"),
     description: z.string()
-    .min(50, "job should have a valid description"),
+      .min(20, "description is required"),
     requirements: z.string()
-    .min(100, "job requirements is required"),
+      .optional(),
+    skills: z.string()
+      .optional(),
     location: z.string()
-    .min(1, "job location is required"),
-    isRemote: z.boolean().default(false),
-    employmentType:z.string(),
-    salaryMin: z.number().int(),
-    salaryMax: z.number().int(),
+      .min(1, "location is required"),
+    isRemote: z.boolean()
+      .default(false),
+    employmentType: z.string()
+      .min(1, "employmentType is required")
+      .max(50, "employmentType is too Long")
+      .default('full-time'),
+    salaryMin: z.number()
+      .int()
+      .min(1000, "Salary should be at least 1000"),
+    salaryMax: z.number()
+      .int(),
     salaryCurrency: z.string()
-    .min(3,"salary currency must be a 3-letter code")
-    .max(3,"salary currency must be a 3-letter code")
-    .default('USD'),
-    status: z.nativeEnum(JobStatus)
-    .default(JobStatus.open),
-    createdBy:z.string()
-})
-const updateJobSchema = createJobSchema.partial()
+      .min(3,"salary currency must be a 3-letter code")
+      .max(3,"salary currency must be a 3-letter code")
+      .default('USD'),
+    status: z.enum(["open", "closed", "archived"])
+      .default("open"),
+  }).refine((data) => data.salaryMax >= data.salaryMin, {
+    message: "Maximum salary must be greater than or equal to minimum salary",
+    path: ["salaryMax"], });
+
+const updateJobSchema = createJobSchema
 
 module.exports = {
     createJobSchema,
