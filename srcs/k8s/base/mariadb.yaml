@@ -12,22 +12,38 @@ spec:
     metadata:
       labels:
         app: mariadb
-    spec:
-      containers:
-        - name: mariadb
-          image: mariadb:11
-          ports:
-            - containerPort: 3306
-          envFrom:
-            - secretRef:
-                name: mariadb-secret
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: mariadb-pvc
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "mariadb"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/mariadb/config"
+        vault.hashicorp.com/agent-inject-template-config: |
+          {{- with secret "secret/data/mariadb/config" -}}
+          export MYSQL_ROOT_PASSWORD="{{ .Data.data.MYSQL_ROOT_PASSWORD }}"
+          export MYSQL_DATABASE="{{ .Data.data.MYSQL_DATABASE }}"
+          export MYSQL_USER="{{ .Data.data.MYSQL_USER }}"
+          export MYSQL_PASSWORD="{{ .Data.data.MYSQL_PASSWORD }}"
+          {{- end }}
+      spec:
+        serviceAccountName: app-service-account
+        containers:
+          - name: mariadb
+            image: mariadb:11
+            ports:
+              - name: mysql
+                containerPort: 3306
+                protocol: TCP
+            command:
+              - /bin/sh
+              - -c
+              - |
+                # Source Vault secrets
+                source /vault/secrets/config
+                # Start MariaDB
+                docker-entrypoint.sh mariadbd
+            volumeMounts:
+              - name: data
+                persistentVolumeClaim:
+                  claimName: mariadb-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -38,6 +54,8 @@ spec:
   selector:
     app: mariadb
   ports:
-    - port: 3306
+    - name: mysql
+      port: 3306
       targetPort: 3306
+      protocol: TCP
   type: ClusterIP

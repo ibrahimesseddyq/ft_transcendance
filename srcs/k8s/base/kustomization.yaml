@@ -4,11 +4,9 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - gateway.yaml
-  - main-service.yaml
-  - mariadb-secret.yaml
+  - main-service-vault.yaml
   - mariadb-pvc.yaml
-  - mariadb.yaml
-  - main-service-secret.yaml
-  # - ai-service.yaml
-  # - quiz-service.yaml
-  # - vault.yaml
+  - mariadb-vault.yaml
+  - ai-service-vault.yaml
+  - quiz-service-vault.yaml
+  - vault-complete.yaml

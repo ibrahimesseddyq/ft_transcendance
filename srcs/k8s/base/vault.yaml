@@ -4,17 +4,20 @@ metadata:
   name: vault-config
   namespace: hirefy
 data:
-  vault.hcl: |
-    storage "file" {
-      path = "/vault/data"
-    }
+ vault.hcl: |
+    ui = true
     
     listener "tcp" {
       address     = "0.0.0.0:8200"
       tls_disable = 1
     }
     
-    ui = true
+    storage "file" {
+      path = "/vault/data"
+    }
+    
+    disable_mlock = true
+    api_addr = "http://vault:8200"
 
 ---
 apiVersion: v1
@@ -27,6 +30,26 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault
+  namespace: hirefy
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: vault
+    namespace: hirefy
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,18 +68,27 @@ spec:
     spec:
       containers:
         - name: vault
-          image: vault:dev
+          image: hashicorp/vault:1.18
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8200
               protocol: TCP
+            - name: internal
+              containerPort: 8201
+              protocol: TCP
           env:
             - name: VAULT_ADDR
               value: "http://0.0.0.0:8200"
+            - name: VAULT_API_ADDR
+              value: "http://vault:8200"
             - name: SKIP_SETCAP
               value: "true"
-          command: ["vault", "server", "-config=/vault/config/vault.hcl"]
+            - name: VAULT_DEV_ROOT_TOKEN_ID
+              value: "root"
+          args:
+            - "server"
+            - "-config=/vault/config/vault.hcl"
           volumeMounts:
             - name: config
               mountPath: /vault/config
@@ -65,6 +97,20 @@ spec:
           securityContext:
             capabilities:
               add: ["IPC_LOCK"]
+          # readinessProbe:
+          #   httpGet:
+          #     path: /v1/sys/health?standbyok=true
+          #     port: 8200
+          #     scheme: HTTP
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /v1/sys/health?standbyok=true
+          #     port: 8200
+          #     scheme: HTTP
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 10
       volumes:
         - name: config
           configMap:
@@ -78,6 +124,8 @@ kind: Service
 metadata:
   name: vault
   namespace: hirefy
+  labels:
+    app: vault
 spec:
   selector:
     app: vault
@@ -86,5 +134,50 @@ spec:
       port: 8200
       targetPort: 8200
       protocol: TCP
+    - name: internal
+      port: 8201
+      targetPort: 8201
+      protocol: TCP
   type: ClusterIP
-  
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault-agent-injector
+  namespace: hirefy
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vault-agent-injector
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["mutatingwebhookconfigurations"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+--- 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-agent-injector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vault-agent-injector
+subjects:
+  - kind: ServiceAccount
+    name: vault-agent-injector
+    namespace: hirefy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-service-account
+  namespace: hirefy

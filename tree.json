@@ -1684,6 +1684,12 @@
             "path": "/home/armanov/Desktop/trans/srcs/k8s/base",
             "children": [
               {
+                "name": "ai-service.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/ai-service.yaml",
+                "icon": null
+              },
+              {
                 "name": "gateway.yaml",
                 "type": "file",
                 "path": "/home/armanov/Desktop/trans/srcs/k8s/base/gateway.yaml",
@@ -1730,6 +1736,18 @@
                 "type": "file",
                 "path": "/home/armanov/Desktop/trans/srcs/k8s/base/namespace.yaml",
                 "icon": null
+              },
+              {
+                "name": "quiz-service.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/quiz-service.yaml",
+                "icon": null
+              },
+              {
+                "name": "vault.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/vault.yaml",
+                "icon": null
               }
             ],
             "icon": null
@@ -1766,7 +1784,7 @@
         "icon": null
       }
     ],
-    "generated": "2026-02-01T18:07:02.853Z",
+    "generated": "2026-02-01T19:01:50.754Z",
     "generator": "FileTree Pro Extension",
     "note": "Common build folders, dependencies, and temporary files are automatically excluded.",
     "showIcons": false
