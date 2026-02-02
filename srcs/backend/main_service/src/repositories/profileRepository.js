@@ -1,8 +1,8 @@
-const prisma = require('../config/prisma');
+const {prisma} = require('../config/prisma');
 
 const createProfile = async (data) => {
     return await prisma.profile.create({
-        data:data
+        data
     })
 }
 

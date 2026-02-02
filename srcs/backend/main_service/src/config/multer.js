@@ -5,12 +5,12 @@ const {HttpException} = require('../utils/httpExceptions');
 const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = file.fieldname === 'avatar' ?
-        'upload/avatars':
-        'upload/resumes';
+        'uploads/avatars':
+        'uploads/resumes';
         cb(null, uploadPath);
     },
     filename:(req, file, cb) => {
-        const filename = req.params.id || req.user.id;
+        const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)
     }                                                                         
@@ -41,5 +41,16 @@ const upload =  multer({
     }
 });
 
+const uploadProfile = multer({
+    storage: diskStorage,
+    fileFilter: fileFilter,
+    limits : {
+        fileSize : 10 * 1024 * 1024,
+        files: 2
+    } 
+})
 
-module.exports = upload;
+module.exports = {
+    upload,
+    uploadProfile
+};

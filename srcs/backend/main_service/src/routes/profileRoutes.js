@@ -1,11 +1,17 @@
 const profileController = require('../controllers/profileController');
 const express =  require('express');
 const router = express.Router();
-const upload =  require('../config/multer');
+const {uploadProfile} =  require('../config/multer');
 
 
 router.get('/:id', profileController.getProfile)
-    .post('/',upload.single("resume"),profileController.createProfile)
-    .patch('/:id',upload.single("resume"),profileController.updateProfile);
+    .post('/',uploadProfile.fields([
+        {name : "avatar" , maxCount: 1},
+        {name : "resume", maxCount: 1}
+    ]),profileController.createProfile)
+    .patch('/:id',uploadProfile.fields([
+        {name : "avatar" , maxCount: 1},
+        {name : "resume", maxCount: 1},
+    ]),profileController.updateProfile);
 
 module.exports = router;

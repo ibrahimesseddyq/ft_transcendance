@@ -16,20 +16,21 @@ const findUserOrCreate = async (profile) => {
     const email = profile.emails[0].value.toLowerCase().trim();
     let user = await userRepository.getByEmail(email);
     if (user) {
-    delete user.passwordHash;
-    delete user.refreshToken;
-    return user;
+        delete user.passwordHash;
+        delete user.refreshToken;
+        return user;
     }
     const randomPassword = crypto.randomBytes(32).toString('hex');
     const passwordHash = await argon2.hash(randomPassword);
 
     user = await userRepository.createUser({
-    email,
-    firstName: profile.name.givenName || profile.displayName.split(' ')[0] || 'User',
-    lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
-    passwordHash,
-    avatarUrl: profile.photos?.[0]?.value || null,
-    role: 'candidate',
+        email,
+        firstName: profile.name.givenName || profile.displayName.split(' ')[0] || 'User',
+        lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
+        passwordHash,
+        avatarUrl: profile.photos?.[0]?.value || null,
+        role: 'candidate',
+        isVerified: true
     });
 
     delete user.passwordHash;
@@ -96,7 +97,7 @@ const detletAvatar =  async (userId) => {
 }
 
 const getAvatar = async (userId) => {
-    const user =  userRepository.getUserById(userId);
+    const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
     if (!user.avatarUrl)
