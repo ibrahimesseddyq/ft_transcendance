@@ -1,10 +1,3 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ai-service-secret
-  namespace: hirefy
-type: Opaque
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,13 +6,17 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:
+    matchLabels: 
       app: ai-service
   template:
     metadata:
       labels:
         app: ai-service
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "ai-service"
     spec:
+      serviceAccountName: app-service-account
       containers:
         - name: ai-service
           image: ai-service:dev
@@ -28,9 +25,14 @@ spec:
             - name: http
               containerPort: 5000
               protocol: TCP
-          env:
-            - name: PORT
-              value: "5000"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Source Vault secrets
+              source /vault/secrets/config
+              # Start the application
+              python app.py
 ---
 apiVersion: v1
 kind: Service
@@ -46,3 +48,11 @@ spec:
       targetPort: 5000
       protocol: TCP
   type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-service-config
+  namespace: hirefy
+data:
+  PORT: "5000"
