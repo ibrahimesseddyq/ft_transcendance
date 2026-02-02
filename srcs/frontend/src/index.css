@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer utilities {
+    input:is(:-webkit-autofill, :autofill) {
+        border: 3px dotted orange;
+        -webkit-box-shadow: 0 0 0 30px white inset !important; 
+      }
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }

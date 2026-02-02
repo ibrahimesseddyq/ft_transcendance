@@ -59,6 +59,7 @@ const Signin = () => {
             });
 
             const result = await response.json();
+            console.log("user Data: ", result.data.user);
 
             if (!response.ok) {
                 throw new Error(result.message || `Status: ${response.status}`);
@@ -69,7 +70,7 @@ const Signin = () => {
                 console.log("backend accessToken = ",  token);
                 localStorage.setItem("token", token);
                 Notification("Success Login", "success");
-                window.location.href = '/Dashboard';
+                // window.location.href = '/Dashboard';
             } else {
                 throw new Error("Token not found in response");
             }

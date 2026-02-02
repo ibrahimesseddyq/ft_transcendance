@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 import { Header } from "@/components/Header";
+import { LoginPage } from "@/pages/Loginpage"
 import { ProfileInformations } from "@/components/ProfileInformations";
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
@@ -12,6 +14,8 @@ import { NotFound } from "@/components/NotFound";
 
 export function Main() {
   const location = useLocation();
+  const [user, setUser] = useState(null);
+
   const token = localStorage.getItem("token");
   
   const publicPaths = ['/Login', '/reset-password', '/otp'];
@@ -29,11 +33,18 @@ export function Main() {
     return (
       <main className="h-screen w-screen bg-white flex items-center justify-center">
         <Routes>
-          <Route path="/Login" element={<ProfileInformations />} />
+          <Route path="/Login" element={<LoginPage />} />
           <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
       </main>
+    );
+  }
+  if (1){
+    return (
+      <Routes>
+        <Route path="/Createprofile" element={<ProfileInformations />} />
+      </Routes>
     );
   }
 
@@ -46,7 +57,7 @@ export function Main() {
 
       <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
         <main className="w-full h-full py-5 overflow-auto no-scrollbar">
-          <Routes>
+          <Routes>  
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Jobs" element={<Jobs />} />
             <Route path="/Jobs/Viewjob" element={<ViewJob />} />
