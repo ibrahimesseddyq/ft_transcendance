@@ -25,13 +25,13 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
       {label}
     </label>
     <div className="flex-1 relative">
-      {optional ? <h1 className="absolute top-0 right-1 text-[#00adef]">*</h1> : null}
+      {optional ? null : <h1 className="absolute top-0 right-1 text-red-600">*</h1> }
       <input
         id={name}
         type={type}
         {...register(name, { valueAsNumber: type === "number" })}
         placeholder={placeholder}
-        className="h-11 w-full text-sm text-white outline-none px-3 border-b border-gray-800 bg-transparent focus:border-[#00adef] transition-all placeholder:text-gray-600"
+        className="h-11 w-full text-sm text-black outline-none px-3 border-b border-gray-800 bg-transparent focus:border-[#00adef] transition-all placeholder:text-gray-600"
       />
       {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
     </div>
@@ -50,14 +50,26 @@ export function ProfileInformations() {
     resolver: zodResolver(CandidateProfileSchema),
   });
 
-  const onApplySubmit = async (data: ProfileFormData) => {
-    try {
-      console.log("Form Data:", data);
-      Notification("Profile updated successfully!", "success");
+
+  const onApplySubmit = async (data: any) => {
+      try {
+          const response = await fetch("http://localhost:3000/api/profiles", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+          });
+          if (!response.ok) {
+              throw new Error(`Server responded with status: ${response.status}`);
+          }
+          Notification("Profile Created successfully", "success");
+          window.location.href = '/'
+      } catch (error) {
+          console.error("Submission failed:", error);
+          Notification("filed to create profile", "error");
+      }
       reset();
-    } catch (error) {
-      Notification("Failed to update profile", "error");
-    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,14 +86,15 @@ export function ProfileInformations() {
   return (
     <form 
       onSubmit={handleSubmit(onApplySubmit)}
-      className="w-full max-w-screen-2xl mx-auto flex flex-col gap-8 p-6 overflow-y-auto custom-scrollbar bg-transparent">
+      className="w-full h-full max-w-screen-2xl mx-auto flex flex-col 
+        gap-8 p-6 overflow-y-auto custom-scrollbar bg-transparent items-center">
       
-      <header className="border-b border-gray-800 pb-4">
+      <header className="border-b border-gray-800 pb-4 w-full">
         <h1 className="text-black text-2xl font-bold">Profile Setup</h1>
         <p className="text-gray-500 text-sm">Manage your professional presence and job preferences.</p>
       </header>
 
-      <div className={`relative h-32 w-32 rounded-full mx-auto bg-[#1e1e1e] bg-cover bg-center border-2
+      <div className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] bg-cover bg-center border-2
             ${errors.avatar ? 'border-red-500' : 'border-[#00adef]'}`}
         style={{ backgroundImage: `url(${avatarPreview})` }}>
 
@@ -100,7 +113,7 @@ export function ProfileInformations() {
       </div>
       {errors.avatar && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.avatar.message}</p>}
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full">
         {/* Professional Info */}
         <section className="flex flex-col gap-6">
           <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
@@ -109,11 +122,11 @@ export function ProfileInformations() {
           </h2>
           
           <div className="flex flex-col gap-5 pl-4">
-            <FormField label="LinkedIn URL" name="linkedinUrl" optional={true} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..." />
+            <FormField label="LinkedIn URL" name="linkedinUrl" optional={false} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..." />
             <FormField label="Portfolio URL" name="portfolioUrl" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com" />
             <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} placeholder="Company Name" />
-            <FormField label="Current Job Title" name="currentTitle" optional={true} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
-            <FormField label="Years of Experience" name="yearsExperience" type="number" optional={false} register={register} error={errors.yearsExperience?.message} placeholder="5" />
+            <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
+            <FormField label="Years of Experience" name="yearsExperience" type="number" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
             <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} placeholder="Ex: React, Node.js, TypeScript..." />
           </div>
         </section>
@@ -145,6 +158,7 @@ export function ProfileInformations() {
             </div>
             <input id="cv-upload" type="file" accept="application/pdf" {...register("resume")} hidden />
           </label>
+          {errors.resume && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.resume.message}</p>}
         </section>
       </div>
 

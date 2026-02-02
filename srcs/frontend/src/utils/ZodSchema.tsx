@@ -128,7 +128,8 @@ export const CandidateProfileSchema = z.object({
     .pipe(fileSchema),
 
   linkedinUrl: z.string()
-    .optional(),
+    .url()
+    .min(1, "linkedinUrl is required"),
 
   portfolioUrl: z.string()
     .optional(),
@@ -137,13 +138,12 @@ export const CandidateProfileSchema = z.object({
     .optional(),
 
   currentTitle: z.string()
-    .optional(),
+    .min(1, "Current Job Title is required"),
 
   yearsExperience: z.number()
     .optional(),
 
-  skills: z.string()
-    .optional(),
+  skills: z.string(),
 
   preferredLocations: z.string()
     .optional(),
@@ -152,5 +152,5 @@ export const CandidateProfileSchema = z.object({
     .optional(),
 
   availableFrom: z.iso.date()
-    .optional(),
+    .min(1, "availableFrom Title is required"),
 });
