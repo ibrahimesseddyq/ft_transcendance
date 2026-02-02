@@ -1,4 +1,3 @@
-const data = require('../config/env');
 const profileRepository =  require('../repositories/profileRepository');
 const { HttpException } = require('../utils/httpExceptions');
 const fileService = require('./fileService');
@@ -8,9 +7,17 @@ const createProfile = async  (userId , profileData) => {
     const user = await userService.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
-    const {resumeUrl} = await fileService.saveResume(userId,profileData.file);
+    const profile = await profileRepository.getProfileById(userId);
+    if (profile)
+            throw new HttpException(400,"profile already exists");
+    if (profileData.files?.avatar?.[0])
+    {
+        const {avatarUrl} = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
+        if (avatarUrl)
+            await userService.updateUser(userId, {avatarUrl})
+    }
+    const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
     return await profileRepository.createProfile({
-        userId,
         ...profileData.body,
         resumeUrl,
     })
@@ -24,10 +31,17 @@ const updateProfile = async (userId, profileData) => {
     if (!profile)
         throw new HttpException(404, "profile not found");
     const updateData = {...profileData.body};
-    if (profileData.file) {
-        const {resumeUrl} = await fileService.saveResume(userId,profileData.file);
+    if (profileData.files?.resume?.[0]) {
+        const {resumeUrl} = await fileService.saveResume(profileData.files.resume[0]);
         if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
             await fileService.deleteFile(profile.resumeUrl);
+        updateData.resumeUrl = resumeUrl;
+    }
+    if (profileData.files?.avatar?.[0])
+    {
+        const {avatarUrl} = await fileService.saveAvatar(userId,profileData.files.avatar[0])
+        if (user.avatarUrl && user.avatarUrl !== avatarUrl)
+            await fileService.deleteFile(user.avatarUrl);
         updateData.resumeUrl = resumeUrl;
     }
     return await profileRepository.updateProfile(userId, updateData);
@@ -50,7 +64,7 @@ const deleteProfile = async (userId) => {
 }
 
 const deleteResume = async (userId) => {
-    const profile = profileRepository.getProfileById(userId);
+    const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
     await fileService.deleteFile(profile.resumeUrl);
@@ -61,9 +75,9 @@ const updateResume = async (userId, file) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
-    const {resumeUrl} = fileService.saveResume(userId, file);
+    const {resumeUrl} = await fileService.saveResume(userId, file);
     if (!resumeUrl)
-        throw new HttpException(400, "faild to update resume");
+        throw new HttpException(400, "failed to update resume");
     if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
         await fileService.deleteFile(profile.resumeUrl);
     return await profileRepository.updateProfile(userId,{resumeUrl});

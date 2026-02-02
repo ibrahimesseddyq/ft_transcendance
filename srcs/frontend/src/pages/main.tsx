@@ -1,7 +1,7 @@
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
 import { Header } from "@/components/Header";
-import { LoginPage } from "@/pages/Loginpage";
+import { ProfileInformations } from "@/components/ProfileInformations";
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
@@ -29,7 +29,7 @@ export function Main() {
     return (
       <main className="h-screen w-screen bg-white flex items-center justify-center">
         <Routes>
-          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/Login" element={<ProfileInformations />} />
           <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
