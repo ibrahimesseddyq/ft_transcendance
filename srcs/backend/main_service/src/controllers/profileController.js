@@ -3,7 +3,11 @@ const profileservice = require('../services/profileService');
 
 const createProfile =  async (req, res, next) => {
     try {
-        const profile = await profileservice.createProfile(req.parms.id, req);
+        const id =  req.params?.id || req.body.userId;
+        const profile = await profileservice.createProfile(id, {
+            body: req.body,
+            files:req.files
+        });
         res.status(201)
         .json({
             status: true,
@@ -17,12 +21,16 @@ const createProfile =  async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
     try {
-        const updatedProfile = profileservice.updateProfile(req.params.id,req);
-        res,status(200)
+        const id = req.params?.id || req.body.id;
+        const updatedProfile = await profileservice.updateProfile(id,{
+            body : req.body,
+            files: req.files
+        });
+        res.status(200)
         .json({
             status: true,
             message : "profile updated successfully",
-            data: data
+            data: updatedProfile
         })
     } catch (error) {
         next(error)
@@ -31,7 +39,7 @@ const updateProfile = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
     try {
-        const profile = profileservice.getProfile(req.params.id);
+        const profile = await profileservice.getProfile(req.params.id);
         res.status(200)
         .json({
             status : true,
@@ -45,9 +53,7 @@ const deleteProfile = async (req, res, next) => {
     try {
         await profileservice.deleteProfile(req.params.id);
         res.status(204)
-        .json({
-            status : true,
-        })
+        .end();
     } catch (error) {
         next(error)
     }
@@ -57,9 +63,7 @@ const deleteResume = async (req, res, next) => {
     try {
         await profileservice.deleteResume(req.params.id);
         res.status(204)
-        .json({
-            status: true
-        })
+        .end();
     } catch (error) {
         next(error)
     }
