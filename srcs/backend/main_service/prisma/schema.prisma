@@ -13,7 +13,7 @@ model ApplicationPhase {
   id            String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
   applicationId String    @db.Char(36)
   phaseId       String    @db.Char(36)
-  status        String?   @default("pending") @db.VarChar(20)
+  status        ApplicationPhaseStatus?   @default(pending)
   startedAt     DateTime? @db.Timestamp(0)
   completedAt   DateTime? @db.Timestamp(0)
   notes         String?   @db.Text
@@ -40,7 +40,6 @@ model Application {
   applicationPhases ApplicationPhase[]
   job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
   candidate         User               @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  currentPhase      JobPhase?          @relation(fields: [currentPhaseId], references: [id])
   offer             Offer?
 
   @@unique([jobId, candidateId])
@@ -247,10 +246,16 @@ enum PhaseType {
 }
 
 enum TestType {
-  qcm
   quiz
+  problem
 }
-
+enum ApplicationPhaseStatus {
+  pending
+  in_progress
+  completed
+  skipped
+  failed
+}
 enum NotificationType {
   applicationReceived
   phaseStarted
