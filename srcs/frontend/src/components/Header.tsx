@@ -8,7 +8,7 @@ export function Header() {
 
   return (
     <header className="mx-auto flex gap-2 justify-between h-full 
-      max-w-screen-2xl items-center p-2 md:px-8">
+      max-w-screen-2xl items-center px-8">
       
       {/* Logo */}
       <Link 
