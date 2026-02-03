@@ -3,9 +3,10 @@ const { HttpValidationException } = require('../utils/httpExceptions')
 
 const validateRequest = (schema) => {
     return (req,res,next) => {
+        console.log("this is the body ....", req.body);
         try {
+
             req.body = schema.parse(req.body);
-            console.log("this is the body ....", req.body);
         }catch (error) {
             if(error instanceof ZodError) {
                 const errorMessages = error.issues.map((issue) => 

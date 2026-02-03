@@ -21,8 +21,8 @@ export function LoginPage() {
   };
 
   return (
-    <div className="w-full md:h-screen md:max-w-[1500px] mx-auto 
-      flex flex-col md:flex-row gap-8 p-4 overflow-y-auto custom-scrollbar">
+    <div className="w-full h-full md:max-w-[1500px] mx-auto flex flex-col 
+      md:flex-row gap-8 p-4 overflow-y-auto custom-scrollbar">
     
       <div className="order-first md:order-last w-full max-w-[450px] md:w-[450px] h-full mx-auto">
         <div className="w-full h-full flex flex-col md:flex-row gap-2 items-center">
@@ -38,7 +38,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-white text-sm font-bold uppercase">
+                text-black text-sm font-bold uppercase">
                 SignIn
               </h1>
             )}
@@ -55,7 +55,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-white text-sm font-bold uppercase">
+                text-black text-sm font-bold uppercase">
                 SignUp
               </h1>
             )}

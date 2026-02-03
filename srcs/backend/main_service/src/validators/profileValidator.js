@@ -12,7 +12,7 @@ const createProfileschema = z.object({
 
   resume: z
     .any()
-    .transform((v) => (v instanceof File ? v.item(0) ?? undefined : v))
+    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
   linkedinUrl: z.string()
@@ -37,7 +37,8 @@ const createProfileschema = z.object({
     .optional(),
 
   salaryExpectation: z.string()
-    .optional()
+    .optional(),
+
 }).strict();
 
 
