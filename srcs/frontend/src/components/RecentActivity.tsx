@@ -1,59 +1,60 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { User, CheckCircle2, XCircle, Clock } from "lucide-react"; // Optional: Lucide icons add a lot of polish
 
 export function RecentActivity() {
-    const [users, setUsers] = useState([
-        {id:1, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Back-end', applicationPhase:'', status:'Rejected'},
-        {id:2, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Accepted'},
-        {id:3, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Accepted'},
-        {id:4, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Rejected'},
-        {id:5, firstName:'abdellatif', lastName:'Elfagrouch', Offer:'Front-end', applicationPhase:'',status:'Accepted'},]);
-      
-    return (
-        <div className="flex flex-col h-full w-full border maincard overflow-hidden">
-            <header className="flex items-center justify-between
-                h-full w-full max-h-16 sticky top-0 z-20">
-                <h3 className="header-title ml-5 m-3">Recent Activity</h3>
-            </header>
+  const [users] = useState([
+    { id: 1, firstName: 'Abdellatif', lastName: 'Elfagrouch', Offer: 'Back-end', status: 'Rejected', time: '2h ago' },
+    { id: 2, firstName: 'Abdellatif', lastName: 'Elfagrouch', Offer: 'Front-end', status: 'Accepted', time: '5h ago' },
+    { id: 3, firstName: 'Abdellatif', lastName: 'Elfagrouch', Offer: 'Front-end', status: 'Accepted', time: '1d ago' },
+    { id: 4, firstName: 'Abdellatif', lastName: 'Elfagrouch', Offer: 'Front-end', status: 'Rejected', time: '2d ago' },
+    { id: 5, firstName: 'Abdellatif', lastName: 'Elfagrouch', Offer: 'Front-end', status: 'Accepted', time: '6d ago' },
 
-            <div className="flex flex-col gap-2 p-3
-                overflow-auto custom-scrollbar">
-                    {users.map((item) => {
-                        return (
-                            <div 
-                                key={item.id}
-                                className="w-full h-full flex items-center  childcard
-                                 justify-between pt-3 duration-200
-                                hover:scale-[1.02]">
-                                <div className="w-full h-full flex gap-2 items-center scale-95 ">
-                                    <div className=" ">
-                                        <div className="h-12 w-12 rounded-full bg-cover bg-center"
-                                          style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}/>
-                                    </div>
-                                    <div className="flex flex-col justify-between">
-                                        <span className="text-sm text-white font-bold">{item.firstName} {item.lastName}</span>
+  ]);
 
-                                        <span className="flex flex-wrap text-gray-300 font-normal "> Was&nbsp;&nbsp; 
-                                          <span className={`text-sm text-black font-semibold h-6 px-3 rounded-md place-content-center ${
-                                              item.status === "Accepted" ? "bg-green-500" : "bg-red-500"
-                                          }`}>
-                                              {item.status}
-                                          </span>
-                                          &nbsp;&nbsp;From
-                                          <span className="flex text-sm font-light text-white">
-                                              &nbsp;{item.Offer}
-                                          </span>
-                                        </span> 
+  return (
+    <div className="flex flex-col w-full h-full border  maincard overflow-hidden">
+        <header className="flex items-center justify-between
+            h-full w-full max-h-16 sticky top-0 z-20">
+            <h3 className="header-title ml-5 m-3">Recent Activity</h3>
+        </header>
 
-                                        <span className="text-sm font-light text-gray-400">
-                                            New posted in 6 days ago
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+      <div className="flex flex-col divide-y divide-gray-100 overflow-auto custom-scrollbar">
+        {users.map((item) => (
+          <div key={item.id} className="group p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div className="flex items-start gap-4">
+              {/* Avatar Placeholder */}
+              <div className="flex-shrink-0 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-sm">
+                {item.firstName[0]}{item.lastName[0]}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-semibold text-gray-900 truncate">
+                    {item.firstName} {item.lastName}
+                  </p>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    item.status === "Accepted" 
+                      ? "bg-green-100 text-green-700" 
+                      : "bg-red-100 text-red-700"
+                  }`}>
+                    {item.status === "Accepted" ? <CheckCircle2 size={12} className="mr-1"/> : <XCircle size={12} className="mr-1"/>}
+                    {item.status}
+                  </span>
+                </div>
+                
+                <p className="text-sm text-gray-600">
+                  Applied for <span className="font-medium text-gray-800">{item.Offer}</span>
+                </p>
+                
+                <div className="flex items-center mt-2 text-xs text-gray-400">
+                  <Clock size={12} className="mr-1" />
+                  {item.time}
+                </div>
+              </div>
             </div>
-        </div>
-    );
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-

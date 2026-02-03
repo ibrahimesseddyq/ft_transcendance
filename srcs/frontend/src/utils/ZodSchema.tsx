@@ -116,6 +116,7 @@ export const ApplyJobSchema = z.object({
 });
 
 export const CandidateProfileSchema = z.object({
+  userId: z.string(),
   avatar: z
     .any()
     .optional()
@@ -150,7 +151,4 @@ export const CandidateProfileSchema = z.object({
 
   salaryExpectation: z.string()
     .optional(),
-
-  availableFrom: z.iso.date()
-    .min(1, "availableFrom Title is required"),
 });
