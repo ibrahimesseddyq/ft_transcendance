@@ -119,9 +119,8 @@ export const CandidateProfileSchema = z.object({
   userId: z.string(),
   avatar: z
     .any()
-    .optional()
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema.optional()),
+    .pipe(fileSchema),
 
   resume: z
     .any()

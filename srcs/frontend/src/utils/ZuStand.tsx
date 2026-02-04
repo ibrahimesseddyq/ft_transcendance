@@ -12,12 +12,16 @@ interface User {
   phone?: string | null;
   avatarUrl?: string | null;
   isVerified: boolean;
+  hasProfile: boolean;
 }
 
 interface AuthState {
   user: User | null;
+  profile: any | null;
   token: string | null;
   setUser: (user: User, token: string) => void;
+  setHasProfile: (status: boolean) => void;
+  setProfile: (profile: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
 }
@@ -28,20 +32,22 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       setUser: (user, token) => set({ user, token }),
-      setVerified: () => 
+      
+      setHasProfile: (status) => 
         set((state) => ({
-          user: state.user 
-            ? { ...state.user, isVerified: true } 
-            : null
+          user: state.user ? { ...state.user, hasProfile: status } : null
         })),
+      setProfile: (status) =>
+        set((state) =>({
+          user: state.user ? {...state.user, profile: status} : null
+        })),
+
       clearAuth: () => set({ user: null, token: null }),
       updateAvatar: (url) => 
         set((state) => ({
           user: state.user ? { ...state.user, avatarUrl: url } : null
         })),
     }),
-    {
-      name: 'rh-connect-auth',
-    }
+    { name: 'auth-storage' }
   )
 );
