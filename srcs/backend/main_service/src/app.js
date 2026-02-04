@@ -29,7 +29,12 @@ app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
 app.use(morgan('combined'));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+
+//The cross-origin value tells the browser that it is safe to load this resource on a different port
+app.use('/uploads', (req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',

@@ -1,331 +1,110 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, Pencil, Save } from 'lucide-react';
+import { useAuthStore } from '@/utils/ZuStand';
+import { useState } from 'react';
+import { ProfileForm } from '@/components/ProfileForm'
+import { Plus, ChevronLeft, GraduationCap, Briefcase, Award } from 'lucide-react';
 import ProfessionalInformations from '@/components/ProfitionalInformations';
 
-export default function ProfileForm() {
-  const [formData, setFormData] = useState({
-    firstName: 'Abdellatif',
-    lastName: 'El Fagrouch',
-    email: 'elfagrouch3@gmail.com',
-    phone: '+212589466009',
-    position: 'UX/UI Designer'
-  });
+export function Profile() {
+  const profile = useAuthStore((state) => state.profile);
+  const user = useAuthStore((state) => state.user);
+  const BACKEND_URL = "http://localhost:3000";
+  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+  console.log(avatarUrl)
+  console.log(profile);
 
-  const handleChange = (e:any) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const [skills] = useState([
+    { id: 1, type: 'HTML/CSS' },
+    { id: 2, type: 'Figma' },
+    { id: 3, type: 'React' }
+  ]);
+
+  const [education] = useState([
+    { id: 1, school: '1337 Coding School', type: 'Common Core', year: '2026' }
+  ]);
+
+  const [career] = useState([
+    { id: 1, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' }
+  ]);
 
   return (
-      <div className="flex flex-col gap-4 px-4 items-center">
-        <h1 className="font-bold text-white text-lg">My Information:</h1>
-        <div className="flex flex-wrap lg:flex-col gap-2 place-content-center">
-          <div className="relative w-full max-w-64 ">
-            <label className="absolute top-2 left-3 text-xs text-gray-400">First Name</label>
-            <input 
-              type='text' 
-              name='firstName'
-              value={formData.firstName}
-              onChange={handleChange}
-              className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
+    <div className="flex flex-col w-full h-full p-6 gap-6 overflow-y-auto no-scrollbar">
+
+      {/* Main Glassmorphic Container */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+        
+        {/* Left: Career/Experience Section */}
+        <div className="lg:col-span-4 bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-white font-bold text-xl flex items-center gap-2">
+              <Briefcase className="text-[#5F88B8]" size={22} />
+              Career
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {career.map((job) => (
+              <div key={job.id} className="p-4 bg-[#1C263B] rounded-2xl border border-gray-700">
+                <p className="text-white font-semibold">{job.company}</p>
+                <p className="text-gray-400 text-sm">{job.location}</p>
+                <p className="text-[#5F88B8] text-xs mt-2">{job.start} - {job.end}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Center: Personal Info (Profile Card) */}
+        <div className="lg:col-span-4 flex flex-col items-center">
+          <div className="relative mb-6">
+            <div 
+              style={{ backgroundImage: `url("${user?.avatarUrl ? avatarUrl : "/icons/placeholder.jpg"}")` }}
+              className="h-32 w-32 rounded-3xl bg-cover bg-center border-4 border-[#161F32] shadow-2xl"
             />
+            <div className="absolute -bottom-2 -right-2 bg-[#5F88B8] p-2 rounded-xl border-4 border-[#0D1525]">
+              <Award size={18} className="text-white" />
+            </div>
           </div>
           
-          <div className="relative w-full max-w-64">
-            <label className="absolute top-2 left-3 text-xs text-gray-400">Last Name</label>
-            <input 
-              type='text' 
-              name='lastName'
-              value={formData.lastName}
-              onChange={handleChange}
-              className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
-            />
-          </div>
-          <div className="relative w-full max-w-64">
-            <label className="absolute top-2 left-3 text-xs text-gray-400">Email</label>
-            <input 
-              type='text' 
-              name='email'
-              value={formData.email}
-              onChange={handleChange}
-              className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
-            />
-          </div>
-          <div className="relative w-full max-w-64">
-            <label className="absolute top-2 left-3 text-xs text-gray-400">Phone Number</label>
-            <input 
-              type='text' 
-              name='phone'
-              value={formData.phone}
-              onChange={handleChange}
-              className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
-            />
-          </div>
-          <div className="relative w-full max-w-64">
-            <label className="absolute top-2 left-3 text-xs text-gray-400">Position</label>
-            <input 
-              type='text' 
-              name='position'
-              value={formData.position}
-              onChange={handleChange}
-              className="h-14 w-full pt-5 pb-2 pl-3 text-sm text-white outline-none bg-transparent border border-[#5F88B8] rounded"
-            />
+          <div className="w-full bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl">
+            <ProfileForm user={user} />
           </div>
         </div>
-      </div>
-  );
-}
 
-export function Profile(){
-  const [editIcon, setEditIcon] = useState(true);
-  const [skills, setSkills] = useState([
-    {id:1, type:'HTML/CSS'},
-    {id:2, type:'Figma'},
-    {id:3, type:'Adobe XD'},
-    {id:4, type:'ProtoTyping'},
-    {id:5, type:'Framing'}
-  ]);
-
-  const [education, setEducation] = useState([
-    {id:1, month:'02', year:'2019', school:'1337', type:'Master', category:'webDev'},
-    {id:2, month:'02', year:'2019', school:'1337', type:'Master', category:'webDev'},
-    {id:3, month:'02', year:'2019', school:'1337', type:'Master', category:'webDev'},
-    {id:4, month:'02', year:'2019', school:'1337', type:'Master', category:'webDev'},
-    {id:5, month:'02', year:'2019', school:'1337', type:'Master', category:'webDev'},
-  ]);
-
-  const [career, setCareer] = useState([
-    {
-      id: 1,
-      company: "UX Designer, innovate Studio",
-      lucation:'Casablanca, MA',
-      start:'1 Jan - 2023',
-      end:'1 Jan - 2026',
-    },
-    {
-       id: 2,
-      company: "UX Designer, innovate Studio",
-      lucation:'Casablanca, MA',
-      start:'1 Jan - 2023',
-      end:'1 Jan - 2026',
-    },
-    {
-      id: 3,
-      company: "UX Designer, innovate Studio",
-      lucation:'Casablanca, MA',
-      start:'1 Jan - 2023',
-      end:'1 Jan - 2026',
-    }
-  ]);
-
-  const [description, setDescription] = useState("I am a UX/UI designer with a strong focus on user-centered design, usability, and visual clarity. I enjoy researching user needs, creating wireframes and prototypes, and designing clean, intuitive interfaces that enhance user experience. My goal is to solve real problems through thoughtful and accessible design");
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
-
-  const handleAddSkill = () => {
-    const newSkill = prompt("Enter new skill:");
-    if (newSkill && newSkill.trim()) {
-      setSkills([...skills, {id: Date.now(), type: newSkill.trim()}]);
-    }
-  };
-
-  const handleDeleteSkill = (id:Number) => {
-    setSkills(skills.filter(skill => skill.id !== id));
-  };
-
-  const handleAddEducation = () => {
-    const type = prompt("Enter degree type (e.g., Master, Bachelor):");
-    if (!type || !type.trim()) return;
-    
-    const category = prompt("Enter category (e.g., webDev, CS):");
-    if (!category || !category.trim()) return;
-    
-    const school = prompt("Enter school name:");
-    if (!school || !school.trim()) return;
-    
-    const month = prompt("Enter month (e.g., 02):");
-    if (!month || !month.trim()) return;
-    
-    const year = prompt("Enter year (e.g., 2019):");
-    if (!year || !year.trim()) return;
-
-    setEducation([...education, {
-      id: Date.now(),
-      month: month.trim(),
-      year: year.trim(),
-      school: school.trim(),
-      type: type.trim(),
-      category: category.trim()
-    }]);
-  };
-
-  const handleDeleteEducation = (id:Number) => {
-    setEducation(education.filter(edu => edu.id !== id));
-  };
-
-  const handleAddCareer = () => {
-    const company = prompt("Enter company name(e.g., 1337, youcode):");
-    if (!company || !company.trim()) return;
-    
-    const lucation = prompt("Enter lucation (e.g., Khouribga, MA):");
-    if (!lucation || !lucation.trim()) return;
-    
-    const start_date = prompt("Enter start date:");
-    if (!start_date || !start_date.trim()) return;
-    
-    const end_date = prompt("Enter end date:");
-    if (!end_date || !end_date.trim()) return;
-    
-    setCareer([...career, {
-      id: Date.now(),
-      company: company.trim(),
-      lucation: lucation.trim(),
-      start: start_date.trim(),
-      end: end_date.trim()
-    }]);
-  };
-
-  const handleDeleteCareer = (id:Number) => {
-    setCareer(career.filter(career => career.id !== id));
-  };
-
-  const handleDescIcon = ()=>{
-    if (editIcon === true){
-      setEditIcon(false);
-    }else{
-      setEditIcon(true);
-    }
-  }
-  const handleEditDescription = () => {
-    setIsEditingDescription(true);
-  };
-
-  const handleSaveDescription = () => {
-    setIsEditingDescription(false);
-  };
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-3 p-2 gap-4 w-full h-full ">
-      <div className="col-span-1 lg:col-span-1 lg:row-span-3 border maincard h-full w-full">
-        <div className='flex flex-col h-full w-full  rounded justify-between 
-              overflow-auto custom-scrollbar'>
-          <div className='flex flex-col gap-5 py-5'>
-            <div style={{ backgroundImage: "url('/icons/profile.png')" }}
-            className="mx-auto h-28 w-28 rounded-full bg-cover bg-center justify-center"/>
-            <ProfileForm/>
-          </div>
-          <div className='flex flex-wrap gap-10 mx-auto mb-10 justify-center'>
-            <button className='w-[130px] h-[40px] text-white font-semibold bg-[#09122C] hover:bg-green-600 border border-[#5F88B8] rounded'>Save Change</button>
-            <button className='w-[130px] h-[40px] text-white border border-[#5F88B8] rounded'>Cancel</button>
-          </div>
-        </div>
-      </div>
-      <div className="col-span-1 lg:col-span-2 lg:row-span-1 p-4 border maincard h-full w-full">
-        <div className='w-full h-full flex flex-col'>
-          <div className='w-full flex justify-between items-center p-2'>
-            <h1 className='font-bold text-white text-lg'>Description:</h1>
-            <button 
-              onClick={isEditingDescription ? handleSaveDescription : handleEditDescription}
-              className='text-white hover:text-green-500 transition-colors'
-            >
-              <button onClick={handleDescIcon}>
-                {editIcon ? <Pencil/> : <Save/>}
-              </button>
-            </button>
-          </div>
-          <div className='overflow-hidden'>
-            {isEditingDescription ? (
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className='h-full w-full font-medium text-white text-base bg-transparent
-                  border border-[#5F88B8] rounded p-4 outline-none resize-none
-                  overflow-auto custom-scrollbar'
-              />
-            ) : (
-              <p className='h-full w-full font-medium text-white  break-words p-4
-                  overflow-auto custom-scrollbar'>
-                {description}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="col-span-1 lg:col-span-2 lg:row-span-2 flex border maincard h-full w-full p-4">
-        <div className='grid grid-cols-1  lg:grid-cols-5 lg:grid-rows-9 gap-4 rounded h-full w-full'>
-            <div className='col-span-1 lg:col-span-5 lg:row-span-1 flex justify-between items-center p-2'>
-                    <h1 className='font-bold text-white text-lg'>Professional Informations:</h1>
-                    <button 
-                      onClick={handleAddCareer}
-                      className='text-white hover:text-green-500 transition-colors '
-                    >
-                      <Plus size={20} />
-                    </button>
-              </div>
-            <div className='col-span-1 lg:col-span-3 lg:row-span-8 gap-2 h-full  w-full'>
-                <ProfessionalInformations career={career} del={handleDeleteCareer}/>
+        {/* Right: Skills & Education Section */}
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          
+          {/* Skills */}
+          <div className="bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-white font-bold text-lg">Top Skills</h2>
             </div>
-            <div className='col-span-1 lg:col-span-2 lg:row-span-8 flex flex-col gap-2 h-full w-full'>
-              <div className='w-full h-[170px] flex flex-col gap-4 border border-[#5F88B8] rounded'>
-                  <div className='flex justify-between items-center p-2'>
-                    <h1 className='font-bold text-white text-lg'>Skills:</h1>
-                    <button 
-                      onClick={handleAddSkill}
-                      className='text-white hover:text-green-500 transition-colors '
-                    >
-                      <Plus size={20} />
-                    </button>
-                  </div>
-                  <div className='px-3 flex gap-2 h-full flex-wrap overflow-auto custom-scrollbar'>
-                      {skills.map((item) => {
-                        return (
-                          <div
-                          key={item.id}
-                          className="relative group rounded h-[35px] w-fit min-w-16 p-2 bg-[#5F88B8] border border-[#5F88B8] flex items-center justify-center overflow-hidden">
-                              <p className='text-sm text-white'>{item.type}</p>
-                              <button 
-                                onClick={() => handleDeleteSkill(item.id)}
-                                className='absolute top-1 right-1 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500'
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                          </div>
-                        );
-                      })}
-                  </div>
-              </div>
-              <div className='w-full h-[170px] flex flex-col gap-4 border border-[#5F88B8] rounded'>
-                  <div className='flex justify-between items-center p-2'>
-                    <h1 className='font-bold text-white text-lg'>Education:</h1>
-                    <button 
-                      onClick={handleAddEducation}
-                      className='text-white hover:text-green-500 transition-colors'
-                    >
-                      <Plus size={20} />
-                    </button>
-                  </div>
-                  <div className='px-3 flex flex-col h-full overflow-auto custom-scrollbar'>
-                      {education.map((item) => {
-                        return (
-                          <div
-                          key={item.id}
-                          className="relative group rounded h-auto w-full items-center place-content-center  mb-2">
-                              <p className='text-white font-light pr-6'>{item.type} in {item.category} from {item.school} school, at {item.month} {item.year}.</p>
-                              <button 
-                                onClick={() => handleDeleteEducation(item.id)}
-                                className='absolute top-0 right-0 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500'
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                          </div>
-                        );
-                      })}
-                  </div>
-              </div>
+            <div className="flex flex-wrap gap-2">
+              {skills.map(skill => (
+                <span key={skill.id} className="px-4 py-2 bg-[#1C263B] text-gray-300 text-sm rounded-xl border border-gray-700">
+                  {skill.type}
+                </span>
+              ))}
             </div>
+          </div>
+
+          {/* Education */}
+          <div className="bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-white font-bold text-lg flex items-center gap-2">
+                <GraduationCap className="text-[#5F88B8]" size={20} />
+                Education
+              </h2>
+            </div>
+            <div className="space-y-4">
+              {education.map(edu => (
+                <div key={edu.id} className="border-l-2 border-[#5F88B8] pl-4 py-1">
+                  <p className="text-white font-medium text-sm">{edu.school}</p>
+                  <p className="text-gray-500 text-xs">{edu.type} • {edu.year}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>    
+    </div>
   );
 }

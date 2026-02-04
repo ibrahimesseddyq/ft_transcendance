@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Mail, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -6,14 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ProfileChecker } from '@/components/ProfileChecker'
 import Notification from "@/utils/TostifyNotification"
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const updateUser = useAuthStore((state) => state.setUser)
+    const setHasProfile = useAuthStore((state) => state.setHasProfile);
+    const setProfile = useAuthStore((state) => state.setProfile);
+    const setUser = useAuthStore((state) => state.setUser);
 
     const {
         register,
@@ -34,56 +36,39 @@ const Signin = () => {
             setIcon(EyeOff);
         }
     }
-
-    useEffect(() => {
-        const tokenFromUrl = searchParams.get('token');
-        console.log("My google token is, ", tokenFromUrl);
-        if (tokenFromUrl) {
-            localStorage.setItem("token", tokenFromUrl);
-            Notification("Google Login Successful", "success");
-            navigate('/Dashboard');
-        }
-    }, [searchParams, navigate, updateUser]);
+    
     
     const GoogleSubmit = () => {
         window.location.href = 'http://localhost:3000/api/auth/google';
     }
 
     const LoginSubmit = async (data: any) => {
-        try {
-            const response = await fetch("http://localhost:3000/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
+      try {
+        const response = await fetch("http://localhost:3000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
 
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message || "Login failed");
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "Login failed");
 
-            const token = result.data?.accessToken;
-            const user = result.data?.user;
+        const token = result.data?.accessToken;
+        const user = result.data?.user;
 
-            if (token && user) {
-                updateUser(user, token);
-                const res = await fetch(`http://localhost:3000/api/profiles/${user.id}`, {
-                    method: "GET",
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                
-                const isVerified = res.ok;
-                updateUser({ ...user, isVerified }, token);
-                if (res.ok) {
-                    console.log("there is a profile");
-                    Notification("Success Login", "success");
-                    navigate('/Dashboard');
-                } else {
-                    console.log("Noooo profile");
-                    navigate('/Createprofile');
-                }
+        if (token && user) {
+            setUser(user, token);
+            const check = await ProfileChecker({ user, token, setHasProfile, setProfile });
+            if (check) {
+                navigate("/Dashboard", { replace: true });
+            } else {
+                navigate("/Createprofile", { replace: true });
             }
-        } catch (error: any) {
-            Notification(error.message || "Error Login", "error");
         }
+      } catch (error: any) {
+        Notification(error.message || "Error Login", "error");
+      }
+      reset();
     };
 
 
