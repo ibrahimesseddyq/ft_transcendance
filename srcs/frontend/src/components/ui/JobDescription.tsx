@@ -30,9 +30,6 @@ const JobDescription = ({ jobItem, setJobDescp }: props) => {
     // }
   };
 
-
-  console.log("job is : ", jobItem);
-
   interface props{
     Icon : LucideIcon;
     title : string;

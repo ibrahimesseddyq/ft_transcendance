@@ -8,7 +8,6 @@ import { ProfileInformations } from "@/components/ProfileInformations";
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
-import { ViewJob } from "@/components/ViewJob"
 import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
@@ -18,7 +17,9 @@ export function Main() {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
-  const hasProfile = useAuthStore((state) => state.user?.hasProfile);
+  const profile = useAuthStore((state) => state.profile);
+
+  const hasProfile = !!profile;
   
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
@@ -33,7 +34,12 @@ export function Main() {
     </main>
   );
 
-  if (isPublicPage) {
+  if (token && !user) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
+console.log("Current Profile Object:", profile);
+console.log("Computed hasProfile:", !!profile);
+  if (!token && isPublicPage) {
     return (
       <FullScreenWrapper>
         <Routes>
@@ -45,7 +51,8 @@ export function Main() {
     );
   }
   
-  if (user && !hasProfile) {
+  console.log("has profile : ", hasProfile);
+  if (token && user && !hasProfile) {
     return (
       <FullScreenWrapper>
         <Routes>
@@ -67,7 +74,6 @@ export function Main() {
           <Routes>  
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Jobs" element={<Jobs />} />
-            <Route path="/Jobs/Viewjob" element={<ViewJob />} />
             <Route path="/Condidates" element={<Condidates />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />

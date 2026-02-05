@@ -15,42 +15,52 @@ interface User {
   hasProfile: boolean;
 }
 
-interface AuthState {
+type State = {
   user: User | null;
   profile: any | null;
   token: string | null;
+};
+
+
+type Action = {
   setUser: (user: User, token: string) => void;
-  setHasProfile: (status: boolean) => void;
-  setProfile: (profile: any) => void;
+  setProfile: (profileData: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
-}
+};
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
+      // Initial State
       user: null,
       token: null,
+      profile: null,
 
-      setUser: (user, token) => set((state) => ({ 
-        user: { ...user, hasProfile: state.hasProfile },
-        token 
-      })),
-
-      setHasProfile: (status) => 
-        set((state) => ({
-          user: state.user ? { ...state.user, hasProfile: status } : null
+      // Actions
+      setUser: (user, token) =>
+        set(() => ({
+          user: { ...user, hasProfile: user.hasProfile ?? false },
+          token,
         })),
 
-      setProfile: (status) =>
-        set((state) =>({
-          user: state.user ? {...state.user, profile: status} : null
+      setProfile: (profileData) =>
+        set((state) => ({
+          profile: profileData,
+          user: state.user
+            ? {
+                ...state.user,
+                hasProfile: true,
+                avatarUrl: profileData?.avatarUrl || profileData?.avatar || state.user.avatarUrl,
+              }
+            : null,
         })),
 
-      clearAuth: () => set({ user: null, token: null }),
-      updateAvatar: (url) => 
+      clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
+
+      updateAvatar: (url) =>
         set((state) => ({
-          user: state.user ? { ...state.user, avatarUrl: url } : null
+          user: state.user ? { ...state.user, avatarUrl: url } : null,
         })),
     }),
     { name: 'auth-storage' }

@@ -71,7 +71,6 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 <h2 className="text-2xl font-bold text-gray-900 truncate">{item.title}</h2>
               </div>
 
-              {/* Metadata Row */}
               <div className="flex items-center justify-between text-gray-700 text-sm font-medium mb-4">
                 <div className="flex items-center gap-1">
                   <Briefcase size={16} />
