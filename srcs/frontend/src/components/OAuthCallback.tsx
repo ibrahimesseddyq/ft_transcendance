@@ -8,7 +8,6 @@ export const OAuthCallback = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const setUser = useAuthStore((state) => state.setUser);
-    const setHasProfile = useAuthStore((state) => state.setHasProfile);
     const setProfile = useAuthStore((state) => state.setProfile);
 
     useEffect(() => {
@@ -19,13 +18,15 @@ export const OAuthCallback = () => {
         
         if (token && userFromUrl) {
             try {
-                localStorage.setItem("token", token);
                 const user = JSON.parse(userFromUrl);
-                const hasProfile = await ProfileChecker({ user, token, setHasProfile, setProfile });
+                const hasProfile = await ProfileChecker({ user, token, setProfile });
+                const updatedUser = { ...user, hasProfile: hasProfile };
+
+                console.log("has profile OAuthCallback: ", hasProfile)
                 const destination = hasProfile ? "/Dashboard" : "/Createprofile";
-                setUser(user, token);
+                setUser(updatedUser, token);
                 navigate(destination, { replace: true });
-                console.log("iam hereeeeeeeee&&&&&&");
+                console.log("iam hereeeeeeeee&&&&&&, ",destination);
             } catch (error) {
                 console.error("OAuth error:", error);
                 navigate('/Login', { replace: true });

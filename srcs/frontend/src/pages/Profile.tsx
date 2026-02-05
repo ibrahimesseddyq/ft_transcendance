@@ -1,8 +1,8 @@
 import { useAuthStore } from '@/utils/ZuStand';
 import { useState } from 'react';
 import { ProfileForm } from '@/components/ProfileForm'
-import { Plus, ChevronLeft, GraduationCap, Briefcase, Award } from 'lucide-react';
-import ProfessionalInformations from '@/components/ProfitionalInformations';
+import { GraduationCap, Briefcase, Award } from 'lucide-react';
+import { Logout } from '@/components/LogOut';
 
 export function Profile() {
   const profile = useAuthStore((state) => state.profile);
@@ -102,7 +102,7 @@ export function Profile() {
               ))}
             </div>
           </div>
-
+            <Logout />
         </div>
       </div>
     </div>

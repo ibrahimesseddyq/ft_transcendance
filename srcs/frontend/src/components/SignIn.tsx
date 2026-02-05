@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
 import Notification from "@/utils/TostifyNotification"
 
@@ -13,7 +13,6 @@ const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
-    const setHasProfile = useAuthStore((state) => state.setHasProfile);
     const setProfile = useAuthStore((state) => state.setProfile);
     const setUser = useAuthStore((state) => state.setUser);
 
@@ -58,7 +57,7 @@ const Signin = () => {
 
         if (token && user) {
             setUser(user, token);
-            const check = await ProfileChecker({ user, token, setHasProfile, setProfile });
+            const check = await ProfileChecker({ user, token, setProfile });
             if (check) {
                 navigate("/Dashboard", { replace: true });
             } else {
