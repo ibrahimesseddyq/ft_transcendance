@@ -31,12 +31,17 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: null,
-      setUser: (user, token) => set({ user, token }),
-      
+
+      setUser: (user, token) => set((state) => ({ 
+        user: { ...user, hasProfile: state.hasProfile },
+        token 
+      })),
+
       setHasProfile: (status) => 
         set((state) => ({
           user: state.user ? { ...state.user, hasProfile: status } : null
         })),
+
       setProfile: (status) =>
         set((state) =>({
           user: state.user ? {...state.user, profile: status} : null
