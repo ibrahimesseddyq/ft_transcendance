@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
 import { z } from "zod";
 import { CloudUpload, SquarePen } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
+import { Logout } from '@/components/LogOut';
 import { useState } from "react";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
@@ -41,12 +41,9 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 );
 
 export function ProfileInformations() {
-  const navigate = useNavigate();
   const userId = useAuthStore((state) => (state.user?.id));
-  const setHasProfile = useAuthStore((state) => state.setHasProfile);
   const setProfile = useAuthStore((state)=> state.setProfile);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
-  const [isLoading, setIsLoading] = useState(true);
   const {
     register,
     handleSubmit,
@@ -61,6 +58,7 @@ export function ProfileInformations() {
   });
 
 
+  
   const onApplySubmit = async (data: any) => {
     const formData = new FormData();
 
@@ -76,10 +74,6 @@ export function ProfileInformations() {
       formData.append("avatar", data.avatar);
     if (data.resume)
       formData.append("resume", data.resume);
-    // if (data.yearsExperience) formData.append("yearsExperience", data.yearsExperience);
-    // if (data.preferredLocations) formData.append("preferredLocations", data.preferredLocations);
-    // if (data.salaryExpectation) formData.append("salaryExpectation", data.salaryExpectation);
-    console.log("formData: ", formData);
     try {
         const response = await fetch("http://localhost:3000/api/profiles", {
             method: "POST",
@@ -87,20 +81,10 @@ export function ProfileInformations() {
         });
         const result = await response.json();
         if (response.ok || (response.status === 400 && result.errors === 'profile already exists')) {
-          if (response.ok) {
-            Notification("Profile Created successfully", "success");
-          } else {
-            Notification("Profile already exists, redirecting...", "success");
+          if (result.errors !== 'profile already exists') {
+            setProfile(result);
           }
-            setProfile(result.data);
-            setHasProfile(true);
-            setTimeout(() => {
-              navigate('/Dashboard', { replace: true });
-            }, 100);
-        } else {
-            setHasProfile(false);
-            Notification(result.errors || "Failed to save profile", "error");
-        }
+        } 
     } catch (error) {
         console.error("Submission failed:", error);
         Notification("Technical error occurred", "error");
@@ -133,7 +117,7 @@ export function ProfileInformations() {
         <p className="text-gray-500 text-sm mt-1">Manage your professional presence and job preferences.</p>
       </header>
 
-      {/* Avatar Section - Centered */}
+      {/* Avatar Section */}
       <div className="flex flex-col items-center gap-2">
         <div 
           className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] bg-cover bg-center border-4 shadow-lg
@@ -155,10 +139,9 @@ export function ProfileInformations() {
         {errors.avatar && <p className="text-red-500 text-xs italic">{errors.avatar.message}</p>}
       </div>
           
-      {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full items-start">
           
-        {/* Left Column: Professional Info */}
+        {/* Professional Info */}
         <section className="flex flex-col gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
             <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
@@ -175,7 +158,7 @@ export function ProfileInformations() {
           </div>
         </section>
           
-        {/* Right Column: Preferences & Resume */}
+        {/* Preferences & Resume */}
         <div className="flex flex-col gap-8">
           <section className="flex flex-col gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
@@ -189,7 +172,7 @@ export function ProfileInformations() {
             </div>
           </section>
           
-          {/* Resume Upload - Now has its own clear container */}
+          {/* Resume Upload */}
           <section className="flex flex-col gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-gray-700 text-sm font-bold uppercase tracking-wider">Resume / CV</h2>
             <label 
@@ -210,12 +193,12 @@ export function ProfileInformations() {
         </div>
       </div>
               
-      {/* Sticky/Fixed Footer for Mobile convenience */}
-      <footer className="mt-4 flex justify-center md:justify-end pb-10">
+      <footer className="mt-4 flex flex-col md:flex-row gap-4 justify-center md:justify-end pb-10">
         <button 
           type="submit"
           disabled={isSubmitting}
-          className="w-full md:w-64 bg-[#00adef] hover:bg-[#0086b8] disabled:bg-gray-400 text-white font-bold py-4 px-8 rounded-2xl transition-all transform active:scale-95 shadow-xl shadow-[#00adef]/30 flex items-center justify-center gap-2"
+          className="w-full md:w-64 bg-[#00adef] hover:bg-[#0086b8] text-white font-bold py-4 px-8 
+            rounded-2xl transition-all shadow-xl shadow-[#00adef]/30 items-center justify-center"
         >
           {isSubmitting ? (
             <>
@@ -224,6 +207,7 @@ export function ProfileInformations() {
             </>
           ) : "Complete Setup"}
         </button>
+        <Logout className="text-gray-400 hover:text-red-500 text-sm font-semibold transition-all" />
       </footer>
     </form>
   );
