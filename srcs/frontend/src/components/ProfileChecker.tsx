@@ -13,10 +13,9 @@ export async function ProfileChecker({ user, token, setHasProfile, setProfile }:
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });
-
-        const result = await res.json();
-        const exists = res.ok || (res.status === 400 && result.errors === 'profile already exists');
-        
+        const result = res.json();
+        const exists = res.ok && result !== null;
+        setProfile(result);
         setHasProfile(exists);
         return exists;
     } catch (error) {

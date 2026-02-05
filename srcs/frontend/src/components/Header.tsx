@@ -10,13 +10,14 @@ export function Header() {
   const BACKEND_URL = "http://localhost:3000";
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   return (
-    <header className="mx-auto flex gap-2 justify-between h-full 
-      max-w-screen-2xl items-center px-8">
+    <header className="mx-auto flex gap-2 justify-between h-full w-full rounded-xl
+      max-w-screen-2xl items-center px-8 bg-white/80 backdrop-blur-sm">
       
       {/* Logo */}
       <Link 
         to="/Dashboard" 
-        className="hover:scale-105  inline-flex items-center gap-2 group transition-all duration-300"
+        className="hover:scale-105  inline-flex items-center gap-2 
+          group transition-all duration-300 "
       >
         <img 
           src="/logo.svg" 
