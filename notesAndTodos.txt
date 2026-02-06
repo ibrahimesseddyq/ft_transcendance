@@ -1,0 +1,3 @@
+optimize queries by relying on prisma errors
+replace require by import ECM6
+update session in user Model
