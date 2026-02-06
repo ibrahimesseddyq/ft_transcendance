@@ -8,12 +8,8 @@ const MOCK_JOBS = [
   { id: 4, title: "Backend Developer", category: "Engineering", location: "Local", type: "Part-time" },
 ];
 
-interface SearchFieldProps {
-  isMobileSearchVisible: boolean;
-  setIsMobileSearchVisible: (visible: boolean) => void;
-}
 
-export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }: SearchFieldProps) {
+export function SearchField() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState<typeof MOCK_JOBS>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -34,18 +30,11 @@ export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }:
 
   return (
     <div
-      className={`flex-1 flex justify-center items-center relative ${isMobileSearchVisible ? 'w-full' : ''}`}
+      className={`flex-1 flex justify-center items-center relative`}
     >
-      {!isMobileSearchVisible && (
-        <button
-          onClick={() => setIsMobileSearchVisible(true)}
-          className="flex sm:hidden childcard w-10 h-10 items-center justify-center"
-        >
-          <Search className="h-4 w-4 text-[#060d0f] hover:text-green-600" />
-        </button>
-      )}
+    
 
-      <div className={`${isMobileSearchVisible ? 'flex w-full' : 'hidden sm:flex'} h-9 w-80 items-center rounded-md bg-[#1F2027] border border-[#5F88B8] px-3 gap-2`}>
+      <div className={`h-9 w-80 items-center rounded-md bg-[#1F2027] border border-[#5F88B8] px-3 gap-2`}>
         <Search className="h-4 w-4 text-[#94999A]" />
         <input
           placeholder="Search jobs..."
@@ -55,12 +44,6 @@ export function SearchField({ isMobileSearchVisible, setIsMobileSearchVisible }:
           onFocus={() => searchQuery.trim() !== "" && setIsOpen(true)}
           className="flex h-full w-full outline-none placeholder-[#94999A] text-white bg-transparent text-sm"
         />
-        {isMobileSearchVisible && (
-          <X
-            className="h-4 w-4 text-gray-500 sm:hidden cursor-pointer"
-            onClick={() => { setIsMobileSearchVisible(false); setSearchQuery(""); }}
-          />
-        )}
       </div>
 
       {isOpen && (
