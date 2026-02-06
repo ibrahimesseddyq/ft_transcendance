@@ -1,6 +1,10 @@
 import { z } from "zod";
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = "application/pdf";
+
+const fileSchema = z
+  .file()
+  .max(5_000_000)
+
+
 export const RegisterSchema = z.object({
     firstName: z.string()
         .min(1,{message : "First name is required"})
@@ -57,13 +61,16 @@ export const CreateJobSchema = z.object({
     .min(20, "description is required"),
   requirements: z.string()
     .optional(),
+  skills: z.string()
+    .optional(),
   location: z.string()
     .min(1, "location is required"),
   isRemote: z.boolean()
     .default(false),
   employmentType: z.string()
     .min(1, "employmentType is required")
-    .max(50, "employmentType is too Long"),
+    .max(50, "employmentType is too Long")
+    .default('full-time'),
   salaryMin: z.number()
     .int()
     .min(1000, "Salary should be at least 1000"),
@@ -90,8 +97,9 @@ export const ApplyJobSchema = z.object({
   phoneNumber: z.number()
     .min(10, "Phone number must be at least 10 characters"),
 
-  cv: z.instanceof(File)
-    .refine((file) => file.size < 2 * 1024 * 1024, 'File size must be less than 2MB'),
+  cv: z
+    .any()
+    .pipe(fileSchema),
 
   coverLetter: z.string()
     .min(50, "Cover letter should be at least 50 characters")
@@ -105,4 +113,42 @@ export const ApplyJobSchema = z.object({
     .optional()
     .or(z.literal("")),
 
+});
+
+export const CandidateProfileSchema = z.object({
+  userId: z.string(),
+  avatar: z
+    .any()
+    .optional()
+    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+    .pipe(fileSchema.optional()),
+
+  resume: z
+    .any()
+    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+    .pipe(fileSchema),
+
+  linkedinUrl: z.string()
+    .url()
+    .min(1, "linkedinUrl is required"),
+
+  portfolioUrl: z.string()
+    .optional(),
+
+  currentCompany: z.string()
+    .optional(),
+
+  currentTitle: z.string()
+    .min(1, "Current Job Title is required"),
+
+  yearsExperience: z.number()
+    .optional(),
+
+  skills: z.string(),
+
+  preferredLocations: z.string()
+    .optional(),
+
+  salaryExpectation: z.string()
+    .optional(),
 });

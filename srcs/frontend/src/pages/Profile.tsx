@@ -211,7 +211,7 @@ export function Profile(){
         <div className='flex flex-col h-full w-full  rounded justify-between 
               overflow-auto custom-scrollbar'>
           <div className='flex flex-col gap-5 py-5'>
-            <div style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}
+            <div style={{ backgroundImage: "url('/icons/profile.png')" }}
             className="mx-auto h-28 w-28 rounded-full bg-cover bg-center justify-center"/>
             <ProfileForm/>
           </div>

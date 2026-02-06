@@ -13,8 +13,6 @@ const createJobPhaseSchema = z.object({
 });
 
 
-
-
 module.exports = {
 	createJobPhaseSchema
 }
