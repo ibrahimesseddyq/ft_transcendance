@@ -6,7 +6,16 @@ const jobPhaseService =  require('./jobPhaseService');
 
 const submitApplication = async (applicationData) => {
 	try {
-		return await applicationRepository.createApplication(applicationData);
+		 let application = await applicationRepository.createApplication({
+			jobId : applicationData.jobId,
+			candidateId: applicationData.candidateId,
+			currentPhaseId: null,
+		});
+		application =  applicationRepository.updateApplication(application.id,
+			{
+				applicationPhases: createApplicationPhases(application.id,applicationData.jobId)
+			}
+		)
 	} catch (error) {
 		if (error.code === "P2002")
 			throw new HttpException(400, 'application already exists');
@@ -15,16 +24,22 @@ const submitApplication = async (applicationData) => {
 	}
 }
 
-
 const createApplicationPhases = async (applicationId, jobId) => {
 	const jobPhases =  await jobPhaseService.getJobPhases(jobId);
+	const applicationPhases = [];
+	if (!jobPhases)
+		throw new HttpException(400, "no phases for this job")
 	for (let jobPhase of  jobPhases)
 	{
-		await applicationPhaseservice.createApplicationphase({
+		applicationPhases.push(await applicationPhaseservice.createApplicationphase({
 			phaseId : jobPhase.id,
-			applicationId
-		})
+			applicationId,
+			startedAt:null,
+			notes: null,
+			score: 0,
+		}))
 	}
+	return applicationPhases;
 }
 
 const getApplicaticationById = async (applicationId) => {
@@ -34,15 +49,42 @@ const getApplicaticationById = async (applicationId) => {
 		throw new HttpException(404, "application not found");
 	return application;
 }
+
 const advance = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
 	if (application)
 		throw new HttpException(404, "application not fount");
-	const currentPhase = application.find( phase => phase.id === application.currentPhaseId)
-	// if (currentPhase.status !== 'in_progress')
-	// 	throw 
+	const phases = application.applicationPhases;
+	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
+	if (currentPhase.status !== 'completed')
+		throw new HttpException(400,"can't advance to next phase");
+	if(phases.indexOf(currentPhase) + 1 > phases.length)
+		throw new HttpException(400, 'application already completed');
+	const nextPhase = phases[phases.indexOf(currentPhase) + 1];
+	const {newPhase, newApplication} = Promise.all([
+		applicationPhaseservice.updateApplicationPhase(nextPhase.id, {
+			status:"in_progress"
+		}),
+		applicationRepository.updateApplication(applicationId,{
+			currentPhaseId: nextPhase.id
+		})
+	])
+	return newPhase;
 }
 
+const rejectApplication =  async (applicationId) => {
+	const application = await applicationRepository.updateApplication(applicationId,{
+		status:'rejected'
+	})
+	return application;
+}
+
+const withdrawApplication = async (applicationId) => {
+	const application = await applicationRepository.updateApplication(applicationId,{
+		status: 'withdrawn'
+	})
+	return application;
+}
 
 module.exports = {
 	getApplicaticationById
