@@ -10,18 +10,18 @@ datasource db {
 }
 
 model ApplicationPhase {
-  id            String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  applicationId String    @db.Char(36)
-  phaseId       String    @db.Char(36)
-  status        ApplicationPhaseStatus?   @default(pending)
-  startedAt     DateTime? @db.Timestamp(0)
-  completedAt   DateTime? @db.Timestamp(0)
-  notes         String?   @db.Text
+  id            String                  @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  applicationId String                  @db.Char(36)
+  phaseId       String                  @db.Char(36)
+  status        ApplicationPhaseStatus? @default(pending)
+  startedAt     DateTime?               @db.Timestamp(0)
+  completedAt   DateTime?               @db.Timestamp(0)
+  notes         String?                 @db.Text
   score         Int?
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   jobPhase    JobPhase    @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-  interviews  Interview[]
+  interviews  Interview[] // should be reviwed
 
   @@unique([applicationId, phaseId])
   @@index([applicationId, status])
@@ -41,6 +41,8 @@ model Application {
   job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
   candidate         User               @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   offer             Offer?
+  jobPhase          JobPhase?          @relation(fields: [jobPhaseId], references: [id])
+  jobPhaseId        String?            @db.Char(36)
 
   @@unique([jobId, candidateId])
   @@index([currentPhaseId])
@@ -249,6 +251,7 @@ enum TestType {
   quiz
   problem
 }
+
 enum ApplicationPhaseStatus {
   pending
   in_progress
@@ -256,6 +259,7 @@ enum ApplicationPhaseStatus {
   skipped
   failed
 }
+
 enum NotificationType {
   applicationReceived
   phaseStarted
