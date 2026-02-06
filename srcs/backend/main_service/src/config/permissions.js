@@ -85,8 +85,7 @@ const hasPermission = (role, permission) => {
 	return permissions.includes(permission);
 }
 
-const canAccessResource = (userRole, userId, resourceUserId, permission) =>
-{
+const canAccessResource = (userRole, userId, resourceUserId, permission) => {
 	if (userRole === UserRole.admin)
 		return true;
 	if (userRole === UserRole.recruiter && !permission.startsWith('user:'))

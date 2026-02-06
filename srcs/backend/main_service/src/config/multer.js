@@ -2,18 +2,17 @@ const multer =  require('multer');
 const path =  require('path');
 const {HttpException} = require('../utils/httpExceptions');
 
-const deskStorage =  multer.diskStorage({
+const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = file.filename === 'avatar' ?
-        'upload/avatars':
-        'upload/resumes';
+        const uploadPath = file.fieldname === 'avatar' ?
+        'uploads/avatars':
+        'uploads/resumes';
         cb(null, uploadPath);
     },
-    filename:(req, file, cb) =>
-    {
-        const filename = req.params.id || req.user.id;
+    filename:(req, file, cb) => {
+        const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
-        cb(null,`${filename}.${ext}`)
+        cb(null,`${filename}${ext}`)
     }                                                                         
 })
 
@@ -25,7 +24,7 @@ const fileFilter = (req, file, cb) => {
         else
             cb(new HttpException(400, "allowed formats are : .jpeg .png .jpg .webp"), false)
     }
-    else if( file.fieldname === resume){
+    else if( file.fieldname === "resume"){
          if (file.mimetype === "application/pdf")
             cb (null, true);
         else
@@ -34,15 +33,24 @@ const fileFilter = (req, file, cb) => {
 }
 
 const upload =  multer({
-    storage: deskStorage,
+    storage: diskStorage,
     fileFilter: fileFilter,
     limits  :{
-        fileSize : 10 * 1024 * 1024,
+        fileSize : 5 * 1024 * 1024,
         files: 1
     }
+});
+
+const uploadProfile = multer({
+    storage: diskStorage,
+    fileFilter: fileFilter,
+    limits : {
+        fileSize : 5 * 1024 * 1024,
+        files: 2
+    } 
 })
 
-
 module.exports = {
-    upload
-}
+    upload,
+    uploadProfile
+};

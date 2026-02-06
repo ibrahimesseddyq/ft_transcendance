@@ -2,14 +2,10 @@ const {CustomError} = require('../utils/httpExceptions');
 const {Prisma} = require('../../generated/prisma');
 
 
-const errorFactory = (err,res) =>
-{
-    if (err instanceof CustomError)
-    {
-        if (err.isLogging)
-        {
-            console.log(JSON.stringify(
-                {
+const errorFactory = (err,res) => {
+    if (err instanceof CustomError) {
+        if (err.isLogging) {
+            console.log(JSON.stringify({
                     statusCode : err.statusCode,
                     errors: err.errors,
                     stack : err.stack,
@@ -23,8 +19,7 @@ const errorFactory = (err,res) =>
         });
         return true;
     }
-    if (err instanceof Prisma.PrismaClientKnownRequestError)
-    {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(JSON.stringify(err,null,2))
         res.status(400).json({
             errors:['bad request']
@@ -34,8 +29,7 @@ const errorFactory = (err,res) =>
     return false;
 }
 
-const errorHandler = (err,req,res,next) =>
-{
+const errorHandler = (err,req,res,next) => {
     console.log("START ERROR")
     console.log('unhandled error',err);
     console.log("END ERROR")
