@@ -32,12 +32,10 @@ type Action = {
 export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
-      // Initial State
       user: null,
       token: null,
       profile: null,
 
-      // Actions
       setUser: (user, token) =>
         set(() => ({
           user: { ...user, hasProfile: user.hasProfile ?? false },
@@ -51,10 +49,10 @@ export const useAuthStore = create<State & Action>()(
             ? {
                 ...state.user,
                 hasProfile: true,
-                avatarUrl: profileData?.avatarUrl || profileData?.avatar || state.user.avatarUrl,
+                avatarUrl: profileData?.avatarUrl ?? profileData?.avatar ?? state.user.avatarUrl,
               }
             : null,
-        })),
+      })),
 
       clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
 

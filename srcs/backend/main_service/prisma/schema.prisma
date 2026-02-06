@@ -53,6 +53,7 @@ model Application {
 model Profile {
   userId          String    @id @db.Char(36)
   resumeUrl       String?   @db.Text
+  avatarUrl       String?   @db.Text
   linkedinUrl     String?   @db.VarChar(255)
   portfolioUrl    String?   @db.VarChar(255)
   currentCompany  String?   @db.VarChar(255)

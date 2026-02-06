@@ -1,4 +1,5 @@
 import { Info, Briefcase, Search, Bell, UserCheck, LucideIcon } from 'lucide-react';
+import { FlipText } from "framer-motion";
 
 interface FeatureItem {
   id: number;
