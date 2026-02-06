@@ -10,6 +10,7 @@ const diskStorage =  multer.diskStorage({
         cb(null, uploadPath);
     },
     filename:(req, file, cb) => {
+        console.log(req.body)
         const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)

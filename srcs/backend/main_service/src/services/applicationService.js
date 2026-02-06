@@ -1,38 +1,48 @@
 const applicationRepository = require('../repositories/applicationRepository');
-const jobService = require('./jobService');
-const userService = require('./userService');
+const applicationPhaseservice = require('./applicationPhaseService');
 const {HttpException} = require('../utils/httpExceptions');
+const jobPhaseService =  require('./jobPhaseService');
+
 
 const submitApplication = async (applicationData) => {
-	const job  = await jobService.getJobById(applicationData.jobId);
-	if (!job)
-		throw new HttpException(404, 'job with the specified id not found');
-	const user =  await userService.getUserById(applicationData.candidateId);
-	if (!user)
-		throw new HttpException(404,'user with the specified id not found');
-	if (await applicationRepository.getApplicationByJobAndCondidate(
-		applicationData.jobId,
-		applicationData.candidateId
-	))
-		throw new HttpException(400, 'user already apply to this job');
-	const application = applicationRepository.createApplication(applicationData);
-	return application;
+	try {
+		return await applicationRepository.createApplication(applicationData);
+	} catch (error) {
+		if (error.code === "P2002")
+			throw new HttpException(400, 'application already exists');
+		else if (error.code === "P2003")
+			throw new HttpException(404, "job or user not found");
+	}
 }
 
-const getJobApplications =  async (jobId) => {
-	const job = await jobService.getJobById(jobId);
-	if (!job)
-		throw new HttpException(404, "job not found");
-	return job.applications;
-}
 
 const createApplicationPhases = async (applicationId, jobId) => {
-	
+	const jobPhases =  await jobPhaseService.getJobPhases(jobId);
+	for (let jobPhase of  jobPhases)
+	{
+		await applicationPhaseservice.createApplicationphase({
+			phaseId : jobPhase.id,
+			applicationId
+		})
+	}
 }
 
 const getApplicaticationById = async (applicationId) => {
-	return await applicationRepository.getApplicaticationById(applicationId);
+
+	const application = await applicationRepository.getApplicaticationById(applicationId);
+	if (!application)
+		throw new HttpException(404, "application not found");
+	return application;
 }
+const advance = async (applicationId) => {
+	const application =  await applicationRepository.getApplicaticationById(applicationId);
+	if (application)
+		throw new HttpException(404, "application not fount");
+	const currentPhase = application.find( phase => phase.id === application.currentPhaseId)
+	// if (currentPhase.status !== 'in_progress')
+	// 	throw 
+}
+
 
 module.exports = {
 	getApplicaticationById
