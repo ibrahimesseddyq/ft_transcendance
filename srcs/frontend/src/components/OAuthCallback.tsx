@@ -21,19 +21,15 @@ export const OAuthCallback = () => {
                 const user = JSON.parse(userFromUrl);
                 const hasProfile = await ProfileChecker({ user, token, setProfile });
                 const updatedUser = { ...user, hasProfile: hasProfile };
-
-                console.log("has profile OAuthCallback: ", hasProfile)
                 const destination = hasProfile ? "/Dashboard" : "/Createprofile";
+
                 setUser(updatedUser, token);
                 navigate(destination, { replace: true });
-                console.log("iam hereeeeeeeee&&&&&&, ",destination);
             } catch (error) {
-                console.error("OAuth error:", error);
                 navigate('/Login', { replace: true });
             }
         }else{
             navigate('/Login', { replace: true });
-            console.log("iam hereeeeeeeeeééééééé");
         }
     };
 

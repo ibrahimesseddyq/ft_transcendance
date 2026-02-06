@@ -7,12 +7,13 @@ export function LoginPage() {
   const [activeCard, setActiveCard] = useState<string>('signin');
 
   const getTabClasses = (tabName: string) => {
-    let baseClasses = "relative maincard duration-1000 transition-all cursor-pointer overflow-hidden rounded-2xl";
+    let baseClasses = "relative maincard duration-1000 transition-all cursor-pointer \
+              overflow-hidden rounded-2xl shadow-xl shadow-[#00adef]";
     
     const isActive = activeCard === tabName;
 
     if (isActive) {
-    baseClasses += 'bg-black z-20 scale-100 min-h-[600px] h-auto w-full md:h-full md:w-[85%]';
+    baseClasses += 'bg-black z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
   } else {
     baseClasses += 'bg-zinc-900 z-10 scale-95  h-[70px] w-full md:h-full md:w-[15%]';
   }

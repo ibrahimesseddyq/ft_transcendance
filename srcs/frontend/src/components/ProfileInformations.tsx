@@ -80,11 +80,12 @@ export function ProfileInformations() {
             body: formData,
         });
         const result = await response.json();
-        if (response.ok || (response.status === 400 && result.errors === 'profile already exists')) {
-          if (result.errors !== 'profile already exists') {
-            setProfile(result);
-          }
-        } 
+        if (response.ok) {
+          setProfile(result.data || result);
+          Notification("Profile created successfully!", "success");
+        } else if (response.status === 400 && result.errors === 'profile already exists') {
+          setProfile(result.data || result); 
+        }
     } catch (error) {
         console.error("Submission failed:", error);
         Notification("Technical error occurred", "error");
