@@ -1,0 +1,187 @@
+// =============================================
+// HIRING PLATFORM - QUIZ SERVICE
+// Handles: Tests, Questions, Challenges, Submissions
+// Database: MySQL 8.0+
+// =============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================
+// ENUMS
+// ===================
+
+enum TestType {
+  qcm
+  code
+}
+
+enum CodeSubmissionStatus {
+  pending
+  processing
+  completed
+  failed
+  timeout
+}
+
+// ===================
+// TEST DEFINITIONS
+// ===================
+
+model Test {
+  id               String   @id @default(uuid()) @db.Char(36)
+  title            String   @db.VarChar(255)
+  testType         TestType @map("test_type")
+  description      String?  @db.Text
+  durationMinutes  Int      @map("duration_minutes")
+  passingScore     Int?     @map("passing_score") // Minimum percentage to pass
+  createdBy        String   @map("created_by") @db.Char(36) // References main_service.users
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  qcmQuestions     QcmQuestion[]
+  codeChallenges   CodeChallenge[]
+  testSubmissions  TestSubmission[]
+
+  @@map("tests")
+}
+
+// ===================
+// QCM QUESTIONS
+// ===================
+
+model QcmQuestion {
+  id         String   @id @default(uuid()) @db.Char(36)
+  testId     String   @map("test_id") @db.Char(36)
+  question   String   @db.Text
+  options    Json     // [{id, text, is_correct}]
+  points     Int      @default(1)
+  orderIndex Int      @map("order_index")
+
+  // Relations
+  test       Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  qcmAnswers QcmAnswer[]
+
+  @@map("qcm_questions")
+}
+
+// ===================
+// CODE CHALLENGES
+// ===================
+
+model CodeChallenge {
+  id                  String   @id @default(uuid()) @db.Char(36)
+  testId              String   @map("test_id") @db.Char(36)
+  title               String   @db.VarChar(255)
+  description         String   @db.Text
+  initialCode         String?  @map("initial_code") @db.Text // Starter code template
+  language            String   @db.VarChar(50)
+  testCases           Json     @map("test_cases") // [{input, expected_output, is_hidden, weight}]
+  points              Int      @default(1)
+  orderIndex          Int      @map("order_index")
+  
+  // External API configuration
+  externalChallengeId String?  @map("external_challenge_id") @db.VarChar(255) // ID in external code execution API
+  apiEndpoint         String?  @map("api_endpoint") @db.VarChar(500) // Optional: specific endpoint for this challenge
+
+  // Relations
+  test              Test              @relation(fields: [testId], references: [id], onDelete: Cascade)
+  codeSubmissions   CodeSubmission[]
+
+  @@map("code_challenges")
+}
+
+// ===================
+// TEST SUBMISSIONS
+// ===================
+
+model TestSubmission {
+  id                 String    @id @default(uuid()) @db.Char(36)
+  applicationPhaseId String    @map("application_phase_id") @db.Char(36) // References main_service.application_phases
+  candidateId        String    @map("candidate_id") @db.Char(36) // References main_service.users
+  testId             String    @map("test_id") @db.Char(36)
+  startedAt          DateTime? @map("started_at")
+  submittedAt        DateTime? @map("submitted_at")
+  score              Int?
+  passed             Boolean?
+  timeSpentSeconds   Int?      @map("time_spent_seconds")
+
+  // Relations
+  test             Test             @relation(fields: [testId], references: [id])
+  qcmAnswers       QcmAnswer[]
+  codeSubmissions  CodeSubmission[]
+
+  @@map("test_submissions")
+}
+
+// ===================
+// QCM ANSWERS
+// ===================
+
+model QcmAnswer {
+  id               String    @id @default(uuid()) @db.Char(36)
+  submissionId     String    @map("submission_id") @db.Char(36)
+  questionId       String    @map("question_id") @db.Char(36)
+  selectedOptionId String?   @map("selected_option_id") @db.VarChar(50)
+  isCorrect        Boolean?  @map("is_correct")
+  answeredAt       DateTime? @map("answered_at")
+
+  // Relations
+  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  question   QcmQuestion    @relation(fields: [questionId], references: [id])
+
+  @@map("qcm_answers")
+}
+
+// ===================
+// CODE SUBMISSIONS (API-delegated)
+// ===================
+
+model CodeSubmission {
+  id                   String                 @id @default(uuid()) @db.Char(36)
+  submissionId         String                 @map("submission_id") @db.Char(36)
+  challengeId          String                 @map("challenge_id") @db.Char(36)
+  
+  // Candidate's submission
+  submittedCode        String                 @map("submitted_code") @db.Text
+  language             String                 @db.VarChar(50)
+  
+  // External API integration
+  externalSubmissionId String?                @map("external_submission_id") @db.VarChar(255) // ID from external code execution API
+  status               CodeSubmissionStatus   @default(pending)
+  
+  // Results from external API
+  executionTimeMs      Int?                   @map("execution_time_ms") // Execution time in milliseconds
+  memoryUsedKb         Int?                   @map("memory_used_kb") // Memory usage in kilobytes
+  testResults          Json?                  @map("test_results") // Detailed results: [{test_case_id, passed, output, error, execution_time}]
+  passedTests          Int?                   @map("passed_tests") // Number of test cases passed
+  totalTests           Int?                   @map("total_tests") // Total number of test cases
+  score                Int? // Calculated score based on passed tests
+  
+  // Error handling
+  errorMessage         String?                @map("error_message") @db.Text // Error from API if status is failed
+  apiResponse          Json?                  @map("api_response") // Full API response for debugging
+  
+  // Webhooks & async handling
+  webhookReceivedAt    DateTime?              @map("webhook_received_at") // When webhook callback was received
+  
+  // Timestamps
+  submittedAt          DateTime?              @map("submitted_at")
+  completedAt          DateTime?              @map("completed_at")
+
+  // Relations
+  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  challenge  CodeChallenge  @relation(fields: [challengeId], references: [id])
+
+  @@index([externalSubmissionId])
+  @@index([submissionId, challengeId])
+  @@index([status])
+  @@map("code_submissions")
+}

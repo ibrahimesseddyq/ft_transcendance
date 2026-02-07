@@ -16,6 +16,7 @@ const createProfile = async  (userId , profileData) => {
         if (avatarUrl)
             await userService.updateUser(userId, {avatarUrl})
     }
+    console.log(profileData);
     const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
     return await profileRepository.createProfile({
         ...profileData.body,

@@ -9,6 +9,7 @@ interface JobsArrayProps {
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -52,7 +53,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
   };
 
   const getCount = (key: any, value: string | boolean) => {
-    return totalJobs.filter(job => {
+    return totalJobs.filter((job:any) => {
       if (typeof value === 'string') {
         return String(job[key]).toLowerCase() === value.toLowerCase();
       }
@@ -61,7 +62,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
   };
 
   const getSkillCount = (skill: string) => {
-    return totalJobs.filter(job => 
+    return totalJobs.filter((job:any) => 
       job.skills?.toLowerCase().includes(skill.toLowerCase())
     ).length;
   };
@@ -95,7 +96,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
 
   return (
-    <div className="w-64 bg-[#1e1e1e] text-white p-5 rounded-2xl 
+    <div className="w-full md:w-64 h-fit md:h-full bg-[#1e1e1e] text-white p-5 rounded-2xl 
       flex flex-col gap-6 sticky top-5">
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -103,6 +104,12 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
           <h2 className="text-lg font-bold">Filter</h2>
           <p className="text-gray-500 text-xs font-semibold">Total ({totalJobs.length})</p>
         </div>
+
+        <button onClick={() => setIsOpen(true)} 
+          className="text-[#5d9cc9] rounded-md px-3 py-1.5 font-bold transition hover:underline">
+          Filters
+        </button>
+
         <button 
           onClick={() => {setSearch(""); setFilters({department: [],employmentType: [], status: [], skills: [], isRemote: null})}}
           className="bg-[#ff3b3b] hover:bg-red-600 text-[10px] px-3 py-1.5 rounded-md font-bold transition"
@@ -126,7 +133,8 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       <div className="h-[1px] bg-gray-800 w-full" />
 
 
-      <div className="flex flex-col gap-6  overflow-auto no-scrollbar">
+      <div 
+        className={`hidden md:flex md:flex-col gap-6 overflow-auto no-scrollbar`}>
 
           {/* Job departments */}
           <FilterSection title="Job department">
@@ -187,7 +195,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
           <FilterSection title="Location Preference">
             <Checkbox 
               label="Remote" 
-              count={getCount('isRemote', true)}
+              count={getCount('isRemote', filters.isRemote === true)}
               checked={filters.isRemote === true} 
               onChange={() => setFilters(p => ({...p, isRemote: p.isRemote === true ? null : true}))}
             />
@@ -239,7 +247,7 @@ const FilterSection = ({ title, children }: { title: string; children: React.Rea
   <div className="flex flex-col gap-3">
     <h3 className="text-sm font-semibold text-gray-300">{title}</h3>
     <div className="flex flex-col gap-2.5">{children}</div>
-    <div className="h-[1px] bg-gray-800 w-full mt-2" />
+    <div className="h-[1px] bg-gray-800 w-full mt-2 hidden md:flex" />
   </div>
 );
 

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
-import { ToastContainer } from "react-toastify";
+import { useAuthStore } from '@/utils/ZuStand';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
 
@@ -13,6 +13,7 @@ const Signin = () => {
     const [Icon, setIcon] = useState<any>(Eye);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const updateUser = useAuthStore((state) => state.setUser)
 
     const {
         register,
@@ -40,9 +41,9 @@ const Signin = () => {
         if (tokenFromUrl) {
             localStorage.setItem("token", tokenFromUrl);
             Notification("Google Login Successful", "success");
-            navigate('/Dashboard', { replace: true });
+            navigate('/Dashboard');
         }
-    }, [searchParams, navigate]);
+    }, [searchParams, navigate, updateUser]);
     
     const GoogleSubmit = () => {
         window.location.href = 'http://localhost:3000/api/auth/google';
@@ -52,34 +53,39 @@ const Signin = () => {
         try {
             const response = await fetch("http://localhost:3000/api/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
 
             const result = await response.json();
-            console.log("user Data: ", result.data.user);
+            if (!response.ok) throw new Error(result.message || "Login failed");
 
-            if (!response.ok) {
-                throw new Error(result.message || `Status: ${response.status}`);
-            }
             const token = result.data?.accessToken;
-            
-            if (token) {
-                console.log("backend accessToken = ",  token);
-                localStorage.setItem("token", token);
-                Notification("Success Login", "success");
-                // window.location.href = '/Dashboard';
-            } else {
-                throw new Error("Token not found in response");
+            const user = result.data?.user;
+
+            if (token && user) {
+                updateUser(user, token);
+                const res = await fetch(`http://localhost:3000/api/profiles/${user.id}`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                const isVerified = res.ok;
+                updateUser({ ...user, isVerified }, token);
+                if (res.ok) {
+                    console.log("there is a profile");
+                    Notification("Success Login", "success");
+                    navigate('/Dashboard');
+                } else {
+                    console.log("Noooo profile");
+                    navigate('/Createprofile');
+                }
             }
         } catch (error: any) {
-            console.error("Submission failed:", error);
             Notification(error.message || "Error Login", "error");
         }
-        reset();
     };
+
 
     return (
         <div className="w-full h-full flex flex-col items-center gap-4 p-4 overflow-auto no-scrollbar">
@@ -93,7 +99,7 @@ const Signin = () => {
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome Back!
                     </h2>
-                    <h1 className="text-md font-electrolize text-white whitespace-nowrap overflow-hidden">
+                    <h1 className="text-md font-electrolize text-black whitespace-nowrap overflow-hidden">
                         We are happy to see you again.
                     </h1>
                 </div>
@@ -107,7 +113,7 @@ const Signin = () => {
                             <input
                                 {...register("email", { required: true })}
                                 placeholder="Enter your Email"
-                                className="w-full h-full text-white whitespace-nowrap 
+                                className="w-full h-full text-black whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
                             <Mail className="h-5 w-5 text-gray-500 whitespace-nowrap overflow-hidden" />
@@ -120,7 +126,7 @@ const Signin = () => {
                                 {...register("password", { required: true })}
                                 placeholder="Enter your Password"
                                 type={passtype}
-                                className="w-full h-full text-white whitespace-nowrap
+                                className="w-full h-full text-black whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
                             <Icon onClick={handleToggle}
@@ -136,7 +142,7 @@ const Signin = () => {
                         </button>
 
                         <button type="submit"
-                            className="h-[45px] w-full text-white font-bold whitespace-nowrap
+                            className="h-[45px] w-full text-black font-bold whitespace-nowrap
                                     mx-auto rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-colors overflow-hidden">
                             Log in
                         </button>
@@ -144,8 +150,8 @@ const Signin = () => {
 
                     <button onClick={GoogleSubmit}
                             className="h-[45px] w-full flex gap-5 rounded-lg border overflow-hidden
-                             border-gray-800 justify-center bg-transparent text-white 
-                            hover:bg-white hover:text-black transition-all items-center mt-2">
+                             border-gray-800 justify-center bg-transparent text-black 
+                            hover:bg-black hover:text-white transition-all items-center mt-2">
                         <img className="h-6 w-6" 
                              src="/icons/google1.png"
                              alt="Google icon"/>
