@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 import { z } from "zod";
 import { CloudUpload, SquarePen } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
+import { useAuthStore } from '@/utils/ZuStand';
 import { useState } from "react";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
@@ -39,6 +41,9 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 );
 
 export function ProfileInformations() {
+  const navigate = useNavigate();
+  const userId = useAuthStore((state) => (state.user?.id));
+  const setVerified = useAuthStore((state:any) => state.setVerified);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
   const {
     register,
@@ -48,23 +53,42 @@ export function ProfileInformations() {
     formState: { errors, isSubmitting }
   } = useForm<ProfileFormData>({
     resolver: zodResolver(CandidateProfileSchema),
+    defaultValues: {
+      userId: userId,
+    }
   });
 
 
   const onApplySubmit = async (data: any) => {
+    const formData = new FormData();
+
+    if (data.avatar) formData.append("avatar", data.avatar);
+    if (data.resume) formData.append("resume", data.resume);
+
+    
+    formData.append("userId", data.userId);
+    formData.append("linkedinUrl", data.linkedinUrl);
+    formData.append("currentTitle", data.currentTitle);
+    formData.append("skills", data.skills);
+
+  
+    if (data.portfolioUrl) formData.append("portfolioUrl", data.portfolioUrl);
+    if (data.currentCompany) formData.append("currentCompany", data.currentCompany);
+    // if (data.yearsExperience) formData.append("yearsExperience", data.yearsExperience);
+    // if (data.preferredLocations) formData.append("preferredLocations", data.preferredLocations);
+    // if (data.salaryExpectation) formData.append("salaryExpectation", data.salaryExpectation);
+    console.log("formData: ", formData);
       try {
           const response = await fetch("http://localhost:3000/api/profiles", {
               method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
+              body: formData,
           });
           if (!response.ok) {
               throw new Error(`Server responded with status: ${response.status}`);
           }
           Notification("Profile Created successfully", "success");
-          window.location.href = '/'
+          setVerified();
+          navigate('/Dashboard');
       } catch (error) {
           console.error("Submission failed:", error);
           Notification("filed to create profile", "error");
@@ -82,9 +106,10 @@ export function ProfileInformations() {
       }
     }
   };
+  
 
   return (
-    <form 
+    <form
       onSubmit={handleSubmit(onApplySubmit)}
       className="w-full h-full max-w-screen-2xl mx-auto flex flex-col 
         gap-8 p-6 overflow-y-auto custom-scrollbar bg-transparent items-center">
@@ -96,7 +121,7 @@ export function ProfileInformations() {
 
       <div className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] bg-cover bg-center border-2
             ${errors.avatar ? 'border-red-500' : 'border-[#00adef]'}`}
-        style={{ backgroundImage: `url(${avatarPreview})` }}>
+        style={{ backgroundImage: `url(${avatarPreview})`}}>
 
         <input 
           id="avatar"
@@ -141,7 +166,6 @@ export function ProfileInformations() {
           <div className="flex flex-col gap-5 pl-4">
             <FormField label="Preferred Locations" name="preferredLocations" optional={true} register={register} error={errors.preferredLocations?.message} placeholder="Remote, New York, London" />
             <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" />
-            <FormField label="Available From" name="availableFrom" type="date" optional={false} register={register} error={errors.availableFrom?.message} placeholder="mm/dd/yyyy" />
           </div>
 
           <label 
@@ -156,7 +180,7 @@ export function ProfileInformations() {
                 <p className="text-xs text-gray-500">PDF under 5MB</p>
               </div>
             </div>
-            <input id="cv-upload" type="file" accept="application/pdf" {...register("resume")} hidden />
+            <input  id="cv-upload" type="file" accept="application/pdf" {...register("resume")} hidden />
           </label>
           {errors.resume && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.resume.message}</p>}
         </section>

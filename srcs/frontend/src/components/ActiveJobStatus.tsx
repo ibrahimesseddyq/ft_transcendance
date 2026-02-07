@@ -13,7 +13,7 @@ export function ActiveJobStatus() {
 
 
     return (
-        <div className="flex flex-col h-full w-full border  maincard overflow-hidden">
+        <div className="flex flex-col w-full h-full border  maincard overflow-hidden">
             <header className="flex items-center justify-between
                 h-full w-full max-h-16 sticky top-0 z-20">
                 <h3 className="header-title ml-5 m-3">Active Job Status</h3>
@@ -26,9 +26,8 @@ export function ActiveJobStatus() {
                         return (
                             <div 
                                 key={item.id}
-                                className="flex items-center childcard
-                                p-2 justify-between pt-3 duration-200
-                                hover:scale-[1.02]"
+                                className="flex items-center border border-gray-400 rounded-xl
+                                p-2 justify-between pt-3"
                             >
                                 <div className=" flex gap-3 items-center">
                                     <div className="">
@@ -36,8 +35,8 @@ export function ActiveJobStatus() {
                                           style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}/>
                                     </div>
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-xs xl:text-sm text-white font-bold">{item.firstName} {item.lastName}</span>
-                                        <span className="text-xs xl:text-sm font-light text-gray-100">
+                                        <span className="text-xs xl:text-sm text-black font-bold">{item.firstName} {item.lastName}</span>
+                                        <span className="text-xs xl:text-sm font-light text-gray-500">
                                             {item.profil} Developer
                                         </span>
                                     </div>

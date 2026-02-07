@@ -69,7 +69,7 @@ const Signup = () => {
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome!
                     </h2>
-                    <h1 className="text-md font-electrolize text-white whitespace-nowrap overflow-hidden">
+                    <h1 className="text-md font-electrolize text-black whitespace-nowrap overflow-hidden">
                         We are happy to have you. 
                     </h1>
                 </div>
@@ -82,7 +82,7 @@ const Signup = () => {
                             <input
                                 {...register("firstName", { required: true })}
                                 placeholder="First Name"
-                                className="h-[45px] w-full text-sm text-white outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                className="h-[45px] w-full text-sm text-black outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
                             />
                             {errors.firstName && <p className="pl-2 text-red-500 text-[10px] italic">{errors.firstName.message}</p>}
                         </div>
@@ -91,7 +91,7 @@ const Signup = () => {
                             <input
                                 {...register("lastName", { required: true })}
                                 placeholder="Last Name"
-                                className="h-[45px] w-full text-sm text-white outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                className="h-[45px] w-full text-sm text-black outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
                             />
                             {errors.lastName && <p className="pl-2 text-red-500 text-[10px] italic">{errors.lastName.message}</p>}
                         </div>
@@ -100,7 +100,7 @@ const Signup = () => {
                             <input
                                 {...register("email", { required: true })}
                                 placeholder="Enter Your Email"
-                                className="h-[45px] w-full text-sm text-white outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                className="h-[45px] w-full text-sm text-black outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
                             />
                             {errors.email && <p className="pl-2 text-red-500 text-[10px] italic">{errors.email.message}</p>}
                         </div>
@@ -110,7 +110,7 @@ const Signup = () => {
                                 {...register("password", { required: true })}
                                 placeholder="Enter Your Password"
                                 type='password'
-                                className="h-[45px] w-full text-sm text-white outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                className="h-[45px] w-full text-sm text-black outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
                             />
                             {errors.password && <p className="pl-2 text-red-500 text-[10px] italic">{errors.password.message}</p>}
                         </div>
@@ -120,13 +120,13 @@ const Signup = () => {
                                 {...register("confirmPassword", { required: true })}
                                 placeholder="Confirm Password"
                                 type='password'
-                                className="h-[45px] w-full text-sm text-white outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                className="h-[45px] w-full text-sm text-black outline-none px-3 border border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
                             />
                             {errors.confirmPassword && <p className="pl-2 text-red-500 text-[10px] italic">{errors.confirmPassword.message}</p>}
                         </div>
 
                         <button type="submit"
-                                className="h-[45px] w-full text-white font-bold whitespace-nowrap
+                                className="h-[45px] w-full text-black font-bold whitespace-nowrap
                                     mx-auto rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-colors overflow-hidden">
                             Register
                         </button>
@@ -134,8 +134,8 @@ const Signup = () => {
 
                     <button onClick={GoogleSubmit}
                             className="h-[45px] w-full flex gap-5 rounded-lg border overflow-hidden
-                             border-gray-800 justify-center bg-transparent text-white 
-                            hover:bg-white hover:text-black transition-all items-center mt-2">
+                             border-gray-800 justify-center bg-transparent text-black 
+                            hover:bg-black hover:text-white transition-all items-center mt-2">
                         <img className="h-6 w-6" 
                              src="/icons/google1.png"
                              alt="Google icon"/>
