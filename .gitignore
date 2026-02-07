@@ -24,5 +24,5 @@ uploads
 *.njsproj
 *.sln
 *.sw?
-notesAndTodos
+notesAndTodos.txt
 .gitignore
