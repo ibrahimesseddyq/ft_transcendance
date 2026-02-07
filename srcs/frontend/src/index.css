@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer utilities {
+    body{
+        --font-sans: "Calibri", "Arial", sans-serif;
+        --font-serif: "Georgia", "Times New Roman", serif;
+    }
     input:-webkit-autofill,
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus {
