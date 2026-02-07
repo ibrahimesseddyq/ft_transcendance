@@ -6,6 +6,7 @@ import Notification from "@/utils/TostifyNotification"
 
 
 const Signup = () => {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const {
         register,
         handleSubmit,
@@ -16,12 +17,12 @@ const Signup = () => {
     });
 
     const GoogleSubmit = async () => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
+        window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {
         try {
-            const response = await fetch("http://localhost:3000/api/auth/register", {
+            const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

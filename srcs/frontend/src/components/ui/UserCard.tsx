@@ -1,6 +1,3 @@
-import { useEffect, useState} from 'react';
-import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
-import { userInfo } from 'os';
 
 interface props {
   User: any;
@@ -8,7 +5,7 @@ interface props {
 }
 
 const UserCard = ({User, Profile}: props) => {
-    const BACKEND_URL = "http://localhost:3000";
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const avatarUrl = `${BACKEND_URL}${Profile?.avatarUrl}`;
   return (
     <div className="w-full md:w-[200px] md:max-w-[300px] h-[250px] min-h-20 

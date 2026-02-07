@@ -7,8 +7,9 @@ interface ProfileProps {
 }
 
 export async function ProfileChecker({ user, token, setProfile }: Omit<ProfileProps, 'setUser'>) {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     try {
-        const res = await fetch(`http://localhost:3000/api/profiles/${user.id}`, {
+        const res = await fetch(`${BACKEND_URL}/api/profiles/${user.id}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });

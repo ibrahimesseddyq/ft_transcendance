@@ -1,5 +1,4 @@
 import { Info, Briefcase, Search, Bell, UserCheck, LucideIcon } from 'lucide-react';
-import { FlipText } from "framer-motion";
 
 interface FeatureItem {
   id: number;
@@ -80,7 +79,7 @@ export const FeaturesSection = () => {
                       description={item.description}
                       icon={item.icon}
                       />
-                  </div>
+                </div>
             ))}
         </div>
     </section>

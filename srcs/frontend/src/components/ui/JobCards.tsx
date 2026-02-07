@@ -11,11 +11,12 @@ interface props {
 }
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      const response = await fetch(`http://localhost:3000/api/jobs/${jobId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
         method: "DELETE",
       });
       if (response.ok){
