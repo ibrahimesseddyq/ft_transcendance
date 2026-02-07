@@ -44,6 +44,7 @@ export function ProfileInformations() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const {
     register,
     handleSubmit,
@@ -75,7 +76,7 @@ export function ProfileInformations() {
     if (data.resume)
       formData.append("resume", data.resume);
     try {
-        const response = await fetch("http://localhost:3000/api/profiles", {
+        const response = await fetch(`${BACKEND_URL}/api/profiles`, {
             method: "POST",
             body: formData,
         });

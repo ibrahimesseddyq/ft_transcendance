@@ -15,6 +15,7 @@ const Signin = () => {
     const navigate = useNavigate();
     const setProfile = useAuthStore((state) => state.setProfile);
     const setUser = useAuthStore((state) => state.setUser);
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const {
         register,
@@ -38,12 +39,12 @@ const Signin = () => {
     
     
     const GoogleSubmit = () => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
+        window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
     const LoginSubmit = async (data: any) => {
       try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
+        const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
