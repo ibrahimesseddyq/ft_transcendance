@@ -7,17 +7,18 @@ import { useParams } from 'react-router-dom'
 
 export function Profile() {
   const params = useParams();
+  const id = params.postId;
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const BACKEND_URL = "http://localhost:3000";
-  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-  
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const avatarUrl = `${BACKEND_URL}${profile?.avatarUrl}`;
+  console.log("avatarUrl : ", avatarUrl);
   
   useEffect(() => {
     const fetchUser = async () => {
         const [res1, res2] = await Promise.all([
-          fetch(`http://localhost:3000/api/users/${params.postId}`),
-          fetch(`http://localhost:3000/api/profiles/${params.postId}`),
+          fetch(`${BACKEND_URL}/api/users/${id}`),
+          fetch(`${BACKEND_URL}/api/profiles/${id}`),
         ]);
 
         if (res1.ok && res2.ok) {
@@ -30,7 +31,7 @@ export function Profile() {
     };
 
     fetchUser();
-  }, [params.postId]);
+  }, [id]);
 
   const [skills] = useState([
     { id: 1, type: 'HTML/CSS' },
