@@ -9,8 +9,8 @@ export function Header() {
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
 
   return (
-    <header className="mx-auto flex justify-between h-16 w-full rounded-xl
-      max-w-screen-2xl items-center px-4 md:px-8 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl
+      max-w-screen-2xl items-center px-4 md:px-8 bg-white/80 backdrop-blur-sm fixed md:sticky top-0 z-50">
       
       {/* Logo */}
       <Link 

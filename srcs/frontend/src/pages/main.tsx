@@ -11,6 +11,7 @@ import { Jobs } from "@/components/Jobs"
 import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
+import { Applications } from '@/components/Applications'
 
 
 export function Main() {
@@ -64,7 +65,7 @@ console.log("Computed hasProfile:", !!profile);
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#F0F3FA] md:h-screen overflow-y-auto custom-scrollbar px-4">
+    <div className="min-h-screen w-full bg-[#F0F3FA] md:h-screen overflow-y-auto custom-scrollbar md:px-4">
       <div className="h-20 w-full sticky top-2 z-50">
         <Header />
       </div>
@@ -74,6 +75,7 @@ console.log("Computed hasProfile:", !!profile);
           <Routes>  
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Jobs" element={<Jobs />} />
+            <Route path="/Applications" element={<Applications />} />
             <Route path="/Condidates" element={<Condidates />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />
