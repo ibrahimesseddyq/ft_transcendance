@@ -14,7 +14,7 @@ export function Header() {
       
       {/* Logo */}
       <Link 
-        to="/Dashboard" 
+        to={`/Dashboard`}
         className="hover:scale-105 inline-flex items-center gap-2 group transition-all duration-300"
       >
         <img 
@@ -35,7 +35,8 @@ export function Header() {
       <div className="flex justify-end items-center gap-3 md:gap-5">
         <Notifications />
 
-        <Link to="/profile" className="flex items-center gap-2 md:gap-3 group">
+        <Link to={`/Profile/${user?.id}`}
+          className="flex items-center gap-2 md:gap-3 group">
           <div className="text-right hidden lg:block">
             <p className="text-sm font-bold text-black group-hover:text-[#00adef] transition-colors">
               {user?.firstName}

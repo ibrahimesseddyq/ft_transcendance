@@ -96,7 +96,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
 
   return (
-    <div className="w-full md:w-64 h-fit md:h-full bg-[#1e1e1e] text-white p-5 rounded-2xl 
+    <div className="w-full md:w-64 h-fit md:h-[550px] bg-[#1e1e1e] text-white p-5 rounded-2xl 
       flex flex-col gap-6 sticky top-5">
       {/* Header */}
       <div className="flex justify-between items-center">

@@ -1,16 +1,36 @@
 import { useAuthStore } from '@/utils/ZuStand';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProfileForm } from '@/components/ProfileForm'
 import { GraduationCap, Briefcase, Award } from 'lucide-react';
 import { Logout } from '@/components/LogOut';
+import { useParams } from 'react-router-dom'
 
 export function Profile() {
-  const profile = useAuthStore((state) => state.profile);
-  const user = useAuthStore((state) => state.user);
+  const params = useParams();
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const BACKEND_URL = "http://localhost:3000";
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-  console.log(avatarUrl)
-  console.log(profile);
+  
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+        const [res1, res2] = await Promise.all([
+          fetch(`http://localhost:3000/api/users/${params.postId}`),
+          fetch(`http://localhost:3000/api/profiles/${params.postId}`),
+        ]);
+
+        if (res1.ok && res2.ok) {
+          const userData = await res1.json();
+          const profileData = await res2.json();
+          console.log("Iam Here");
+          setUser(userData.data);
+          setProfile(profileData.data);
+        }
+    };
+
+    fetchUser();
+  }, [params.postId]);
 
   const [skills] = useState([
     { id: 1, type: 'HTML/CSS' },
@@ -55,7 +75,7 @@ export function Profile() {
         <div className="lg:col-span-4 flex flex-col items-center">
           <div className="relative mb-6">
             <div 
-              style={{ backgroundImage: `url("${user?.avatarUrl ? avatarUrl : "/icons/placeholder.jpg"}")` }}
+              style={{ backgroundImage: `url("${avatarUrl}")` }}
               className="h-32 w-32 rounded-3xl bg-cover bg-center border-4 border-[#161F32] shadow-2xl"
             />
             <div className="absolute -bottom-2 -right-2 bg-[#5F88B8] p-2 rounded-xl border-4 border-[#0D1525]">

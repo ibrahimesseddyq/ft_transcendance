@@ -77,7 +77,7 @@ console.log("Computed hasProfile:", !!profile);
             <Route path="/Jobs" element={<Jobs />} />
             <Route path="/Applications" element={<Applications />} />
             <Route path="/Condidates" element={<Condidates />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/Profile/:postId" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />
             <Route path="/Createprofile" element={<Navigate to="/Dashboard" replace />} />
             <Route path="/" element={<Navigate to="/Dashboard" replace />} />
