@@ -86,6 +86,25 @@ const withdrawApplication = async (applicationId) => {
 	return application;
 }
 
+const getApplicaticationPhases = async (applicationId) => {
+	const application =  await applicationRepository.getApplicaticationById(applicationId);
+	if (!application)
+		throw new HttpException(404, "application not found");
+	return application.applicationPhases;
+}
+
+const getCurrentPhase = async (applicationId) => {
+	const application = await applicationRepository.getApplicaticationById(applicationId);
+	if (!application)
+		throw new HttpException(404, "application not found");
+	return application.applicationPhases.find( phase => phase.id ===  application.applicationPhases.currentPhaseId);
+}
 module.exports = {
-	getApplicaticationById
+	submitApplication,
+	getApplicaticationById,
+	advance,
+	rejectApplication,
+	withdrawApplication,
+	getApplicaticationPhases,
+	getCurrentPhase
 }
