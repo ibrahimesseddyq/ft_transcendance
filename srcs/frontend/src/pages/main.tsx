@@ -10,13 +10,14 @@ import { Jobs } from "@/components/Jobs"
 import { ViewJob } from "@/components/ViewJob"
 import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
+import { useAuthStore } from '@/utils/ZuStand';
 
 
 export function Main() {
   const location = useLocation();
-  const [user, setUser] = useState(null);
-
-  const token = localStorage.getItem("token");
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const isVerified = useAuthStore((state) => state.user?.isVerified);
   
   const publicPaths = ['/Login', '/reset-password', '/otp'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
@@ -26,12 +27,8 @@ export function Main() {
   }
 
   if (isPublicPage) {
-    if (token && location.pathname === '/Login') {
-      return <Navigate to="/Dashboard" replace />;
-    }
-
     return (
-      <main className="h-screen w-screen bg-white flex items-center justify-center">
+      <main className="h-screen w-screen flex flex-col bg-[#F0F3FA] overflow-hidden pt-4 px-4">
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/" element={<Navigate to="/Login" replace />} />
@@ -40,11 +37,15 @@ export function Main() {
       </main>
     );
   }
-  if (1){
+
+  if (user && !isVerified) {
     return (
-      <Routes>
-        <Route path="/Createprofile" element={<ProfileInformations />} />
-      </Routes>
+      <main className="h-screen w-screen flex flex-col bg-[#F0F3FA] overflow-hidden pt-4 px-4">
+        <Routes>
+          <Route path="/Createprofile" element={<ProfileInformations />} />
+          <Route path="*" element={<Navigate to="/Createprofile" replace />} />
+        </Routes>
+      </main>
     );
   }
 
