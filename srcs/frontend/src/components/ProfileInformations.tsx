@@ -55,6 +55,7 @@ export function ProfileInformations() {
     resolver: zodResolver(CandidateProfileSchema),
     defaultValues: {
       userId: userId,
+      numberPhone: '0',
     }
   });
 
@@ -66,6 +67,7 @@ export function ProfileInformations() {
     formData.append("userId", data.userId);
     formData.append("linkedinUrl", data.linkedinUrl);
     formData.append("currentTitle", data.currentTitle);
+    formData.append("numberPhone", data.currentTitle);
     formData.append("skills", data.skills);
     if (data.portfolioUrl) 
       formData.append("portfolioUrl", data.portfolioUrl);
@@ -155,7 +157,7 @@ export function ProfileInformations() {
             <FormField label="Portfolio URL" name="portfolioUrl" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com" />
             <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} placeholder="Company Name" />
             <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
-            <FormField label="Years of Experience" name="yearsExperience" type="number" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
+            <FormField label="Years of Experience" name="yearsExperience" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
             <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} placeholder="Ex: React, Node.js, TypeScript..." />
           </div>
         </section>
@@ -171,6 +173,7 @@ export function ProfileInformations() {
             <div className="flex flex-col gap-5">
               <FormField label="Preferred Locations" name="preferredLocations" optional={true} register={register} error={errors.preferredLocations?.message} placeholder="Remote, New York, London" />
               <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" />
+              <FormField label="Number Phone" name="numberPhone" optional={false} register={register} error={errors.numberPhone?.message} placeholder="e.g. 0699999999" />
             </div>
           </section>
           
