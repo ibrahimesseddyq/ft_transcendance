@@ -41,12 +41,11 @@ export function Profile() {
       overflow-y-auto no-scrollbar items-center">
       <div className='col-span-3 mt-10'>
         <ProfileCover profile={profile} user={user}/>
-
       </div>
-      {/* <div className='col-span-1 md:col-span-2 p-2 h-20 bg-white border rounded-lg'></div>
-      <div className='col-span-1 md:col-span-1 p-2 h-20 bg-white border rounded-lg'></div>
-      <div className='col-span-1 md:col-span-2 p-2 h-20 bg-white border rounded-lg'></div>
-      <div className='col-span-1 md:col-span-1 p-2 h-20 bg-white border rounded-lg'></div> */}
+      <div className='col-span-1 md:col-span-2 p-2 h-44 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-1 p-2 h-44 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-2 p-2 h-44 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-1 p-2 h-44 bg-white border rounded-lg'></div>
       {/* <div className="relative mb-6">
         <div 
           style={{ backgroundImage: `url("${avatarUrl}")` }}

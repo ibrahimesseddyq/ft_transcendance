@@ -12,6 +12,7 @@ import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
 import { Applications } from '@/components/Applications'
+import { AppAllCards } from '@/components/AppAllCards'
 
 
 export function Main() {
@@ -80,6 +81,7 @@ console.log("Computed hasProfile:", !!profile);
             <Route path="/Profile/:postId" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />
             <Route path="/Createprofile" element={<Navigate to="/Dashboard" replace />} />
+            <Route path="/AppAllCards" element={<AppAllCards />} />
             <Route path="/" element={<Navigate to="/Dashboard" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
