@@ -1,29 +1,64 @@
-import UserCard  from '@/components/ui/UserCard'
-import { useAuthStore } from '@/utils/ZuStand';
+import UserCard from '@/components/ui/UserCard';
+import { useNavigate } from 'react-router-dom';
 
-interface props {
-  Title: string;
-  Users: any;
+interface UserData {
+  user: any;
+  profile: any;
+  id?: string | number;
 }
 
-const ApplicationContent = ({Title, Users}: props) => {
-    const profile = useAuthStore((state) => state.profile);
-    const user = useAuthStore((state) => state.user);
-  return (
-    <div className="relative flex flex-col w-full min-h-20 border rounded-xl overflow-hidden items-center justify-center">
-        <header className="flex items-center justify-between bg-gradient-to-r from-[#00adef] via-[#44bbea] to-transparent
-            h-full w-full max-h-16 sticky top-0 z-20">
-            <h3 className="header-title ml-5 m-3">{Title}</h3>
-        </header>
+interface Props {
+  Title: string;
+  Users: UserData[];
+}
 
-      <div className="flex flex-wrap gap-4 items-center p-2">
-        {Users.map((item:any) => (
-            <UserCard User={item.user} Profile={item.profile}/>
-        ))}
+const ApplicationContent = ({ Title, Users = [] }: Props) => {
+
+  const navigate = useNavigate();
+
+  const handleSeeAll = () => {
+    navigate('/AppAllCards', { 
+      state: {
+        title: Title, 
+        users: Users
+      } 
+    });
+  };
+  const limitedUsers = Users.slice(0, 6);
+  const hasMore = Users.length > 6;
+
+  return (
+    <div className="relative flex flex-col w-full min-h-40 border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+      <header className="flex items-center justify-between bg-gradient-to-r from-[#00adef] to-[#161F32] h-14 w-full sticky top-0 z-20 px-5">
+        <h3 className="text-white font-bold text-lg">{Title}</h3>
+        <span className="text-white/70 text-xs font-medium bg-white/10 px-2 py-1 rounded-full">
+          {Users.length} Total
+        </span>
+      </header>
+
+      <div className="flex flex-wrap gap-6 items-center p-6 pb-16 justify-center sm:justify-start">
+        {limitedUsers.length > 0 ? (
+          limitedUsers.map((item, index) => (
+            <UserCard 
+              key={item.id || index} 
+              User={item.user} 
+              Profile={item.profile} 
+            />
+          ))
+        ) : (
+          <div className="w-full text-center py-10">
+            <p className="text-slate-400 italic">No applications found.</p>
+          </div>
+        )}
       </div>
-      <button className='absolute right-4 bottom-4 text-[2845D6] hover:underline font-semibold font-sans'>
-        see all
-      </button>
+
+      {hasMore && (
+        <button onClick={handleSeeAll}
+          className="absolute right-6 bottom-4 text-[#00adef] hover:text-[#2845D6] 
+            hover:underline font-bold text-sm transition-colors">
+          See all ({Users.length - 6} more)
+        </button>
+      )}
     </div>
   );
 };
