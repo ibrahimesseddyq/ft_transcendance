@@ -46,13 +46,16 @@ app.use(passport.session());
 
 // routes 
 app.use('/api/auth', authRoutes); 
+
 app.use('/api/users',
   verifyToken,
   verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
+
 app.use('/api/jobs',  verifyToken,
           verifyRoles([UserRole.recruiter,UserRole.admin]),
-          jobRoutes); 
+          jobRoutes);
+
 app.use('/api/profiles/',
   verifyToken,
   profileRoutes);
