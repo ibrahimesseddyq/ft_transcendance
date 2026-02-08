@@ -9,7 +9,7 @@ interface User {
   role: UserRole;
   firstName: string;
   lastName: string;
-  phone?: string | null;
+  numberPhone?: string | null;
   avatarUrl?: string | null;
   isVerified: boolean;
   hasProfile: boolean;

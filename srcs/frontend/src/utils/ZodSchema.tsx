@@ -116,7 +116,9 @@ export const ApplyJobSchema = z.object({
 });
 
 export const CandidateProfileSchema = z.object({
-  userId: z.string(),
+  userId: z
+    .string(),
+
   avatar: z
     .any()
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
@@ -127,6 +129,15 @@ export const CandidateProfileSchema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
+  numberPhone: z
+    .string()
+    .transform((val) => val.replace(/\D/g, ""))
+    .pipe(
+      z.string()
+        .min(10, { message: 'Must be a valid mobile number' })
+        .max(14, { message: 'Must be a valid mobile number' })
+    ),
+  
   linkedinUrl: z.string()
     .url()
     .min(1, "linkedinUrl is required"),
@@ -140,8 +151,14 @@ export const CandidateProfileSchema = z.object({
   currentTitle: z.string()
     .min(1, "Current Job Title is required"),
 
-  yearsExperience: z.number()
-    .optional(),
+  yearsExperience: z
+    .string()
+    .transform((val) => val.replace(/\D/g, ""))
+    .pipe(
+      z.string()
+      .min(1, { message: 'Must be a valid mobile number' })
+      .max(2, { message: 'Must be a valid mobile number' })
+    ),
 
   skills: z.string(),
 

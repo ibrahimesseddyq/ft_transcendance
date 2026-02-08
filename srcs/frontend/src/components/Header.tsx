@@ -5,8 +5,9 @@ import { useAuthStore } from '@/utils/ZuStand';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
-  const BACKEND_URL = "http://localhost:3000";
-  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+  const profile = useAuthStore((state) => state.profile);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const avatarUrl = `${BACKEND_URL}${profile.user?.avatarUrl}`;
 
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl
@@ -50,7 +51,7 @@ export function Header() {
           <div
             className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 border-gray-800 group-hover:border-[#00adef] transition-all"
             style={{ 
-              backgroundImage: `url("${user?.avatarUrl ? avatarUrl : "/icons/placeholder.jpg"}")` 
+              backgroundImage: `url("${ avatarUrl }")`
             }}
           />
         </Link>

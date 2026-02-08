@@ -3,37 +3,26 @@ const { HttpException } = require('../utils/httpExceptions');
 const fileService = require('./fileService');
 const userService = require('./userService');
 
-const createProfile = async (userId, profileData) => {
+const createProfile = async  (userId , profileData) => {
     const user = await userService.getUserById(userId);
-    if (!user) throw new HttpException(404, "user not found");
-
-    const existingProfile = await profileRepository.getProfileById(userId);
-    if (existingProfile) throw new HttpException(400, "profile already exists");
-
-    let avatarUrl = user.avatarUrl;
-
-    if (profileData.files?.avatar?.[0]) {
-        const savedFile = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
-        avatarUrl = savedFile.avatarUrl;
-        
-        if (avatarUrl) {
-            await userService.updateUser(userId, { avatarUrl });
-        }
+    if (!user)
+        throw new HttpException(404, "user not found");
+    const profile = await profileRepository.getProfileById(userId);
+    if (profile)
+            throw new HttpException(400,"profile already exists");
+    if (profileData.files?.avatar?.[0])
+    {
+        const {avatarUrl} = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
+        if (avatarUrl)
+            await userService.updateUser(userId, {avatarUrl})
     }
-
-    let resumeUrl = null;
-    if (profileData.files?.resume?.[0]) {
-        const savedResume = await fileService.saveResume(userId, profileData.files.resume[0]);
-        resumeUrl = savedResume.resumeUrl;
-    }
-
+    console.log(profileData);
+    const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
     return await profileRepository.createProfile({
         ...profileData.body,
-        userId,
         resumeUrl,
-        avatarUrl
-    });
-};
+    })
+}
 
 const updateProfile = async (userId, profileData) => {
     const user = await userService.getUserById(userId);

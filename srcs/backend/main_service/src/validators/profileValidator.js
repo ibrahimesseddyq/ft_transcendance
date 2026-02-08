@@ -15,6 +15,9 @@ const createProfileschema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
+  numberPhone: z.number()
+    .optional(),  
+
   linkedinUrl: z.string()
     .optional(),
 
