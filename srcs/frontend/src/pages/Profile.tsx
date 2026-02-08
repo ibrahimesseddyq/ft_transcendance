@@ -1,9 +1,10 @@
-import { useAuthStore } from '@/utils/ZuStand';
 import { useState, useEffect } from 'react';
-import { ProfileForm } from '@/components/ProfileForm'
-import { GraduationCap, Briefcase, Award } from 'lucide-react';
 import { Logout } from '@/components/LogOut';
 import { useParams } from 'react-router-dom'
+import CareerCard from "@/components/ui/CareerCard"
+import { ProfileCover } from "@/components/ProfileCover"
+import SkillsCard from "@/components/ui/SkillsCard"
+import EducationCard from "@/components/ui/EducationCard"
 
 export function Profile() {
   const params = useParams();
@@ -11,7 +12,7 @@ export function Profile() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const avatarUrl = `${BACKEND_URL}${profile?.avatarUrl}`;
+  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   console.log("avatarUrl : ", avatarUrl);
   
   useEffect(() => {
@@ -27,105 +28,38 @@ export function Profile() {
           console.log("Iam Here");
           setUser(userData.data);
           setProfile(profileData.data);
+          console.log("profile data is :", profileData.data);
         }
     };
 
     fetchUser();
   }, [id]);
 
-  const [skills] = useState([
-    { id: 1, type: 'HTML/CSS' },
-    { id: 2, type: 'Figma' },
-    { id: 3, type: 'React' }
-  ]);
-
-  const [education] = useState([
-    { id: 1, school: '1337 Coding School', type: 'Common Core', year: '2026' }
-  ]);
-
-  const [career] = useState([
-    { id: 1, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' }
-  ]);
 
   return (
-    <div className="flex flex-col w-full h-full p-6 gap-6 overflow-y-auto no-scrollbar">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full h-full p-6  
+      overflow-y-auto no-scrollbar items-center">
+      <div className='col-span-3 mt-10'>
+        <ProfileCover profile={profile} user={user}/>
 
-      {/* Main Glassmorphic Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-        
-        {/* Left: Career/Experience Section */}
-        <div className="lg:col-span-4 bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white font-bold text-xl flex items-center gap-2">
-              <Briefcase className="text-[#5F88B8]" size={22} />
-              Career
-            </h2>
-          </div>
-          <div className="space-y-4">
-            {career.map((job) => (
-              <div key={job.id} className="p-4 bg-[#1C263B] rounded-2xl border border-gray-700">
-                <p className="text-white font-semibold">{job.company}</p>
-                <p className="text-gray-400 text-sm">{job.location}</p>
-                <p className="text-[#5F88B8] text-xs mt-2">{job.start} - {job.end}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Center: Personal Info (Profile Card) */}
-        <div className="lg:col-span-4 flex flex-col items-center">
-          <div className="relative mb-6">
-            <div 
-              style={{ backgroundImage: `url("${avatarUrl}")` }}
-              className="h-32 w-32 rounded-3xl bg-cover bg-center border-4 border-[#161F32] shadow-2xl"
-            />
-            <div className="absolute -bottom-2 -right-2 bg-[#5F88B8] p-2 rounded-xl border-4 border-[#0D1525]">
-              <Award size={18} className="text-white" />
-            </div>
-          </div>
-          
-          <div className="w-full bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl">
-            <ProfileForm user={user} />
-          </div>
-        </div>
-
-        {/* Right: Skills & Education Section */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          
-          {/* Skills */}
-          <div className="bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white font-bold text-lg">Top Skills</h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {skills.map(skill => (
-                <span key={skill.id} className="px-4 py-2 bg-[#1C263B] text-gray-300 text-sm rounded-xl border border-gray-700">
-                  {skill.type}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Education */}
-          <div className="bg-[#161F32] rounded-3xl p-6 border border-gray-800 shadow-xl flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white font-bold text-lg flex items-center gap-2">
-                <GraduationCap className="text-[#5F88B8]" size={20} />
-                Education
-              </h2>
-            </div>
-            <div className="space-y-4">
-              {education.map(edu => (
-                <div key={edu.id} className="border-l-2 border-[#5F88B8] pl-4 py-1">
-                  <p className="text-white font-medium text-sm">{edu.school}</p>
-                  <p className="text-gray-500 text-xs">{edu.type} • {edu.year}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-            <Logout />
-        </div>
       </div>
+      {/* <div className='col-span-1 md:col-span-2 p-2 h-20 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-1 p-2 h-20 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-2 p-2 h-20 bg-white border rounded-lg'></div>
+      <div className='col-span-1 md:col-span-1 p-2 h-20 bg-white border rounded-lg'></div> */}
+      {/* <div className="relative mb-6">
+        <div 
+          style={{ backgroundImage: `url("${avatarUrl}")` }}
+          className="h-32 w-32 rounded-3xl bg-cover bg-center border-2 border-[#161F32] shadow-2xl"
+        />
+      </div>
+      <div className='flex flex-wrap gap-4 w-full items-stretch'>
+        <CareerCard />
+        <SkillsCard />
+        <UserInfoCard user={user} />
+        <EducationCard/>
+      </div> */}
+      <Logout />
     </div>
   );
 }
