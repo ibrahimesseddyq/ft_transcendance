@@ -9,6 +9,7 @@ pnpm-debug.log*
 lerna-debug.log*
 generated
 .env.dev
+.env.prod
 node_modules
 dist
 dist-ssr
