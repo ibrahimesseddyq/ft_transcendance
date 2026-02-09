@@ -18,7 +18,7 @@ const diskStorage =  multer.diskStorage({
         const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)
-    }                                                                         
+    }
 })
 
 const fileFilter = (req, file, cb) => {
@@ -47,6 +47,7 @@ const upload =  multer({
 });
 
 const uploadProfile = multer({
+    
     storage: diskStorage,
     fileFilter: fileFilter,
     limits : {
