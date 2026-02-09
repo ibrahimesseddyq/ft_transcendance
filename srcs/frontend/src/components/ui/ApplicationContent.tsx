@@ -1,18 +1,12 @@
 import UserCard from '@/components/ui/UserCard';
 import { useNavigate } from 'react-router-dom';
 
-interface UserData {
-  user: any;
-  profile: any;
-  id?: string | number;
-}
-
 interface Props {
   Title: string;
-  Users: UserData[];
+  Users: any;
 }
 
-const ApplicationContent = ({ Title, Users = [] }: Props) => {
+const ApplicationContent = ({ Title, Users }: Props) => {
 
   const navigate = useNavigate();
 
@@ -38,7 +32,7 @@ const ApplicationContent = ({ Title, Users = [] }: Props) => {
 
       <div className="flex flex-wrap gap-6 items-center p-6 pb-16 justify-center sm:justify-start">
         {limitedUsers.length > 0 ? (
-          limitedUsers.map((item, index) => (
+          limitedUsers.map((item:any, index:any) => (
             <UserCard 
               key={item.id || index} 
               User={item.user} 

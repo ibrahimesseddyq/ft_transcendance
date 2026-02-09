@@ -11,8 +11,9 @@ import { Jobs } from "@/components/Jobs"
 import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
-import { Applications } from '@/components/Applications'
+import { Application } from '@/components/Application'
 import { AppAllCards } from '@/components/AppAllCards'
+import { ProtectedRoute } from '@/utils/ProtectedRoute'
 
 
 export function Main() {
@@ -73,10 +74,12 @@ console.log("Computed hasProfile:", !!profile);
 
       <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
         <main className="w-full">
-          <Routes>  
-            <Route path="/Dashboard" element={<Dashboard />} />
+          <Routes> 
+            <Route element={<ProtectedRoute />}/>
+              <Route path="/Dashboard" element={<Dashboard />} />
+            <Route/>
             <Route path="/Jobs" element={<Jobs />} />
-            <Route path="/Applications" element={<Applications />} />
+            <Route path="/Application/:jobId" element={<Application />} />
             <Route path="/Condidates" element={<Condidates />} />
             <Route path="/Profile/:postId" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />

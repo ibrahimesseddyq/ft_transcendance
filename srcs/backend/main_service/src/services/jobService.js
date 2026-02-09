@@ -28,8 +28,6 @@ const deleteJob =  async(jobId) => {
 }
 
 const getJobs = async (filters) => {
-    console.log("I'm in getJobs function");
-    console.log("this is the filters = ", filters);
     return await jobRepository.findManyJobs(filters);
 }
  
