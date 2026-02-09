@@ -3,3 +3,4 @@ replace require by import ECM6
 update session in user Model
 need to make sure uploads is there for multer
 fix public api problem
+zod validators for requests
