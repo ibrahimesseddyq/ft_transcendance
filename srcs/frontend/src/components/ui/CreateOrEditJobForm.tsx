@@ -59,11 +59,11 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
   });
 
   const JobSubmit = async (data: JobFormData) => {
-    console.log("iam in JobSubmit");
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     if (jobItem){
       console.log("job id is : ",  jobItem.id);
       try {
-        const response = await fetch(`http://localhost:3000/api/jobs/${jobItem.id}`, {
+        const response = await fetch(`${BACKEND_URL}/api/jobs/${jobItem.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -83,9 +83,8 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
         Notification("Error updating job", "error");
       }
     }else{
-      // console.log("was here 2");
       try {
-        const response = await fetch("http://localhost:3000/api/jobs", {
+        const response = await fetch(`${BACKEND_URL}/api/jobs`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),

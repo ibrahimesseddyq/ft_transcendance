@@ -8,7 +8,7 @@ const {
     updateProfileschema
 } = require('../validators/profileValidator');
 const validateRequest = require('../middleware/ValidateRequest');
-
+router.get('/:id', profileController.getProfile);
 router
 .get('/:id/resume',validateRequest(createProfileschema),
     profileController.getProfile)

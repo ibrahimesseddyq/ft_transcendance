@@ -79,7 +79,7 @@ export const FeaturesSection = () => {
                       description={item.description}
                       icon={item.icon}
                       />
-                  </div>
+                </div>
             ))}
         </div>
     </section>

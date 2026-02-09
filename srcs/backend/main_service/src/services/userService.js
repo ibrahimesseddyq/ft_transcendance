@@ -40,8 +40,6 @@ const findUserOrCreate = async (profile) => {
 
 const getUserById = async (userId) => {
     const user = await userRepository.getUserById(userId);
-    if (!user)
-        return;
     return user;
 }
 

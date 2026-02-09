@@ -1,8 +1,8 @@
-import { ActiveJobStatus } from "@/components/ActiveJobStatus";
-import {RecentActivity} from "@/components/RecentActivity"
-import {SourceOfHire} from "@/components/SourceOfHire"
-import {ToastContainer} from "react-toastify";
 import {OverviewStatistics} from "@/components/OverviewStatistics"
+import { ActiveJobStatus } from "@/components/ActiveJobStatus";
+import { RecentActivity } from "@/components/RecentActivity";
+import { SourceOfHire } from "@/components/SourceOfHire";
+import { ToastContainer } from "react-toastify";
 
 const TotalStats = [
   {
