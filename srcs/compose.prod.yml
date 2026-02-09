@@ -1,0 +1,38 @@
+services:
+  main_service:
+    build: ./backend/main_service
+    container_name: main-service
+    environment:
+      HOSTNAME: main-service
+      HOST_IP: main-service
+      MARIADB_DATABASE: ${MARIADB_MAIN_DATABASE}
+      MARIADB_USER: ${MARIADB_MAIN_USER}
+      MARIADB_PASSWORD: ${MARIADB_MAIN_PASSWORD}
+      PORT: 3000
+    networks:
+      - microservices
+    env_file:
+      - .env
+  quiz_service:
+    build: ./backend/quiz_service
+    container_name: quiz_service
+    environment:
+      HOSTNAME: quiz_service
+      HOST_IP: quiz_service
+      MARIADB_DATABASE: ${MARIADB_QUIZ_DATABASE}
+      MARIADB_USER: ${MARIADB_QUIZ_USER}
+      MARIADB_PASSWORD: ${MARIADB_QUIZ_PASSWORD}
+    networks:
+      - microservices
+    env_file:
+      - .env
+  # gateway:
+  #   build: ./backend/gateway
+  #   container_name: api-gateway
+  #   ports:
+  #     - "8081:8081"
+  #   depends_on:
+  #     eureka:
+  #       condition: service_healthy
+  #   networks:
+  #     - microservices
