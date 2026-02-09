@@ -9,6 +9,6 @@ router.get('/',jobController.getJobs);
 router.get('/:id',jobController.getJobById);
 router.patch('/:id',validateRequest(updateJobSchema),jobController.updateJob);
 router.delete('/:id',jobController.deleteJob);
-router.get('/:id/applications',jobController.getApplicationByJobId)
+router.get('/:id/applications',jobController.getApplicationsByJobId)
 
 module.exports = router;
