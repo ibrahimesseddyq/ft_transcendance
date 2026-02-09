@@ -11,6 +11,4 @@ router.get('/:id', applicationController.getApplicaticationById)
     .patch('/:id/reject', applicationController.rejectApplication)
     .patch('/:id/advance', applicationController.advance)
 
-module.exports = {
-    router
-}
+module.exports = router
