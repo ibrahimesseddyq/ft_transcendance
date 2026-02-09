@@ -10,6 +10,7 @@ const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -36,7 +37,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = fetch(`http://localhost:3000/api/jobs?${params.toString()}`);
+      const fetchPromise = fetch(`${BACKEND_URL}/api/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 
@@ -96,7 +97,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
 
   return (
-    <div className="w-full md:w-64 h-fit md:h-full bg-[#1e1e1e] text-white p-5 rounded-2xl 
+    <div className="w-full md:w-64 h-fit md:h-[550px] bg-[#1e1e1e] text-white p-5 rounded-2xl 
       flex flex-col gap-6 sticky top-5">
       {/* Header */}
       <div className="flex justify-between items-center">

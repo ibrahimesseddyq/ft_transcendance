@@ -1,6 +1,6 @@
 import Notification from "@/utils/TostifyNotification";
-import { useEffect, useState} from 'react';
-import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {Eye, Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
   jobsArray: any[];
@@ -11,11 +11,12 @@ interface props {
 }
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      const response = await fetch(`http://localhost:3000/api/jobs/${jobId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
         method: "DELETE",
       });
       if (response.ok){
@@ -38,29 +39,35 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
 
-              {/* closed or open or archived*/}
-              {item.status === "closed" ? (
-                <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
-                  rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
-                  text-[10px] font-bold backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  CLOSED
-                </span>
-              ) : item.status === "archived" ? (
-                <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
-                  rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
-                  text-[10px] font-bold backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
-                  ARCHIVED
-                </span>
-              ) : (
-                <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 
-                  rounded-full border border-[#00adef]/50 bg-[#00adef]/10 text-[#00adef] 
-                  text-[10px] font-bold backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00adef] animate-pulse" />
-                  OPEN
-                </span>
-              )}
+              <div className="absolute top-3 right-3 flex items-center gap-2">
+                {/* see Application */}
+                <Link to={`/Application/${item.id}`}
+                    className='cursor-pointer'
+                    title="See the Job Application">
+                  <Eye
+                    className="w-6 h-6 text-black hover:text-[#00adef]"/>
+                </Link>
+                {/* closed or open or archived*/}
+                {item.status === "closed" ? (
+                  <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    CLOSED
+                  </span>
+                ) : item.status === "archived" ? (
+                  <span className="rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
+                    ARCHIVED
+                  </span>
+                ) : (
+                  <span className="rounded-full border border-[#00adef]/50 bg-[#00adef]/10 text-[#00adef] 
+                    text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00adef] animate-pulse" />
+                    OPEN
+                  </span>
+                )}
+              </div>
 
               {/*Icon & Title */}
               <div className="flex items-center gap-4 mb-4">
@@ -71,7 +78,6 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 <h2 className="text-2xl font-bold text-gray-900 truncate">{item.title}</h2>
               </div>
 
-              {/* Metadata Row */}
               <div className="flex items-center justify-between text-gray-700 text-sm font-medium mb-4">
                 <div className="flex items-center gap-1">
                   <Briefcase size={16} />
