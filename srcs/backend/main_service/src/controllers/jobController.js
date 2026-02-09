@@ -55,7 +55,6 @@ const getJobById = async(req,res,next) => {
 const getJobs = async (req, res) => {
   try {
     const filters = req.query; 
-	console.log("filters : ", filters)
     const jobs = await jobService.getJobs(filters);
     
     res.status(200).json({

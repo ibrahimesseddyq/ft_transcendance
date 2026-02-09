@@ -8,6 +8,7 @@ interface props{
 
 const JobDescription = ({ jobItem, setJobDescp }: props) => {
   const SKILLS = jobItem.skills?.split(',');
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const ApplySubmit = async (data: any) => {
     console.log("********hii iam here in job desc*********", data);
     setJobDescp(false);
@@ -29,9 +30,6 @@ const JobDescription = ({ jobItem, setJobDescp }: props) => {
     //   Notification("Error creating job", "error");
     // }
   };
-
-
-  console.log("job is : ", jobItem);
 
   interface props{
     Icon : LucideIcon;
