@@ -1,4 +1,3 @@
-const env = require('../config/env');
 const {prisma} = require('../config/prisma');
 
 
@@ -65,10 +64,18 @@ const findManyJobs = async (filters) => {
     return jobs;
 };
 
+const getApplicationsByJobId =  async (jobId) => {
+    return await prisma.job.findUnique({
+        where:{id : jobId},
+        include:{applications: true}
+    })
+}
+
 module.exports = {
     findManyJobs,
     deleteJob,
     updateJob,
     createJob,
-    findJobById
+    findJobById,
+    getApplicationsByJobId
 };
