@@ -67,10 +67,10 @@ const getJobs = async (req, res, next) => {
   }
 }; 
 
-const getApplicationByJobId = async (req, res, next) => {
+const getApplicationsByJobId = async (req, res, next) => {
   try {
 	const jobId =  req.params?.id;
-    const result = jobService.getApplicationByJobId(jobId);
+    const result = await jobService.getApplicaticationsById(jobId);
     res.status(200).json({
         status: true,
         data:result
@@ -86,5 +86,5 @@ module.exports = {
 	deleteJob,
 	getJobById,
 	getJobs,
-	getApplicationByJobId
+	getApplicationsByJobId
 }
