@@ -14,6 +14,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { Application } from '@/components/Application'
 import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
+import { JobDescription } from '@/components/JobDescription'
 
 
 export function Main() {
@@ -79,6 +80,7 @@ console.log("Computed hasProfile:", !!profile);
               <Route path="/Dashboard" element={<Dashboard />} />
             <Route/>
             <Route path="/Jobs" element={<Jobs />} />
+            <Route path="/Jobdescription" element={<JobDescription />} />
             <Route path="/Application/:jobId" element={<Application />} />
             <Route path="/Condidates" element={<Condidates />} />
             <Route path="/Profile/:postId" element={<Profile />} />

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
-import JobDescription from "@/components/ui/JobDescription";
 import JobFilter from "@/components/ui/JobFilter"
 import JobCards  from '@/components/ui/JobCards'
 
@@ -46,13 +45,6 @@ export function Jobs() {
             </button>
             <JobForm jobItem={jobItem} setIsFormOpen={setIsFormOpen} setJobsArray={setJobsArray}/>
           </div>
-        </div>
-      )}
-
-      {/* Job Descriptions */}
-      {jobDescp && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl  p-4">
-            <JobDescription jobItem={jobItem} setJobDescp={setJobDescp}/>
         </div>
       )}
 
