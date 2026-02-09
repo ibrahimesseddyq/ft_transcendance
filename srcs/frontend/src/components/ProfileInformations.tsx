@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
 import { z } from "zod";
 import { CloudUpload, SquarePen } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
+import { Logout } from '@/components/LogOut';
 import { useState } from "react";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
@@ -41,10 +41,10 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 );
 
 export function ProfileInformations() {
-  const navigate = useNavigate();
   const userId = useAuthStore((state) => (state.user?.id));
-  const setVerified = useAuthStore((state:any) => state.setVerified);
+  const setProfile = useAuthStore((state)=> state.setProfile);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const {
     register,
     handleSubmit,
@@ -55,44 +55,46 @@ export function ProfileInformations() {
     resolver: zodResolver(CandidateProfileSchema),
     defaultValues: {
       userId: userId,
+      numberPhone: '0',
     }
   });
 
 
+  
   const onApplySubmit = async (data: any) => {
     const formData = new FormData();
 
-    if (data.avatar) formData.append("avatar", data.avatar);
-    if (data.resume) formData.append("resume", data.resume);
-
-    
     formData.append("userId", data.userId);
     formData.append("linkedinUrl", data.linkedinUrl);
     formData.append("currentTitle", data.currentTitle);
+    formData.append("numberPhone", data.currentTitle);
     formData.append("skills", data.skills);
-
-  
-    if (data.portfolioUrl) formData.append("portfolioUrl", data.portfolioUrl);
-    if (data.currentCompany) formData.append("currentCompany", data.currentCompany);
-    // if (data.yearsExperience) formData.append("yearsExperience", data.yearsExperience);
-    // if (data.preferredLocations) formData.append("preferredLocations", data.preferredLocations);
-    // if (data.salaryExpectation) formData.append("salaryExpectation", data.salaryExpectation);
-    console.log("formData: ", formData);
-      try {
-          const response = await fetch("http://localhost:3000/api/profiles", {
-              method: "POST",
-              body: formData,
-          });
-          if (!response.ok) {
-              throw new Error(`Server responded with status: ${response.status}`);
-          }
-          Notification("Profile Created successfully", "success");
-          setVerified();
-          navigate('/Dashboard');
-      } catch (error) {
-          console.error("Submission failed:", error);
-          Notification("filed to create profile", "error");
-      }
+    if (data.portfolioUrl) 
+      formData.append("portfolioUrl", data.portfolioUrl);
+    if (data.currentCompany)
+      formData.append("currentCompany", data.currentCompany);
+    if (data.avatar)
+      formData.append("avatar", data.avatar);
+    if (data.resume)
+      formData.append("resume", data.resume);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/profiles`, {
+            method: "POST",
+            body: formData,
+        });
+        const result = await response.json();
+        if (response.ok) {
+          setProfile(result.data || result);
+          Notification("Profile created successfully!", "success");
+        } else if (response.status === 400 && result.errors === 'profile already exists') {
+          setProfile(result.data || result); 
+        }
+    } catch (error) {
+        console.error("Submission failed:", error);
+        Notification("Technical error occurred", "error");
+    }finally{
+      
+    }
       reset();
   };
 
@@ -111,89 +113,106 @@ export function ProfileInformations() {
   return (
     <form
       onSubmit={handleSubmit(onApplySubmit)}
-      className="w-full h-full max-w-screen-2xl mx-auto flex flex-col 
-        gap-8 p-6 overflow-y-auto custom-scrollbar bg-transparent items-center">
-      
-      <header className="border-b border-gray-800 pb-4 w-full">
-        <h1 className="text-black text-2xl font-bold">Profile Setup</h1>
-        <p className="text-gray-500 text-sm">Manage your professional presence and job preferences.</p>
+      className="w-full max-w-screen-2xl mx-auto flex flex-col gap-8 p-4 md:p-10 bg-transparent overflow-auto"
+    >
+      {/* Header Section */}
+      <header className="border-b border-gray-300 pb-6 w-full">
+        <h1 className="text-black text-3xl font-bold">Profile Setup</h1>
+        <p className="text-gray-500 text-sm mt-1">Manage your professional presence and job preferences.</p>
       </header>
 
-      <div className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] bg-cover bg-center border-2
-            ${errors.avatar ? 'border-red-500' : 'border-[#00adef]'}`}
-        style={{ backgroundImage: `url(${avatarPreview})`}}>
-
-        <input 
-          id="avatar"
-          type='file'
-          accept="image/*"
-          {...register("avatar")} 
-          onChange={handleImageChange}
-          className="hidden"
-        />
-        <label htmlFor="avatar" className="text-center h-full w-full">
-          <SquarePen
-            className="absolute top-0 right-2 h-5 w-5 text-black hover:text-[#00adef] cursor-pointer" />
-        </label>
+      {/* Avatar Section */}
+      <div className="flex flex-col items-center gap-2">
+        <div 
+          className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] bg-cover bg-center border-4 shadow-lg
+              ${errors.avatar ? 'border-red-500' : 'border-[#00adef]'}`}
+          style={{ backgroundImage: `url(${avatarPreview})` }}
+        >
+          <input 
+            id="avatar"
+            type='file'
+            accept="image/*"
+            {...register("avatar")} 
+            onChange={handleImageChange}
+            className="hidden"
+          />
+          <label htmlFor="avatar" className="absolute inset-0 cursor-pointer flex items-center justify-center rounded-full hover:bg-black/20 transition-all">
+            <SquarePen className="absolute top-0 right-0 h-8 w-8 p-1.5 bg-white rounded-full shadow-md text-[#00adef] hover:scale-110 transition-transform" />
+          </label>
+        </div>
+        {errors.avatar && <p className="text-red-500 text-xs italic">{errors.avatar.message}</p>}
       </div>
-      {errors.avatar && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.avatar.message}</p>}
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full">
+          
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full items-start">
+          
         {/* Professional Info */}
-        <section className="flex flex-col gap-6">
+        <section className="flex flex-col gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
-            <span className="w-1 h-6 bg-[#00adef] rounded-full" />
+            <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
             Professional Information
           </h2>
           
-          <div className="flex flex-col gap-5 pl-4">
+          <div className="flex flex-col gap-5">
             <FormField label="LinkedIn URL" name="linkedinUrl" optional={false} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..." />
             <FormField label="Portfolio URL" name="portfolioUrl" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com" />
             <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} placeholder="Company Name" />
             <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
-            <FormField label="Years of Experience" name="yearsExperience" type="number" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
+            <FormField label="Years of Experience" name="yearsExperience" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
             <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} placeholder="Ex: React, Node.js, TypeScript..." />
           </div>
         </section>
-
-        {/* Job Preferences */}
-        <section className="flex flex-col gap-6">
-          <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
-            <span className="w-1 h-6 bg-[#00adef] rounded-full" />
-            Job Preferences
-          </h2>
           
-          <div className="flex flex-col gap-5 pl-4">
-            <FormField label="Preferred Locations" name="preferredLocations" optional={true} register={register} error={errors.preferredLocations?.message} placeholder="Remote, New York, London" />
-            <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" />
-          </div>
+        {/* Preferences & Resume */}
+        <div className="flex flex-col gap-8">
+          <section className="flex flex-col gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
+              Job Preferences
+            </h2>
 
-          <label 
-            className={`flex flex-col items-center justify-center w-full h-full cursor-pointer
-              border-2 border-dashed rounded-lg bg-[#00adef]/5 
-               focus-within:border-[#00adef] transition-all
-              ${errors.resume ? 'border-red-500' : 'border-gray-800 hover:border-[#00adef]'}`}>
-            <div className="flex flex-col items-center justify-center py-4">
-              <CloudUpload className={`h-10 w-10 mb-2 ${errors.resume ? 'text-red-500' : 'text-gray-600'}`} />
-              <div className="text-center">
-                <h1 className="text-sm font-semibold text-gray-300">Click to upload Resume</h1>
-                <p className="text-xs text-gray-500">PDF under 5MB</p>
-              </div>
+            <div className="flex flex-col gap-5">
+              <FormField label="Preferred Locations" name="preferredLocations" optional={true} register={register} error={errors.preferredLocations?.message} placeholder="Remote, New York, London" />
+              <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" />
+              <FormField label="Number Phone" name="numberPhone" optional={false} register={register} error={errors.numberPhone?.message} placeholder="e.g. 0699999999" />
             </div>
-            <input  id="cv-upload" type="file" accept="application/pdf" {...register("resume")} hidden />
-          </label>
-          {errors.resume && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.resume.message}</p>}
-        </section>
+          </section>
+          
+          {/* Resume Upload */}
+          <section className="flex flex-col gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 className="text-gray-700 text-sm font-bold uppercase tracking-wider">Resume / CV</h2>
+            <label 
+              className={`group flex flex-col items-center justify-center w-full py-8 cursor-pointer
+                border-2 border-dashed rounded-xl bg-gray-50 
+                transition-all duration-300
+                ${errors.resume ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-[#00adef] hover:bg-[#00adef]/5'}`}>
+                
+              <CloudUpload className={`h-12 w-12 mb-3 transition-colors ${errors.resume ? 'text-red-500' : 'text-gray-400 group-hover:text-[#00adef]'}`} />
+              <div className="text-center">
+                <h1 className="text-sm font-semibold text-gray-700">Click to upload Resume</h1>
+                <p className="text-xs text-gray-500 mt-1">PDF format (Max 5MB)</p>
+              </div>
+              <input id="cv-upload" type="file" accept="application/pdf" {...register("resume")} hidden />
+            </label>
+            {errors.resume && <p className="text-red-500 text-xs italic text-center">{errors.resume.message}</p>}
+          </section>
+        </div>
       </div>
-
-      <footer className="mt-8 flex justify-end">
+              
+      <footer className="mt-4 flex flex-col md:flex-row gap-4 justify-center md:justify-end pb-10">
         <button 
           type="submit"
           disabled={isSubmitting}
-          className="w-full md:w-48 bg-[#00adef] hover:bg-[#0086b8] disabled:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-[#00adef]/20"
+          className="w-full md:w-64 bg-[#00adef] hover:bg-[#0086b8] text-white font-bold py-4 px-8 
+            rounded-2xl transition-all shadow-xl shadow-[#00adef]/30 items-center justify-center"
         >
-          {isSubmitting ? "Saving..." : "Save Profile"}
+          {isSubmitting ? (
+            <>
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+              Saving Profile...
+            </>
+          ) : "Complete Setup"}
         </button>
+        <Logout className="text-gray-400 hover:text-red-500 text-sm font-semibold transition-all" />
       </footer>
     </form>
   );
