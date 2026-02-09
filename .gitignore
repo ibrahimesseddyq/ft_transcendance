@@ -9,6 +9,7 @@ pnpm-debug.log*
 lerna-debug.log*
 generated
 .env.dev
+.env.prod
 node_modules
 dist
 dist-ssr
@@ -24,3 +25,5 @@ uploads
 *.njsproj
 *.sln
 *.sw?
+notesAndTodos.txt
+.gitignore
