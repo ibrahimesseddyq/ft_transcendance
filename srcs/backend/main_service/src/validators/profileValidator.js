@@ -3,7 +3,7 @@ const fileSchema = z
   .file()
   .max(5_000_000)
   
-const createProfileschema = z.object({
+const createProfileSchema = z.object({
   avatar: z
     .any()
     .optional()
@@ -45,9 +45,9 @@ const createProfileschema = z.object({
 }).strict();
 
 
-const updateProfileschema = createProfileschema.partial().strict();
+const updateProfileSchema = createProfileSchema.partial().strict();
 
 module.exports = {
-    createProfileschema,
-    updateProfileschema
+    createProfileSchema,
+    updateProfileSchema
 }

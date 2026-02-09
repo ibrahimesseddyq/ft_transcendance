@@ -1,4 +1,4 @@
-const {prisma} = require('../config/prisma');
+const {prisma} = require('../../generated/prisma');
 
 const createJobPhase = async(phaseData) => {
 	return await prisma.jobphase.create({
