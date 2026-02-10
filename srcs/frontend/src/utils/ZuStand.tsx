@@ -15,9 +15,23 @@ interface User {
   hasProfile: boolean;
 }
 
+interface Profile {
+  userId: string
+  availableFrom: string | null
+  currentCompany: string | null
+  currentTitle: string
+  linkedinUrl: string
+  numberPhone: string
+  portfolioUrl: string | null
+  resumeUrl: string
+  skills: string | null
+  yearsExperience: string
+  user: User;
+}
+
 type State = {
   user: User | null;
-  profile: any | null;
+  profile: Profile | null;
   token: string | null;
 };
 
@@ -42,17 +56,7 @@ export const useAuthStore = create<State & Action>()(
           token,
         })),
 
-      setProfile: (profileData) =>
-        set((state) => ({
-          profile: profileData,
-          user: state.user
-            ? {
-                ...state.user,
-                hasProfile: true,
-                avatarUrl: profileData?.avatarUrl ?? profileData?.avatar ?? state.user.avatarUrl,
-              }
-            : null,
-      })),
+      setProfile: (profileData) => set({ profile: profileData }),
 
       clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
 
