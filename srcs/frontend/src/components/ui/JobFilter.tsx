@@ -9,7 +9,6 @@ interface JobsArrayProps {
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [filters, setFilters] = useState({
     department: [] as string[],
@@ -97,7 +96,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
 
   return (
-    <div className="w-full md:w-64 h-fit md:h-[550px] bg-[#1e1e1e] text-white p-5 rounded-2xl 
+    <div className="w-full md:w-64 h-fit md:h-full bg-[#1e1e1e] text-white p-5 rounded-2xl 
       flex flex-col gap-6 sticky top-5">
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -105,11 +104,6 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
           <h2 className="text-lg font-bold">Filter</h2>
           <p className="text-gray-500 text-xs font-semibold">Total ({totalJobs.length})</p>
         </div>
-
-        <button onClick={() => setIsOpen(true)} 
-          className="text-[#5d9cc9] rounded-md px-3 py-1.5 font-bold transition hover:underline">
-          Filters
-        </button>
 
         <button 
           onClick={() => {setSearch(""); setFilters({department: [],employmentType: [], status: [], skills: [], isRemote: null})}}

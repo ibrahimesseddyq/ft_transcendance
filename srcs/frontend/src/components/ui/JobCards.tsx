@@ -45,7 +45,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
           jobsArray.map((item: any) => (
             <div
               key={item.id}
-              className="relative flex flex-col w-full sm:w-[350px] 
+              className="relative flex flex-col w-full md:w-[350px] 
                 bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
 
