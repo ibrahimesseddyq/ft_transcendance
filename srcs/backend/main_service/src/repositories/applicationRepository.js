@@ -1,10 +1,9 @@
-const {prisma} =  require('../../generated/prisma');
+const {prisma} =  require('../config/prisma');
 
 const createApplication =  async (data) => {
+	console.log(data)
 	return await prisma.application.create({
-		where : {
-			data: data
-		}
+		data: data
 	})
 }
 

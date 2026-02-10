@@ -3,7 +3,6 @@ const { HttpValidationException } = require('../utils/httpExceptions')
 
 const validateRequest = (schema) => {
     return (req,res,next) => {
-        console.log("this is the body ....", req.body);
         try {
 
             req.body = schema.parse(req.body);

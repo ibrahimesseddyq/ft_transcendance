@@ -3,17 +3,17 @@ const fileSchema = z
   .file()
   .max(5_000_000)
   
-const createProfileschema = z.object({
-  avatar: z
-    .any()
-    .optional()
-    .transform((v) => (v instanceof File ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema.optional()),
+const createProfileSchema = z.object({
+  // avatar: z
+  //   .any()
+  //   .optional()
+  //   .transform((v) => (v instanceof File ? v.item(0) ?? undefined : v))
+  //   .pipe(fileSchema.optional()),
 
-  resume: z
-    .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema),
+  // resume: z
+  //   .any()
+  //   .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+  //   .pipe(fileSchema),
 
   numberPhone: z.number()
     .optional(),  
@@ -45,9 +45,9 @@ const createProfileschema = z.object({
 }).strict();
 
 
-const updateProfileschema = createProfileschema.partial().strict();
+const updateProfileSchema = createProfileSchema.partial().strict();
 
 module.exports = {
-    createProfileschema,
-    updateProfileschema
+    createProfileSchema,
+    updateProfileSchema
 }
