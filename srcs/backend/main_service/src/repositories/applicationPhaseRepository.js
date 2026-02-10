@@ -1,20 +1,20 @@
 const {prisma} =  require('../config/prisma');
 
 const createApplicationPhase = async (data) => {
-    return await prisma.applicationphase.create({
+    return await prisma.applicationPhase.create({
         data
     })
 }
 
 const   updateApplicationPhase = async (applicationPhaseId, data) => {
-    return await prisma.applicationphase.update({
+    return await prisma.applicationPhase.update({
         where:{id : applicationPhaseId},
         data: data
     })
 }
 
 const getApplicationPhaseById = async (applicationPhaseId) => {
-    return await prisma.applicationphase.findUnique({
+    return await prisma.applicationPhase.findUnique({
         where : {id : applicationPhaseId}
     })
 }

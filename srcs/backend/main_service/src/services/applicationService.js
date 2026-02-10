@@ -11,16 +11,18 @@ const submitApplication = async (applicationData) => {
 			candidateId: applicationData.candidateId,
 			currentPhaseId: null,
 		});
-		application =  applicationRepository.updateApplication(application.id,
+		application =  await applicationRepository.updateApplication(application.id,
 			{
 				applicationPhases: createApplicationPhases(application.id,applicationData.jobId)
 			}
 		)
+		return application;
 	} catch (error) {
 		if (error.code === "P2002")
 			throw new HttpException(400, 'application already exists');
 		else if (error.code === "P2003")
 			throw new HttpException(404, "job or user not found");
+		throw error
 	}
 }
 
@@ -52,7 +54,7 @@ const getApplicaticationById = async (applicationId) => {
 
 const advance = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
-	if (application)
+	if (!application)
 		throw new HttpException(404, "application not fount");
 	const phases = application.applicationPhases;
 	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
@@ -61,7 +63,7 @@ const advance = async (applicationId) => {
 	if(phases.indexOf(currentPhase) + 1 > phases.length)
 		throw new HttpException(400, 'application already completed');
 	const nextPhase = phases[phases.indexOf(currentPhase) + 1];
-	const {newPhase, newApplication} = Promise.all([
+	const {newPhase, newApplication} = await Promise.all([
 		applicationPhaseservice.updateApplicationPhase(nextPhase.id, {
 			status:"in_progress"
 		}),
@@ -97,7 +99,7 @@ const getCurrentPhase = async (applicationId) => {
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
-	return application.applicationPhases.find( phase => phase.id ===  application.applicationPhases.currentPhaseId);
+	return application.applicationPhases.find( phase => phase.id ===  application.currentPhaseId);
 }
 module.exports = {
 	submitApplication,
