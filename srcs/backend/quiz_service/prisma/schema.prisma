@@ -1,0 +1,183 @@
+// =============================================
+// HIRING PLATFORM - QUIZ SERVICE
+// Handles: Tests, Questions, Challenges, Submissions
+// Database: MySQL 8.0+
+// =============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================
+// ENUMS
+// ===================
+
+enum TestType {
+  QUIZ // Multiple choice questions (MCQ)
+  CODE // Problem-solving with code execution
+}
+
+enum SubmissionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  TIMEOUT
+}
+
+model Test {
+  id              String   @id @default(uuid()) @db.Char(36)
+  title           String   @db.VarChar(255)
+  type            TestType
+  description     String?  @db.Text
+  durationMinutes Int
+  passingScore    Int      @default(60) // Percentage (0-100)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  quizQuestions  QuizQuestion[]
+  codeChallenges CodeChallenge[]
+  submissions    TestSubmission[]
+
+  @@index([type])
+}
+
+model QuizQuestion {
+  id       String @id @default(uuid()) @db.Char(36)
+  testId   String @db.Char(36)
+  question String @db.Text
+  choices  Json // Array of exactly 4 choices: [{id: string, text: string, isCorrect: boolean}]
+  points   Int    @default(1)
+  order    Int
+
+  // Relations
+  test    Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([testId])
+  @@index([testId, order])
+}
+
+// ===================
+// CODE CHALLENGES
+// ===================
+
+model CodeChallenge {
+  id          String  @id @default(uuid()) @db.Char(36)
+  testId      String  @db.Char(36)
+  title       String  @db.VarChar(255)
+  description String  @db.Text
+  starterCode String? @db.Text // Template code for Monaco editor
+  language    String  @db.VarChar(50) // e.g., "javascript", "python", "java"
+  testCases   Json // [{input: string, expectedOutput: string, isHidden: boolean, points: number}]
+  points      Int     @default(10)
+  timeLimit   Int     @default(5000) // milliseconds for Judge0
+  memoryLimit Int     @default(128000) // KB for Judge0
+  order       Int
+
+  // Relations
+  test        Test             @relation(fields: [testId], references: [id], onDelete: Cascade)
+  submissions CodeSubmission[]
+
+  @@index([testId])
+  @@index([testId, order])
+}
+
+// ===================
+// TEST SUBMISSIONS
+// ===================
+
+model TestSubmission {
+  id                 String @id @default(uuid()) @db.Char(36)
+  applicationPhaseId String @db.Char(36) // Foreign key to main_service.application_phases
+  candidateId        String @db.Char(36) // Foreign key to main_service.users
+  testId             String @db.Char(36)
+
+  startedAt   DateTime  @default(now())
+  submittedAt DateTime?
+
+  score     Int? // Total score achieved
+  maxScore  Int? // Total possible score
+  passed    Boolean? // Computed based on passingScore
+  timeSpent Int? // Seconds
+
+  // Relations
+  test            Test             @relation(fields: [testId], references: [id])
+  quizAnswers     QuizAnswer[]
+  codeSubmissions CodeSubmission[]
+
+  @@unique([applicationPhaseId, testId]) // One submission per test per application phase
+  @@index([testId])
+  @@index([candidateId])
+  @@index([applicationPhaseId])
+}
+
+// ===================
+// QUIZ ANSWERS
+// ===================
+
+model QuizAnswer {
+  id               String   @id @default(uuid()) @db.Char(36)
+  submissionId     String   @db.Char(36)
+  questionId       String   @db.Char(36)
+  selectedChoiceId String?  @db.VarChar(50) // ID from the choices JSON array
+  isCorrect        Boolean?
+  answeredAt       DateTime @default(now())
+
+  // Relations
+  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  question   QuizQuestion   @relation(fields: [questionId], references: [id])
+
+  @@unique([submissionId, questionId]) // One answer per question per submission
+  @@index([submissionId])
+  @@index([questionId])
+}
+
+// ===================
+// CODE SUBMISSIONS (Judge0 Integration)
+// ===================
+
+model CodeSubmission {
+  id           String @id @default(uuid()) @db.Char(36)
+  submissionId String @db.Char(36)
+  challengeId  String @db.Char(36)
+
+  // Submission data
+  code     String @db.Text
+  language String @db.VarChar(50)
+
+  // Judge0 integration
+  judge0Token String?          @db.VarChar(255) // Token from Judge0 API
+  status      SubmissionStatus @default(PENDING)
+
+  // Execution results
+  executionTime Int? // Milliseconds
+  memoryUsed    Int? // Kilobytes
+  testResults   Json? // [{caseId: number, passed: boolean, output: string, error?: string}]
+  passedCount   Int? // Number of test cases passed
+  totalCount    Int? // Total number of test cases
+  score         Int? // Points earned
+
+  // Error handling
+  error String? @db.Text
+
+  // Timestamps
+  submittedAt DateTime  @default(now())
+  completedAt DateTime?
+
+  // Relations
+  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  challenge  CodeChallenge  @relation(fields: [challengeId], references: [id])
+
+  @@unique([submissionId, challengeId]) // One submission per challenge per test submission
+  @@index([submissionId])
+  @@index([challengeId])
+  @@index([judge0Token])
+  @@index([status])
+}

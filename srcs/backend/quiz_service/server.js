@@ -1,13 +1,8 @@
-const express = require("express");
-const app = express();
+import {app} from "./app.js";
+import env from "./src/config/env.js"
 
-// Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true }));
-
-// Routes
 app.get("/", (req, res) => {
-  res.json({ message: "Server is running 🚀" });
+  res.json({ message: "Server is running " });
 });
 
 app.get("/health", (req, res) => {
@@ -15,7 +10,7 @@ app.get("/health", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-  res.json({ app: process.env.APP_NAME || "service" });
+  res.json({ app: env.APP_NAME});
 });
 
 app.use((err, req, res, next) => {
@@ -23,8 +18,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong" });
 });
 
-// Server
-const PORT = process.env.PORT || 3001;
+
+const PORT = env.PORT;
+const HOST = env.HOST;
+
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  console.log(`Server listening on http://${HOST}:${PORT}`);
 });
