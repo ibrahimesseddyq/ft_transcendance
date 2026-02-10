@@ -9,13 +9,14 @@ const {
 } = require('../validators/profileValidator');
 const validateRequest = require('../middleware/ValidateRequest');
 router.get('/:id', profileController.getProfile);
-router.get('/:id/resume',validateRequest(createProfileschema),
+router
+.get('/:id/resume',validateRequest(createProfileschema),
     profileController.getProfile)
-    .post('/',uploadProfile.fields([
+.post('/',uploadProfile.fields([
         {name : "avatar" , maxCount: 1},
         {name : "resume", maxCount: 1}
     ]),profileController.createProfile)
-    .patch('/:id',validateRequest(updateProfileschema),
+.patch('/:id',validateRequest(updateProfileschema),
         uploadProfile.fields([
         {name : "avatar" , maxCount: 1},
         {name : "resume", maxCount: 1},
