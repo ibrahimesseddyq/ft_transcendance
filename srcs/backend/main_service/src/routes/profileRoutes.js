@@ -10,17 +10,16 @@ const validateRequest = require('../middleware/ValidateRequest');
 
 // the validate request should be refactored based on req.body & req.files
 router.get('/:id', profileController.getProfile)
-    .post('/',uploadProfile.fields([
+    .post('/:id',uploadProfile.fields([
             {name : "avatar" , maxCount: 1},
             {name : "resume", maxCount: 1}
         ])
-        ,validateRequest(createProfileSchema)
         ,profileController.createProfile)
     .patch('/:id',
             uploadProfile.fields([
             {name : "avatar" , maxCount: 1},
             {name : "resume", maxCount: 1},
-        ]),validateRequest(updateProfileSchema),
+        ]),
         profileController.updateProfile);
 
 module.exports = router;
