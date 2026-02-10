@@ -1,7 +1,6 @@
 const {z} = require('zod');
 const {JobStatus} = require('../../generated/prisma');
-
-const createJobSchema = z.object({
+const baseSchema = z.object({
     title: z.string()
       .min(1, "Title is required"),
     department: z.string()
@@ -18,7 +17,7 @@ const createJobSchema = z.object({
       .default(false),
     employmentType: z.string()
       .min(1, "employmentType is required")
-      .max(50, "employmentType is too Long")
+      .max(50, "employmentType is too long")
       .default('full-time'),
     salaryMin: z.number()
       .int()
@@ -29,13 +28,15 @@ const createJobSchema = z.object({
       .min(3,"salary currency must be a 3-letter code")
       .max(3,"salary currency must be a 3-letter code")
       .default('USD'),
-    status: z.enum(["open", "closed", "archived"])
-      .default("open"),
-  }).refine((data) => data.salaryMax >= data.salaryMin, {
+    status: z.nativeEnum(JobStatus)
+      .default(JobStatus.open),
+});
+
+const createJobSchema = baseSchema.refine((data) => data.salaryMax >= data.salaryMin, {
     message: "Maximum salary must be greater than or equal to minimum salary",
     path: ["salaryMax"], });
 
-const updateJobSchema = createJobSchema
+const updateJobSchema = baseSchema.partial();
 
 module.exports = {
     createJobSchema,

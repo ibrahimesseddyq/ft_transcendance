@@ -1,10 +1,10 @@
 const multer =  require('multer');
 const path =  require('path');
-const fs = require('fs/promises');
+const fs = require('fs');
 const {HttpException} = require('../utils/httpExceptions');
-// the follwing needs to be confirmed that they are working properly
-fs.mkdir(`${__dirname}/../../uploads/avatars`, {recursive: true});
-fs.mkdir(`${__dirname}/../../uploads/resumes`, {recursive: true});
+
+fs.mkdirSync(`${__dirname}/../../uploads/avatars`, {recursive: true});
+fs.mkdirSync(`${__dirname}/../../uploads/resumes`, {recursive: true});
 
 const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {

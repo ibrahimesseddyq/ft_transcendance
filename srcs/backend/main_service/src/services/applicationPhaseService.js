@@ -1,6 +1,4 @@
 const applicationPhaseRepository = require('../repositories/applicationPhaseRepository');
-const applicationService = require('./applicationService');
-const jobPhaseService = require('./jobPhaseService');
 const {HttpException} = require('../utils/httpExceptions');
 
 const createApplicationphase = async (data) => {
@@ -11,8 +9,6 @@ const createApplicationphase = async (data) => {
             phaseId:phaseId,
             notes: "",
             score: 0,
-            interviews: []
-
         });
          return applicationPhase;
     } catch (error) {
@@ -26,17 +22,17 @@ const createApplicationphase = async (data) => {
 }
 
 const updateApplicationPhase = async (applicationPhaseId, updateData) => {
-    const applicationPhase =  await applicationPhaseRepository.updateApplicationPhase({
+    const applicationPhase =  await applicationPhaseRepository.updateApplicationPhase(
         applicationPhaseId,
         updateData
-    });
+    );
     if (!applicationPhase)
         throw new HttpException(404, 'application Phase not found');
     return applicationPhase;
 }
 
 const getApplicaticationPhaseById =  async (applicationPhaseId) => {
-    const applicationPhase =  applicationPhaseRepository.getApplicationPhaseById(applicationPhaseId)
+    const applicationPhase = await  applicationPhaseRepository.getApplicationPhaseById(applicationPhaseId)
     if (!applicationPhase)
         throw new HttpException(404, "application Phase not found");
     return applicationPhase;
