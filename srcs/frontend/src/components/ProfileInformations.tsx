@@ -83,11 +83,12 @@ export function ProfileInformations() {
             body: formData,
         });
         const result = await response.json();
+        console.log("result.data : ", result.data);
         if (response.ok) {
-          setProfile(result.data || result);
+          setProfile(result.data);
           Notification("Profile created successfully!", "success");
         } else if (response.status === 400 && result.errors === 'profile already exists') {
-          setProfile(result.data || result); 
+          setProfile(result.data); 
         }
     } catch (error) {
         console.error("Submission failed:", error);

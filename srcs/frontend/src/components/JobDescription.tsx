@@ -41,14 +41,27 @@ export function JobDescription(){
       </div>
     );
   }
+  const ApplyButton = () =>{
+    return (
+      <button onClick={() => ApplySubmit(jobItem)}
+        type='button'
+        className='md:absolute md:bottom-4 md:right-4 h-10 max-w-64 rounded-md text-white text-lg shadow-xl
+        bg-gradient-to-r  from-[#00adef] to-slate-700 px-10 hover:scale-110 duration-500'>
+        <div className="flex items-center gap-4">
+          <Send className="w-5 h-5 text-white" /> 
+          <p className="font-medium text-white">pustules now</p>
+        </div>
+      </button>
+    );
+  }
   const DesCover = () =>{
     return (
-      <div className={`${cardStyle} relative flex gap-4 `}>
+      <div className={`${cardStyle} md:relative flex flex-col md:flex-row gap-4`}>
         <img src={'/icons/jobCover.jpg'} className='h-24 w-24 rounded-md  bg-cover bg-center hover:scale-110 duration-500'/>
         <div className='flex flex-col gap-2 justify-between'>
           <h1 className="text-[#0a0a0a] text-2xl font-bold">{jobItem.title}</h1>
           <h1 className="text-[#737373] text-lg font-medium">RH-CONNECT</h1>
-          <div className='flex gap-3'>
+          <div className='flex flex-wrap gap-3'>
             <MiniBox 
               Icon={CalendarDays} 
               title={new Date(jobItem.createdAt).toLocaleDateString()}
@@ -67,26 +80,18 @@ export function JobDescription(){
             />
           </div>
         </div>
-        <button onClick={() => ApplySubmit(jobItem)}
-          type='button'
-          className='absolute bottom-4 right-4 h-10 rounded-md text-white text-lg
-          bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
-          <div className="flex items-center gap-4">
-            <Send className="w-5 h-5 text-white" /> 
-            <p className="font-medium text-white">pustules now</p>
-          </div>
-        </button>
+        <ApplyButton />
       </div>
     );
   }
 
   const cardStyle = "col-span-1 bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden p-4 sm:p-6"; 
   return (
-    <div className="h-full w-full  items-center">
-      <div className='grid grid-cols-1 gap-6 h-full w-full p-4 px-40'>
+    <div className="h-full w-full items-center">
+      <div className='grid grid-cols-1 gap-6 h-full w-full p-4 md:px-40'>
         <DesCover />
 
-        <div className={`${cardStyle} flex flex-col gap-4`}>
+        <div className={`${cardStyle} relative flex flex-col gap-4`}>
 
           {/* Description */}
           <div>
@@ -133,7 +138,8 @@ export function JobDescription(){
               <span>Closed: {new Date(jobItem.closedAt).toLocaleDateString()}</span>
             )}
           </div>
-
+          
+          <ApplyButton />
         </div>
       </div>
     </div>
