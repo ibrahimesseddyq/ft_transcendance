@@ -10,17 +10,21 @@ const createProfile = async  (userId , profileData) => {
     const profile = await profileRepository.getProfileById(userId);
     if (profile)
             throw new HttpException(400,"profile already exists");
+    const createData =  {...profileData.body};
     if (profileData.files?.avatar?.[0])
     {
         const {avatarUrl} = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
         if (avatarUrl)
             await userService.updateUser(userId, {avatarUrl})
     }
-    console.log(profileData);
-    const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
+    if (profileData.file?.resume?.[0])
+    {
+        const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
+        createData.resumeUrl = resumeUrl;
+    }
     return await profileRepository.createProfile({
-        ...profileData.body,
-        resumeUrl,
+        ...createData,
+        userId
     })
 }
 
@@ -33,7 +37,7 @@ const updateProfile = async (userId, profileData) => {
         throw new HttpException(404, "profile not found");
     const updateData = {...profileData.body};
     if (profileData.files?.resume?.[0]) {
-        const {resumeUrl} = await fileService.saveResume(profileData.files.resume[0]);
+        const {resumeUrl} = await fileService.saveResume(userId,profileData.files.resume[0]);
         if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
             await fileService.deleteFile(profile.resumeUrl);
         updateData.resumeUrl = resumeUrl;
@@ -43,7 +47,6 @@ const updateProfile = async (userId, profileData) => {
         const {avatarUrl} = await fileService.saveAvatar(userId,profileData.files.avatar[0])
         if (user.avatarUrl && user.avatarUrl !== avatarUrl)
             await fileService.deleteFile(user.avatarUrl);
-        updateData.resumeUrl = resumeUrl;
     }
     return await profileRepository.updateProfile(userId, updateData);
 }
