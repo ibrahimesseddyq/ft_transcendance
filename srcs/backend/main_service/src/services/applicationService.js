@@ -22,6 +22,7 @@ const submitApplication = async (applicationData) => {
 			throw new HttpException(400, 'application already exists');
 		else if (error.code === "P2003")
 			throw new HttpException(404, "job or user not found");
+		throw error
 	}
 }
 
