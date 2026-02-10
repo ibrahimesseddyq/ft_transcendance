@@ -1,5 +1,6 @@
 import Notification from "@/utils/TostifyNotification";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import {Eye, Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -11,6 +12,7 @@ interface props {
 }
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
+  const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
@@ -26,6 +28,14 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
     } catch (error) {
       Notification("Error Deleting job", "error");
     }
+  };
+
+  const handleDetails = (job:any) => {
+    navigate('/Jobdescription', { 
+      state: {
+        job: job,
+      } 
+    });
   };
   
   return (
@@ -115,7 +125,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
               {/* Footer Actions */}
               <div className="flex items-center justify-between mt-auto">
                 <button 
-                  onClick={() => { setJobItem(item); setJobDescp(true); }}
+                  onClick={()=>{handleDetails(item)}}
                   className="px-8 py-2.5 border-2 border-[#3B5998] text-[#3B5998] font-bold rounded-xl hover:bg-[#3B5998] hover:text-white transition-colors"
                 >
                   Details
