@@ -1,3 +1,4 @@
+const { includes } = require('zod');
 const {prisma} = require('../config/prisma');
 
 const createProfile = async (data) => {
@@ -35,7 +36,12 @@ const updateProfile = async (userId, updateData) => {
 
 const getProfileById = async (userId) => {
     return await prisma.profile.findUnique({
-        where : {userId : userId}
+        where : {userId : userId},
+        include: {
+            user : {
+                
+            }
+        }
     })
 }
 

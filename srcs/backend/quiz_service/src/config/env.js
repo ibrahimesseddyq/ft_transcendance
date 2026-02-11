@@ -2,7 +2,7 @@ import { z } from 'zod';
 import path from 'path';
 import dotenv from 'dotenv'
 
-console.log("phat ",path.resolve(import.meta.dirname,"../../.env.dev"))
+console.log("path ",path.resolve(import.meta.dirname,"../../.env.dev"))
 
 dotenv.config({
   path: path.resolve(import.meta.dirname,"../../.env.dev"),
