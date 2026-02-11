@@ -30,7 +30,8 @@ const createApplicationPhases = async (applicationId, jobId) => {
 	const jobPhases =  await jobPhaseService.getJobPhases(jobId);
 	const applicationPhases = [];
 	if (!jobPhases)
-		throw new HttpException(400, "no phases for this job")
+		return []
+		// throw new HttpException(400, "no phases for this job")
 	for (let jobPhase of  jobPhases)
 	{
 		applicationPhases.push(await applicationPhaseservice.createApplicationphase({

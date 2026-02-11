@@ -37,9 +37,9 @@ export function Profile() {
 
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full h-full p-6  
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full h-full p-6
       overflow-y-auto no-scrollbar items-center">
-      <div className='col-span-3 mt-10'>
+      <div className='col-span-1 md:col-span-3 mt-10'>
         <ProfileCover profile={profile} user={user}/>
       </div>
       <div className='col-span-1 md:col-span-2 p-2 h-44 bg-white border rounded-lg'></div>

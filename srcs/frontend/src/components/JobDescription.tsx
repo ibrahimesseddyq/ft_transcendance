@@ -1,32 +1,38 @@
 import { CloudUpload, LucideIcon, CalendarDays ,MapPin ,MapPinned, File, Send } from 'lucide-react';
 import Notification from "@/utils/TostifyNotification"
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useAuthStore } from '@/utils/ZuStand';
 
 export function JobDescription(){
   const location = useLocation();
   const navigate = useNavigate();
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
+  const user = useAuthStore((state) => state.user);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const ApplySubmit = async (data: any) => {
-    Notification("You Applyed succesfuly", "success");
-    navigate("/Jobs");
-    // try {
-    //   const response = await fetch("http://localhost:3000/api/jobs", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(data),
-    //   });
+  const submitData = {
+    jobId: jobItem.id,
+    candidateId: user?.id,
+    currentPhaseId: null,
+  }
+
+  const ApplySubmit = async (item: any) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(item),
+      });
       
-    //   if (!response.ok)
-    //     throw new Error(`Server error: ${response.status}`);
-      
-    //   Notification("Job added successfully!", "success");
-    //   setIsFormOpen(false);
-    // } catch (error) {
-    //   console.error("Submission failed:", error);
-    //   Notification("Error creating job", "error");
-    // }
+      if (!response.ok)
+        throw new Error(`Server error: ${response.status}`);
+      Notification("Job Applyed successfully!", "success");
+      navigate('/Jobs');
+    } catch (error) {
+      console.log("Applye failed:", error);
+    }
   };
 
   interface props{
@@ -38,6 +44,27 @@ export function JobDescription(){
       <div className="flex items-center">
         <Icon className="w-5 h-5 text-[#737373]" /> 
         <p className="font-light text-[#737373]">{title}</p>
+      </div>
+    );
+  }
+  const Buttons = () =>{
+    return (
+      <div className='absolute bottom-4 right-4 h-10 flex gap-2'>
+        <button onClick={() => ApplySubmit(submitData)}
+          type='button'
+          className='rounded-md text-white text-lg
+          bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
+          <div className="flex items-center gap-4">
+            <Send className="w-5 h-5 text-white" /> 
+            <p className="font-medium text-white">pustules now</p>
+          </div>
+        </button>
+        {/* see Applications */}
+        <Link to={`/Application/${jobItem.id}`}
+            className='cursor-pointer rounded-md text-white text-lg
+              bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
+          See Applications
+        </Link>
       </div>
     );
   }
@@ -67,15 +94,7 @@ export function JobDescription(){
             />
           </div>
         </div>
-        <button onClick={() => ApplySubmit(jobItem)}
-          type='button'
-          className='absolute bottom-4 right-4 h-10 rounded-md text-white text-lg
-          bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
-          <div className="flex items-center gap-4">
-            <Send className="w-5 h-5 text-white" /> 
-            <p className="font-medium text-white">pustules now</p>
-          </div>
-        </button>
+        <Buttons />
       </div>
     );
   }
@@ -133,7 +152,7 @@ export function JobDescription(){
               <span>Closed: {new Date(jobItem.closedAt).toLocaleDateString()}</span>
             )}
           </div>
-
+          
         </div>
       </div>
     </div>

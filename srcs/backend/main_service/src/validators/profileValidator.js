@@ -1,7 +1,7 @@
 const {z} = require('zod');
 const fileSchema = z
   .file()
-  .max(5_000_000)
+  .max(10_000_000)
   
 const createProfileSchema = z.object({
   // avatar: z
