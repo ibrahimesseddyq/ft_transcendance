@@ -6,19 +6,19 @@ const { getPermissionsByRole } = require('../config/permissions');
 
 const verifyToken = async (req, res, next) => {
     try {
-        const {authorization} = req.headers;
-        if (!authorization)
-            throw new HttpException(401,"Unauthorized");
-        const [type, token] = authorization.split(" ");
-        console.log(type)
-        console.log(token)
-        if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
-        const decoded = await jwtService.verifyAccessToken(token);
-        req.user = {
-            id : decoded.id,
-            email : decoded.email,
-            role:decoded.role
-        }
+        // const {authorization} = req.headers;
+        // if (!authorization)
+        //     throw new HttpException(401,"Unauthorized");
+        // const [type, token] = authorization.split(" ");
+        // console.log(type)
+        // console.log(token)
+        // if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
+        // const decoded = await jwtService.verifyAccessToken(token);
+        // req.user = {
+        //     id : decoded.id,
+        //     email : decoded.email,
+        //     role:decoded.role
+        // }
         next()
     } catch (error) {
         next(error);
