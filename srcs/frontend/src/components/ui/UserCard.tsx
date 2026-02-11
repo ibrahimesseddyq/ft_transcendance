@@ -1,15 +1,45 @@
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuthStore } from '@/utils/ZuStand';
+import { bigint } from "zod";
 
-interface props {
-  User: any;
-  Profile: any;
-}
-
-const UserCard = ({User, Profile}: props) => {
+const UserCard = (candidateId: string) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const avatarUrl = `${BACKEND_URL}${Profile?.avatarUrl}`;
+    const token = useAuthStore((state) => state.token);
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+    console.log("candidateId : ", candidateId);
+
+    useEffect(()=>{
+      const fetchUserContent = async () =>{
+        const res = await fetch(`${BACKEND_URL}/api/users/${candidateId?.candidateId}`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}`}
+        })
+        if (res.ok){
+          console.log(res);
+          const data = await res.json();
+          console.log(data.data);
+          if (data.data){
+            setUser(data.data);
+          }
+        }
+      }
+      fetchUserContent();
+    }, [candidateId]);
+
+
+  const handleSeeProfile = () => {
+      navigate(`/Profile/${candidateId?.candidateId}`, { 
+        state: {
+          postId: candidateId,
+      } 
+    });
+  };
   return (
-    <div className="w-full md:w-[200px] md:max-w-[300px] h-[260px] min-h-20 
-        overflow-hidden p-4 bg-white items-center rounded-xl shadow-lg">
+    <div className="w-full md:w-[200px] md:max-w-[300px] min-h-20 
+        overflow-hidden p-4 bg-gray-50 items-center rounded-xl shadow-lg">
       <div className="h-full flex flex-col  justify-between items-center">
         <div className="h-20 w-20  rounded-full bg-cover bg-center mx-auto
             border-2 border-gray-800 group-hover:border-[#00adef] transition-all"
@@ -18,8 +48,8 @@ const UserCard = ({User, Profile}: props) => {
             }}
           />
           <div className='flex flex-col gap-0'>
-            <h1 className='text-center text-md font-bold font-sans text-[#445a84]'>{User.firstName} {User.lastName}</h1>
-            <h1 className='text-center text-md font-ligth font-sans text-[#445a84]'>{Profile.currentTitle}</h1>
+            <h1 className='text-center text-md font-bold font-sans text-[#445a84]'>{user?.firstName} {user?.lastName}</h1>
+            <h1 className='text-center text-md font-ligth font-sans text-[#445a84]'>{user?.email}</h1>
           </div>
 
 
@@ -28,7 +58,8 @@ const UserCard = ({User, Profile}: props) => {
               rounded-xl border border-[#25aeca] p-2'>
               Details
             </button>
-            <button className='text-center font-medium font-sans w-28 h-10
+            <button onClick={handleSeeProfile}
+              className='text-center font-medium font-sans w-28 h-10
               rounded-xl bg-[#25aeca] hover:bg-[#25aeca]/60 p-2'>
               Profile
             </button>

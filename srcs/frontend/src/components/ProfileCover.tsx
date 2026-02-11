@@ -6,18 +6,11 @@ interface props{
   user: any;
 }
 export function ProfileCover({ profile, user }: props) {
-  const fields = [
-    { label: 'First Name', value: user?.firstName },
-    { label: 'Last Name', value: user?.lastName },
-    { label: 'Email', value: user?.email },
-    { label: 'Phone Number', value: user?.phone || 'Not provided' },
-    { label: 'Position', value: user?.currentTitle || 'Full Stack Developer' }
-  ];
-
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   console.log("user : ", user);
+  console.log("profile : ", profile);
   console.log("resume Url = ", resumeUrl);
 
   return (
