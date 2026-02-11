@@ -34,7 +34,6 @@ const ApplicationContent = ({ Title, applications }: Props) => {
   const limitedUsers = applications.slice(0, 6);
   const hasMore = applications.length > 6;
   console.log("limitedUsers : ", limitedUsers);
-  // return ;
   return (
     <div className="relative flex flex-col w-full min-h-40 border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
       <header className="flex items-center justify-between bg-gradient-to-r from-[#00adef] to-[#161F32] h-14 w-full sticky top-0 z-20 px-5">

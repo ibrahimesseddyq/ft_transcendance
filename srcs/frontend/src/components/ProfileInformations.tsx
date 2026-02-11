@@ -48,7 +48,7 @@ export function ProfileInformations() {
   const {
     register,
     handleSubmit,
-    getValues,
+    watch,
     setValue,
     reset,
     formState: { errors, isSubmitting }
@@ -59,7 +59,9 @@ export function ProfileInformations() {
       numberPhone: '0',
     }
   });
-  const avatarValue = getValues('avatar') || null;
+
+  let avatarValue = watch('avatar');
+  console.log("avatarValue : ", avatarValue);
 
   
   const onApplySubmit = async (data: any) => {
@@ -87,11 +89,6 @@ export function ProfileInformations() {
         if (response.ok) {
           setProfile(result.data);
         }
-        // if (response.status === 400 && result.errors === 'profile already exists') {
-        //   Notification("Profile created successfully!", "success");
-        //   alert("Profile created successfully!");
-        // }
-
     } catch (error) {
         console.error("Submission failed:", error);
         Notification("Technical error occurred", "error");
@@ -112,7 +109,6 @@ export function ProfileInformations() {
     }
   };
   
-console.log("avatarValue : ", avatarValue);
  return (
     <form
       onSubmit={handleSubmit(onApplySubmit)}
@@ -125,8 +121,7 @@ console.log("avatarValue : ", avatarValue);
 
       <div className={`relative h-32 w-32 rounded-full bg-[#1e1e1e] 
           bg-cover bg-center border-2 mx-auto my-5
-          ${errors.avatar ? 'border-red-500' : 'border-[#00adef]'}
-          ${avatarValue ? 'border-green-500' : 'border-[#00adef]'}`}
+          ${errors.avatar ? 'border-red-500' : avatarValue ? 'border-green-500' : 'border-[#00adef]'}`}
           style={{ backgroundImage: `url(${avatarPreview})`}}>
         <input 
           id="avatar"
@@ -193,7 +188,7 @@ console.log("avatarValue : ", avatarValue);
         </section>
       </div>
 
-      <footer className="mt-8 flex justify-end">
+      <footer className="mt-8 flex gap-2 justify-end">
         <button 
           type="submit"
           disabled={isSubmitting}
@@ -201,6 +196,7 @@ console.log("avatarValue : ", avatarValue);
         >
           {isSubmitting ? "Saving..." : "Save Profile"}
         </button>
+        <Logout />
       </footer>
     </form>
   );

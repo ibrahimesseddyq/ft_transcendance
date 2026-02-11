@@ -49,10 +49,10 @@ export function JobDescription(){
   }
   const Buttons = () =>{
     return (
-      <div className='absolute bottom-4 right-4 h-10 flex gap-2'>
+      <div className='flex-1 justify-end min-h-12 flex flex-wrap gap-2 items-center'>
         <button onClick={() => ApplySubmit(submitData)}
           type='button'
-          className='rounded-md text-white text-lg
+          className='flex-1 rounded-md text-white text-lg
           bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
           <div className="flex items-center gap-4">
             <Send className="w-5 h-5 text-white" /> 
@@ -61,7 +61,7 @@ export function JobDescription(){
         </button>
         {/* see Applications */}
         <Link to={`/Application/${jobItem.id}`}
-            className='cursor-pointer rounded-md text-white text-lg
+            className='flex-1 cursor-pointer rounded-md text-white text-lg text-center
               bg-gradient-to-r  from-[#00adef] to-slate-700 px-10'>
           See Applications
         </Link>
@@ -70,12 +70,12 @@ export function JobDescription(){
   }
   const DesCover = () =>{
     return (
-      <div className={`${cardStyle} relative flex gap-4 `}>
+      <div className={`${cardStyle} flex flex-col md:flex-row gap-4 `}>
         <img src={'/icons/jobCover.jpg'} className='h-24 w-24 rounded-md  bg-cover bg-center hover:scale-110 duration-500'/>
         <div className='flex flex-col gap-2 justify-between'>
           <h1 className="text-[#0a0a0a] text-2xl font-bold">{jobItem.title}</h1>
           <h1 className="text-[#737373] text-lg font-medium">RH-CONNECT</h1>
-          <div className='flex gap-3'>
+          <div className='flex flex-wrap gap-3'>
             <MiniBox 
               Icon={CalendarDays} 
               title={new Date(jobItem.createdAt).toLocaleDateString()}
@@ -101,8 +101,8 @@ export function JobDescription(){
 
   const cardStyle = "col-span-1 bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden p-4 sm:p-6"; 
   return (
-    <div className="h-full w-full  items-center">
-      <div className='grid grid-cols-1 gap-6 h-full w-full p-4 px-40'>
+    <div className="h-full w-full items-center ">
+      <div className='grid grid-cols-1 gap-6 h-full w-full p-4 md:px-40'>
         <DesCover />
 
         <div className={`${cardStyle} flex flex-col gap-4`}>
