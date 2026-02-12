@@ -13,6 +13,9 @@ services:
       - microservices
     env_file:
       - .env
+    depends_on:
+      main_service_db:
+        condition: service_healthy
   quiz_service:
     build: ./backend/quiz_service
     container_name: quiz_service
@@ -26,6 +29,9 @@ services:
       - microservices
     env_file:
       - .env
+    depends_on:
+      quiz_service_db:
+        condition: service_healthy
   # gateway:
   #   build: ./backend/gateway
   #   container_name: api-gateway
