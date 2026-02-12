@@ -43,6 +43,7 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 export function ProfileInformations() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
+  const setUser = useAuthStore((state)=> state.setUser);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const {
@@ -56,7 +57,7 @@ export function ProfileInformations() {
     resolver: zodResolver(CandidateProfileSchema),
     defaultValues: {
       userId: userId,
-      numberPhone: '0',
+      phone: '0',
     }
   });
 
@@ -70,7 +71,7 @@ export function ProfileInformations() {
     formData.append("userId", data.userId);
     formData.append("linkedinUrl", data.linkedinUrl);
     formData.append("currentTitle", data.currentTitle);
-    formData.append("numberPhone", data.currentTitle);
+    formData.append("phone", data.phone);
     formData.append("skills", data.skills);
     if (data.portfolioUrl) 
       formData.append("portfolioUrl", data.portfolioUrl);
@@ -86,8 +87,10 @@ export function ProfileInformations() {
             body: formData,
         });
         const result = await response.json();
+        console.log("from ProfileInformations :", result.data);
         if (response.ok) {
           setProfile(result.data);
+          // setUser(result.data.user);
         }
     } catch (error) {
         console.error("Submission failed:", error);
@@ -112,7 +115,7 @@ export function ProfileInformations() {
  return (
     <form
       onSubmit={handleSubmit(onApplySubmit)}
-      className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent items-center">
+      className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent items-center justify-center ">
       
       <header className="border-b border-gray-800 pb-4 w-full">
         <h1 className="text-black text-2xl font-bold">Profile Setup</h1>
@@ -167,7 +170,7 @@ export function ProfileInformations() {
           <div className="flex flex-col gap-5 pl-4">
             <FormField label="Preferred Locations" name="preferredLocations" optional={true} register={register} error={errors.preferredLocations?.message} placeholder="Remote, New York, London" />
               <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" />
-              <FormField label="Number Phone" name="numberPhone" optional={false} register={register} error={errors.numberPhone?.message} placeholder="e.g. 0699999999" />
+              <FormField label="Number Phone" name="phone" optional={false} register={register} error={errors.phone?.message} placeholder="e.g. 0699999999" />
           </div>
 
           <label 

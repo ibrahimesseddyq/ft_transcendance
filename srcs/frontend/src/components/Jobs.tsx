@@ -32,7 +32,7 @@ export function Jobs() {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden">
+    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden p-5 md:p-0">
         <ToastContainer/>
       {/* Job Form */}
       {isFormOpen && (
