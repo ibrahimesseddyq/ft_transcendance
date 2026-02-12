@@ -36,7 +36,16 @@ const createJobSchema = baseSchema.refine((data) => data.salaryMax >= data.salar
     message: "Maximum salary must be greater than or equal to minimum salary",
     path: ["salaryMax"], });
 
-const updateJobSchema = baseSchema.partial();
+const updateJobSchema = baseSchema.partial()
+ .refine((data) => {
+      if (data.salaryMin !== undefined && data.salaryMax !== undefined) {
+          return data.salaryMax >= data.salaryMin;
+      }
+      return true;
+  }, {
+      message: "Maximum salary must be greater than or equal to minimum salary",
+      path: ["salaryMax"],
+  });
 
 module.exports = {
     createJobSchema,

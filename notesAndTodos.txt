@@ -2,6 +2,9 @@ optimize queries by relying on prisma errors
 replace require by import ECM6
 update session in user Model
 need to make sure uploads is there for multer
-fix public api problem
+getting resume should not be secure
+fix public api problem 
 zod validators for requests
 applay perrmission on routes
+delete avatar when user deleted
+protect user without profiles from accessing the app
