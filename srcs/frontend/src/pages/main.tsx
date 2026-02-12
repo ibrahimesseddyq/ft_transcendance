@@ -15,6 +15,7 @@ import { Application } from '@/components/Application'
 import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
+import { OTPpage } from '@/components/OTPpage'
 
 
 export function Main() {
@@ -48,6 +49,7 @@ export function Main() {
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
+          <Route path="/otp" element={<OTPpage/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>

@@ -5,10 +5,10 @@ import { useAuthStore } from '@/utils/ZuStand';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
   const profile = useAuthStore((state) => state.profile);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const avatarUrl = `${BACKEND_URL}${profile.user?.avatarUrl || user?.avatarUrl}`;
-  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl
