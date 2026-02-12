@@ -1,5 +1,4 @@
 export const Loading = () => {
-    console.log("iam gdksjkfjdsjfdksf");
   return (
     <div className="flex flex-col items-center justify-center w-full h-full min-h-[200px] bg-transparent animate-in fade-in duration-500">
       <div className="relative flex items-center justify-center">

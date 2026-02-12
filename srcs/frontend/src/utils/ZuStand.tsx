@@ -9,39 +9,58 @@ interface User {
   role: UserRole;
   firstName: string;
   lastName: string;
-  phone?: string | null;
+  numberPhone?: string | null;
   avatarUrl?: string | null;
   isVerified: boolean;
+  hasProfile: boolean;
 }
 
-interface AuthState {
+type State = {
   user: User | null;
+  profile: any | null;
   token: string | null;
+};
+
+
+type Action = {
   setUser: (user: User, token: string) => void;
+  setProfile: (profileData: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
-}
+};
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
       user: null,
       token: null,
-      setUser: (user, token) => set({ user, token }),
-      setVerified: () => 
-        set((state) => ({
-          user: state.user 
-            ? { ...state.user, isVerified: true } 
-            : null
+      profile: null,
+
+      setUser: (user, token) =>
+        set(() => ({
+          user: { ...user, hasProfile: user.hasProfile ?? false },
+          token,
         })),
-      clearAuth: () => set({ user: null, token: null }),
-      updateAvatar: (url) => 
+
+      setProfile: (profileData) =>
         set((state) => ({
-          user: state.user ? { ...state.user, avatarUrl: url } : null
+          profile: profileData,
+          user: state.user
+            ? {
+                ...state.user,
+                hasProfile: true,
+                avatarUrl: profileData?.avatarUrl ?? profileData?.avatar ?? state.user.avatarUrl,
+              }
+            : null,
+      })),
+
+      clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
+
+      updateAvatar: (url) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, avatarUrl: url } : null,
         })),
     }),
-    {
-      name: 'rh-connect-auth',
-    }
+    { name: 'auth-storage' }
   )
 );

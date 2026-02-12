@@ -34,11 +34,15 @@ const deleteJobPhase =  async (jobPhaseId) => {
 } 
 
 const getJobPhases = async(jobId) => {
-	const job = await jobRepository.findJobById(jobId);
-	if (!job)
-		throw new HttpException(404,'job with the provided id does not exists');
-	const result = await jobPhaseRepository.getJobPhases(jobId);
-	return result;
+	try {
+		const result =  await jobPhaseRepository.getJobPhases(jobId);
+		return result.jobPhases;
+	} catch (error) {
+		if (error.code === "P2002")
+			throw new HttpException(400, "job  not found");
+		else
+			throw error
+	}
 }
 
 module.exports = {

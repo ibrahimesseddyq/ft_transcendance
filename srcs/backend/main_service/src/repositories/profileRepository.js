@@ -2,7 +2,14 @@ const {prisma} = require('../config/prisma');
 
 const createProfile = async (data) => {
     return await prisma.profile.create({
-        data
+        data,
+         include: {
+            user: {
+                select: {
+                    avatarUrl: true,
+                },
+            },
+        },
     })
 }
 
@@ -14,10 +21,17 @@ const deleteProfile = async (userId) => {
 
 const updateProfile = async (userId, updateData) => {
     return await prisma.profile.update({
-        where: {userId : userId},
-        data: updateData
-    })
-}
+        where: { userId: userId },
+        data: updateData,
+        include: {
+            user: {
+                select: {
+                    avatarUrl: true,
+                },
+            },
+        },
+    });
+};
 
 const getProfileById = async (userId) => {
     return await prisma.profile.findUnique({

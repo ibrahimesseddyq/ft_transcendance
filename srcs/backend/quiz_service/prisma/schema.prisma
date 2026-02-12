@@ -18,58 +18,50 @@ datasource db {
 // ===================
 
 enum TestType {
-  qcm
-  code
+  QUIZ // Multiple choice questions (MCQ)
+  CODE // Problem-solving with code execution
 }
 
-enum CodeSubmissionStatus {
-  pending
-  processing
-  completed
-  failed
-  timeout
+enum SubmissionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  TIMEOUT
 }
-
-// ===================
-// TEST DEFINITIONS
-// ===================
 
 model Test {
-  id               String   @id @default(uuid()) @db.Char(36)
-  title            String   @db.VarChar(255)
-  testType         TestType @map("test_type")
-  description      String?  @db.Text
-  durationMinutes  Int      @map("duration_minutes")
-  passingScore     Int?     @map("passing_score") // Minimum percentage to pass
-  createdBy        String   @map("created_by") @db.Char(36) // References main_service.users
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
+  id              String   @id @default(uuid()) @db.Char(36)
+  title           String   @db.VarChar(255)
+  type            TestType
+  description     String?  @db.Text
+  durationMinutes Int
+  passingScore    Int      @default(60) // Percentage (0-100)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   // Relations
-  qcmQuestions     QcmQuestion[]
-  codeChallenges   CodeChallenge[]
-  testSubmissions  TestSubmission[]
+  quizQuestions  QuizQuestion[]
+  codeChallenges CodeChallenge[]
+  submissions    TestSubmission[]
 
-  @@map("tests")
+  @@index([type])
 }
 
-// ===================
-// QCM QUESTIONS
-// ===================
-
-model QcmQuestion {
-  id         String   @id @default(uuid()) @db.Char(36)
-  testId     String   @map("test_id") @db.Char(36)
-  question   String   @db.Text
-  options    Json     // [{id, text, is_correct}]
-  points     Int      @default(1)
-  orderIndex Int      @map("order_index")
+model QuizQuestion {
+  id       String @id @default(uuid()) @db.Char(36)
+  testId   String @db.Char(36)
+  question String @db.Text
+  choices  Json // Array of exactly 4 choices: [{id: string, text: string, isCorrect: boolean}]
+  points   Int    @default(1)
+  order    Int
 
   // Relations
-  test       Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
-  qcmAnswers QcmAnswer[]
+  test    Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
 
-  @@map("qcm_questions")
+  @@index([testId])
+  @@index([testId, order])
 }
 
 // ===================
@@ -77,25 +69,24 @@ model QcmQuestion {
 // ===================
 
 model CodeChallenge {
-  id                  String   @id @default(uuid()) @db.Char(36)
-  testId              String   @map("test_id") @db.Char(36)
-  title               String   @db.VarChar(255)
-  description         String   @db.Text
-  initialCode         String?  @map("initial_code") @db.Text // Starter code template
-  language            String   @db.VarChar(50)
-  testCases           Json     @map("test_cases") // [{input, expected_output, is_hidden, weight}]
-  points              Int      @default(1)
-  orderIndex          Int      @map("order_index")
-  
-  // External API configuration
-  externalChallengeId String?  @map("external_challenge_id") @db.VarChar(255) // ID in external code execution API
-  apiEndpoint         String?  @map("api_endpoint") @db.VarChar(500) // Optional: specific endpoint for this challenge
+  id          String  @id @default(uuid()) @db.Char(36)
+  testId      String  @db.Char(36)
+  title       String  @db.VarChar(255)
+  description String  @db.Text
+  starterCode String? @db.Text // Template code for Monaco editor
+  language    String  @db.VarChar(50) // e.g., "javascript", "python", "java"
+  testCases   Json // [{input: string, expectedOutput: string, isHidden: boolean, points: number}]
+  points      Int     @default(10)
+  timeLimit   Int     @default(5000) // milliseconds for Judge0
+  memoryLimit Int     @default(128000) // KB for Judge0
+  order       Int
 
   // Relations
-  test              Test              @relation(fields: [testId], references: [id], onDelete: Cascade)
-  codeSubmissions   CodeSubmission[]
+  test        Test             @relation(fields: [testId], references: [id], onDelete: Cascade)
+  submissions CodeSubmission[]
 
-  @@map("code_challenges")
+  @@index([testId])
+  @@index([testId, order])
 }
 
 // ===================
@@ -103,85 +94,90 @@ model CodeChallenge {
 // ===================
 
 model TestSubmission {
-  id                 String    @id @default(uuid()) @db.Char(36)
-  applicationPhaseId String    @map("application_phase_id") @db.Char(36) // References main_service.application_phases
-  candidateId        String    @map("candidate_id") @db.Char(36) // References main_service.users
-  testId             String    @map("test_id") @db.Char(36)
-  startedAt          DateTime? @map("started_at")
-  submittedAt        DateTime? @map("submitted_at")
-  score              Int?
-  passed             Boolean?
-  timeSpentSeconds   Int?      @map("time_spent_seconds")
+  id                 String @id @default(uuid()) @db.Char(36)
+  applicationPhaseId String @db.Char(36) // Foreign key to main_service.application_phases
+  candidateId        String @db.Char(36) // Foreign key to main_service.users
+  testId             String @db.Char(36)
+
+  startedAt   DateTime  @default(now())
+  submittedAt DateTime?
+
+  score     Int? // Total score achieved
+  maxScore  Int? // Total possible score
+  passed    Boolean? // Computed based on passingScore
+  timeSpent Int? // Seconds
 
   // Relations
-  test             Test             @relation(fields: [testId], references: [id])
-  qcmAnswers       QcmAnswer[]
-  codeSubmissions  CodeSubmission[]
+  test            Test             @relation(fields: [testId], references: [id])
+  quizAnswers     QuizAnswer[]
+  codeSubmissions CodeSubmission[]
 
-  @@map("test_submissions")
+  @@unique([applicationPhaseId, testId]) // One submission per test per application phase
+  @@index([testId])
+  @@index([candidateId])
+  @@index([applicationPhaseId])
 }
 
 // ===================
-// QCM ANSWERS
+// QUIZ ANSWERS
 // ===================
 
-model QcmAnswer {
-  id               String    @id @default(uuid()) @db.Char(36)
-  submissionId     String    @map("submission_id") @db.Char(36)
-  questionId       String    @map("question_id") @db.Char(36)
-  selectedOptionId String?   @map("selected_option_id") @db.VarChar(50)
-  isCorrect        Boolean?  @map("is_correct")
-  answeredAt       DateTime? @map("answered_at")
+model QuizAnswer {
+  id               String   @id @default(uuid()) @db.Char(36)
+  submissionId     String   @db.Char(36)
+  questionId       String   @db.Char(36)
+  selectedChoiceId String?  @db.VarChar(50) // ID from the choices JSON array
+  isCorrect        Boolean?
+  answeredAt       DateTime @default(now())
 
   // Relations
   submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  question   QcmQuestion    @relation(fields: [questionId], references: [id])
+  question   QuizQuestion   @relation(fields: [questionId], references: [id])
 
-  @@map("qcm_answers")
+  @@unique([submissionId, questionId]) // One answer per question per submission
+  @@index([submissionId])
+  @@index([questionId])
 }
 
 // ===================
-// CODE SUBMISSIONS (API-delegated)
+// CODE SUBMISSIONS (Judge0 Integration)
 // ===================
 
 model CodeSubmission {
-  id                   String                 @id @default(uuid()) @db.Char(36)
-  submissionId         String                 @map("submission_id") @db.Char(36)
-  challengeId          String                 @map("challenge_id") @db.Char(36)
-  
-  // Candidate's submission
-  submittedCode        String                 @map("submitted_code") @db.Text
-  language             String                 @db.VarChar(50)
-  
-  // External API integration
-  externalSubmissionId String?                @map("external_submission_id") @db.VarChar(255) // ID from external code execution API
-  status               CodeSubmissionStatus   @default(pending)
-  
-  // Results from external API
-  executionTimeMs      Int?                   @map("execution_time_ms") // Execution time in milliseconds
-  memoryUsedKb         Int?                   @map("memory_used_kb") // Memory usage in kilobytes
-  testResults          Json?                  @map("test_results") // Detailed results: [{test_case_id, passed, output, error, execution_time}]
-  passedTests          Int?                   @map("passed_tests") // Number of test cases passed
-  totalTests           Int?                   @map("total_tests") // Total number of test cases
-  score                Int? // Calculated score based on passed tests
-  
+  id           String @id @default(uuid()) @db.Char(36)
+  submissionId String @db.Char(36)
+  challengeId  String @db.Char(36)
+
+  // Submission data
+  code     String @db.Text
+  language String @db.VarChar(50)
+
+  // Judge0 integration
+  judge0Token String?          @db.VarChar(255) // Token from Judge0 API
+  status      SubmissionStatus @default(PENDING)
+
+  // Execution results
+  executionTime Int? // Milliseconds
+  memoryUsed    Int? // Kilobytes
+  testResults   Json? // [{caseId: number, passed: boolean, output: string, error?: string}]
+  passedCount   Int? // Number of test cases passed
+  totalCount    Int? // Total number of test cases
+  score         Int? // Points earned
+
   // Error handling
-  errorMessage         String?                @map("error_message") @db.Text // Error from API if status is failed
-  apiResponse          Json?                  @map("api_response") // Full API response for debugging
-  
-  // Webhooks & async handling
-  webhookReceivedAt    DateTime?              @map("webhook_received_at") // When webhook callback was received
-  
+  error String? @db.Text
+
   // Timestamps
-  submittedAt          DateTime?              @map("submitted_at")
-  completedAt          DateTime?              @map("completed_at")
+  submittedAt DateTime  @default(now())
+  completedAt DateTime?
 
   // Relations
   submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   challenge  CodeChallenge  @relation(fields: [challengeId], references: [id])
 
-  @@index([externalSubmissionId])
-  @@index([submissionId, challengeId])
+  @@unique([submissionId, challengeId]) // One submission per challenge per test submission
+  @@index([submissionId])
+  @@index([challengeId])
+  @@index([judge0Token])
   @@index([status])
-  @@map("code_submissions")
 }

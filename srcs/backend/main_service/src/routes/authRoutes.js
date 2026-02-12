@@ -28,9 +28,19 @@ router.get('/google/callback',
                 email: req.user.email,
                 role: req.user.role
             });
-            res.redirect(`http://localhost:5173/Login?token=${tokens.accessToken}`);
+            const userData = {
+                id: req.user.id,
+                email: req.user.email,
+                firstName: req.user.firstName,
+                lastName: req.user.lastName,
+                avatarUrl: req.user.avatarUrl,
+                role: req.user.role
+            };
+            const userString = encodeURIComponent(JSON.stringify(userData));
+            res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&user=${userString}`);
         } catch (error) {
-            console.log(error);
+            res.status(400)
+            .json({ message: 'Google authentication failed' });
         }
     }
 );
