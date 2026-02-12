@@ -8,7 +8,7 @@ const getUserById = async (userId)=> {
 
 const getByEmail = async (email) => {
     return await prisma.user.findUnique({
-        where :{email :email }
+        where :{email : email }
     })
 }
 

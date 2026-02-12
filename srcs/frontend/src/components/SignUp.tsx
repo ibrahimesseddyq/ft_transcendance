@@ -1,43 +1,28 @@
-import { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
-import { useSearchParams, useNavigate } from 'react-router-dom';
+
 
 const Signup = () => {
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const {
         register,
         handleSubmit,
         reset,
-        setError,
         formState: { errors }
     } = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
     });
 
-    useEffect(() => {
-        console.log("Full URL Search String:", window.location.search);
-        const tokenFromUrl = searchParams.get('token');
-        console.log("My google token is, ", tokenFromUrl);
-        if (tokenFromUrl) {
-            localStorage.setItem("token", tokenFromUrl);
-            Notification("Google Login Successful", "success");
-            navigate('/Dashboard', { replace: true });
-        }
-    }, [searchParams, navigate]);
-
     const GoogleSubmit = async () => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
-        Notification("succes login to Google", "success");
+        window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {
         try {
-            const response = await fetch("http://localhost:3000/api/auth/register", {
+            const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

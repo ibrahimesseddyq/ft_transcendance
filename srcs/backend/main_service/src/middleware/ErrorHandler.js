@@ -21,8 +21,8 @@ const errorFactory = (err,res) => {
     }
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(JSON.stringify(err,null,2))
-        res.status(400).json({
-            errors:['bad request']
+        res.status(500).json({
+            errors:['internal server error']
         });
         return true;
     }
@@ -31,7 +31,7 @@ const errorFactory = (err,res) => {
 
 const errorHandler = (err,req,res,next) => {
     console.log("START ERROR")
-    console.log('unhandled error',err);
+    console.log(err);
     console.log("END ERROR")
 
     const handled = errorFactory(err,res);

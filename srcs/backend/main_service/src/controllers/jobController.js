@@ -1,3 +1,4 @@
+const { default: data } = require('../../../quiz_service/src/config/env');
 const jobService = require('../services/jobService');
 
 
@@ -52,10 +53,9 @@ const getJobById = async(req,res,next) => {
 	}
 }
 
-const getJobs = async (req, res) => {
+const getJobs = async (req, res, next) => {
   try {
     const filters = req.query; 
-	console.log("filters : ", filters)
     const jobs = await jobService.getJobs(filters);
     
     res.status(200).json({
@@ -67,10 +67,24 @@ const getJobs = async (req, res) => {
   }
 }; 
 
+const getApplicationsByJobId = async (req, res, next) => {
+  try {
+	const jobId =  req.params?.id;
+    const result = await jobService.getApplicaticationsById(jobId);
+    res.status(200).json({
+        status: true,
+        data:result
+    });
+  } catch (error) {
+    next(error);
+  }
+}; 
+
 module.exports = {
 	createJob,
 	updateJob,
 	deleteJob,
 	getJobById,
-	getJobs
+	getJobs,
+	getApplicationsByJobId
 }
