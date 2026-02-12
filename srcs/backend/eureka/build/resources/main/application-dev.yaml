@@ -1,0 +1,6 @@
+# For eureka server, nothing changes
+# But for gateway:
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

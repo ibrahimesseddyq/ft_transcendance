@@ -12,7 +12,7 @@ down: down-dev
 	docker compose -f srcs/compose.prod.yml down
 
 clean-dev:
-	docker compose -f srcs/compose.yml down --remove-orphans
+	docker compose -f srcs/compose.yml down -v --remove-orphans
 clean: clean-dev
 	docker compose -f srcs/compose.prod.yml down --remove-orphans
 	docker system prune -f
