@@ -21,6 +21,7 @@ router.get('/google/callback',
         failureRedirect: 'http://localhost:5173/Login',
         session: false 
     }),
+    // the followin async function should moved to the controller
     async (req, res) => {
         try {
             const tokens = jwtService.generateAuthTokens({

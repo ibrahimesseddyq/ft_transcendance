@@ -60,7 +60,7 @@ const advance = async (applicationId) => {
 	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
 	if (currentPhase.status !== 'completed')
 		throw new HttpException(400,"can't advance to next phase");
-	if(phases.indexOf(currentPhase) + 1 > phases.length)
+	if(phases.indexOf(currentPhase) + 1 >= phases.length)
 		throw new HttpException(400, 'application already completed');
 	const nextPhase = phases[phases.indexOf(currentPhase) + 1];
 	const {newPhase, newApplication} = await Promise.all([
