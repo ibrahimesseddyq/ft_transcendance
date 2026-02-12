@@ -129,7 +129,7 @@ export const CandidateProfileSchema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
-  numberPhone: z
+  phone: z
     .string()
     .transform((val) => val.replace(/\D/g, ""))
     .pipe(

@@ -23,6 +23,7 @@ export function Main() {
   const token = useAuthStore((state) => state.token);
   const profile = useAuthStore((state) => state.profile);
 
+
   const hasProfile = !!profile;
   
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
@@ -41,8 +42,7 @@ export function Main() {
   if (token && !user) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
-console.log("Current Profile Object:", profile);
-console.log("Computed hasProfile:", !!profile);
+
   if (!token && isPublicPage) {
     return (
       <FullScreenWrapper>
@@ -68,7 +68,7 @@ console.log("Computed hasProfile:", !!profile);
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#F0F3FA] md:h-screen overflow-y-auto custom-scrollbar md:px-4">
+    <div className="min-h-screen w-full bg-[#F0F3FA] md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
       <div className="h-20 w-full sticky top-2 z-50">
         <Header />
       </div>
