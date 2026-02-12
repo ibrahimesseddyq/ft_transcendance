@@ -31,7 +31,6 @@ services:
       - microservices
     env_file:
       - .env
-<<<<<<< HEAD
     ports:
       - "3001:3001"
   gateway:
@@ -41,18 +40,3 @@ services:
       - "8081:8081"
     networks:
       - microservices
-=======
-    depends_on:
-      quiz_service_db:
-        condition: service_healthy
-  # gateway:
-  #   build: ./backend/gateway
-  #   container_name: api-gateway
-  #   ports:
-  #     - "8081:8081"
-  #   depends_on:
-  #     eureka:
-  #       condition: service_healthy
-  #   networks:
-  #     - microservices
->>>>>>> kube
