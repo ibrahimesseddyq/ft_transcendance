@@ -10,6 +10,7 @@ const errorHandler = require('./middleware/ErrorHandler');
 const userRoutes =  require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes');
+const applicationRoutes =  require('./routes/applicationRoutes')
 const profileRoutes = require('./routes/profileRoutes');
 const env = require('./config/env');
 const path = require('path');
@@ -29,7 +30,12 @@ app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
 app.use(morgan('combined'));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+
+//The cross-origin value tells the browser that it is safe to load this resource on a different port
+app.use('/uploads', (req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
@@ -45,16 +51,25 @@ app.use(passport.session());
 
 // routes 
 app.use('/api/auth', authRoutes); 
+
 app.use('/api/users',
   verifyToken,
   verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
+
 app.use('/api/jobs',  verifyToken,
           verifyRoles([UserRole.recruiter,UserRole.admin]),
-          jobRoutes); 
+          jobRoutes);
+
 app.use('/api/profiles/',
   verifyToken,
   profileRoutes);
+
+
+app.use('/api/applications',applicationRoutes)
+
+
+
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
 })

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  namespace: hirefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "ai-service"
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: ai-service
+          image: ai-service:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Source Vault secrets
+              source /vault/secrets/config
+              # Start the application
+              python app.py
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-service
+  namespace: hirefy
+spec:
+  selector:
+    app: ai-service
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-service-config
+  namespace: hirefy
+data:
+  PORT: "5000"

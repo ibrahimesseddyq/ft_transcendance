@@ -1,6 +1,10 @@
 const multer =  require('multer');
 const path =  require('path');
+const fs = require('fs');
 const {HttpException} = require('../utils/httpExceptions');
+
+fs.mkdirSync(`${__dirname}/../../uploads/avatars`, {recursive: true});
+fs.mkdirSync(`${__dirname}/../../uploads/resumes`, {recursive: true});
 
 const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
@@ -10,10 +14,11 @@ const diskStorage =  multer.diskStorage({
         cb(null, uploadPath);
     },
     filename:(req, file, cb) => {
+        console.log(req.body)
         const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)
-    }                                                                         
+    }
 })
 
 const fileFilter = (req, file, cb) => {
@@ -42,6 +47,7 @@ const upload =  multer({
 });
 
 const uploadProfile = multer({
+    
     storage: diskStorage,
     fileFilter: fileFilter,
     limits : {

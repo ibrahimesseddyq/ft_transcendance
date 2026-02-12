@@ -28,15 +28,22 @@ const deleteJob =  async(jobId) => {
 }
 
 const getJobs = async (filters) => {
-    console.log("I'm in getJobs function");
-    console.log("this is the filters = ", filters);
     return await jobRepository.findManyJobs(filters);
 }
+
+const getApplicaticationsById = async (jobId) => {
+    const job =  await jobRepository.getApplicationsByJobId(jobId);
+    if (!job)
+        throw new HttpException(404, 'job not found');
+    return job.applications;
+}
+
  
 module.exports = {
     getJobs,
     deleteJob,
     getJobById,
     updateJob,
-    createJob
+    createJob,
+    getApplicaticationsById
 }
