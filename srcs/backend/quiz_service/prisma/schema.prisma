@@ -1,6 +1,7 @@
 // =============================================
-// HIRING PLATFORM - QUIZ SERVICE (SEPARATED)
-// Handles: Quiz Tests & Code Tests as separate entities
+// HIRING PLATFORM - QUIZ SERVICE (LIBRARY MODE)
+// Test Library + Evaluation Engine
+// NO submission tracking - main_service handles that
 // Database: MySQL 8.0+
 // =============================================
 
@@ -17,217 +18,115 @@ datasource db {
 // ENUMS
 // ===================
 
-enum SubmissionStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-  TIMEOUT
+enum TestType {
+  QUIZ
+  CODE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }
 
 // ===================
-// QUIZ TEST (MCQ)
+// ONLY 1 TABLE - TEST LIBRARY
 // ===================
 
-model QuizTest {
-  id               String   @id @default(uuid()) @db.Char(36)
-  title            String   @db.VarChar(255)
-  description      String?  @db.Text
-  durationMinutes  Int      
-  passingScore     Int      @default(60) // Percentage (0-100)
-  createdBy        String   @db.Char(36) // Foreign key to main_service.users
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model Test {
+  id          String   @id @default(uuid()) @db.Char(36)
+  type        TestType
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
 
-  // Relations
-  questions        QuizQuestion[]
-  submissions      QuizSubmission[]
+  // All test content stored as JSON
+  content Json
+  /**
+   * Structure:
+   * {
+   * "durationMinutes": 30,
+   * "passingScore": 70,
+   * "items": [
+   * // FOR QUIZ TYPE:
+   * {
+   * "id": "q1",
+   * "question": "What is a closure in JavaScript?",
+   * "choices": [
+   * {"id": "A", "text": "A way to close files", "isCorrect": false},
+   * {"id": "B", "text": "Function with lexical scope access", "isCorrect": true},
+   * {"id": "C", "text": "A loop structure", "isCorrect": false},
+   * {"id": "D", "text": "An error handler", "isCorrect": false}
+   * ],
+   * "points": 1,
+   * "explanation": "Optional explanation for learning"
+   * },
+   * // FOR CODE TYPE:
+   * {
+   * "id": "c1",
+   * "title": "Two Sum Problem",
+   * "description": "Given an array of integers nums and an integer target...",
+   * "starterCode": "function twoSum(nums, target) {\n  // Your code here\n}",
+   * "language": "javascript",
+   * "testCases": [
+   * {
+   * "input": "[2,7,11,15]\n9",
+   * "expectedOutput": "[0,1]",
+   * "isHidden": false,
+   * "points": 3
+   * },
+   * {
+   * "input": "[3,2,4]\n6",
+   * "expectedOutput": "[1,2]",
+   * "isHidden": false,
+   * "points": 3
+   * },
+   * {
+   * "input": "[1000 numbers...]\n500",
+   * "expectedOutput": "[234,567]",
+   * "isHidden": true,
+   * "points": 4
+   * }
+   * ],
+   * "timeLimit": 5000,
+   * "memoryLimit": 128000,
+   * "points": 10,
+   * "hints": ["Think about hash maps", "O(n) time complexity"]
+   * }
+   * ]
+   * }
+   */
 
+  // Library metadata for browsing/filtering
+  category   String?     @db.VarChar(100) // "JavaScript", "Algorithms", "System Design"
+  difficulty Difficulty?
+  tags       Json? // ["frontend", "react", "hooks", "es6"]
+
+  // Publishing control
+  isPublished Boolean @default(false) // Only published tests shown in library
+  version     Int     @default(1) // For versioning tests
+
+  // Ownership
+  createdBy String   @db.Char(36) // → main_service.users (recruiter/admin)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([isPublished])
+  @@index([category])
+  @@index([difficulty])
   @@index([createdBy])
 }
 
 // ===================
-// QUIZ QUESTIONS
+// NOTES
 // ===================
 
-model QuizQuestion {
-  id         String   @id @default(uuid()) @db.Char(36)
-  quizTestId String   @db.Char(36)
-  question   String   @db.Text
-  choices    Json     // Array of exactly 4 choices: [{id: string, text: string, isCorrect: boolean}]
-  points     Int      @default(1)
-  order      Int      
+// NO Submission table - main_service stores submissions
+// NO Answer table - main_service stores answers
+// NO CodeExecution table - evaluation is stateless
 
-  // Relations
-  quizTest   QuizTest     @relation(fields: [quizTestId], references: [id], onDelete: Cascade)
-  answers    QuizAnswer[]
-
-  @@index([quizTestId])
-  @@index([quizTestId, order])
-}
-
-// ===================
-// QUIZ SUBMISSION
-// ===================
-
-model QuizSubmission {
-  id                 String    @id @default(uuid()) @db.Char(36)
-  applicationPhaseId String    @db.Char(36) // Foreign key to main_service.application_phases
-  candidateId        String    @db.Char(36) // Foreign key to main_service.users
-  quizTestId         String    @db.Char(36)
-  
-  startedAt          DateTime  @default(now())
-  submittedAt        DateTime? 
-  
-  score              Int?      // Total score achieved
-  maxScore           Int?      // Total possible score
-  passed             Boolean?  // Computed based on passingScore
-  timeSpent          Int?      // Seconds
-  
-  // Relations
-  quizTest           QuizTest     @relation(fields: [quizTestId], references: [id])
-  answers            QuizAnswer[]
-
-  @@index([quizTestId])
-  @@index([candidateId])
-  @@index([applicationPhaseId])
-  @@unique([applicationPhaseId, quizTestId]) // One submission per quiz test per phase
-}
-
-// ===================
-// QUIZ ANSWERS
-// ===================
-
-model QuizAnswer {
-  id               String    @id @default(uuid()) @db.Char(36)
-  submissionId     String    @db.Char(36)
-  questionId       String    @db.Char(36)
-  selectedChoiceId String?   @db.VarChar(50) // ID from the choices JSON array
-  isCorrect        Boolean?  
-  answeredAt       DateTime  @default(now())
-
-  // Relations
-  submission QuizSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  question   QuizQuestion   @relation(fields: [questionId], references: [id])
-
-  @@index([submissionId])
-  @@index([questionId])
-  @@unique([submissionId, questionId]) // One answer per question per submission
-}
-
-// ===================
-// CODE TEST
-// ===================
-
-model CodeTest {
-  id               String   @id @default(uuid()) @db.Char(36)
-  title            String   @db.VarChar(255)
-  description      String?  @db.Text
-  durationMinutes  Int      
-  passingScore     Int      @default(60) // Percentage (0-100)
-  createdBy        String   @db.Char(36) // Foreign key to main_service.users
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  // Relations
-  challenges       CodeChallenge[]
-  submissions      CodeSubmission[]
-
-  @@index([createdBy])
-}
-
-// ===================
-// CODE CHALLENGES
-// ===================
-
-model CodeChallenge {
-  id              String   @id @default(uuid()) @db.Char(36)
-  codeTestId      String   @db.Char(36)
-  title           String   @db.VarChar(255)
-  description     String   @db.Text
-  starterCode     String?  @db.Text // Template code for Monaco editor
-  language        String   @db.VarChar(50) // e.g., "javascript", "python", "java"
-  testCases       Json     // [{input: string, expectedOutput: string, isHidden: boolean, points: number}]
-  points          Int      @default(10)
-  timeLimit       Int      @default(5000) // milliseconds for Judge0
-  memoryLimit     Int      @default(128000) // KB for Judge0
-  order           Int      
-  
-  // Relations
-  codeTest        CodeTest           @relation(fields: [codeTestId], references: [id], onDelete: Cascade)
-  solutions       CodeSolution[]
-
-  @@index([codeTestId])
-  @@index([codeTestId, order])
-}
-
-// ===================
-// CODE SUBMISSION
-// ===================
-
-model CodeSubmission {
-  id                 String    @id @default(uuid()) @db.Char(36)
-  applicationPhaseId String    @db.Char(36) // Foreign key to main_service.application_phases
-  candidateId        String    @db.Char(36) // Foreign key to main_service.users
-  codeTestId         String    @db.Char(36)
-  
-  startedAt          DateTime  @default(now())
-  submittedAt        DateTime? 
-  
-  score              Int?      // Total score achieved
-  maxScore           Int?      // Total possible score
-  passed             Boolean?  // Computed based on passingScore
-  timeSpent          Int?      // Seconds
-  
-  // Relations
-  codeTest           CodeTest       @relation(fields: [codeTestId], references: [id])
-  solutions          CodeSolution[]
-
-  @@index([codeTestId])
-  @@index([candidateId])
-  @@index([applicationPhaseId])
-  @@unique([applicationPhaseId, codeTestId]) // One submission per code test per phase
-}
-
-// ===================
-// CODE SOLUTIONS (Judge0 Integration)
-// ===================
-
-model CodeSolution {
-  id                String             @id @default(uuid()) @db.Char(36)
-  submissionId      String             @db.Char(36)
-  challengeId       String             @db.Char(36)
-  
-  // Submission data
-  code              String             @db.Text
-  language          String             @db.VarChar(50)
-  
-  // Judge0 integration
-  judge0Token       String?            @db.VarChar(255) // Token from Judge0 API
-  status            SubmissionStatus   @default(PENDING)
-  
-  // Execution results
-  executionTime     Int?               // Milliseconds
-  memoryUsed        Int?               // Kilobytes
-  testResults       Json?              // [{caseId: number, passed: boolean, output: string, error?: string}]
-  passedCount       Int?               // Number of test cases passed
-  totalCount        Int?               // Total number of test cases
-  score             Int?               // Points earned
-  
-  // Error handling
-  error             String?            @db.Text
-  
-  // Timestamps
-  submittedAt       DateTime           @default(now())
-  completedAt       DateTime?          
-
-  // Relations
-  submission CodeSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  challenge  CodeChallenge  @relation(fields: [challengeId], references: [id])
-
-  @@index([submissionId])
-  @@index([challengeId])
-  @@index([judge0Token])
-  @@index([status])
-  @@unique([submissionId, challengeId]) // One solution per challenge per submission
-}
+// This service is PURE:
+// - Input: Test content
+// - Output: Evaluation result
+// - No state management
+// - No application tracking

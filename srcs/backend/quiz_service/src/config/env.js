@@ -2,8 +2,6 @@ import { z } from 'zod';
 import path from 'path';
 import dotenv from 'dotenv'
 
-console.log("path ",path.resolve(import.meta.dirname,"../../.env.dev"))
-
 dotenv.config({
   path: path.resolve(import.meta.dirname,"../../.env.dev"),
   override: true
@@ -34,7 +32,7 @@ const envSchema = z.object({
 const envVars = envSchema.safeParse(process.env);
 
 if (!envVars.success) {
-    console.error("❌ Invalid environment variables:", envVars.error.format());
+    console.error("Invalid environment variables:", envVars.error.format());
     process.exit(1);
 }
 

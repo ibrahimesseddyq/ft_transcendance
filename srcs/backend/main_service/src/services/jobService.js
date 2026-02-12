@@ -9,7 +9,7 @@ const createJob = async (jobData) => {
 
 const updateJob = async (jobId, updateData) => {
     if (!await jobRepository.findJobById(jobId))
-        throw new HttpException(400, 'job does not exists');
+        throw new HttpException(404, 'job does not exists');
     const job = await jobRepository.updateJob(jobId, updateData);
     return job;
 }
@@ -17,13 +17,13 @@ const updateJob = async (jobId, updateData) => {
 const getJobById = async (jobId) => {
     const job = await jobRepository.findJobById(jobId);
     if (!job)
-        throw new HttpException(400, "job not found");
+        throw new HttpException(404, "job not found");
     return job;
 }
 
 const deleteJob =  async(jobId) => {
     if (!await jobRepository.findJobById(jobId))
-        throw new HttpException(400, "job not found");
+        throw new HttpException(404, "job not found");
     await jobRepository.deleteJob(jobId);
 }
 
@@ -31,7 +31,7 @@ const getJobs = async (filters) => {
     return await jobRepository.findManyJobs(filters);
 }
 
-const getApplicaticationsById = async (jobId) => {
+const getApplicaticationsBJobId = async (jobId) => {
     const job =  await jobRepository.getApplicationsByJobId(jobId);
     if (!job)
         throw new HttpException(404, 'job not found');
@@ -45,5 +45,5 @@ module.exports = {
     getJobById,
     updateJob,
     createJob,
-    getApplicaticationsById
+    getApplicaticationsBJobId
 }

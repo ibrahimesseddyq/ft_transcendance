@@ -68,7 +68,7 @@ const getJobs = async (req, res, next) => {
 const getApplicationsByJobId = async (req, res, next) => {
   try {
 	const jobId =  req.params?.id;
-    const result = await jobService.getApplicaticationsById(jobId);
+    const result = await jobService.getApplicaticationsByJobId(jobId);
     res.status(200).json({
         status: true,
         data:result

@@ -11,29 +11,10 @@ dotenv.config({
   path: path.resolve(__dirname,'../../.env.dev'),
   override: true
 });
-const vaultFiles = ['/vault/secrets/.env.database ',
-                    '/vault/secrets/.env.oauth ',
-                    '/vault/secrets/.env.jw'];
-
-// function listDirectoryTree(dir, prefix = '') {
-//   const files = fs.readdirSync(dir, { withFileTypes: true });
-
-//   files.forEach((file, index) => {
-//     // Ignore heavy folders or hidden git files to keep output clean
-//     if (file.name === 'node_modules' || file.name === '.git') return;
-
-//     const isLast = index === files.length - 1;
-//     const marker = isLast ? '└── ' : '├── ';
-    
-//     console.log(`${prefix}${marker}${file.name}`);
-
-//     if (file.isDirectory()) {
-//       const newPrefix = prefix + (isLast ? '    ' : '│   ');
-//       listDirectoryTree(path.join(dir, file.name), newPrefix);
-//     }
-//   });
-// }
-// listDirectoryTree('/')
+const vaultFiles = [
+  '/vault/secrets/.env.database ',
+  '/vault/secrets/.env.oauth ',
+  '/vault/secrets/.env.jw'];
 
 vaultFiles.forEach(file => {
   if (fs.existsSync(file)) {

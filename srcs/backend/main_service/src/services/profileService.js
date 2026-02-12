@@ -4,9 +4,6 @@ const fileService = require('./fileService');
 const userService = require('./userService');
 
 const createProfile = async  (userId , profileData) => {
-    const user = await userService.getUserById(userId);
-    if (!user)
-        throw new HttpException(404, "user not found");
     const profile = await profileRepository.getProfileById(userId);
     if (profile)
             throw new HttpException(400,"profile already exists");
@@ -17,11 +14,12 @@ const createProfile = async  (userId , profileData) => {
         if (avatarUrl)
             await userService.updateUser(userId, {avatarUrl})
     }
-    if (profileData.file?.resume?.[0])
+    if (profileData.files?.resume?.[0])
     {
         const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
         createData.resumeUrl = resumeUrl;
     }
+    
     return await profileRepository.createProfile({
         ...createData,
         userId
@@ -46,7 +44,11 @@ const updateProfile = async (userId, profileData) => {
     {
         const {avatarUrl} = await fileService.saveAvatar(userId,profileData.files.avatar[0])
         if (user.avatarUrl && user.avatarUrl !== avatarUrl)
-            await fileService.deleteFile(user.avatarUrl);
+        {
+            await Promise.all([fileService.deleteFile(user.avatarUrl),
+                userService.updateUser(userId, {avatarUrl})
+            ])
+        }
     }
     return await profileRepository.updateProfile(userId, updateData);
 }
