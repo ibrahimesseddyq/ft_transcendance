@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const fileSchema = z
   .file()
-  .max(5_000_000)
+  .max(10_000_000)
 
 
 export const RegisterSchema = z.object({
@@ -129,7 +129,7 @@ export const CandidateProfileSchema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
-  numberPhone: z
+  phone: z
     .string()
     .transform((val) => val.replace(/\D/g, ""))
     .pipe(

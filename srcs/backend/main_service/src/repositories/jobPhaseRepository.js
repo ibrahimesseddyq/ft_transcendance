@@ -1,26 +1,26 @@
 const {prisma} = require('../config/prisma');
 
 const createJobPhase = async(phaseData) => {
-	return await prisma.jobphase.create({
+	return await prisma.jobPhase.create({
 		data : phaseData
 	})
 }
 
 const updateJobPhase = async (jobPhaseId, updateData) => {
-	return await prisma.jobphase.update({
+	return await prisma.jobPhase.update({
 		where : {id : jobPhaseId},
 		data: updateData
 	})
 }
 
 const getJobPhaseById = async (jobPhaseId) => {
-	return prisma.jobphase.findUnique({
+	return prisma.jobPhase.findUnique({
 		where : {id: jobPhaseId}
 	})
 }
 
 const deleteJobPhase = async (jobPhaseId) => {
-	return await prisma.jobphase.delete({
+	return await prisma.jobPhase.delete({
 		where : {
 			id : jobPhaseId
 		}
@@ -28,7 +28,7 @@ const deleteJobPhase = async (jobPhaseId) => {
 }
 
 const getJobPhases = async (JobId) => {
-	return await prisma.jobphase.findMany({
+	return await prisma.jobPhase.findMany({
 		where : {
 			jobId: JobId
 		}

@@ -11,7 +11,7 @@ export async function ProfileChecker({ user, token, setProfile }: ProfileProps) 
     try {
         const res = await fetch(`${BACKEND_URL}/api/profiles/${user.id}`, {
             method: "GET",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { "Authorization": `Bearer ${token}`}
         });
         const result = await res.json();
         if (res.ok){

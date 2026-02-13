@@ -50,13 +50,6 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
             >
 
               <div className="absolute top-3 right-3 flex items-center gap-2">
-                {/* see Application */}
-                <Link to={`/Application/${item.id}`}
-                    className='cursor-pointer'
-                    title="See the Job Application">
-                  <Eye
-                    className="w-6 h-6 text-black hover:text-[#00adef]"/>
-                </Link>
                 {/* closed or open or archived*/}
                 {item.status === "closed" ? (
                   <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
