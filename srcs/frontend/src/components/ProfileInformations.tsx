@@ -115,7 +115,7 @@ export function ProfileInformations() {
  return (
     <form
       onSubmit={handleSubmit(onApplySubmit)}
-      className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent items-center justify-center ">
+      className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent items-center justify-center w-full mx-auto">
       
       <header className="border-b border-gray-800 pb-4 w-full">
         <h1 className="text-black text-2xl font-bold">Profile Setup</h1>
