@@ -30,7 +30,7 @@ const login = async (data) => {
 const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
     if (existingUser)
-        throw new HttpException(409, 'Email already exists');
+        return { message: 'If the email is valid, an account will be created.' };
     const user = await userService.createUser(data);
     const verificationToken =await jwtService.generateVerificationToken(user.id,user.email);
     await sendMail({
@@ -40,7 +40,7 @@ const  register = async (data) => {
         text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/auth/verify-email/${verificationToken}`
     });
     delete user.passwordHash;
-    return user;
+    return { message: 'If the email is valid, an account will be created.' };
 }
 
 const refresh = async  (refreshToken) => {
