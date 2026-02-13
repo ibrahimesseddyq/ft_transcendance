@@ -11,7 +11,11 @@ services:
       - main_service_db:/var/lib/mysql
     ports:
       - "3306:3306"
-
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   quiz_service_db:
     image: mariadb
     restart: always
@@ -24,6 +28,11 @@ services:
       - quiz_service_db:/var/lib/mysql
     ports:
       - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
 volumes:
   quiz_service_db:
