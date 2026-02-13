@@ -38,7 +38,6 @@ dev: clean-dev down-dev
 	
 
 	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
-	(cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
 
 re: clean up
 
