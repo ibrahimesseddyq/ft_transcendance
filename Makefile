@@ -1,40 +1,141 @@
+
+# Use one shell per target (fixes & + wait, multi-line scripts)
+.ONESHELL:
+SHELL := /bin/sh
+
+DEV_COMPOSE  := docker compose -f srcs/compose.yml
+PROD_COMPOSE := docker compose -f srcs/compose.yml -f srcs/compose.prod.yml
+
 build:
 	# cd srcs/backend/gateway && ./gradlew clean bootJar
 	true
+
+# ---------- Docker Compose (prod) ----------
 up: build
-	docker compose -f srcs/compose.yml -f srcs/compose.prod.yml build --no-cache 
-	docker compose -f srcs/compose.yml -f srcs/compose.prod.yml up
+	$(PROD_COMPOSE) build --no-cache
+	$(PROD_COMPOSE) up
 
-down-dev:
-	docker compose -f srcs/compose.yml down
+down:
+	$(PROD_COMPOSE) down
 
-down: down-dev
-	docker compose -f srcs/compose.prod.yml down
-
-clean-dev:
-	docker compose -f srcs/compose.yml down --remove-orphans
-clean: clean-dev
-	docker compose -f srcs/compose.prod.yml down --remove-orphans
+clean: clear
+	$(PROD_COMPOSE) down --remove-orphans || true
 	docker system prune -f
 
-re: clean  up
+# ---------- Docker Compose (dev) ----------
+down-dev:
+	$(DEV_COMPOSE) down
 
-dev:
-	# cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev' &
-	cd srcs/backend/main_service && npm install && npm run dev &
-	# cd srcs/backend/quiz_service && npm install && npm run dev &
-	docker compose -f srcs/compose.yml  build --no-cache 
-	docker compose -f srcs/compose.yml  up
-	# wait
+clean-dev: clear
+	$(DEV_COMPOSE) down --remove-orphans || true
 
-.PHONY: clear
+# Main dev target
+dev: clean-dev down-dev
+	# (cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev') &
 
-clear: clean-dev
+	$(DEV_COMPOSE) build --no-cache
+	$(DEV_COMPOSE) up -d
+	
+
+	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
+	(cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
+
+re: clean up
+
+# Kill local dev processes/ports only (NO docker compose here)
+clear:
 	@echo "Cleaning dev processes and ports..."
-	-@pgrep -af "nodemon|node server.js" || true
-	-@pkill -f "nodemon" || true
-	-@pkill -f "node server.js" || true
-	-@kill -9 $$(lsof -t -i:3000) 2>/dev/null || true
-	-@kill -9 $$(lsof -t -i:3306) 2>/dev/null || true
-	-@kill -9 $$(lsof -t -i:3307) 2>/dev/null || true
+	@# Kill only processes LISTENING on the ports (safer than pkill -f)
+	-@PIDS=$$(lsof -t -iTCP:3000 -sTCP:LISTEN 2>/dev/null); \
+	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
+	-@PIDS=$$(lsof -t -iTCP:3306 -sTCP:LISTEN 2>/dev/null); \
+	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
+	-@PIDS=$$(lsof -t -iTCP:3307 -sTCP:LISTEN 2>/dev/null); \
+	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
 	@echo "Done."
+
+# ---------- Kubernetes ----------
+kube-build:
+	docker build -t eureka:dev ./srcs/backend/eureka
+	docker build -t gateway:dev ./srcs/backend/gateway
+	docker build -t main-service:dev ./srcs/backend/main_service
+	docker build -t quiz-service:dev ./srcs/backend/quiz_service
+	docker build -t ai-service:dev ./srcs/backend/ai_service
+
+kube-load: kube-build
+	CONTEXT=$$(kubectl config current-context)
+	if echo $$CONTEXT | grep -q "kind"; then
+		CLUSTER=$$(echo $$CONTEXT | sed 's/kind-//')
+		kind load docker-image eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev --name $$CLUSTER
+	fi
+
+kube-deploy:
+	kubectl apply -f srcs/k8s/base/namespace.yaml
+	kubectl apply -f srcs/k8s/base/vault.yaml
+	kubectl wait --for=condition=ready pod -l app=vault -n hirefy --timeout=300s
+	echo "Initializing Vault..."
+	POD=$$(kubectl get pod -n hirefy -l app=vault -o jsonpath='{.items[0].metadata.name}')
+	kubectl cp init-vault.sh hirefy/$$POD:/tmp/init-vault.sh
+	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init-vault.sh
+
+	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
+	kubectl apply -f srcs/k8s/base/mariadb.yaml
+	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
+
+	kubectl apply -f srcs/k8s/base/main-service.yaml
+	kubectl apply -f srcs/k8s/base/quiz-service.yaml
+	kubectl apply -f srcs/k8s/base/ai-service.yaml
+	kubectl apply -f srcs/k8s/base/gateway.yaml
+	kubectl get pods -n hirefy
+
+kube: kube-load kube-deploy kube-forward
+
+kube-forward:
+	kubectl port-forward -n hirefy svc/gateway 8081:8081 &
+	kubectl port-forward -n hirefy svc/main-service 3000:3000 &
+	kubectl port-forward -n hirefy svc/vault 8200:8200 &
+	wait
+
+kube-restart:
+	kubectl rollout restart deployment -n hirefy --all
+
+kube-down:
+	kubectl delete namespace hirefy
+
+# ---------- Vault helpers ----------
+vault-init:
+	echo "=== Initializing Vault Secrets ==="
+	chmod +x init-vault.sh
+	kubectl port-forward -n hirefy svc/vault 8200:8200 &
+	PF_PID=$$!
+	sleep 5
+	./init-vault.sh
+	kill $$PF_PID || true
+
+vault-ui:
+	echo "=== Opening Vault UI ==="
+	echo "Access Vault UI at: http://localhost:8200"
+	echo "Token: root"
+	kubectl port-forward -n hirefy svc/vault 8200:8200
+
+vault-logs:
+	kubectl logs -n hirefy -l app=vault -f
+
+vault-status:
+	kubectl exec -n hirefy deployment/vault -- vault status
+
+vault-secret-list:
+	echo "=== Listing Vault Secrets ==="
+	kubectl exec -n hirefy deployment/vault -- vault kv list secret/
+
+vault-secret-get:
+	echo "=== Getting Vault Secret ==="
+	read -p "Enter secret path (e.g., main-service/database): " path
+	kubectl exec -n hirefy deployment/vault -- vault kv get secret/$$path
+
+vault-secret-put:
+	echo "=== Updating Vault Secret ==="
+	read -p "Enter secret path (e.g., main-service/database): " path
+	read -p "Enter key: " key
+	read -p "Enter value: " value
+	kubectl exec -n hirefy deployment/vault -- vault kv put secret/$$path $$key="$$value"
