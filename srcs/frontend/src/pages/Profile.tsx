@@ -50,7 +50,7 @@ export function Profile() {
       currentCompany: profile?.currentCompany,
     }
    
-    const SingleLine = ({title, value}: any) =>{
+    const SingleLine = ({title, value}: any) => {
       return (
         <div className='flex gap-10 p-2'>
           <h1 className='text-black font-medium text-sm'>{title}:</h1>
