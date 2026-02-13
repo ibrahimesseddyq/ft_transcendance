@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowDownFromLine } from 'lucide-react';
 import { useState } from 'react';
+import { useAuthStore } from '@/utils/ZuStand';
 
 interface props{
   profile: any;
@@ -10,6 +11,7 @@ export function ProfileCover({ profile, user }: props) {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+  const loggedUser = useAuthStore((state) => state.user);
   const [profileUrl, setProfileUrl] = useState(window.location.href);
   const [copyState, setCopyState] = useState('');
   const handleCopy = async () =>{
@@ -62,12 +64,18 @@ export function ProfileCover({ profile, user }: props) {
             </button>
         </div>
 
-        <Link 
-          to="/Settings"
-          className="w-full sm:w-auto px-4 py-2 text-center bg-slate-100 rounded-lg text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors"
-        >
-          Edit Profile
-        </Link>
+        {loggedUser?.id === user?.id
+          ?
+            <Link 
+              to="/Settings"
+              className="w-full sm:w-auto px-4 py-2 text-center bg-slate-100 rounded-lg text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors"
+            >
+              Edit Profile
+            </Link>
+          :
+          null
+        }
+        
       </div>
     </div>
   );

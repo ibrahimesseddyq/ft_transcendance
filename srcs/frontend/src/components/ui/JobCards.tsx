@@ -1,6 +1,6 @@
 import Notification from "@/utils/TostifyNotification";
-import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from '@/utils/ZuStand';
 import {Eye, Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -14,6 +14,8 @@ interface props {
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
   const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
@@ -125,12 +127,18 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 </button>
                 
                 <div className="flex items-center gap-3">
-                   <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="text-gray-900 hover:text-blue-500">
-                    <SquarePen size={20} />
-                  </button>
-                  <button onClick={() => DeleteJob(item.id)} className="text-gray-900 hover:text-red-500">
-                    <Trash size={20} />
-                  </button>
+                  {isAdminOrRecruiter
+                    ?
+                      <>
+                        <button onClick={() => { setJobItem(item); setIsFormOpen(true); } } className="text-gray-900 hover:text-blue-500">
+                          <SquarePen size={20} />
+                        </button>
+                        <button onClick={() => DeleteJob(item.id)} className="text-gray-900 hover:text-red-500">
+                          <Trash size={20} />
+                        </button>
+                      </> 
+                    : null}
+              
                   <button className="text-gray-900 hover:text-green-500">
                     <Bookmark size={20} />
                   </button>
