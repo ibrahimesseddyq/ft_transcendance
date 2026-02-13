@@ -16,7 +16,7 @@ import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { OTPpage } from '@/components/OTPpage'
-
+import { QuizPage } from '@/components/QuizPage'
 
 export function Main() {
   const location = useLocation();
@@ -76,7 +76,7 @@ export function Main() {
       </div>
 
       <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
-        <main className="w-full">
+        <main className="w-full ">
           <Routes> 
             <Route element={<ProtectedRoute />}/>
               <Route path="/Dashboard" element={<Dashboard />} />
@@ -89,6 +89,7 @@ export function Main() {
             <Route path="/Messages" element={<NotFound />} />
             <Route path="/Createprofile" element={<Navigate to="/Dashboard" replace />} />
             <Route path="/AppAllCards" element={<AppAllCards />} />
+            <Route path="/QuizPage" element={<QuizPage />} />
             <Route path="/" element={<Navigate to="/Dashboard" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
