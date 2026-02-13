@@ -9,10 +9,24 @@ interface User {
   role: UserRole;
   firstName: string;
   lastName: string;
-  numberPhone?: string | null;
+  phone?: string | null;
   avatarUrl?: string | null;
+  resumeUrl?: string | null;
   isVerified: boolean;
   hasProfile: boolean;
+}
+interface Profile{
+  availableFrom: string;
+  currentCompany: string;
+  currentTitle: string;
+  linkedinUrl: string;
+  phone: string;
+  portfolioUrl: string;
+  resumeUrl: string;
+  skills: string;
+  user: User;
+  userId: string;
+  yearsExperience: string;
 }
 
 interface Profile {
@@ -56,13 +70,23 @@ export const useAuthStore = create<State & Action>()(
           token,
         })),
 
-      setProfile: (profileData) => set({ profile: profileData }),
+      setProfile: (profileData) =>
+        set((state) => ({
+          profile: profileData,
+          user: state.user 
+            ? { ...state.user, avatarUrl: profileData.avatarUrl,
+              phone: profileData.phone } 
+            : null,
+        })),
 
       clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
 
       updateAvatar: (url) =>
         set((state) => ({
           user: state.user ? { ...state.user, avatarUrl: url } : null,
+          profile: state.profile 
+            ? { ...state.profile, user: { ...state.profile.user, avatarUrl: url } } 
+            : null,
         })),
     }),
     { name: 'auth-storage' }

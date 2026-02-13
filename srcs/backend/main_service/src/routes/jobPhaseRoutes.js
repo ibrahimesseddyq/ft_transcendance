@@ -4,7 +4,7 @@ const router =  express.Router();
 
 router.get('/:id',jobPhaseController.getJobPhaseById)
     .post('/',jobPhaseController.createJobPhase)
-    .get('/:jobId',jobPhaseController.getJobPhases)
+    .get('/:id/phase',jobPhaseController.getJobPhases)
     .delete('/:id',jobPhaseController.deleteJobPhase)
     .patch('/:id',jobPhaseController.updateJobPhase);
 module.exports = router;

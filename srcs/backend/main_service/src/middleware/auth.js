@@ -6,7 +6,6 @@ const { getPermissionsByRole } = require('../config/permissions');
 
 const verifyToken = async (req, res, next) => {
     try {
-        // console.log(req.headers)
         // const {authorization} = req.headers;
         // if (!authorization)
         //     throw new HttpException(401,"Unauthorized");
@@ -30,10 +29,10 @@ const verifyToken = async (req, res, next) => {
 const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
-    //     if(!req.user || !req.user.role)
-    //         throw new HttpException(403, "Forbidden");
-    //     if(!allowedRoles.includes(req.user.role))
-    //         throw new HttpException(403,"Forbidden");
+        // if(!req.user || !req.user.role)
+        //     throw new HttpException(403, "Forbidden");
+        // if(!allowedRoles.includes(req.user.role))
+        //     throw new HttpException(403,"Forbidden");
         next();
     }
 }
@@ -51,19 +50,19 @@ const verifyPermissions = (permission) => {
 
 const optionalAuth = async (req, res, next) => {
     try {
-        // const {authorization} = req.headers;
-        // if (authorization) {
-        //     const {type, token} = authorization.split(' ');
-        //     if (type === "Bearer") {
-        //         const decoded = jwtService.verifyAccessToken(token);
-        //         req.user = {
-        //             id : decoded.id,
-        //             email : decoded.email,
-        //             role: decoded.role
-        //         }
-        //     }
+        const {authorization} = req.headers;
+        if (authorization) {
+            const {type, token} = authorization.split(' ');
+            if (type === "Bearer") {
+                const decoded = jwtService.verifyAccessToken(token);
+                req.user = {
+                    id : decoded.id,
+                    email : decoded.email,
+                    role: decoded.role
+                }
+            }
 
-        // }
+        }
         next();
     } catch (error) {
         next();

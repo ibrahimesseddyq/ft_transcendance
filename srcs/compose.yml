@@ -1,0 +1,34 @@
+services:
+  main_service_db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_MAIN_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_MAIN_DATABASE}
+      MARIADB_USER: ${MARIADB_MAIN_USER}
+      MARIADB_PASSWORD: ${MARIADB_MAIN_PASSWORD}
+    volumes:
+      - main_service_db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  quiz_service_db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_QUIZ_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_QUIZ_DATABASE}
+      MARIADB_USER: ${MARIADB_QUIZ_USER}
+      MARIADB_PASSWORD: ${MARIADB_QUIZ_PASSWORD}
+    volumes:
+      - quiz_service_db:/var/lib/mysql
+    ports:
+      - "3307:3306"
+  
+volumes:
+  quiz_service_db:
+  main_service_db:
+  
+networks:
+  microservices:
+    driver: bridge
