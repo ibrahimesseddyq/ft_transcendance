@@ -1,12 +1,18 @@
 // =============================================
-// HIRING PLATFORM - QUIZ SERVICE (LIBRARY MODE)
+// HIRING PLATFORM - QUIZ SERVICE (LIBRARY MODE - FINAL)
 // Test Library + Evaluation Engine
-// NO submission tracking - main_service handles that
+// 
+// REQUIREMENTS:
+// - QUIZ: Multiple MCQs (10, 20, etc.) per test
+// - CODE: Always ONE challenge per test
+//
 // Database: MySQL 8.0+
 // =============================================
 
 generator client {
   provider = "prisma-client-js"
+  output     = "../generated/prisma"
+  engineType = "binary"
 }
 
 datasource db {
@@ -19,8 +25,8 @@ datasource db {
 // ===================
 
 enum TestType {
-  QUIZ
-  CODE
+  QUIZ // Multiple Choice Questions (many per test)
+  CODE // Coding Challenge (one per test)
 }
 
 enum Difficulty {
@@ -30,7 +36,7 @@ enum Difficulty {
 }
 
 // ===================
-// ONLY 1 TABLE - TEST LIBRARY
+// TEST (Container)
 // ===================
 
 model Test {
@@ -39,76 +45,27 @@ model Test {
   title       String   @db.VarChar(255)
   description String?  @db.Text
 
-  // All test content stored as JSON
-  content Json
-  /**
-   * Structure:
-   * {
-   * "durationMinutes": 30,
-   * "passingScore": 70,
-   * "items": [
-   * // FOR QUIZ TYPE:
-   * {
-   * "id": "q1",
-   * "question": "What is a closure in JavaScript?",
-   * "choices": [
-   * {"id": "A", "text": "A way to close files", "isCorrect": false},
-   * {"id": "B", "text": "Function with lexical scope access", "isCorrect": true},
-   * {"id": "C", "text": "A loop structure", "isCorrect": false},
-   * {"id": "D", "text": "An error handler", "isCorrect": false}
-   * ],
-   * "points": 1,
-   * "explanation": "Optional explanation for learning"
-   * },
-   * // FOR CODE TYPE:
-   * {
-   * "id": "c1",
-   * "title": "Two Sum Problem",
-   * "description": "Given an array of integers nums and an integer target...",
-   * "starterCode": "function twoSum(nums, target) {\n  // Your code here\n}",
-   * "language": "javascript",
-   * "testCases": [
-   * {
-   * "input": "[2,7,11,15]\n9",
-   * "expectedOutput": "[0,1]",
-   * "isHidden": false,
-   * "points": 3
-   * },
-   * {
-   * "input": "[3,2,4]\n6",
-   * "expectedOutput": "[1,2]",
-   * "isHidden": false,
-   * "points": 3
-   * },
-   * {
-   * "input": "[1000 numbers...]\n500",
-   * "expectedOutput": "[234,567]",
-   * "isHidden": true,
-   * "points": 4
-   * }
-   * ],
-   * "timeLimit": 5000,
-   * "memoryLimit": 128000,
-   * "points": 10,
-   * "hints": ["Think about hash maps", "O(n) time complexity"]
-   * }
-   * ]
-   * }
-   */
+  // Test configuration
+  durationMinutes Int
+  passingScore    Int @default(60) // Percentage (0-100)
 
-  // Library metadata for browsing/filtering
-  category   String?     @db.VarChar(100) // "JavaScript", "Algorithms", "System Design"
+  // Library metadata
+  category   String?     @db.VarChar(100)
   difficulty Difficulty?
-  tags       Json? // ["frontend", "react", "hooks", "es6"]
+  tags       Json? // ["frontend", "javascript", "async"]
 
-  // Publishing control
-  isPublished Boolean @default(false) // Only published tests shown in library
-  version     Int     @default(1) // For versioning tests
+  // Publishing
+  isPublished Boolean @default(false)
 
   // Ownership
-  createdBy String   @db.Char(36) // → main_service.users (recruiter/admin)
+  createdBy String?  @db.Char(36) // → main_service.users
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  mcqs            MCQ[] // For QUIZ type - many MCQs
+  codeChallenge   CodeChallenge? @relation(fields: [codeChallengeId], references: [id]) // For CODE type - only ONE challenge
+  codeChallengeId String?        @db.Char(36)
 
   @@index([type])
   @@index([isPublished])
@@ -118,15 +75,142 @@ model Test {
 }
 
 // ===================
+// MCQ (Multiple Choice Question)
+// For QUIZ type tests only
+// ===================
+
+model MCQ {
+  id       String @id @default(uuid()) @db.Char(36)
+  testId   String @db.Char(36)
+  question String @db.Text
+
+  // Exactly 4 choices stored as JSON
+  choices Json
+  /**
+   * [
+   * {"id": "A", "text": "A way to close files", "isCorrect": false},
+   * {"id": "B", "text": "Function with lexical scope", "isCorrect": true},
+   * {"id": "C", "text": "A loop structure", "isCorrect": false},
+   * {"id": "D", "text": "An error handler", "isCorrect": false}
+   * ]
+   * Validation (application layer):
+   * - Must have exactly 4 choices
+   * - Exactly 1 choice must have isCorrect: true
+   * - Choice IDs must be unique within question
+   */
+
+  points      Int     @default(1)
+  order       Int // Display order in test
+  explanation String? @db.Text // Optional explanation for learning
+
+  // Relation
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@index([testId])
+  @@index([testId, order])
+}
+
+// ===================
+// CODE CHALLENGE
+// For CODE type tests only
+// ONE challenge per test
+// ===================
+
+model CodeChallenge {
+  id String @id @default(uuid()) @db.Char(36)
+
+  title       String @db.VarChar(255)
+  description String @db.Text
+
+  // Code template for Monaco editor
+  starterCode String @db.Text
+  language    String @db.VarChar(50) // "javascript", "python", "java", "cpp"
+
+  // Test cases for Judge0
+  testCases Json
+  /**
+   * [
+   * {
+   * "id": "tc1",
+   * "input": "[2,7,11,15]\n9",
+   * "expectedOutput": "[0,1]",
+   * "isHidden": false,
+   * "points": 3,
+   * "explanation": "Basic case with solution at beginning"
+   * },
+   * {
+   * "id": "tc2",
+   * "input": "[3,2,4]\n6",
+   * "expectedOutput": "[1,2]",
+   * "isHidden": false,
+   * "points": 3,
+   * "explanation": "Solution in middle of array"
+   * },
+   * {
+   * "id": "tc3",
+   * "input": "[large array...]\n500",
+   * "expectedOutput": "[234,567]",
+   * "isHidden": true,
+   * "points": 4,
+   * "explanation": "Edge case: large input"
+   * }
+   * ]
+   * Validation:
+   * - At least 3 test cases
+   * - Sum of points = total possible score
+   */
+
+  // Judge0 execution limits
+  timeLimit   Int @default(5000) // Milliseconds
+  memoryLimit Int @default(128000) // Kilobytes
+
+  // Scoring
+  totalPoints Int @default(10) // Sum of all test case points
+
+  // Optional hints
+  hints Json? // ["Think about hash maps", "O(n) solution exists"]
+
+  tests Test[]
+}
+
+// ===================
 // NOTES
 // ===================
 
-// NO Submission table - main_service stores submissions
-// NO Answer table - main_service stores answers
-// NO CodeExecution table - evaluation is stateless
-
-// This service is PURE:
-// - Input: Test content
-// - Output: Evaluation result
-// - No state management
-// - No application tracking
+/**
+ * SCHEMA DESIGN DECISIONS:
+ * 1. WHY separate MCQ and CodeChallenge tables?
+ * - Clear separation of concerns
+ * - Different validation rules
+ * - Different evaluation logic
+ * - Quiz: many MCQs, Code: one challenge
+ * - Easier to query and manage
+ * 2. WHY store choices/testCases as JSON?
+ * - Flexible structure
+ * - No need for additional tables
+ * - All question data in one place
+ * - Easy to validate at application layer
+ * 3. WHY no submission tracking?
+ * - Quiz service is a LIBRARY, not a workflow manager
+ * - Main service handles all submissions
+ * - Keeps quiz service stateless and focused
+ * 4. Evaluation happens via API:
+ * POST /api/v1/evaluate
+ * {
+ * testId: "...",
+ * testType: "QUIZ",
+ * responses: {
+ * answers: [
+ * {"mcqId": "q1", "selectedChoiceId": "B"},
+ * {"mcqId": "q2", "selectedChoiceId": "A"}
+ * ]
+ * }
+ * }
+ * Returns:
+ * {
+ * score: 8,
+ * maxScore: 10,
+ * passed: true,
+ * breakdown: [...]
+ * }
+ */
