@@ -6,19 +6,9 @@ interface props{
   user: any;
 }
 export function ProfileCover({ profile, user }: props) {
-  const fields = [
-    { label: 'First Name', value: user?.firstName },
-    { label: 'Last Name', value: user?.lastName },
-    { label: 'Email', value: user?.email },
-    { label: 'Phone Number', value: user?.phone || 'Not provided' },
-    { label: 'Position', value: user?.currentTitle || 'Full Stack Developer' }
-  ];
-
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-  console.log("user : ", user);
-  console.log("resume Url = ", resumeUrl);
 
   return (
     <div className="relative flex flex-col gap-4 p-6 pt-20 bg-white border rounded-xl items-center shadow-sm">
@@ -40,9 +30,9 @@ export function ProfileCover({ profile, user }: props) {
       {/* Contact Info */}
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600">
         <span className="text-sm font-light">{user?.email}</span>
-        {user?.numberPhone && (
+        {user?.phone && (
           <span className="text-sm font-light border-l border-slate-300 pl-4">
-            {user?.numberPhone}
+            {user?.phone}
           </span>
         )}
       </div>

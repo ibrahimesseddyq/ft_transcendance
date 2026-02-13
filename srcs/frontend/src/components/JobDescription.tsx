@@ -1,32 +1,41 @@
 import { CloudUpload, LucideIcon, CalendarDays ,MapPin ,MapPinned, File, Send } from 'lucide-react';
 import Notification from "@/utils/TostifyNotification"
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useAuthStore } from '@/utils/ZuStand';
+import {ToastContainer} from "react-toastify";
 
 export function JobDescription(){
   const location = useLocation();
   const navigate = useNavigate();
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
+  const user = useAuthStore((state) => state.user);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const ApplySubmit = async (data: any) => {
-    Notification("You Applyed succesfuly", "success");
-    navigate("/Jobs");
-    // try {
-    //   const response = await fetch("http://localhost:3000/api/jobs", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(data),
-    //   });
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
+  const submitData = {
+    jobId: jobItem.id,
+    candidateId: user?.id,
+    currentPhaseId: null,
+  }
+
+  const ApplySubmit = async (item: any) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(item),
+      });
       
-    //   if (!response.ok)
-    //     throw new Error(`Server error: ${response.status}`);
-      
-    //   Notification("Job added successfully!", "success");
-    //   setIsFormOpen(false);
-    // } catch (error) {
-    //   console.error("Submission failed:", error);
-    //   Notification("Error creating job", "error");
-    // }
+      if (!response.ok)
+        throw new Error(`Server error: ${response.status}`);
+      Notification("Job Applyed successfully!", "success");
+      navigate('/Jobs');
+    } catch (error) {
+      console.log("Apply failed:", error);
+      Notification("You alreay applyed", "Failed");
+    }
   };
 
   interface props{
@@ -41,22 +50,32 @@ export function JobDescription(){
       </div>
     );
   }
-  const ApplyButton = () =>{
+  const Buttons = () =>{
     return (
-      <button onClick={() => ApplySubmit(jobItem)}
-        type='button'
-        className='md:absolute md:bottom-4 md:right-4 h-10 max-w-64 rounded-md text-white text-lg shadow-xl
-        bg-gradient-to-r  from-[#00adef] to-slate-700 px-10 hover:scale-110 duration-500'>
-        <div className="flex items-center gap-4">
-          <Send className="w-5 h-5 text-white" /> 
-          <p className="font-medium text-white">pustules now</p>
-        </div>
-      </button>
+      <div className='flex-1 justify-end min-h-12 flex flex-wrap gap-2 items-center'>
+        <button onClick={() => ApplySubmit(submitData)}
+          type='button'
+          className={`flex-1 rounded-md text-white text-lg max-w-fit h-12
+            bg-gradient-to-r  from-[#00adef] to-slate-700 px-10
+            ${isAdminOrRecruiter ? 'hidden' : ''}`}>
+          <div className="flex items-center gap-4">
+            <Send className="w-5 h-5 text-white" /> 
+            <p className="font-medium text-base text-white">pustules now</p>
+          </div>
+        </button>
+        {/* see Applications */}
+        <Link to={`/Application/${jobItem.id}`}
+            className={`flex-1 cursor-pointer rounded-md text-white text-lg text-center
+              bg-gradient-to-r  from-[#00adef] to-slate-700 px-10 max-w-fit h-12
+              ${isAdminOrRecruiter ? '' : 'hidden'}`}>
+          See Applications
+        </Link>
+      </div>
     );
   }
   const DesCover = () =>{
     return (
-      <div className={`${cardStyle} md:relative flex flex-col md:flex-row gap-4`}>
+      <div className={`${cardStyle} flex flex-col md:flex-row gap-4 `}>
         <img src={'/icons/jobCover.jpg'} className='h-24 w-24 rounded-md  bg-cover bg-center hover:scale-110 duration-500'/>
         <div className='flex flex-col gap-2 justify-between'>
           <h1 className="text-[#0a0a0a] text-2xl font-bold">{jobItem.title}</h1>
@@ -80,14 +99,15 @@ export function JobDescription(){
             />
           </div>
         </div>
-        <ApplyButton />
+        <Buttons />
       </div>
     );
   }
 
   const cardStyle = "col-span-1 bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden p-4 sm:p-6"; 
   return (
-    <div className="h-full w-full items-center">
+    <div className="h-full w-full items-center ">
+      <ToastContainer/>
       <div className='grid grid-cols-1 gap-6 h-full w-full p-4 md:px-40'>
         <DesCover />
 
@@ -139,7 +159,6 @@ export function JobDescription(){
             )}
           </div>
           
-          <ApplyButton />
         </div>
       </div>
     </div>
