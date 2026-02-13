@@ -25,10 +25,12 @@ const deleteTest = async (testId) => {
     })
 }
 
-const gettests = async (filters) => {
+const gettests = async (skip = 0, take = 10, filters = []) => {
     // here filters and pagination my implemented
     return await prisma.findMany({
-
+        skip,
+        take,
+        filters
     })
 }
 export {

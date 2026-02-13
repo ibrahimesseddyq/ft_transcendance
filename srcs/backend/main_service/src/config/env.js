@@ -8,6 +8,7 @@ dotenv.config({
   path: path.resolve(__dirname,'../../.env.dev'),
   override: true
 });
+
 const vaultFiles = [
   '/vault/secrets/.env.database ',
   '/vault/secrets/.env.oauth ',
@@ -52,7 +53,7 @@ const envSchema = z.object({
 const envVars = envSchema.safeParse(process.env);
 console.log(envVars)
 if (!envVars.success) {
-    console.error("❌ Invalid environment variables:", envVars.error.format());
+    console.error(" Invalid environment variables:", envVars.error.format());
     process.exit(1);
 }
 
