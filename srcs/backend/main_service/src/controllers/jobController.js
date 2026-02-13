@@ -1,4 +1,3 @@
-const { default: data } = require('../../../quiz_service/src/config/env');
 const jobService = require('../services/jobService');
 
 

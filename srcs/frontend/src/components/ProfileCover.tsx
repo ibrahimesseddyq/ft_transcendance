@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowDownFromLine } from 'lucide-react';
+import { useState } from 'react';
 
 interface props{
   profile: any;
@@ -9,6 +10,13 @@ export function ProfileCover({ profile, user }: props) {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+  const [profileUrl, setProfileUrl] = useState(window.location.href);
+  const [copyState, setCopyState] = useState('');
+  const handleCopy = async () =>{
+    await navigator.clipboard.writeText(profileUrl);
+    setCopyState('Copied!');
+    setTimeout(()=>{setCopyState('')}, 2000);
+  }
 
   return (
     <div className="relative flex flex-col gap-4 p-6 pt-20 bg-white border rounded-xl items-center shadow-sm">
@@ -48,9 +56,10 @@ export function ProfileCover({ profile, user }: props) {
             <ArrowDownFromLine className="h-4 w-4"/>
             CV
           </Link>
-          <button className="flex-1 bg-[#00adef] rounded-lg text-white py-2 text-sm font-semibold hover:bg-[#009cd6] transition-colors">
-            Share
-          </button>
+            <button onClick={handleCopy}
+              className="flex-1 bg-[#00adef] rounded-lg text-white py-2 text-sm font-semibold hover:bg-[#009cd6] transition-colors">
+              {copyState ? <p className='rounded-md shadow-sm'>{copyState}</p>: <p>Share</p>}
+            </button>
         </div>
 
         <Link 
