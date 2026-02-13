@@ -7,29 +7,12 @@ const createTest = async (testData) => {
 }
 
 const updateTest =  async (testId, updateData) => {
-    try {
-        return  await testRepository.updateData(testId,updateData);  
-    } catch (error) {
-        if (error instanceof prisma.PrismaClientKnownRequestError)
-        {
-            if (error.code === "P2025")
-                throw new HttpException(404, "test not found");
-        }
-        throw error
-    }
+    return  await testRepository.updateData(testId,updateData);  
+
 }
 
 const getTestById = async (testId) => {
-    try {
-        return await testRepository.getTestById(testId);
-    } catch (error) {
-        if ( error instanceof prisma.PrismaClientKnownRequestError)
-        {
-            if (error.code === 'P2025')
-                throw new HttpException(404, 'test not found');
-        }
-        throw error;
-    }
+    return await testRepository.getTestById(testId);
 }
 
 export {

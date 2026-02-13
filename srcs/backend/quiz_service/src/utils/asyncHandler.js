@@ -1,0 +1,8 @@
+
+const asyncHandler =  async (fn) => {
+    return async (req, res, next) => {
+        Promise.resolve(fn(req, res, next)).catch(error);
+    }
+}
+
+export default asyncHandler;
