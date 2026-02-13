@@ -13,7 +13,7 @@ export function Profile() {
   const [profile, setProfile] = useState(null);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-  
+
   useEffect(() => {
     const fetchUser = async () => {
         const [res1, res2] = await Promise.all([
@@ -34,6 +34,8 @@ export function Profile() {
 
     fetchUser();
   }, [id]);
+
+ 
 
   const UserInfoCard = ({user, profile}:any) => {
     const info = {

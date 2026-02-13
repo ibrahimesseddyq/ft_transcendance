@@ -17,7 +17,7 @@ const createProfile = async  (userId , profileData) => {
         if (avatarUrl)
             await userService.updateUser(userId, {avatarUrl})
     }
-    if (profileData.file?.resume?.[0])
+    if (profileData.files?.resume?.[0])
     {
         const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
         createData.resumeUrl = resumeUrl;
