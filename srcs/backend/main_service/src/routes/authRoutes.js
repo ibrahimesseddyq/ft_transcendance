@@ -41,7 +41,10 @@ router.get('/google/callback',
             res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&user=${userString}`);
         } catch (error) {
             res.status(400)
-            .json({ message: 'Google authentication failed' });
+            .json({
+                    success: false,
+                    message: 'Google authentication failed' 
+                });
         }
     }
 );

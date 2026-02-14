@@ -11,7 +11,7 @@ const createUser =  async (req,res,next) => {
             role
         });
         res.status(201).json({
-            status : true,
+            success: true,
             message: 'user created successfully',
             data: user
         })
@@ -27,7 +27,7 @@ const getUserById = async (req,res,next) => {
     try {
         const user = await userService.getUserById(req.params.id);
         res.status(200).json({
-            status : true,
+            success: true,
             data : user
         })
 
@@ -88,7 +88,7 @@ const uploadAvatar = async(req, res, next) => {
         const avatar = await userService.uploadAvatar(req.params.id, req.file);
         res.status(201)
         .json({
-            status: true,
+            success: true,
             message: 'avatar uploaded successfully',
             data: avatar
         })
@@ -102,7 +102,7 @@ const getAvatar = async (req, res, next) => {
         const avatar =  await userService.getAvatar(req.params.id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data: avatar
         })
     } catch (error) {
