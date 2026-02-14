@@ -1,25 +1,20 @@
-const {prisma} =  require('../config/prisma');
+import {prisma} from '../config/prisma';
 
-const createApplicationPhase = async (data) => {
+export const createApplicationPhase = async (data) => {
     return await prisma.applicationPhase.create({
         data
     })
 }
 
-const   updateApplicationPhase = async (applicationPhaseId, data) => {
+export const   updateApplicationPhase = async (applicationPhaseId, data) => {
     return await prisma.applicationPhase.update({
         where:{id : applicationPhaseId},
         data: data
     })
 }
 
-const getApplicationPhaseById = async (applicationPhaseId) => {
+export const getApplicationPhaseById = async (applicationPhaseId) => {
     return await prisma.applicationPhase.findUnique({
         where : {id : applicationPhaseId}
     })
-}
-module.exports = {
-    updateApplicationPhase,
-    createApplicationPhase,
-    getApplicationPhaseById
 }

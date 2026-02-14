@@ -1,6 +1,6 @@
-const {UserRole} = require('../../generated/prisma');
+import {UserRole} from '../../generated/prisma';
 
-const ROLE_PERMISSIONS = {
+export const ROLE_PERMISSIONS = {
 	[UserRole.candidate]:[
     'job:read',
     'application:create',
@@ -72,20 +72,20 @@ const ROLE_PERMISSIONS = {
 	],
 }
 
-const getPermissionsByRole = (role) => {
+export const getPermissionsByRole = (role) => {
 	if (!role)
 			return [];
 	return ROLE_PERMISSIONS[role] || [];
 };
 
-const hasPermission = (role, permission) => {
+export const hasPermission = (role, permission) => {
 	if (role === UserRole.admin)
 		return true;
 	const permissions = ROLE_PERMISSIONS[role] || [];
 	return permissions.includes(permission);
 }
 
-const canAccessResource = (userRole, userId, resourceUserId, permission) => {
+export const canAccessResource = (userRole, userId, resourceUserId, permission) => {
 	if (userRole === UserRole.admin)
 		return true;
 	if (userRole === UserRole.recruiter && !permission.startsWith('user:'))
@@ -95,7 +95,7 @@ const canAccessResource = (userRole, userId, resourceUserId, permission) => {
 	return hasPermission(userRole,permission);
 }
 
-const PERMISSION_CATEGORIES = {
+export const PERMISSION_CATEGORIES = {
   JOB: ['job:create', 'job:read', 'job:update', 'job:delete', 'job:close', 'job:reopen', 'job:archive', 'job:restore'],
   APPLICATION: ['application:create', 'application:read', 'application: read:own', 'application:update', 'application:delete', 'application:withdraw:own', 'application:advance-phase', 'application:reject', 'application:accept'],
   INTERVIEW: ['interview:create', 'interview:read', 'interview:read:own', 'interview:update', 'interview: delete', 'interview:schedule', 'interview:cancel', 'interview:join:own'],
@@ -106,11 +106,3 @@ const PERMISSION_CATEGORIES = {
   ANALYTICS: ['analytics:view', 'report:generate', 'report:export'],
   SYSTEM:  ['system:settings:read', 'system:settings:update', 'system:backup', 'system:restore', 'audit:read', 'audit:export'],
 };
-
-module.exports = {
-	ROLE_PERMISSIONS,
-	PERMISSION_CATEGORIES,
-	getPermissionsByRole,
-	hasPermission,
-	canAccessResource,
-}

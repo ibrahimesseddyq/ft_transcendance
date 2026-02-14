@@ -1,5 +1,5 @@
-const env =  require('../config/env');
-const authService = require('../services/authService');
+import env from'../config/env';
+import * as authService from'../services/authService';
 
 const cookieOptions = {
     httpOnly: true,
@@ -8,7 +8,7 @@ const cookieOptions = {
     secure: env.NODE_ENV === "production"
 }
 
-const login = async (req, res, next) => {
+export const login = async (req, res, next) => {
     try {
         const {user, accessToken, refreshToken} = await authService.login(req.body);
         res
@@ -28,7 +28,7 @@ const login = async (req, res, next) => {
     }
 }
 
-const register = async (req, res, next) => {
+export const register = async (req, res, next) => {
     try {
         const user = await authService.register(req.body)
         res
@@ -43,7 +43,7 @@ const register = async (req, res, next) => {
     }
 }
 
-const refresh =  async (req, res, next) => {
+export const refresh =  async (req, res, next) => {
     try {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken) {
@@ -69,7 +69,7 @@ const refresh =  async (req, res, next) => {
     }
 }
 
-const logout =  async (req, res, next) => {
+export const logout =  async (req, res, next) => {
     try {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken)
@@ -90,7 +90,7 @@ const getAuthStatus = (req, res) => {
     }
 };
 
-const verifyEmail = async (req, res, next) => {
+export const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
         console.log("token = " , token)
@@ -101,7 +101,7 @@ const verifyEmail = async (req, res, next) => {
     }
 };
 
-const resendVerification = async (req, res, next) => {
+export const resendVerification = async (req, res, next) => {
     try {
         const email = req.body.email;
         const message = await authService.resendVerification(email);
@@ -111,15 +111,5 @@ const resendVerification = async (req, res, next) => {
     }
 };  
 
-
-module.exports = {
-    getAuthStatus,
-    login,
-    register,
-    refresh,
-    logout,
-    verifyEmail,
-    resendVerification
-}
 
 

@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
-const env = require('../config/env');
-const {HttpException} = require('../utils/httpExceptions')
+import nodemailer from 'nodemailer';
+import env from '../config/env';
+import {HttpException} from '../utils/httpExceptions';
 
 const sendMail =  async ({from,to,subject,text}) => {
     try {
@@ -25,4 +25,4 @@ const sendMail =  async ({from,to,subject,text}) => {
     }
 }
 
-module.exports = sendMail;
+export default  sendMail;

@@ -1,7 +1,6 @@
-const { includes } = require('zod');
-const {prisma} = require('../config/prisma');
+import {prisma} from '../config/prisma';
 
-const createProfile = async (data) => {
+export const createProfile = async (data) => {
     return await prisma.profile.create({
         data,
          include: {
@@ -14,13 +13,13 @@ const createProfile = async (data) => {
     })
 }
 
-const deleteProfile = async (userId) => {
+export const deleteProfile = async (userId) => {
     return await prisma.profile.delete({
         where : {userId : userId}
     })
 }
 
-const updateProfile = async (userId, updateData) => {
+export const updateProfile = async (userId, updateData) => {
     return await prisma.profile.update({
         where: { userId: userId },
         data: updateData,
@@ -34,7 +33,7 @@ const updateProfile = async (userId, updateData) => {
     });
 };
 
-const getProfileById = async (userId) => {
+export const getProfileById = async (userId) => {
     return await prisma.profile.findUnique({
         where : {userId : userId},
         include: {
@@ -43,11 +42,4 @@ const getProfileById = async (userId) => {
             }
         }
     })
-}
-
-module.exports = {
-    createProfile,
-    deleteProfile,
-    updateProfile,
-    getProfileById
 }

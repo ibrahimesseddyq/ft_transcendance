@@ -1,7 +1,6 @@
-const data = require('../config/env');
-const profileservice = require('../services/profileService');
+import profileservice from '../services/profileService';
 
-const createProfile =  async (req, res, next) => {
+export const createProfile =  async (req, res, next) => {
     try {
         console.log(req);
         const id =  req.params?.id;
@@ -20,7 +19,7 @@ const createProfile =  async (req, res, next) => {
     }
 }
 
-const updateProfile = async (req, res, next) => {
+export const updateProfile = async (req, res, next) => {
     try {
         const id = req.params?.id || req.body.userId;
         const updatedProfile = await profileservice.updateProfile(id,{
@@ -38,7 +37,7 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
-const getProfile = async (req, res, next) => {
+export const getProfile = async (req, res, next) => {
     try {
         const profile = await profileservice.getProfile(req.params.id);
         res.status(200)
@@ -50,7 +49,8 @@ const getProfile = async (req, res, next) => {
         next(error)
     }
 }
-const deleteProfile = async (req, res, next) => {
+
+export const deleteProfile = async (req, res, next) => {
     try {
         await profileservice.deleteProfile(req.params.id);
         res.status(204)
@@ -60,7 +60,7 @@ const deleteProfile = async (req, res, next) => {
     }
 }
 
-const deleteResume = async (req, res, next) => {
+export const deleteResume = async (req, res, next) => {
     try {
         await profileservice.deleteResume(req.params.id);
         res.status(204)
@@ -70,7 +70,7 @@ const deleteResume = async (req, res, next) => {
     }
 }
 
-const updateResume = async (req, res, next) => {
+export const updateResume = async (req, res, next) => {
     try {
         const updatedResume =  await profileservice.updateResume(req.params.id, req.file)
         res.status(200)
@@ -82,13 +82,4 @@ const updateResume = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-}
-
-module.exports = {
-    createProfile,
-    updateProfile,
-    getProfile,
-    deleteProfile,
-    deleteResume,
-    updateResume
 }

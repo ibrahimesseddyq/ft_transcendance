@@ -1,24 +1,24 @@
-const {prisma} =  require('../config/prisma');
+import  {prisma} from '../config/prisma';
 
-const getUserById = async (userId)=> {
+export const getUserById = async (userId)=> {
     return await prisma.user.findUnique({
         where : {id : userId}
     })
 }
 
-const getByEmail = async (email) => {
+export const getByEmail = async (email) => {
     return await prisma.user.findUnique({
         where :{email : email }
     })
 }
 
-const createUser = async (userData) => {
+export const createUser = async (userData) => {
     return await prisma.user.create({
         data : userData,
     })
 }
 
-const updateUser = async (userId , updateData) => {
+export const updateUser = async (userId , updateData) => {
 
     return await prisma.user.update({
         where : {id : userId},
@@ -26,13 +26,13 @@ const updateUser = async (userId , updateData) => {
     })
 }
 
-const deleteUser = async  (userId) => {
+export const deleteUser = async  (userId) => {
     return await prisma.user.delete({
         where : {id : userId}
     })
 }
 
-const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
+export const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
     const where = {};
     if (role) where.role = role;
     if (search) {
@@ -50,12 +50,3 @@ const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
     })
 
 }
-
-module.exports =  {
-    getUserById,
-    getByEmail,
-    createUser,
-    updateUser,
-    deleteUser,
-    getUsers
-};

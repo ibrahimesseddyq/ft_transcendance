@@ -1,4 +1,5 @@
-const { PrismaClient } = require('../../generated/prisma'); 
+import { PrismaClient } from '../../generated/prisma';
+
 let prismaInstance = null;
 
 const  getPrismaClient = () => {
@@ -16,16 +17,12 @@ const  getPrismaClient = () => {
     return prismaInstance;
 }
 
-const   disconnect = async () => {
+export const   disconnect = async () => {
     if (prismaInstance) {
         await prismaInstance.$disconnect();
         prismaInstance = null;
     }
 }
 
-const prisma  =  getPrismaClient();
+export const prisma  =  getPrismaClient();
 
-module.exports = {
-    prisma,
-    disconnect
-};
