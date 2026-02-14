@@ -1,9 +1,9 @@
-const profileRepository =  require('../repositories/profileRepository');
-const { HttpException } = require('../utils/httpExceptions');
-const fileService = require('./fileService');
-const userService = require('./userService');
+import  * as profileRepository from '../repositories/profileRepository';
+import {HttpException} from '../utils/httpExceptions';
+import * as fileService from './fileService';
+import * as userService from './userService';
 
-const createProfile = async  (userId , profileData) => {
+export const createProfile = async  (userId , profileData) => {
     const profile = await profileRepository.getProfileById(userId);
     if (profile)
             throw new HttpException(400,"profile already exists");
@@ -26,7 +26,7 @@ const createProfile = async  (userId , profileData) => {
     })
 }
 
-const updateProfile = async (userId, profileData) => {
+export const updateProfile = async (userId, profileData) => {
     const user = await userService.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
@@ -53,14 +53,14 @@ const updateProfile = async (userId, profileData) => {
     return await profileRepository.updateProfile(userId, updateData);
 }
 
-const getProfile =  async (userId) => {
+export const getProfile =  async (userId) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
     return profile;
 }
 
-const deleteProfile = async (userId) => {
+export const deleteProfile = async (userId) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
@@ -69,7 +69,7 @@ const deleteProfile = async (userId) => {
     await profileRepository.deleteProfile(userId);
 }
 
-const deleteResume = async (userId) => {
+export const deleteResume = async (userId) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
@@ -77,7 +77,7 @@ const deleteResume = async (userId) => {
     await profileRepository.updateProfile(userId, {resumeUrl : null});
 }
 
-const updateResume = async (userId, file) => {
+export const updateResume = async (userId, file) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
@@ -87,13 +87,4 @@ const updateResume = async (userId, file) => {
     if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
         await fileService.deleteFile(profile.resumeUrl);
     return await profileRepository.updateProfile(userId,{resumeUrl});
-}
-
-module.exports = {
-    createProfile,
-    updateProfile,
-    getProfile,
-    deleteProfile,
-    deleteResume,
-    updateResume
 }

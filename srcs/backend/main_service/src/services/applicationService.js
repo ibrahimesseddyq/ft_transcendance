@@ -1,10 +1,10 @@
-const applicationRepository = require('../repositories/applicationRepository');
-const applicationPhaseservice = require('./applicationPhaseService');
-const {HttpException} = require('../utils/httpExceptions');
-const jobPhaseService =  require('./jobPhaseService');
+import * as applicationRepository from '../repositories/applicationRepository';
+import * as applicationPhaseservice from './applicationPhaseService';
+import {HttpException} from '../utils/httpExceptions';
+import * as jobPhaseService from './jobPhaseService';
 
 
-const submitApplication = async (applicationData) => {
+export const submitApplication = async (applicationData) => {
 	try {
 		 let application = await applicationRepository.createApplication({
 			jobId : applicationData.jobId,
@@ -44,7 +44,7 @@ const createApplicationPhases = async (applicationId, jobId) => {
 	return applicationPhases;
 }
 
-const getApplicaticationById = async (applicationId) => {
+export const getApplicaticationById = async (applicationId) => {
 
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
@@ -52,7 +52,7 @@ const getApplicaticationById = async (applicationId) => {
 	return application;
 }
 
-const advance = async (applicationId) => {
+export const advance = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not fount");
@@ -74,39 +74,30 @@ const advance = async (applicationId) => {
 	return newPhase;
 }
 
-const rejectApplication =  async (applicationId) => {
+export const rejectApplication =  async (applicationId) => {
 	const application = await applicationRepository.updateApplication(applicationId,{
 		status:'rejected'
 	})
 	return application;
 }
 
-const withdrawApplication = async (applicationId) => {
+export const withdrawApplication = async (applicationId) => {
 	const application = await applicationRepository.updateApplication(applicationId,{
 		status: 'withdrawn'
 	})
 	return application;
 }
 
-const getApplicaticationPhases = async (applicationId) => {
+export const getApplicaticationPhases = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
 	return application.applicationPhases;
 }
 
-const getCurrentPhase = async (applicationId) => {
+export const getCurrentPhase = async (applicationId) => {
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
 	return application.applicationPhases.find( phase => phase.id ===  application.currentPhaseId);
-}
-module.exports = {
-	submitApplication,
-	getApplicaticationById,
-	advance,
-	rejectApplication,
-	withdrawApplication,
-	getApplicaticationPhases,
-	getCurrentPhase
 }

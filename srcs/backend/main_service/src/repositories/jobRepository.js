@@ -1,32 +1,32 @@
-const {prisma} = require('../config/prisma');
+import {prisma} from '../config/prisma';
 
 
-const findJobById = async (jobId) => {
+export const findJobById = async (jobId) => {
     return await prisma.job.findUnique({
         where : {id : jobId},
         include : {}
     })
 }
 
-const createJob = async  (jobData) => {
+export const createJob = async  (jobData) => {
 
     return await prisma.job.create({
         data : jobData 
     })
 }
 
-const updateJob = async (jobId, updateData) => {
+export const updateJob = async (jobId, updateData) => {
     return await prisma.job.update({
         where : {id : jobId},
         data: updateData,
     })
 }
 
-const deleteJob = async (jobId) => {
+export const deleteJob = async (jobId) => {
     return await prisma.job.delete({where :{ id : jobId} });
 }
 
-const findManyJobs = async (filters) => {
+export const findManyJobs = async (filters) => {
     const { keyword } = filters;
     const isRemoteBool = 
         filters.isRemote === "true" ? true : 
@@ -64,18 +64,9 @@ const findManyJobs = async (filters) => {
     return jobs;
 };
 
-const getApplicationsByJobId =  async (jobId) => {
+export const getApplicationsByJobId =  async (jobId) => {
     return await prisma.job.findUnique({
         where:{id : jobId},
         include:{applications: true}
     })
 }
-
-module.exports = {
-    findManyJobs,
-    deleteJob,
-    updateJob,
-    createJob,
-    findJobById,
-    getApplicationsByJobId
-};

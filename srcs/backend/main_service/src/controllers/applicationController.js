@@ -1,6 +1,6 @@
-const applicationService = require('../services/applicationService');
+import * as applicationService from '../services/applicationService';
 
-const getApplicaticationById =  async (req, res, next) => {
+export const getApplicaticationById =  async (req, res, next) => {
     try {
         const id = req.params?.id;  
         const application = await applicationService.getApplicaticationById(id);
@@ -14,7 +14,7 @@ const getApplicaticationById =  async (req, res, next) => {
     }
 }
 
-const submitApplication = async (req, res, next) => {
+export const submitApplication = async (req, res, next) => {
     try {
         const application = await applicationService.submitApplication(req.body);
         res.status(201)
@@ -27,7 +27,7 @@ const submitApplication = async (req, res, next) => {
     }
 }
 
-const withdrawApplication = async (req, res, next) => {
+export const withdrawApplication = async (req, res, next) => {
     try {
         const id = req.params?.id;
         await applicationService.withdrawApplication(id);
@@ -38,7 +38,7 @@ const withdrawApplication = async (req, res, next) => {
     }
 }
 
-const rejectApplication = async (req, res, next) => {
+export const rejectApplication = async (req, res, next) => {
     try {
         const id = req.params?.id;
         await applicationService.rejectApplication(id);
@@ -49,7 +49,7 @@ const rejectApplication = async (req, res, next) => {
     }
 }
 
-const getApplicationPhases = async (req, res, next) => {
+export const getApplicationPhases = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const result = await applicationService.getApplicaticationPhases(id);
@@ -63,7 +63,7 @@ const getApplicationPhases = async (req, res, next) => {
     }
 }
 
-const getCurrentPhase = async (req, res, next) => {
+export const getCurrentPhase = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const currentPhase = await applicationService.getCurrentPhase(id);
@@ -77,7 +77,7 @@ const getCurrentPhase = async (req, res, next) => {
     }
 }
 
-const advance = async (req, res, next) => {
+export const advance = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const nextPhase = applicationService.advance(id);
@@ -90,12 +90,4 @@ const advance = async (req, res, next) => {
         next(error)
     }
 }
-module.exports = {
-    submitApplication,
-    getApplicaticationById,
-    getApplicationPhases,
-    withdrawApplication,
-    rejectApplication,
-    getCurrentPhase,
-    advance
-}
+
