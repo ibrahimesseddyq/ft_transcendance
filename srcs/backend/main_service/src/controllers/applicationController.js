@@ -6,7 +6,7 @@ const getApplicaticationById =  async (req, res, next) => {
         const application = await applicationService.getApplicaticationById(id);
         res.status(200)
         .json({
-            status:true,
+            success: true,
             data: application
         })
     } catch (error) {
@@ -19,7 +19,7 @@ const submitApplication = async (req, res, next) => {
         const application = await applicationService.submitApplication(req.body);
         res.status(201)
         .json({
-            status: true,
+            success: true,
             data: application
         })
     } catch (error) {
@@ -55,7 +55,7 @@ const getApplicationPhases = async (req, res, next) => {
         const result = await applicationService.getApplicaticationPhases(id);
         res.status(200)
         .json({
-            status : true,
+            success: true,
             data: result
         })
     } catch (error) {
@@ -69,7 +69,7 @@ const getCurrentPhase = async (req, res, next) => {
         const currentPhase = await applicationService.getCurrentPhase(id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data: currentPhase
         })
     } catch (error) {
@@ -83,7 +83,7 @@ const advance = async (req, res, next) => {
         const nextPhase = applicationService.advance(id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data : nextPhase
         })
     } catch (error) {

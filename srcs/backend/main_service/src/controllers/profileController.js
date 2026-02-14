@@ -11,7 +11,7 @@ const createProfile =  async (req, res, next) => {
         });
         res.status(201)
         .json({
-            status: true,
+            success: true,
             message : "profile created successfully",
             data: profile
         });
@@ -29,7 +29,7 @@ const updateProfile = async (req, res, next) => {
         });
         res.status(200)
         .json({
-            status: true,
+            success: true,
             message : "profile updated successfully",
             data: updatedProfile
         })
@@ -43,7 +43,7 @@ const getProfile = async (req, res, next) => {
         const profile = await profileservice.getProfile(req.params.id);
         res.status(200)
         .json({
-            status : true,
+            success: true,
             data: profile
         })
     } catch (error) {
@@ -75,7 +75,7 @@ const updateResume = async (req, res, next) => {
         const updatedResume =  await profileservice.updateResume(req.params.id, req.file)
         res.status(200)
         .json({
-            status : true,
+            success: true,
             message : "profile updated successfully",
             data: updatedResume
         })

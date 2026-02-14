@@ -1,20 +1,22 @@
-import { prisma } from '../config/prisma.js';
 import * as testRepository from '../repositories/testRepository.js'
-import {HttpException } from '../utils/httpExceptions.js';
 
-const createTest = async (testData) => {
+export const createTest = async (testData) => {
     return await testRepository.createTest(testData);
 }
 
-const updateTest =  async (testId, updateData) => {
+export const updateTest =  async (testId, updateData) => {
     return  await testRepository.updateData(testId,updateData);  
-
 }
 
-const getTestById = async (testId) => {
+export const getTestById = async (testId) => {
     return await testRepository.getTestById(testId);
 }
 
-export {
+export const deleteTest = async (testId) => {
+    return await testRepository.deleteTest(testId);
+}
 
+export const gettests = async (searchFilters) => {
+    const {skip, take,...filters} =  searchFilters;
+    return await testRepository.gettests(skip, take, filters);
 }
