@@ -168,3 +168,31 @@ export const CandidateProfileSchema = z.object({
   salaryExpectation: z.string()
     .optional(),
 });
+
+export const QuizSchema = z.object({
+  id: z
+    .string(),
+  
+  type: z
+    .string(),
+
+  title: z
+    .string(),
+
+  description: z
+    .string()
+    .min(10, "min Characters should be 10"),
+
+  durationMinutes: z
+    .number(),
+
+  category: z
+    .string(),
+
+  difficulty: z
+    .string(),
+
+  tags: z
+    .array,
+
+})
