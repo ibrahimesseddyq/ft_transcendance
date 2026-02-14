@@ -15,6 +15,7 @@ const login = async (req, res, next) => {
         .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)
         .json({
+                success: true,
                 message: 'login successful',
                 data:{
                     user,
@@ -33,6 +34,7 @@ const register = async (req, res, next) => {
         res
         .status(201)
         .json({
+            success: true,
             message : 'user registered successfully',
             data:user
         });
@@ -55,6 +57,7 @@ const refresh =  async (req, res, next) => {
         res
         .status(200)
         .json({
+            success: true,
             message: 'token refreshed successfully',
             data:{
                 user,
