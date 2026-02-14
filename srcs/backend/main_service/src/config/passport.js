@@ -1,7 +1,9 @@
-const env = require('../config/env');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth2').Strategy;
-const userService = require('../services/userService');
+import env from '../config/env';
+import passport from 'passport';
+import  GoogleStrategy from ('passport-google-oauth2').Strategy;
+import * as  userService from '../services/userService';
+
+// const GoogleStrategy = oauth2.Strategy;
 
 const callbackURL = `http://${env.HOST}:${env.PORT}${env. CALLBACK_URL}`;
 
@@ -28,6 +30,6 @@ passport.deserializeUser(async (id, done) => {
     done(null, user);
 });
 
-module.exports = passport;
-
+export default  passport;
+// [sessarhi] should be checked
 // [sessarhi] may need to be refactored

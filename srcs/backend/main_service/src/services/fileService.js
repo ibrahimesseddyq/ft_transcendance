@@ -1,8 +1,8 @@
-const {HttpException} = require('../utils/httpExceptions');
-const path =  require('path');
-const fs = require('fs').promises;
+import {HttpException} from '../utils/httpExceptions';
+import path from 'path';
+import fs from ('fs').promises;
 
-const saveResume = async (userId, file) => {
+export const saveResume = async (userId, file) => {
     try {
         const fileExt = path.extname(file.originalname);
         const filename = `${userId}${fileExt}`;
@@ -17,7 +17,7 @@ const saveResume = async (userId, file) => {
     }
 }
 
-const saveAvatar = async (userId, file) => {
+export const saveAvatar = async (userId, file) => {
     try {
         const fileExt = path.extname(file.originalname);
         const filename = `${userId}${fileExt}`;
@@ -32,7 +32,7 @@ const saveAvatar = async (userId, file) => {
     }
 }
 
-const deleteFile = async (filePath) => {
+export const deleteFile = async (filePath) => {
     try {
         const fullPath = path.join(process.cwd(), filePath);
         await fs.unlink(fullPath);
@@ -42,7 +42,7 @@ const deleteFile = async (filePath) => {
    
 }
 
-const fileExists = async (filePath) => {
+export const fileExists = async (filePath) => {
     try {
         const fullPath = path.join(process.cwd(), filePath);
         await fs.access(fullPath);
@@ -51,11 +51,4 @@ const fileExists = async (filePath) => {
         return false;
     }
     
-}
-
-module.exports = {
-    saveResume,
-    saveAvatar,
-    deleteFile,
-    fileExists
 }

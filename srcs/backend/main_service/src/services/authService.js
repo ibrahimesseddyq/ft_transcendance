@@ -1,13 +1,12 @@
-const userService = require('./userService');
-const jwtService = require('./jwtService');
-const env = require('../config/env');
-const crypto =  require('crypto');
-const argon2 = require('argon2');
-const { HttpException } = require('../utils/httpExceptions');
-const sendMail = require('./emailService');
+import * as userService from './userService';
+import * as jwtService from './jwtService';
+import env from '../config/env';
+import argon2 from 'argon2';
+import { HttpException } from '../utils/httpExceptions';
+import sendMail from './emailService';
 
 
-const login = async (data) => {
+export const login = async (data) => {
     const {email , password} = data;
     const user =  await userService.getUserByEmail(email);
     if (!user || !(await argon2.verify(user.passwordHash, password)))
@@ -27,7 +26,7 @@ const login = async (data) => {
     }
 }
 
-const  register = async (data) => {
+export const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
     if (existingUser)
         throw new HttpException(409, 'Email already exists');
@@ -43,7 +42,7 @@ const  register = async (data) => {
     return user;
 }
 
-const refresh = async  (refreshToken) => {
+export const refresh = async  (refreshToken) => {
     const decoded = await jwtService.verifyRefreshToken(refreshToken);
     const user = await  userService.getUserById(decoded.id);
     if(!user)
@@ -64,7 +63,7 @@ const refresh = async  (refreshToken) => {
     }
 }
 
-const logout = async (refreshToken) => {
+export const logout = async (refreshToken) => {
     try {
         const decoded = await jwtService.verifyRefreshToken(refreshToken);
         const user = await userService.getUserById(decoded.id);
@@ -78,7 +77,7 @@ const logout = async (refreshToken) => {
     }
 }
 
-const verifyEmail = async(token) => {
+export const verifyEmail = async(token) => {
     const decoded = await jwtService.verifyVerificationToken(token);
     const user = await userService.getUserById(decoded.id);
     if (!user)
@@ -91,7 +90,7 @@ const verifyEmail = async(token) => {
     delete user.passwordHash;
     return user;
 }
-const resendVerification = async (email) => {
+export const resendVerification = async (email) => {
     const user = await userService.getUserByEmail(email);
     if (!user)
         throw new HttpException(404, "user with this email not found");
@@ -109,12 +108,3 @@ const resendVerification = async (email) => {
     return { message: 'Verification email sent' };
 }
 
-
-module.exports = {
-    login,
-    register,
-    refresh,
-    logout,
-    verifyEmail,
-    resendVerification
-}

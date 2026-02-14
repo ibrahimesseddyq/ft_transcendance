@@ -1,11 +1,10 @@
-const { z } = require('zod');
-const path =  require('path');
-const fs = require('fs');
-const dotenv =  require('dotenv');
-
+import { z } from 'zod';
+import path from 'path';
+import dotenv from 'dotenv'
+import fs from 'fs'
 
 dotenv.config({
-  path: path.resolve(__dirname,'../../.env.dev'),
+  path: path.resolve(import.meta.dirname,"../../.env.dev"),
   override: true
 });
 
@@ -27,8 +26,6 @@ vaultFiles.forEach(file => {
   }
 })
 
-
-// need to add more defence for env existence and default values
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']).default('development'),
   PORT: z.string().transform((val) => parseInt(val, 10)).default('3000'),
@@ -47,22 +44,15 @@ const envSchema = z.object({
   VERIFY_SECRET:z.string(),
   VERIFY_SECRET_EXPIRY:z.string(),
   FRONTEND_URL: z.string(),
-  BACKEND_URL:z.string()
+  BACKEND_URL:z.string(),
+  APP_NAME:z.string().min(1).default("service")
 });
 
 const envVars = envSchema.safeParse(process.env);
-console.log(envVars)
+
 if (!envVars.success) {
-    console.error(" Invalid environment variables:", envVars.error.format());
+    console.error("Invalid environment variables:", envVars.error.format());
     process.exit(1);
 }
 
-module.exports = envVars.data;
-
-
-
-
-
-
-
-
+export default envVars.data;
