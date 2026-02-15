@@ -170,18 +170,18 @@ export const CandidateProfileSchema = z.object({
 });
 
 export const QuizSchema = z.object({
-  id: z
-    .string(),
-  
   type: z
     .string(),
 
   title: z
-    .string(),
+    .string()
+    .min(1, "Title is required")
+    .max(15, "Title is too long"),
 
   description: z
     .string()
-    .min(10, "min Characters should be 10"),
+    .min(10, "min Characters should be 10")
+    .max(100, "description is too long"),
 
   durationMinutes: z
     .number(),
@@ -192,7 +192,7 @@ export const QuizSchema = z.object({
   difficulty: z
     .string(),
 
-  tags: z
-    .array,
+  // tags: z
+  //   .array,
 
 })
