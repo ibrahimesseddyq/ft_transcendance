@@ -1,5 +1,5 @@
-import * as testSevice from '../services/testService';
-import asyncHandler from '../utils/asyncHandler';
+import * as testSevice from '../services/testService.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 export const createTest =  asyncHandler( async (req, res, next) => {
     const test = await testSevice.createTest(req.body);
