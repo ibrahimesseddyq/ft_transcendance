@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import {HttpException} from '../utils/httpExceptions';
-import env from '../config/env';
+import {HttpException} from '../utils/httpExceptions.js';
+import env from '../config/env.js';
 
 const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
 const accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;

@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import {HttpException} from '../utils/httpExceptions';
+import {HttpException} from '../utils/httpExceptions.js';
 
 fs.mkdirSync(`${import.meta.dirname}/../../uploads/avatars`, {recursive: true});
 fs.mkdirSync(`${import.meta.dirname}/../../uploads/resumes`, {recursive: true});

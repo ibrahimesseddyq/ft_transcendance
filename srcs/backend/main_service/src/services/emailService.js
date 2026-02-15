@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
-import env from '../config/env';
-import {HttpException} from '../utils/httpExceptions';
+import env from '../config/env.js';
+import {HttpException} from '../utils/httpExceptions.js';
 
 const sendMail =  async ({from,to,subject,text}) => {
     try {

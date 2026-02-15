@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
 import { PrismaMysql } from '@prisma/adapter-mysql';
 import mysql from 'mysql2/promise';
 

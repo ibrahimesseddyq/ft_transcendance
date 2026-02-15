@@ -1,4 +1,4 @@
-import {UserRole} from '../../generated/prisma';
+import {UserRole} from '../../generated/prisma/index.js';
 
 export const ROLE_PERMISSIONS = {
 	[UserRole.candidate]:[
