@@ -115,16 +115,16 @@ const CreateTest = () =>{
     }
 
     return (
-        <form className='flex flex-col gap-4 divide-y-2 py-4'>
+        <form className='flex flex-col gap-4 divide-y-2 p-5 border border-black rounded-lg'>
             <div className='flex justify-between'>
-                <div className='py-2 px-4 flex gap-2 bg-slate-300/20 w-fit rounded-lg'>
+                <div className='py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 w-fit rounded-lg'>
                     <CopyCheck className='text-black'/>
-                    <h1 className='text-lg font-semibold'>Mutiple choice</h1>
+                    <h1 className='text-sm lg:text-lg font-semibold'>Mutiple choice</h1>
                 </div>
-                <div className="py-2 px-6 flex gap-2 bg-slate-300/20 w-fit rounded-lg">
+                <div className="py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 w-fit rounded-lg">
                   <h1 className='font-semibold text-green-600'>QUIZ</h1>
                 </div>
-                <select {...register("difficulty")} className="py-2 px-4 flex gap-2 bg-slate-300/20 w-fit rounded-lg">
+                <select {...register("difficulty")} className="py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 w-fit rounded-lg">
                   <option value="EASY">EASY</option>
                   <option value="MEDIUM">MEDIUM</option>
                   <option value="HARD">HARD</option>
