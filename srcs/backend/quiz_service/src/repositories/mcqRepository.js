@@ -1,4 +1,4 @@
-import { prisma, Prisma } from "../config/prisma.js";
+import { prisma} from "../config/prisma.js";
 
 export const createMcq =  async (mcqData) => {
     return await prisma.mcq.create({

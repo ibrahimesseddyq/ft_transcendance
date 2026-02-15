@@ -1,4 +1,4 @@
-import * as mcqRepository from '../repositories/mcqRepository';
+import * as mcqRepository from '../repositories/mcqRepository.js';
 
 export const createMcq =  async (mcqData) => {
     return await mcqRepository.createMcq(mcqData);

@@ -1,5 +1,5 @@
-import * as mcqService from '../services/mcqService';
-import asyncHandler from '../utils/asyncHandler';
+import * as mcqService from '../services/mcqService.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 export const createMcq = asyncHandler( async (req, res, next) => {
     const mcq = await mcqService.createMcq(req.body);
@@ -35,5 +35,5 @@ export const getMcqById = asyncHandler(async (req, res, next) => {
 })
 
 export const getManyMcqs = asyncHandler( async (req, res, next) => {
-    mcqService.getManyMcqs(req.params)
+    await mcqService.getManyMcqs(req.params)
 })
