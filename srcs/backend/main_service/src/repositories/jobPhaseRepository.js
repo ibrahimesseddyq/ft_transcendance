@@ -1,4 +1,4 @@
-import {prisma} from '../../generated/prisma';
+import prisma from '../../generated/prisma/index.js';
 
 export const createJobPhase = async(phaseData) => {
 	return await prisma.jobPhase.create({

@@ -1,9 +1,9 @@
-import * as userService from './userService';
-import * as jwtService from './jwtService';
-import env from '../config/env';
+import * as userService from './userService.js';
+import * as jwtService from './jwtService.js';
+import env from '../config/env.js';
 import argon2 from 'argon2';
-import { HttpException } from '../utils/httpExceptions';
-import sendMail from './emailService';
+import { HttpException } from '../utils/httpExceptions.js';
+import sendMail from './emailService.js';
 
 
 export const login = async (data) => {

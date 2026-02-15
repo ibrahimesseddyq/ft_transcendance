@@ -1,4 +1,4 @@
-import  {prisma} from '../config/prisma.js'
+import  {prisma} from '../config/prisma.js.js'
 
 export const createTest = async (testData) => {
     return await prisma.test.create({

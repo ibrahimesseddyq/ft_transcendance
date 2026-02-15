@@ -1,5 +1,5 @@
-import * as applicationPhaseRepository from '../repositories/applicationPhaseRepository';
-import {HttpException} from '../utils/httpExceptions';
+import * as applicationPhaseRepository from '../repositories/applicationPhaseRepository.js';
+import {HttpException} from '../utils/httpExceptions.js';
 
 export const createApplicationphase = async (data) => {
     const {applicationId, phaseId} = data;

@@ -1,7 +1,7 @@
-import  * as profileRepository from '../repositories/profileRepository';
-import {HttpException} from '../utils/httpExceptions';
-import * as fileService from './fileService';
-import * as userService from './userService';
+import  * as profileRepository from '../repositories/profileRepository.js';
+import {HttpException} from '../utils/httpExceptions.js';
+import * as fileService from './fileService.js';
+import * as userService from './userService.js';
 
 export const createProfile = async  (userId , profileData) => {
     const profile = await profileRepository.getProfileById(userId);

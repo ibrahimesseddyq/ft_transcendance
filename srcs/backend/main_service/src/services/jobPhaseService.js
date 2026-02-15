@@ -1,6 +1,6 @@
-import * as jobPhaseRepository from '../repositories/jobPhaseRepository';
-import * as jobRepository from '../repositories/jobRepository';
-import {HttpException} from '../utils/httpExceptions';
+import * as jobPhaseRepository from '../repositories/jobPhaseRepository.js';
+import * as jobRepository from '../repositories/jobRepository.js';
+import {HttpException} from '../utils/httpExceptions.js';
 
 export const createJobPhase = async (jobPhaseData) => {
 	const job = await jobRepository.findJobById(jobPhaseData.id);

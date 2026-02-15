@@ -1,7 +1,7 @@
-import * as applicationRepository from '../repositories/applicationRepository';
-import * as applicationPhaseservice from './applicationPhaseService';
-import {HttpException} from '../utils/httpExceptions';
-import * as jobPhaseService from './jobPhaseService';
+import * as applicationRepository from '../repositories/applicationRepository.js';
+import * as applicationPhaseservice from './applicationPhaseService.js';
+import {HttpException} from '../utils/httpExceptions.js';
+import * as jobPhaseService from './jobPhaseService.js';
 
 
 export const submitApplication = async (applicationData) => {

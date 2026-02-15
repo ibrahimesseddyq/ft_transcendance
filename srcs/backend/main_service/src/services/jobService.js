@@ -1,5 +1,5 @@
-import * as jobRepository from '../repositories/jobRepository';
-import {HttpException} from '../utils/httpExceptions';
+import * as jobRepository from '../repositories/jobRepository.js';
+import {HttpException} from '../utils/httpExceptions.js';
 
 
 export const createJob = async (jobData) => {
