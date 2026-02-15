@@ -17,7 +17,14 @@ interface cardField{
 }
 
 const CreateTest = () =>{
-    const [checkBox, steCheckBox] = useState(false);
+    interface TestProps{
+        id: number;
+        text: string;
+        check: boolean;
+    }
+    const [nextId, setNextId] = useState(1);
+
+    const [tests, setTests] = useState<TestProps[]>([]);
     const {
         register,
         handleSubmit,
@@ -27,20 +34,67 @@ const CreateTest = () =>{
         resolver: zodResolver(QuizSchema),
     });
 
-    const SingleChoise = () =>{
+    const handleAddTest = (text:string, check:boolean)=>{
+        setTests([
+            ...tests,
+            {
+                id: nextId,
+                text: text,
+                check: check,
+            }
+        ]);
+    }
+    const DeleteTest = (testId:number) =>{
+        setTests(tests.filter((t) => t.id !== testId));
+    }
+   
+    const TestInput = () => {
+        const [checkBox, setCheckBox] = useState(false);
+        const [text, setText] = useState("");
+    
+        return (
+            <div className='flex gap-2 items-center w-full'>
+                {/* Checkbox */}
+                <button 
+                    type="button"
+                    onClick={() => setCheckBox(!checkBox)} 
+                    className={`h-5 w-5 rounded-sm border border-slate-300 cursor-pointer flex items-center justify-center ${checkBox ? 'bg-[#00adef]' : 'bg-white'}`}
+                >
+                    {checkBox && <Check className='h-4 w-4 text-white' />}
+                </button>
+    
+                {/* Input */}
+                <input 
+                    type='text' 
+                    value={text} 
+                    onChange={(e) => setText(e.target.value)} 
+                    placeholder='Add test here...'
+                    className='h-12 w-full bg-slate-300/20 p-2 border outline-neutral-300 rounded-lg'
+                />
+    
+                <button onClick={()=>{handleAddTest(text, checkBox); setNextId(nextId + 1)}} className='h-12 px-4 flex gap-2 items-center bg-slate-300/20 hover:border-[#00adef] border-2 border-dashed rounded-lg'>
+                    <Plus />
+                    <span className="font-bold">ADD Choice</span>
+                </button>
+            </div>
+        );
+    }
+    const DesplayChoise = (TestItem: any) =>{
+        const item = TestItem.TestItem;
         return (
             <div className='flex gap-2 items-center w-full'>
                 {/* Check box */}
-                <div onClick={()=> {steCheckBox(!checkBox)}} className='h-5 w-5 rounded-sm border 
-                    border-slate-300 text-center cursor-pointer'>
-                    {checkBox ? <Check className='h-full w-full text-black bg-[#00adef] border'/>: null}
+                <div className='h-5 w-5 rounded-sm border 
+                    border-slate-300 text-center'>
+                    {item.check ? <Check className='h-full w-full text-black bg-[#00adef] border'/>: null}
                 </div>
                 {/* Choice */}
-                <textarea {...register("description", { required: true })}
-                    className='h-12 w-full bg-slate-300/20 p-2
-                    border outline-neutral-300 rounded-lg'
-                />
-                <div className='group h-12 w-12 p-2 bg-slate-300/20 rounded-lg'>
+                <div className='min-h-10 w-full text-black bg-slate-300/20 p-2
+                    border outline-neutral-300 rounded-lg'>
+                    {item.text}
+                </div>
+                <div onClick={()=>{DeleteTest(item.id)}} 
+                    className='group h-12 w-12 p-2 bg-slate-300/20 rounded-lg'>
                     <Trash2 className='group-hover:text-red-600 h-full w-full'/>
                 </div>
             </div>
@@ -79,18 +133,12 @@ const CreateTest = () =>{
                     <h1 className='text-black '>Choices <span className='text-red-500'>*</span></h1>
                 </div>
                 <div className='flex flex-col gap-4 items-center w-full'>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <SingleChoise/>
-                    <button className='py-2 px-4 flex gap-2 bg-slate-300/20 hover:border-[#00adef] w-fit border-2 border-dashed rounded-lg'>
-                        <Plus />
-                        <h1>ADD Choice</h1>
-                    </button>
+                    <TestInput/>
+                    {tests.map((item:any)=>(
+                        <div key={item.id} className='flex flex-col gap-2 w-full'>
+                            <DesplayChoise TestItem={item}/>
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className='flex flex-wrap gap-4 pt-5'>
@@ -104,7 +152,7 @@ const CreateTest = () =>{
             <button
               type='submit'
               className={`group flex-1 rounded-md text-white text-lg max-w-fit h-12 items-center mx-auto
-                bg-gradient-to-r  from-[#00adef] to-slate-700 px-7 py-2`}>
+                bg-gradient-to-r  from-[#00adef] to-slate-700 px-7 py-2 shadow-md`}>
               <div className="flex items-center gap-4">
                 <DiamondPlus className="w-5 h-5 text-white group-hover:text-green-400" /> 
                 <p className="font-medium text-base text-white">ADD Test</p>
