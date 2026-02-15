@@ -1,6 +1,6 @@
-import {HttpException} from '../utils/httpExceptions';
+import {HttpException} from '../utils/httpExceptions.js';
 import path from 'path';
-import fs from ('fs').promises;
+import fs from 'fs/promises';
 
 export const saveResume = async (userId, file) => {
     try {

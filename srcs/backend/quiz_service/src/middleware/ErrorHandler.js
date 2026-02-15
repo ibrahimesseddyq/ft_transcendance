@@ -1,5 +1,5 @@
 import {CustomError} from '../utils/httpExceptions';
-import {Prisma} from '../../generated/prisma';
+import {Prisma} from '../../generated/prisma/index.js';
 import handlePrismaError from '../utils/prismaErrorHandler.js'
 
 const errorFactory = (err,res) => {

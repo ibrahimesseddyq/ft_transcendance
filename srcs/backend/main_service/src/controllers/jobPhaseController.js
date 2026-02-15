@@ -1,4 +1,4 @@
-import * as jobPhaseService from '../services/jobPhaseService';
+import * as jobPhaseService from '../services/jobPhaseService.js';
 
 export const createJobPhase = async (req, res, next) => {
 	try {

@@ -1,4 +1,4 @@
-import * as applicationService from '../services/applicationService';
+import * as applicationService from '../services/applicationService.js';
 
 export const getApplicaticationById =  async (req, res, next) => {
     try {

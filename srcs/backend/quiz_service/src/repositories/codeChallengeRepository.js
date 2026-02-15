@@ -1,2 +1,2 @@
-import { Prisma } from "../config/prisma";
+import { Prisma } from "../config/prisma.js";
 

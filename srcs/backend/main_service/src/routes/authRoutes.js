@@ -1,19 +1,17 @@
-const authController = require('../controllers/authController');
-const express = require('express');
-const router = express.Router();
-const jwtService = require('../services/jwtService');
-const validateRequest = require('../middleware/ValidateRequest');
-const passport = require('../config/passport');
-const {registerUserSchema,loginUserSchema} = require('../validators/userValidator');
+import * as authController from '../controllers/authController.js';
+import express from 'express';
+import * as jwtService from '../services/jwtService.js';
+import validateRequest from '../middleware/ValidateRequest.js';
+import passport from '../config/passport.js';
+import {registerUserSchema,loginUserSchema} from '../validators/userValidator.js';
 
+const router = express.Router();
 
 router.post('/login',validateRequest(loginUserSchema),authController.login);
 router.post('/register',validateRequest(registerUserSchema),authController.register);
 router.post('/refresh',authController.refresh);
 router.post('/logout',authController.logout);
-
 router.get('/verify-email/:token',authController.verifyEmail);
-
 router.post('/resend-verification',authController.resendVerification);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', 
@@ -49,4 +47,4 @@ router.get('/google/callback',
     }
 );
 
-module.exports = router;
+export default router;

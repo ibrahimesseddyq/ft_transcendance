@@ -1,5 +1,5 @@
-import env from'../config/env';
-import * as authService from'../services/authService';
+import env from'../config/env.js';
+import * as authService from'../services/authService.js';
 
 const cookieOptions = {
     httpOnly: true,

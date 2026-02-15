@@ -1,5 +1,5 @@
-const {CustomError} = require('../utils/httpExceptions');
-const {Prisma} = require('../../generated/prisma');
+import {CustomError} from '../utils/httpExceptions.js';
+import { Prisma } from '../../generated/prisma/client.js'
 
 
 const errorFactory = (err,res) => {
@@ -46,4 +46,4 @@ const errorHandler = (err,req,res,next) => {
 
 }
 
-module.exports = errorHandler;
+export  default  errorHandler;

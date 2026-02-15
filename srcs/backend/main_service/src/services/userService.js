@@ -1,8 +1,8 @@
-import * as userRepository from '../repositories/userRepository'
+import * as userRepository from '../repositories/userRepository.js'
 import argon2 from 'argon2';
-import {HttpException} from '../utils/httpExceptions';
+import {HttpException} from '../utils/httpExceptions.js';
 import crypto from 'crypto';
-import * as fileService from './fileService';
+import * as fileService from './fileService.js';
 
 export const createUser = async (userData) => {
     const {password, ...data} = userData;

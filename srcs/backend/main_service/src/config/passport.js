@@ -1,7 +1,7 @@
-import env from '../config/env';
+import env from '../config/env.js';
 import passport from 'passport';
-import  GoogleStrategy from ('passport-google-oauth2').Strategy;
-import * as  userService from '../services/userService';
+import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import * as  userService from '../services/userService.js';
 
 // const GoogleStrategy = oauth2.Strategy;
 
