@@ -16,6 +16,7 @@ export const getApplicaticationById =  async (req, res, next) => {
 
 export const submitApplication = async (req, res, next) => {
     try {
+        // console.log(req)
         const application = await applicationService.submitApplication(req.body);
         res.status(201)
         .json({

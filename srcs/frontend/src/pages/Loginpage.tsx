@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FeaturesSection } from "@/components/FeaturesSection";
 import Signin from "@/components/SignIn";
 import Signup from "@/components/SignUp";
+import { ToastContainer } from "react-toastify";
 
 export function LoginPage() {
   const [activeCard, setActiveCard] = useState<string>('signin');
@@ -24,7 +25,8 @@ export function LoginPage() {
   return (
     <div className="w-full h-full md:max-w-[1500px] mx-auto flex flex-col 
       md:flex-row gap-8 p-4 overflow-y-auto custom-scrollbar">
-    
+
+      <ToastContainer />
       <div className="order-first md:order-last w-full max-w-[450px] md:w-[450px] h-full mx-auto">
         <div className="w-full h-full flex flex-col md:flex-row gap-2 items-center">
           
