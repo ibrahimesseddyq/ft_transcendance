@@ -8,16 +8,16 @@ export function AppAllCards() {
   const location = useLocation();
   
   const Title = location.state?.title || "Default Title";
-  const Users = location.state?.users || [];
+  const applications = location.state?.applications || [];
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = useMemo(() => {
-    return Users?.filter((item: any) => 
+  const filteredApplications = useMemo(() => {
+    return applications?.filter((item: any) => 
       item.user?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.user?.role?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, Users]);
+  }, [searchTerm, applications]);
 
   return (
     <div className="min-h-screen rounded-xl bg-[#F8FAFC]">
@@ -34,7 +34,7 @@ export function AppAllCards() {
             </button>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">{Title}</h1>
-              <p className="text-slate-400 text-sm font-medium">Total: {Users?.length} candidates</p>
+              <p className="text-slate-400 text-sm font-medium">Total: {applications?.length} candidates</p>
             </div>
           </div>
 
@@ -53,9 +53,9 @@ export function AppAllCards() {
 
       {/* Grid Content */}
       <main className="max-w-7xl mx-auto p-6 md:p-10">
-        {filteredUsers.length > 0 ? (
+        {filteredApplications.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredUsers.map((item: any, index: number) => (
+            {filteredApplications.map((item: any, index: number) => (
               <div 
                 key={item.id || index}
                 className="animate-in fade-in slide-in-from-bottom-5 duration-500"

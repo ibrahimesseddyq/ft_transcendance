@@ -2,7 +2,7 @@ import * as profileservice from '../services/profileService.js';
 
 export const createProfile =  async (req, res, next) => {
     try {
-        console.log(req);
+        // console.log(req);
         const id =  req.params?.id;
         const profile = await profileservice.createProfile(id, {
             body: req.body,
