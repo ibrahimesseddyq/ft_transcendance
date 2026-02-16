@@ -1,11 +1,11 @@
-const jobPhaseService = require('../services/jobPhaseService');
+import * as jobPhaseService from '../services/jobPhaseService.js';
 
-const createJobPhase = async (req, res, next) => {
+export const createJobPhase = async (req, res, next) => {
 	try {
 		const jobPhase = await jobPhaseService.createJobPhase(req.body);
 		res.status(201)
 		.json({
-			status : true,
+			success: true,
 			data:jobPhase
 		});
 
@@ -14,12 +14,12 @@ const createJobPhase = async (req, res, next) => {
 	}
 }
 
-const updateJobPhase = async (req, res, next) => {
+export const updateJobPhase = async (req, res, next) => {
 	try {
 		const jobPhase = await jobPhaseService.updateJobPhase(req.params.id,req.body);
 		res.status(200)
 		.json({
-			status: true,
+			success: true,
 			data: jobPhase
 		})
 	} catch (error) {
@@ -27,12 +27,12 @@ const updateJobPhase = async (req, res, next) => {
 	}
 }
 
-const getJobPhaseById = async (req, res, next) => {
+export const getJobPhaseById = async (req, res, next) => {
 	try {
 		const jobPhase = await jobPhaseService.getJobPhaseById(req.params.id);
 		res.status(200)
 		.json({
-			status:true,
+			success: true,
 			data: jobPhase
 		})
 	} catch (error) {
@@ -40,7 +40,7 @@ const getJobPhaseById = async (req, res, next) => {
 	}
 }
 
-const deleteJobPhase = async (req, res, next) => {
+export const deleteJobPhase = async (req, res, next) => {
 	try {
 		await jobPhaseService.deleteJobPhase(req.params.id);
 		res.status(204);
@@ -49,23 +49,15 @@ const deleteJobPhase = async (req, res, next) => {
 	}
 }
 
-const getJobPhases = async(req, res, next) => {
+export const getJobPhases = async(req, res, next) => {
 	try {
 		const result = await jobPhaseService.getJobPhases(req.params.id);
 		res.status(200)
 		.json({
-			status: true,
+			success: true,
 			data: result
 		})
 	} catch (error) {
 		next(error)
 	}
-}
-
-module.exports = {
-	createJobPhase,
-	updateJobPhase,
-	getJobPhaseById,
-	deleteJobPhase,
-	getJobPhases
 }

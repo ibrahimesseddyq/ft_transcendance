@@ -1,13 +1,12 @@
-const {prisma} =  require('../config/prisma');
+import {prisma} from '../config/prisma.js';
 
-const createApplication =  async (data) => {
-	console.log(data)
+export const createApplication =  async (data) => {
 	return await prisma.application.create({
 		data: data
 	})
 }
 
-const deleteApplication =  async (applicationId) => {
+export const deleteApplication =  async (applicationId) => {
 	return await prisma.application.delete({
 		where:{
 			id: applicationId
@@ -15,39 +14,30 @@ const deleteApplication =  async (applicationId) => {
 	})
 }
 
-const updateApplication = async (applicationId,updateData) => {
+export const updateApplication = async (applicationId,updateData) => {
 	return await prisma.application.update({
 		where : {id : applicationId},
 		data:updateData
 	})
 }
 
-const getApplicaticationById = async (appliocationId) => {
+export const getApplicaticationById = async (appliocationId) => {
 	return await prisma.application.findUnique({
 		where:{ id : appliocationId}
 	})
 }
 
-const getApplicatications = async (skip = 0, take = 10, filters= []) => {
+export const getApplicatications = async (skip = 0, take = 10, filters= []) => {
 	return await prisma.application.findMany({
 
 	})
 }
 
-const getApplicationByJobAndCondidate = async(jobId, candidateId) => {
+export const getApplicationByJobAndCondidate = async(jobId, candidateId) => {
 	return await prisma.application.findUnique({
 		where :{
 			jobId: jobId,
 			candidateId:candidateId
 		}
 	})
-}
-
-module.exports = {
-	createApplication,
-	getApplicatications,
-	getApplicaticationById,
-	updateApplication,
-	deleteApplication,
-	getApplicationByJobAndCondidate
 }

@@ -1,12 +1,13 @@
-const profileController = require('../controllers/profileController');
-const express =  require('express');
-const router = express.Router();
-const {uploadProfile} =  require('../config/multer');
-const {
+import * as  profileController from '../controllers/profileController.js';
+import {uploadProfile} from '../config/multer.js';
+import {
     createProfileSchema,
     updateProfileSchema
-} = require('../validators/profileValidator');
-const validateRequest = require('../middleware/ValidateRequest');
+} from '../validators/profileValidator.js';
+import validateRequest from '../middleware/ValidateRequest.js';
+import express from 'express';
+
+const router = express.Router();
 
 // the validate request should be refactored based on req.body & req.files
 router.get('/:id', profileController.getProfile)
@@ -22,4 +23,4 @@ router.get('/:id', profileController.getProfile)
         ]),
         profileController.updateProfile);
 
-module.exports = router;
+export default router;
