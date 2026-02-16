@@ -39,7 +39,7 @@ export const login = async (req, res, next) => {
         next(error);
     }
 }
-const verify2FA = async (req, res, next) =>{
+export const verify2FA = async (req, res, next) =>{
     try 
     {
         const { tempToken, code } = req.body;
@@ -61,7 +61,7 @@ const verify2FA = async (req, res, next) =>{
         next(error);
     }
 }
-const register = async (req, res, next) => {
+export const register = async (req, res, next) => {
     try {
         const user = await authService.register(req.body)
         res
@@ -143,15 +143,5 @@ export const resendVerification = async (req, res, next) => {
 };  
 
 
-module.exports = {
-    getAuthStatus,
-    login,
-    register,
-    refresh,
-    logout,
-    verifyEmail,
-    resendVerification,
-    verify2FA
-}
 
 

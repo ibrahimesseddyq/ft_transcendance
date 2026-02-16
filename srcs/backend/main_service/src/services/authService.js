@@ -1,15 +1,13 @@
-const userService = require('./userService');
-const jwtService = require('./jwtService');
-const env = require('../config/env');
-const crypto =  require('crypto');
-const argon2 = require('argon2');
-const { HttpException } = require('../utils/httpExceptions');
-const sendMail = require('./emailService');
-const { email } = require('zod');
-const { token } = require('morgan');
+import * as userService from './userService.js';
+import * as  jwtService from './jwtService.js';
+import env from '../config/env.js';
+import argon2 from 'argon2';
+import { HttpException } from '../utils/httpExceptions.js';
+import sendMail from './emailService.js';
+
 const DUMMY_HASH = process.env.DUMMY_PASSWORD_HASH;
 
-const login = async (data) =>
+export const login = async (data) =>
     {
     const { email, password } = data;
   
@@ -70,7 +68,7 @@ const login = async (data) =>
     return { user: safeUser, ...tokens };
   };
 
-const verifyLoginWith2FA = async (tempToken, twoFACode) => {
+export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
     const decoded = await jwtService.verifyTempToken(tempToken);
 
     if (decoded.purpose !== '2fa-pending')
@@ -105,7 +103,7 @@ const verifyLoginWith2FA = async (tempToken, twoFACode) => {
     const { passwordHash, ...saferUser} = user;
     return { user: saferUser, ...tokens};
 }
-const  register = async (data) => {
+export const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
     if (existingUser)
         return {};
@@ -185,15 +183,4 @@ export const resendVerification = async (email) => {
         text: message
     });
     return { message: 'Verification email sent' };
-}
-
-
-module.exports = {
-    login,
-    register,
-    refresh,
-    logout,
-    verifyEmail,
-    resendVerification,
-    verifyLoginWith2FA
 }
