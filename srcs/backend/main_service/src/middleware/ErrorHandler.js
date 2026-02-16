@@ -1,5 +1,5 @@
-const {CustomError} = require('../utils/httpExceptions');
-const {Prisma} = require('../../generated/prisma');
+import {CustomError} from '../utils/httpExceptions.js';
+import { Prisma } from '../../generated/prisma/client.js'
 
 
 const errorFactory = (err,res) => {
@@ -15,6 +15,7 @@ const errorFactory = (err,res) => {
             ));
         }
         res.status(err.statusCode).json({
+            success: false,
             errors : err.errors
         });
         return true;
@@ -22,6 +23,7 @@ const errorFactory = (err,res) => {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(JSON.stringify(err,null,2))
         res.status(500).json({
+            success: false,
             errors:['internal server error']
         });
         return true;
@@ -38,9 +40,10 @@ const errorHandler = (err,req,res,next) => {
     if (handled) return;
 
     res.status(500).json({
+        success: false,
         errors : ['internal server error']
     })
 
 }
 
-module.exports = errorHandler;
+export  default  errorHandler;

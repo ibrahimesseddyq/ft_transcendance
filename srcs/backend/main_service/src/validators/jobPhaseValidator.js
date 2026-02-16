@@ -1,7 +1,7 @@
-const {z, boolean} = require('zod');
-const {PhaseType} = require('../../generated/prisma');
+import {z} from 'zod';
+import {PhaseType} from '../../generated/prisma/index.js';
 
-const createJobPhaseSchema = z.object({
+export const createJobPhaseSchema = z.object({
 	jobId : z.string(),
 	phaseType: z.nativeEnum(PhaseType),
 	name: z.string(),
@@ -11,8 +11,3 @@ const createJobPhaseSchema = z.object({
 	durationMinutes: z.number(),
 
 });
-
-
-module.exports = {
-	createJobPhaseSchema
-}
