@@ -1,10 +1,16 @@
 {
+  "name": "main_service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
     "test": ""
   },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.4.0",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -14,6 +20,7 @@
     "helmet": "^8.1.0",
     "jose": "^6.1.3",
     "jsonwebtoken": "^9.0.3",
+    "mariadb": "^3.4.5",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-jose": "^2.2.0",
@@ -21,10 +28,10 @@
     "nodemon": "^3.1.11",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
-    "zod": "^4.3.4"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@prisma/client": "^6.19.2",
-    "prisma": "^6.19.2"
+    "@prisma/client": "^7.4.0",
+    "prisma": "^7.4.0"
   }
 }

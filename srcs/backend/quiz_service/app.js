@@ -1,9 +1,13 @@
 import  express from "express";
+import mcqsRoutes from './src/routes/mcqRoutes.js'
+import testsRoutes from './src/routes/testRoutes.js'
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/mcqs', mcqsRoutes);
+app.use('/api/tests', testsRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Server is running " });
@@ -17,4 +21,4 @@ app.get("/info", (req, res) => {
   res.json({ app: process.env.APP_NAME || "service" });
 });
 
-export {app}
+export default app

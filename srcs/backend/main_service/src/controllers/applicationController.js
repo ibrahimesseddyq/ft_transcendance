@@ -1,12 +1,12 @@
-const applicationService = require('../services/applicationService');
+import * as applicationService from '../services/applicationService.js';
 
-const getApplicaticationById =  async (req, res, next) => {
+export const getApplicaticationById =  async (req, res, next) => {
     try {
         const id = req.params?.id;  
         const application = await applicationService.getApplicaticationById(id);
         res.status(200)
         .json({
-            status:true,
+            success: true,
             data: application
         })
     } catch (error) {
@@ -14,13 +14,13 @@ const getApplicaticationById =  async (req, res, next) => {
     }
 }
 
-const submitApplication = async (req, res, next) => {
+export const submitApplication = async (req, res, next) => {
     try {
         // console.log(req)
         const application = await applicationService.submitApplication(req.body);
         res.status(201)
         .json({
-            status: true,
+            success: true,
             data: application
         })
     } catch (error) {
@@ -28,7 +28,7 @@ const submitApplication = async (req, res, next) => {
     }
 }
 
-const withdrawApplication = async (req, res, next) => {
+export const withdrawApplication = async (req, res, next) => {
     try {
         const id = req.params?.id;
         await applicationService.withdrawApplication(id);
@@ -39,7 +39,7 @@ const withdrawApplication = async (req, res, next) => {
     }
 }
 
-const rejectApplication = async (req, res, next) => {
+export const rejectApplication = async (req, res, next) => {
     try {
         const id = req.params?.id;
         await applicationService.rejectApplication(id);
@@ -50,13 +50,13 @@ const rejectApplication = async (req, res, next) => {
     }
 }
 
-const getApplicationPhases = async (req, res, next) => {
+export const getApplicationPhases = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const result = await applicationService.getApplicaticationPhases(id);
         res.status(200)
         .json({
-            status : true,
+            success: true,
             data: result
         })
     } catch (error) {
@@ -64,13 +64,13 @@ const getApplicationPhases = async (req, res, next) => {
     }
 }
 
-const getCurrentPhase = async (req, res, next) => {
+export const getCurrentPhase = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const currentPhase = await applicationService.getCurrentPhase(id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data: currentPhase
         })
     } catch (error) {
@@ -78,25 +78,17 @@ const getCurrentPhase = async (req, res, next) => {
     }
 }
 
-const advance = async (req, res, next) => {
+export const advance = async (req, res, next) => {
     try {
         const id = req.params?.id;
         const nextPhase = applicationService.advance(id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data : nextPhase
         })
     } catch (error) {
         next(error)
     }
 }
-module.exports = {
-    submitApplication,
-    getApplicaticationById,
-    getApplicationPhases,
-    withdrawApplication,
-    rejectApplication,
-    getCurrentPhase,
-    advance
-}
+
