@@ -1,21 +1,24 @@
-import express from 'express';
-import passport from 'passport';
-import helmet from 'helmet';
-import cors from 'cors';
-import morgan from 'morgan';
-import session from 'express-session';
-import cokieParser from 'cookie-parser';
-import errorHandler from './middleware/ErrorHandler.js';
-import userRoutes from './routes/userRoutes.js';
-import authRoutes from './routes/authRoutes.js';
-import jobRoutes from './routes/jobRoutes.js';
-import applicationRoutes from './routes/applicationRoutes.js';
-import profileRoutes from './routes/profileRoutes.js';
-import env from './config/env.js';
-import path from 'path';
-import {HttpException} from './utils/httpExceptions.js';
-import {verifyToken,verifyRoles} from './middleware/auth.js';
-import {UserRole} from '../generated/prisma/index.js';
+const express = require('express');
+const app =  express();
+const passport = require('passport');
+const helmet =  require('helmet');
+const cors =  require('cors');
+const morgan = require('morgan');
+const session = require('express-session');
+const cokieParser =  require('cookie-parser');
+const errorHandler = require('./middleware/ErrorHandler');
+const userRoutes =  require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const twoFARoutes = require('./routes/twoFARoutes');
+
+const jobRoutes = require('./routes/jobRoutes');
+const applicationRoutes =  require('./routes/applicationRoutes')
+const profileRoutes = require('./routes/profileRoutes');
+const env = require('./config/env');
+const path = require('path');
+const {HttpException} = require('./utils/httpExceptions');
+const {verifyToken,verifyRoles} = require('./middleware/auth');
+const {UserRole} = require('../generated/prisma');
 
 const app =  express();
 
@@ -51,6 +54,7 @@ app.use(passport.session());
 
 // routes 
 app.use('/api/auth', authRoutes); 
+app.use('/api/2fa', twoFARoutes); 
 
 app.use('/api/users',
   verifyToken,
