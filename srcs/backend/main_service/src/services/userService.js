@@ -52,7 +52,7 @@ const getUserByEmail = async (email) => {
 
 const updateUser = async (userId, updateData) => {
     await getUserById(userId);
-    const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified"];
+    const allowedFields = ['twoFAEnabled', 'twoFASecret','twoFATempSecret', 'firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified"];
     const filteredData = {};
     
     allowedFields.forEach(field => {
