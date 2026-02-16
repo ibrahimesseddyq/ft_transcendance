@@ -236,6 +236,9 @@ model User {
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
   sessions              Session[]
+  twoFAEnabled          Boolean                @default(false)
+  twoFASecret           String? 
+  twoFATempSecret       String?
 }
 
 enum InterviewMode {

@@ -10,7 +10,19 @@ const cookieOptions = {
 
 const login = async (req, res, next) => {
     try {
-        const {user, accessToken, refreshToken} = await authService.login(req.body);
+        // 2FA
+        const result = await authService.login(req.body);
+
+        if (result.require2FA)
+        {
+            return res.status(200).json({
+                message: "2FA required",
+                require2FA: true,
+                tempToken: result.tempToken
+            });
+        }
+        // Normal flow
+        const {user, accessToken, refreshToken} = result;
         res
         .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)
@@ -26,15 +38,35 @@ const login = async (req, res, next) => {
         next(error);
     }
 }
+const verify2FA = async (req, res, next) =>{
+    try 
+    {
+        const { tempToken, code } = req.body;
+        const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
 
+        res.cookie('jwt', refreshToken, cookieOptions)
+        .status(200)
+        .json(
+            {
+                message:'login successful',
+                data: {
+                    user,
+                    accessToken
+                }
+            }
+        );
+    }catch(error)
+    {
+        next(error);
+    }
+}
 const register = async (req, res, next) => {
     try {
         const user = await authService.register(req.body)
         res
         .status(201)
         .json({
-            message : 'user registered successfully',
-            data:user
+            message : 'If the email is valid, an account will be created.',
         });
     }catch(error) {
         next(error)
@@ -116,7 +148,8 @@ module.exports = {
     refresh,
     logout,
     verifyEmail,
-    resendVerification
+    resendVerification,
+    verify2FA
 }
 
 

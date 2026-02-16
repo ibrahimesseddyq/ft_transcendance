@@ -9,6 +9,8 @@ const cokieParser =  require('cookie-parser');
 const errorHandler = require('./middleware/ErrorHandler');
 const userRoutes =  require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const twoFARoutes = require('./routes/twoFARoutes');
+
 const jobRoutes = require('./routes/jobRoutes');
 const applicationRoutes =  require('./routes/applicationRoutes')
 const profileRoutes = require('./routes/profileRoutes');
@@ -51,6 +53,7 @@ app.use(passport.session());
 
 // routes 
 app.use('/api/auth', authRoutes); 
+app.use('/api/2fa', twoFARoutes); 
 
 app.use('/api/users',
   verifyToken,
