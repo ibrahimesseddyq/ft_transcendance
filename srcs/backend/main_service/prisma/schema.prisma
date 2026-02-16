@@ -235,7 +235,7 @@ model User {
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
   sessions              Session[]
-  twoFAEnabled          Boolean                @default(false)
+  twoFAEnabled          Boolean                @default(true)
   twoFASecret           String? 
   twoFATempSecret       String?
 }
