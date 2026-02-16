@@ -1,5 +1,6 @@
-const jobPhaseController = require('../controllers/jobPhaseController');
-const express = require('express');
+import jobPhaseController from '../controllers/jobPhaseController.js';
+import express from 'express';
+
 const router =  express.Router();
 
 router.get('/:id',jobPhaseController.getJobPhaseById)
@@ -7,4 +8,5 @@ router.get('/:id',jobPhaseController.getJobPhaseById)
     .get('/:id/phase',jobPhaseController.getJobPhases)
     .delete('/:id',jobPhaseController.deleteJobPhase)
     .patch('/:id',jobPhaseController.updateJobPhase);
-module.exports = router;
+
+export default router;

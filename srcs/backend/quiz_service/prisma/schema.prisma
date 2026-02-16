@@ -1,16 +1,24 @@
 // =============================================
-// HIRING PLATFORM - QUIZ SERVICE
-// Handles: Tests, Questions, Challenges, Submissions
+// HIRING PLATFORM - QUIZ SERVICE (FINAL - IMPLICIT M2M)
+// 
+// CLEAN & SIMPLE DESIGN:
+// - MCQs created independently (reusable library)
+// - CodeChallenges created independently (reusable library)
+// - Tests composed by connecting to existing MCQs/Challenges
+// - Prisma handles junction tables automatically
+// - NO order field needed - simplified!
+//
 // Database: MySQL 8.0+
 // =============================================
 
 generator client {
   provider = "prisma-client-js"
+  output = "../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  
 }
 
 // ===================
@@ -18,166 +26,308 @@ datasource db {
 // ===================
 
 enum TestType {
-  QUIZ // Multiple choice questions (MCQ)
-  CODE // Problem-solving with code execution
+  QUIZ
+  CODE
 }
 
-enum SubmissionStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-  TIMEOUT
-}
-
-model Test {
-  id              String   @id @default(uuid()) @db.Char(36)
-  title           String   @db.VarChar(255)
-  type            TestType
-  description     String?  @db.Text
-  durationMinutes Int
-  passingScore    Int      @default(60) // Percentage (0-100)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  // Relations
-  quizQuestions  QuizQuestion[]
-  codeChallenges CodeChallenge[]
-  submissions    TestSubmission[]
-
-  @@index([type])
-}
-
-model QuizQuestion {
-  id       String @id @default(uuid()) @db.Char(36)
-  testId   String @db.Char(36)
-  question String @db.Text
-  choices  Json // Array of exactly 4 choices: [{id: string, text: string, isCorrect: boolean}]
-  points   Int    @default(1)
-  order    Int
-
-  // Relations
-  test    Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
-  answers QuizAnswer[]
-
-  @@index([testId])
-  @@index([testId, order])
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }
 
 // ===================
-// CODE CHALLENGES
+// MCQ LIBRARY (Independent, Reusable)
+// ===================
+
+model MCQ {
+  id       String @id @default(uuid()) @db.Char(36)
+  question String @db.Text
+
+  choices Json
+  /**
+   * [
+   * {"id": "A", "text": "A way to close files", "isCorrect": false},
+   * {"id": "B", "text": "Function with lexical scope", "isCorrect": true},
+   * {"id": "C", "text": "A loop structure", "isCorrect": false},
+   * {"id": "D", "text": "An error handler", "isCorrect": false}
+   * ]
+   * Validation (application layer):
+   * - Must have exactly 4 choices
+   * - Exactly 1 choice must have isCorrect: true
+   */
+
+  points      Int     @default(1)
+  explanation String? @db.Text
+
+  // Library metadata
+  category   String?     @db.VarChar(100) // "JavaScript", "React", "Algorithms"
+  difficulty Difficulty?
+  tags       Json? // ["closure", "scope", "functions"]
+
+  isPublished Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Many-to-many with Test (Prisma handles junction table)
+  tests Test[]
+
+  @@index([isPublished])
+  @@index([category])
+  @@index([difficulty])
+}
+
+// ===================
+// CODE CHALLENGE LIBRARY (Independent, Reusable)
 // ===================
 
 model CodeChallenge {
-  id          String  @id @default(uuid()) @db.Char(36)
-  testId      String  @db.Char(36)
-  title       String  @db.VarChar(255)
-  description String  @db.Text
-  starterCode String? @db.Text // Template code for Monaco editor
-  language    String  @db.VarChar(50) // e.g., "javascript", "python", "java"
-  testCases   Json // [{input: string, expectedOutput: string, isHidden: boolean, points: number}]
-  points      Int     @default(10)
-  timeLimit   Int     @default(5000) // milliseconds for Judge0
-  memoryLimit Int     @default(128000) // KB for Judge0
-  order       Int
+  id          String @id @default(uuid()) @db.Char(36)
+  title       String @db.VarChar(255)
+  description String @db.Text
 
-  // Relations
-  test        Test             @relation(fields: [testId], references: [id], onDelete: Cascade)
-  submissions CodeSubmission[]
+  starterCode String @db.Text
+  language    String @db.VarChar(50) // "javascript", "python", "java"
 
-  @@index([testId])
-  @@index([testId, order])
+  testCases Json
+  /**
+   * [
+   * {
+   * "id": "tc1",
+   * "input": "[2,7,11,15]\n9",
+   * "expectedOutput": "[0,1]",
+   * "isHidden": false,
+   * "points": 3,
+   * "explanation": "Basic test case"
+   * },
+   * {
+   * "id": "tc2",
+   * "input": "[3,2,4]\n6",
+   * "expectedOutput": "[1,2]",
+   * "isHidden": false,
+   * "points": 3,
+   * "explanation": "Middle of array"
+   * },
+   * {
+   * "id": "tc3",
+   * "input": "[large array...]\n500",
+   * "expectedOutput": "[456,789]",
+   * "isHidden": true,
+   * "points": 4,
+   * "explanation": "Edge case"
+   * }
+   * ]
+   */
+
+  timeLimit   Int   @default(5000) // Milliseconds for Judge0
+  memoryLimit Int   @default(128000) // Kilobytes for Judge0
+  totalPoints Int   @default(10)
+  hints       Json? // ["Think hash map", "O(n) possible"]
+
+  // Library metadata
+  category   String?     @db.VarChar(100)
+  difficulty Difficulty?
+  tags       Json?
+
+  isPublished Boolean @default(false)
+
+  createdBy String   @db.Char(36)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Many-to-many with Test (Prisma handles junction table)
+  tests Test[]
+
+  @@index([isPublished])
+  @@index([category])
+  @@index([difficulty])
+  @@index([language])
+  @@index([createdBy])
 }
 
 // ===================
-// TEST SUBMISSIONS
+// TEST (Composition of MCQs or CodeChallenges)
 // ===================
 
-model TestSubmission {
-  id                 String @id @default(uuid()) @db.Char(36)
-  applicationPhaseId String @db.Char(36) // Foreign key to main_service.application_phases
-  candidateId        String @db.Char(36) // Foreign key to main_service.users
-  testId             String @db.Char(36)
+model Test {
+  id          String   @id @default(uuid()) @db.Char(36)
+  type        TestType
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
 
-  startedAt   DateTime  @default(now())
-  submittedAt DateTime?
+  durationMinutes Int
+  passingScore    Int @default(60) // Percentage (0-100)
 
-  score     Int? // Total score achieved
-  maxScore  Int? // Total possible score
-  passed    Boolean? // Computed based on passingScore
-  timeSpent Int? // Seconds
+  // Library metadata
+  category   String?     @db.VarChar(100)
+  difficulty Difficulty?
+  tags       Json?
 
-  // Relations
-  test            Test             @relation(fields: [testId], references: [id])
-  quizAnswers     QuizAnswer[]
-  codeSubmissions CodeSubmission[]
+  isPublished Boolean @default(false)
 
-  @@unique([applicationPhaseId, testId]) // One submission per test per application phase
-  @@index([testId])
-  @@index([candidateId])
-  @@index([applicationPhaseId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Many-to-many relations (Prisma creates junction tables)
+  mcqs           MCQ[]
+  codeChallenges CodeChallenge[]
+
+  @@index([type])
+  @@index([isPublished])
+  @@index([category])
+  @@index([difficulty])
 }
 
 // ===================
-// QUIZ ANSWERS
+// WHAT PRISMA CREATES AUTOMATICALLY
 // ===================
 
-model QuizAnswer {
-  id               String   @id @default(uuid()) @db.Char(36)
-  submissionId     String   @db.Char(36)
-  questionId       String   @db.Char(36)
-  selectedChoiceId String?  @db.VarChar(50) // ID from the choices JSON array
-  isCorrect        Boolean?
-  answeredAt       DateTime @default(now())
-
-  // Relations
-  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  question   QuizQuestion   @relation(fields: [questionId], references: [id])
-
-  @@unique([submissionId, questionId]) // One answer per question per submission
-  @@index([submissionId])
-  @@index([questionId])
-}
+/**
+ * Prisma will generate these tables in MySQL:
+ * 1. _MCQToTest
+ * ├─ A (mcqId)
+ * ├─ B (testId)
+ * └─ PRIMARY KEY (A, B)
+ * 2. _CodeChallengeToTest
+ * ├─ A (codeChallengeId)
+ * ├─ B (testId)
+ * └─ PRIMARY KEY (A, B)
+ * You don't see them in schema, but they exist in the database!
+ * Prisma manages them automatically.
+ */
 
 // ===================
-// CODE SUBMISSIONS (Judge0 Integration)
+// USAGE EXAMPLES
 // ===================
 
-model CodeSubmission {
-  id           String @id @default(uuid()) @db.Char(36)
-  submissionId String @db.Char(36)
-  challengeId  String @db.Char(36)
+/**
+ * 1. CREATE MCQ IN LIBRARY:
+ * const mcq = await prisma.mcq.create({
+ * data: {
+ * question: "What is a closure?",
+ * choices: [...],
+ * category: "JavaScript",
+ * difficulty: "MEDIUM",
+ * isPublished: true,
+ * createdBy: userId
+ * }
+ * });
+ * 2. CREATE CODE CHALLENGE IN LIBRARY:
+ * const challenge = await prisma.codeChallenge.create({
+ * data: {
+ * title: "Two Sum",
+ * description: "...",
+ * starterCode: "function twoSum() {...}",
+ * language: "javascript",
+ * testCases: [...],
+ * category: "Algorithms",
+ * isPublished: true,
+ * createdBy: userId
+ * }
+ * });
+ * 3. CREATE QUIZ TEST FROM ARRAY OF MCQs:
+ * const test = await prisma.test.create({
+ * data: {
+ * type: "QUIZ",
+ * title: "JavaScript Fundamentals",
+ * durationMinutes: 30,
+ * passingScore: 70,
+ * isPublished: true,
+ * createdBy: userId,
+ * mcqs: {
+ * connect: [
+ * { id: "mcq-123" },
+ * { id: "mcq-456" },
+ * { id: "mcq-789" },
+ * // ... more MCQs
+ * ]
+ * }
+ * }
+ * });
+ * 4. CREATE CODE TEST WITH CHALLENGE:
+ * const test = await prisma.test.create({
+ * data: {
+ * type: "CODE",
+ * title: "Two Sum Challenge",
+ * durationMinutes: 90,
+ * passingScore: 60,
+ * isPublished: true,
+ * createdBy: userId,
+ * codeChallenges: {
+ * connect: [
+ * { id: "challenge-123" }
+ * ]
+ * }
+ * }
+ * });
+ * 5. ADD MORE MCQs TO EXISTING TEST:
+ * await prisma.test.update({
+ * where: { id: testId },
+ * data: {
+ * mcqs: {
+ * connect: [
+ * { id: "mcq-new-1" },
+ * { id: "mcq-new-2" }
+ * ]
+ * }
+ * }
+ * });
+ * 6. REMOVE MCQ FROM TEST:
+ * await prisma.test.update({
+ * where: { id: testId },
+ * data: {
+ * mcqs: {
+ * disconnect: [{ id: "mcq-123" }]
+ * }
+ * }
+ * });
+ * 7. GET TEST WITH ALL MCQs:
+ * const test = await prisma.test.findUnique({
+ * where: { id: testId },
+ * include: { mcqs: true }
+ * });
+ * // test.mcqs = [mcq1, mcq2, mcq3, ...]
+ * 8. GET MCQ WITH ALL TESTS USING IT:
+ * const mcq = await prisma.mcq.findUnique({
+ * where: { id: mcqId },
+ * include: { tests: true }
+ * });
+ * // mcq.tests = [test1, test2, test3]
+ * console.log(`Used in ${mcq.tests.length} tests`);
+ * 9. BROWSE MCQ LIBRARY:
+ * const mcqs = await prisma.mcq.findMany({
+ * where: {
+ * isPublished: true,
+ * category: "JavaScript",
+ * difficulty: "MEDIUM"
+ * }
+ * });
+ * 10. BROWSE CODE CHALLENGE LIBRARY:
+ * const challenges = await prisma.codeChallenge.findMany({
+ * where: {
+ * isPublished: true,
+ * language: "javascript",
+ * difficulty: "EASY"
+ * }
+ * });
+ */
 
-  // Submission data
-  code     String @db.Text
-  language String @db.VarChar(50)
+// ===================
+// BENEFITS OF THIS DESIGN
+// ===================
 
-  // Judge0 integration
-  judge0Token String?          @db.VarChar(255) // Token from Judge0 API
-  status      SubmissionStatus @default(PENDING)
-
-  // Execution results
-  executionTime Int? // Milliseconds
-  memoryUsed    Int? // Kilobytes
-  testResults   Json? // [{caseId: number, passed: boolean, output: string, error?: string}]
-  passedCount   Int? // Number of test cases passed
-  totalCount    Int? // Total number of test cases
-  score         Int? // Points earned
-
-  // Error handling
-  error String? @db.Text
-
-  // Timestamps
-  submittedAt DateTime  @default(now())
-  completedAt DateTime?
-
-  // Relations
-  submission TestSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  challenge  CodeChallenge  @relation(fields: [challengeId], references: [id])
-
-  @@unique([submissionId, challengeId]) // One submission per challenge per test submission
-  @@index([submissionId])
-  @@index([challengeId])
-  @@index([judge0Token])
-  @@index([status])
-}
+/**
+ * ✅ SIMPLE: Only 3 tables in schema (Prisma handles rest)
+ * ✅ CLEAN: Standard Prisma implicit many-to-many pattern
+ * ✅ REUSABLE: MCQs and Challenges can be in multiple tests
+ * ✅ FLEXIBLE: Easy to add/remove items from tests
+ * ✅ FAST: Prisma optimizes queries automatically
+ * ✅ MAINTAINABLE: Less code, fewer bugs
+ * ✅ SCALABLE: Each component scales independently
+ * PERFECT FOR:
+ * - Building test library
+ * - Reusing quality questions
+ * - Fast test creation
+ * - Clean, professional codebase
+ */

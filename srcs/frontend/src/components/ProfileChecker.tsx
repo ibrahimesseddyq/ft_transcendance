@@ -6,16 +6,16 @@ interface ProfileProps {
     setProfile: (profile: any) => void;
 }
 
-export async function ProfileChecker({ user, token, setProfile }: Omit<ProfileProps, 'setUser'>) {
+export async function ProfileChecker({ user, token, setProfile }: ProfileProps) {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     try {
         const res = await fetch(`${BACKEND_URL}/api/profiles/${user.id}`, {
             method: "GET",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { "Authorization": `Bearer ${token}`}
         });
         const result = await res.json();
         if (res.ok){
-            setProfile(result);
+            setProfile(result.data);
             return true;
         }
     } catch (error) {

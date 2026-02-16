@@ -1,9 +1,10 @@
-const {z} = require('zod');
+import {z} from 'zod';
+
 const fileSchema = z
   .file()
-  .max(5_000_000)
+  .max(10_000_000)
   
-const createProfileSchema = z.object({
+export const createProfileSchema = z.object({
   // avatar: z
   //   .any()
   //   .optional()
@@ -45,9 +46,4 @@ const createProfileSchema = z.object({
 }).strict();
 
 
-const updateProfileSchema = createProfileSchema.partial().strict();
-
-module.exports = {
-    createProfileSchema,
-    updateProfileSchema
-}
+export const updateProfileSchema = createProfileSchema.partial().strict();

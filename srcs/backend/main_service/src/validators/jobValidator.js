@@ -1,5 +1,6 @@
-const {z} = require('zod');
-const {JobStatus} = require('../../generated/prisma');
+import {z} from 'zod';
+import {JobStatus} from '../../generated/prisma/index.js';
+
 const baseSchema = z.object({
     title: z.string()
       .min(1, "Title is required"),
@@ -32,13 +33,17 @@ const baseSchema = z.object({
       .default(JobStatus.open),
 });
 
-const createJobSchema = baseSchema.refine((data) => data.salaryMax >= data.salaryMin, {
+export const createJobSchema = baseSchema.refine((data) => data.salaryMax >= data.salaryMin, {
     message: "Maximum salary must be greater than or equal to minimum salary",
     path: ["salaryMax"], });
 
-const updateJobSchema = baseSchema.partial();
-
-module.exports = {
-    createJobSchema,
-    updateJobSchema
-}
+export const updateJobSchema = baseSchema.partial()
+ .refine((data) => {
+      if (data.salaryMin !== undefined && data.salaryMax !== undefined) {
+          return data.salaryMax >= data.salaryMin;
+      }
+      return true;
+  }, {
+      message: "Maximum salary must be greater than or equal to minimum salary",
+      path: ["salaryMax"],
+  });

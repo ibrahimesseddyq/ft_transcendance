@@ -20,6 +20,7 @@ const {HttpException} = require('./utils/httpExceptions');
 const {verifyToken,verifyRoles} = require('./middleware/auth');
 const {UserRole} = require('../generated/prisma');
 
+const app =  express();
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -37,7 +38,7 @@ app.use(morgan('combined'));
 app.use('/uploads', (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
-}, express.static(path.join(__dirname, '../uploads')));
+}, express.static(path.join(import.meta.dirname, '../uploads')));
 
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
@@ -78,4 +79,4 @@ app.use((req,res,next) => {
 })
 app.use(errorHandler);
 
-module.exports = app;
+export default app;
