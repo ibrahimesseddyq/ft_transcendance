@@ -121,7 +121,7 @@ const  register = async (data) => {
     return {};
 }
 
-const refresh = async  (refreshToken) => {
+export const refresh = async  (refreshToken) => {
     const decoded = await jwtService.verifyRefreshToken(refreshToken);
     const user = await  userService.getUserById(decoded.id);
     if(!user)
@@ -142,7 +142,7 @@ const refresh = async  (refreshToken) => {
     }
 }
 
-const logout = async (refreshToken) => {
+export const logout = async (refreshToken) => {
     try {
         const decoded = await jwtService.verifyRefreshToken(refreshToken);
         const user = await userService.getUserById(decoded.id);
@@ -156,7 +156,7 @@ const logout = async (refreshToken) => {
     }
 }
 
-const verifyEmail = async(token) => {
+export const verifyEmail = async(token) => {
     const decoded = await jwtService.verifyVerificationToken(token);
     const user = await userService.getUserById(decoded.id);
     if (!user)
@@ -169,7 +169,7 @@ const verifyEmail = async(token) => {
     delete user.passwordHash;
     return user;
 }
-const resendVerification = async (email) => {
+export const resendVerification = async (email) => {
     const user = await userService.getUserByEmail(email);
     if (!user)
         throw new HttpException(404, "user with this email not found");

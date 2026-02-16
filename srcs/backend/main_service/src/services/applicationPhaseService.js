@@ -1,7 +1,7 @@
-const applicationPhaseRepository = require('../repositories/applicationPhaseRepository');
-const {HttpException} = require('../utils/httpExceptions');
+import * as applicationPhaseRepository from '../repositories/applicationPhaseRepository.js';
+import {HttpException} from '../utils/httpExceptions.js';
 
-const createApplicationphase = async (data) => {
+export const createApplicationphase = async (data) => {
     const {applicationId, phaseId} = data;
     try {
         const applicationPhase = await applicationPhaseRepository.createApplicationPhase({
@@ -21,7 +21,7 @@ const createApplicationphase = async (data) => {
     }
 }
 
-const updateApplicationPhase = async (applicationPhaseId, updateData) => {
+export const updateApplicationPhase = async (applicationPhaseId, updateData) => {
     const applicationPhase =  await applicationPhaseRepository.updateApplicationPhase(
         applicationPhaseId,
         updateData
@@ -31,16 +31,10 @@ const updateApplicationPhase = async (applicationPhaseId, updateData) => {
     return applicationPhase;
 }
 
-const getApplicaticationPhaseById =  async (applicationPhaseId) => {
+export const getApplicaticationPhaseById =  async (applicationPhaseId) => {
     const applicationPhase = await  applicationPhaseRepository.getApplicationPhaseById(applicationPhaseId)
     if (!applicationPhase)
         throw new HttpException(404, "application Phase not found");
     return applicationPhase;
-}
-
-module.exports   =  {
-    createApplicationphase,
-    updateApplicationPhase,
-    getApplicaticationPhaseById
 }
 

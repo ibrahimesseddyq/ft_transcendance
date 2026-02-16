@@ -1,11 +1,12 @@
-const express =  require('express');
-const {upload} = require('../config/multer')
-const userController = require('../controllers/userController');
-const ValidateRequest = require('../middleware/ValidateRequest');
-const {
+import express from 'express';
+import {upload} from '../config/multer.js';
+import * as userController from '../controllers/userController.js';
+import ValidateRequest from '../middleware/ValidateRequest.js';
+import {
   createUserSchema,
   updateUserSchema
-} = require('../validators/userValidator');
+} from '../validators/userValidator.js';
+
 const router =  express.Router();
 
 router.get('/',userController.listUsers)
@@ -17,4 +18,4 @@ router.get('/',userController.listUsers)
   .get('/avatar/:id',userController.getAvatar)
   .delete('/avatar/:id',userController.deleteAvatar)
 
-module.exports = router;
+export default router;

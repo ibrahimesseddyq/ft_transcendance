@@ -4,17 +4,20 @@ import { Briefcase } from 'lucide-react';
 
 const CareerCard = () =>{
     const [career] = useState([
-        { id: 1, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' }
+        { id: 1, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' },
+        { id: 2, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' },
+        { id: 3, company: "Full Stack Developer", location: 'Casablanca, MA', start: '2024', end: 'Present' }
       ]);
     return (
-      <div className="flex-1 w-full md:w-auto lg:col-span-4 
-         p-6 border maincard">
+      <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2 ">
           <div className="flex items-center justify-between mb-6">
             <h2 className="pramary-text text-xl flex items-center gap-2">
               <Briefcase  size={22} />
               Career
             </h2>
           </div>
+        {career.length > 0
+          ? 
           <div className="space-y-4">
             {career.map((job) => (
               <div key={job.id} className="p-4 bg-[#1C263B] rounded-2xl border border-gray-700">
@@ -24,6 +27,9 @@ const CareerCard = () =>{
               </div>
             ))}
           </div>
+          :
+          <p className="text-[#5F88B8] text-xs text-center mt-2">No Career card Available</p>
+        }
       </div>
     );
   }

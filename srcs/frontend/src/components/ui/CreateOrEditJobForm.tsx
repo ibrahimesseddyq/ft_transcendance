@@ -205,8 +205,8 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
 
           {/* Description */}
           <div className='flex-1'>
-            <textarea {...register("description")} 
-              placeholder="Job Description" rows={4} 
+            <textarea {...register("description")}
+              placeholder="Job Description" rows={4}
               className="w-full text-sm text-white outline-none p-3 border border-[#405673] 
                 rounded-md bg-transparent focus:border-[#10B77F] resize-none oveflow-auto custom-scrollbar" />
             {errors.description && <p className="mt-1 text-red-500 text-[10px]">{errors.description.message}</p>}

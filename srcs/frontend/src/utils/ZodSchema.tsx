@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const fileSchema = z
   .file()
-  .max(5_000_000)
+  .max(10_000_000)
 
 
 export const RegisterSchema = z.object({
@@ -129,7 +129,7 @@ export const CandidateProfileSchema = z.object({
     .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
     .pipe(fileSchema),
 
-  numberPhone: z
+  phone: z
     .string()
     .transform((val) => val.replace(/\D/g, ""))
     .pipe(
@@ -168,3 +168,31 @@ export const CandidateProfileSchema = z.object({
   salaryExpectation: z.string()
     .optional(),
 });
+
+export const QuizSchema = z.object({
+  type: z
+    .string(),
+
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(15, "Title is too long"),
+
+  description: z
+    .string()
+    .min(10, "min Characters should be 10")
+    .max(100, "description is too long"),
+
+  durationMinutes: z
+    .number(),
+
+  category: z
+    .string(),
+
+  difficulty: z
+    .string(),
+
+  // tags: z
+  //   .array,
+
+})
