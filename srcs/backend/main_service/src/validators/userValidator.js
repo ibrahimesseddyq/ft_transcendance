@@ -1,7 +1,7 @@
-const {z} = require('zod');
-const {UserRole} = require('../../generated/prisma');
+import {z} from 'zod';
+import {UserRole} from '../../generated/prisma/index.js';
 
-const createUserSchema = z.object({
+export const createUserSchema = z.object({
     firstName: z.string()
         .min(1,{message : "First name is required"})
         .max(100, { message: "First name must be less than 100 characters" })
@@ -44,14 +44,14 @@ const createUserSchema = z.object({
         .optional(),
 }).strict();
 
-const updateUserSchema = createUserSchema
+export const updateUserSchema = createUserSchema
     .partial()
     .omit({password : true})
     .refine(data => Object.keys(data).length > 0, {
     message: "At least one field must be provided for update"
 });
 
-const registerUserSchema = createUserSchema.pick({ 
+export const registerUserSchema = createUserSchema.pick({ 
     firstName: true,
     lastName: true,
     email:true,
@@ -62,7 +62,7 @@ const registerUserSchema = createUserSchema.pick({
   path:['confirmPassword'],
 }).transform(({confirmPassword, ...rest}) => rest);
 
-const loginUserSchema = z.object({
+export const loginUserSchema = z.object({
     email: z.string()
         .email({ message: "Must be a valid email address" })
         .toLowerCase()
@@ -72,17 +72,17 @@ const loginUserSchema = z.object({
         .min(1, { message: "Password is required" }),
 });
 
-const verifyEmailSchema = z.object({
+export const verifyEmailSchema = z.object({
     token: z.string().min(1, { message: "Verification token is required" }),
 });
 
-const passwordResetRequestSchema = z.object({
+export const passwordResetRequestSchema = z.object({
     email: z.string()
         .email({ message: "Must be a valid email address" })
         .toLowerCase(),
 });
 
-const passwordResetSchema = z. object({
+export const passwordResetSchema = z. object({
   token: z. string().min(1, { message: "Reset token is required" }),
   password: z.string()
     .min(8, { message: "Password must be at least 8 characters long" })
@@ -98,7 +98,7 @@ const passwordResetSchema = z. object({
   path: ["confirmPassword"],
 });
 
-const changePasswordSchema = z.object({
+export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, { message: "Current password is required" }),
   newPassword: z.string()
     .min(8, { message: "Password must be at least 8 characters long" })
@@ -117,7 +117,7 @@ const changePasswordSchema = z.object({
   path: ["newPassword"],
 });
 
-const listUsersQuerySchema = z.object({
+export const listUsersQuerySchema = z.object({
   page: z.string().regex(/^\d+$/).transform(Number).optional().default('1'),
   limit: z.string().regex(/^\d+$/).transform(Number).optional().default('10'),
   role: z.nativeEnum(UserRole).optional(),
@@ -125,15 +125,3 @@ const listUsersQuerySchema = z.object({
   sortBy: z.enum(['createdAt', 'firstName', 'lastName', 'email']).optional().default('createdAt'),
   order: z.enum(['asc', 'desc']).optional().default('desc'),
 });
-
-module.exports = {
-  createUserSchema,
-  updateUserSchema,
-  registerUserSchema,
-  loginUserSchema,
-  verifyEmailSchema,
-  passwordResetRequestSchema,
-  passwordResetSchema,
-  changePasswordSchema,
-  listUsersQuerySchema,
-};

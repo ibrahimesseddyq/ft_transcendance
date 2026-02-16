@@ -1,5 +1,5 @@
-const {z, ZodError } = require('zod');
-const { HttpValidationException } = require('../utils/httpExceptions')
+import  {z, ZodError } from 'zod';
+import  { HttpValidationException } from '../utils/httpExceptions.js';
 
 const validateRequest = (schema) => {
     return (req,res,next) => {
@@ -20,4 +20,4 @@ const validateRequest = (schema) => {
     }
 }
 
-module.exports =  validateRequest;
+export default  validateRequest;
