@@ -16,6 +16,7 @@ import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { OTPpage } from '@/components/OTPpage'
+import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 
 export function Main() {
@@ -27,7 +28,7 @@ export function Main() {
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/qrcode', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   if (!token && !isPublicPage) {
@@ -50,6 +51,7 @@ export function Main() {
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/otp" element={<OTPpage/>} />
+          <Route path="/qrcode" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
