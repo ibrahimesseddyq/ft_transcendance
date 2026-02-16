@@ -1,6 +1,5 @@
-const speakeasy = require("speakeasy");
-const QRCode = require("qrcode");
-const { HttpException } = require('../utils/httpExceptions');
+import speakeasy from "speakeasy";
+import QRCode from "qrcode";
 
 
  class TwoFAService
@@ -73,4 +72,4 @@ const { HttpException } = require('../utils/httpExceptions');
         return { success: true};
     }
 };
-module.exports = TwoFAService;
+export default  TwoFAService;
