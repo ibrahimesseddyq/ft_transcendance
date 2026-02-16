@@ -1,19 +1,17 @@
-const authController = require('../controllers/authController');
-const express = require('express');
-const router = express.Router();
-const jwtService = require('../services/jwtService');
-const validateRequest = require('../middleware/ValidateRequest');
-const passport = require('../config/passport');
-const {registerUserSchema,loginUserSchema} = require('../validators/userValidator');
+import * as authController from '../controllers/authController.js';
+import express from 'express';
+import * as jwtService from '../services/jwtService.js';
+import validateRequest from '../middleware/ValidateRequest.js';
+import passport from '../config/passport.js';
+import {registerUserSchema,loginUserSchema} from '../validators/userValidator.js';
 
+const router = express.Router();
 
 router.post('/login',validateRequest(loginUserSchema),authController.login);
 router.post('/register',validateRequest(registerUserSchema),authController.register);
 router.post('/refresh',authController.refresh);
 router.post('/logout',authController.logout);
-
 router.get('/verify-email/:token',authController.verifyEmail);
-
 router.post('/resend-verification',authController.resendVerification);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', 
@@ -21,6 +19,7 @@ router.get('/google/callback',
         failureRedirect: 'http://localhost:5173/Login',
         session: false 
     }),
+    // the followin async function should moved to the controller
     async (req, res) => {
         try {
             const tokens = jwtService.generateAuthTokens({
@@ -40,9 +39,12 @@ router.get('/google/callback',
             res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&user=${userString}`);
         } catch (error) {
             res.status(400)
-            .json({ message: 'Google authentication failed' });
+            .json({
+                    success: false,
+                    message: 'Google authentication failed' 
+                });
         }
     }
 );
 
-module.exports = router;
+export default router;

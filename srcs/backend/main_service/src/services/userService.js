@@ -1,10 +1,10 @@
-const userRepository = require('../repositories/userRepository')
-const argon2 = require('argon2');
-const {HttpException} = require('../utils/httpExceptions');
-const crypto = require('crypto');
-const fileService =  require('./fileService');
+import * as userRepository from '../repositories/userRepository.js'
+import argon2 from 'argon2';
+import {HttpException} from '../utils/httpExceptions.js';
+import crypto from 'crypto';
+import * as fileService from './fileService.js';
 
-const createUser = async (userData) => {
+export const createUser = async (userData) => {
     const {password, ...data} = userData;
     const passwordHash = await argon2.hash(password);
     const user = await userRepository.createUser({passwordHash, ...data})
@@ -12,7 +12,7 @@ const createUser = async (userData) => {
     return user;
 }
 
-const findUserOrCreate = async (profile) => {
+export const findUserOrCreate = async (profile) => {
     const email = profile.emails[0].value.toLowerCase().trim();
     let user = await userRepository.getByEmail(email);
     if (user) {
@@ -38,19 +38,19 @@ const findUserOrCreate = async (profile) => {
     return user;
 }
 
-const getUserById = async (userId) => {
+export const getUserById = async (userId) => {
     const user = await userRepository.getUserById(userId);
     return user;
 }
 
-const getUserByEmail = async (email) => {
+export const getUserByEmail = async (email) => {
     const user = await userRepository.getByEmail(email);
     if (!user)
         return;
     return user;
 }
 
-const updateUser = async (userId, updateData) => {
+export const updateUser = async (userId, updateData) => {
     await getUserById(userId);
     const allowedFields = ['firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified"];
     const filteredData = {};
@@ -64,18 +64,18 @@ const updateUser = async (userId, updateData) => {
     return await userRepository.updateUser(userId,filteredData);
 }
 
-const deleteUser = async (userId) => {
+export const deleteUser = async (userId) => {
     const user =  await getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
     await userRepository.deleteUser(userId);
 }
 
-const getUsers = async (filters) => {
+export const getUsers = async (filters) => {
     return await userRepository.getUsers(filters);
 }
 
-const uploadAvatar = async (userId, file) => {
+export const uploadAvatar = async (userId, file) => {
     const user = await userRepository.getUserById(userId);
     const {avatarUrl} =  await fileService.saveAvatar(userId,file);
     if (avatarUrl !== user.avatarUrl) {
@@ -84,7 +84,7 @@ const uploadAvatar = async (userId, file) => {
     const updatedUser = await userRepository.updateUser(userId, {avatarUrl});
     return updatedUser;
 }
-const detletAvatar =  async (userId) => {
+export const detletAvatar =  async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
@@ -94,7 +94,7 @@ const detletAvatar =  async (userId) => {
     await userRepository.updateUser(userId, {avatarUrl : null});
 }
 
-const getAvatar = async (userId) => {
+export const getAvatar = async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
@@ -102,15 +102,3 @@ const getAvatar = async (userId) => {
         throw new HttpException(404, 'avatar not setted yet');
     return user.avatarUrl;
 }
-module.exports = {
-    createUser,
-    findUserOrCreate,
-    deleteUser,
-    getUsers,
-    updateUser,
-    getUserByEmail,
-    getUserById,
-    getAvatar,
-    detletAvatar,
-    uploadAvatar,
-};

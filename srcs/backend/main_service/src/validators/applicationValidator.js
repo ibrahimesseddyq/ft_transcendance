@@ -1,5 +1,5 @@
-const {z, nativeEnum} = require('zod');
-const {ApplicationStatus}  =  require('../../generated/prisma')
+import {z, nativeEnum} from 'zod';
+import {ApplicationStatus}  from '../../generated/prisma/index.js';
 
 const createApplicationSchema =  z.object({
 	jobId:z.string(),
