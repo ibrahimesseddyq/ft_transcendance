@@ -84,17 +84,3 @@ export const generateVerificationToken = async (userId, email) => {
     const token = sign(payload,accessTokenSecret,{expiresIn: "24h"});
     return token;
 }
-
-module.exports = {
-    generateAuthTokens,
-    verify,
-    verifyAccessToken,
-    verifyRefreshToken,
-    sign,
-    decode,
-    refreshAccessToken,
-    verifyVerificationToken,
-    generateVerificationToken,
-    generateTempToken,
-    verifyTempToken
-};
