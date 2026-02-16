@@ -192,7 +192,4 @@ export const QuizSchema = z.object({
   difficulty: z
     .string(),
 
-  // tags: z
-  //   .array,
-
 })

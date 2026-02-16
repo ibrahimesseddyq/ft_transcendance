@@ -27,6 +27,7 @@ const InputField = ({ val, onChange, onKeyDown, inputRef }: InputFieldProps) => 
     );
 };
 
+
 export function OTPpage() {
 
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
@@ -57,7 +58,6 @@ export function OTPpage() {
         e.preventDefault();
         const finalCode = otp.join("");
         console.log("Submitted OTP:", finalCode);
-
     };
 
     return (

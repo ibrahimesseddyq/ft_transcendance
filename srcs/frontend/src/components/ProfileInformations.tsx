@@ -21,7 +21,7 @@ interface FormFieldProps {
 }
 
 const FormField = ({ label, name, register, error, placeholder, type, optional }: FormFieldProps) => (
-  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 group">
+  <div className="flex flex-col lg:flex-row md:items-center gap-2 md:gap-6 group">
     <label htmlFor={name} className="w-full md:w-40 text-sm font-medium text-gray-400 
       group-focus-within:text-[#00adef] transition-colors">
       {label}
