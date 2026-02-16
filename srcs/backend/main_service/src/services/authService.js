@@ -1,35 +1,114 @@
-import * as userService from './userService.js';
-import * as jwtService from './jwtService.js';
-import env from '../config/env.js';
-import argon2 from 'argon2';
-import { HttpException } from '../utils/httpExceptions.js';
-import sendMail from './emailService.js';
+const userService = require('./userService');
+const jwtService = require('./jwtService');
+const env = require('../config/env');
+const crypto =  require('crypto');
+const argon2 = require('argon2');
+const { HttpException } = require('../utils/httpExceptions');
+const sendMail = require('./emailService');
+const { email } = require('zod');
+const { token } = require('morgan');
+const DUMMY_HASH = process.env.DUMMY_PASSWORD_HASH;
 
-
-export const login = async (data) => {
-    const {email , password} = data;
-    const user =  await userService.getUserByEmail(email);
-    if (!user || !(await argon2.verify(user.passwordHash, password)))
-        throw new HttpException(400, "Wrong credentials");
-    if (!user.isVerified) 
-        throw new HttpException(403, "Please verify your email before logging in");
-    const tokens = jwtService.generateAuthTokens({
-        id : user.id,
-        email: user.email,
-        role: user.role
-    });
-    await userService.updateUser(user.id,{refreshToken :tokens.refreshToken});
-    delete user.passwordHash;
-    return {
-        user,
-        ...tokens
+const login = async (data) =>
+    {
+    const { email, password } = data;
+  
+    const user = await userService.getUserByEmail(email);
+  
+    // Always verify: real hash if user exists, dummy hash otherwise
+    const hashToCheck = user ? user.passwordHash : DUMMY_HASH;
+  
+    let passwordOk = false;
+    try
+    {
+      passwordOk = await argon2.verify(hashToCheck, password);
     }
-}
+    catch
+    {
+      // If hash format is bad, treat as failure (don’t branch differently)
+      passwordOk = false;
+    }
+  
+    // Keep errors uniform for auth failure
+    if (!user || !passwordOk) {
+      throw new HttpException(400, "Wrong credentials");
+    }
+  
+    // Consider making this message generic too if you want to avoid
+    // "verified account enumeration"
+    if (!user.isVerified) {
+      // Safer: same as wrong credentials (or same status/message)
+      throw new HttpException(400, "Wrong credentials");
+      // Alternative: still block but generic
+      // throw new HttpException(400, "Wrong credentials");
+    }
+  
+    if (user.twoFAEnabled )
+    {
+        const tempToken = jwtService.generateTempToken({
+            id: user.id,
+            email: user.email,
+            purpose: '2fa-pending'
+        });
 
-export const  register = async (data) => {
+        return {
+            require2FA: true,
+            tempToken, 
+            userId: user.id
+        };
+    }
+
+    const tokens = jwtService.generateAuthTokens({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+  
+    await userService.updateUser(user.id, { refreshToken: tokens.refreshToken });
+  
+    const { passwordHash, ...safeUser } = user;
+    return { user: safeUser, ...tokens };
+  };
+
+const verifyLoginWith2FA = async (tempToken, twoFACode) => {
+    const decoded = await jwtService.verifyTempToken(tempToken);
+
+    if (decoded.purpose !== '2fa-pending')
+    {
+        throw new HttpException(403, "Invalid Token");
+    }
+
+    const user = await userService.getUserById(decoded.id);
+
+    if (!user || !user.twoFAEnabled) 
+    {
+        throw new HttpException(403, "Invalid request");
+    }
+
+    const twoFAService = require('./twoFAService');
+
+    const isValid = await twoFAService.verifyLogin(user.id, twoFACode);
+
+    if (!isValid)
+    {
+        throw new HttpException(400, "Invalid 2FA Code");
+    }
+
+    const tokens = jwtService.generateAuthTokens(
+        {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+        }
+    );
+    await userService.updateUser(user.id, { refreshToken: tokens.refreshToken});
+    const { passwordHash, ...saferUser} = user;
+    return { user: saferUser, ...tokens};
+}
+const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
     if (existingUser)
-        throw new HttpException(409, 'Email already exists');
+        return {};
     const user = await userService.createUser(data);
     const verificationToken =await jwtService.generateVerificationToken(user.id,user.email);
     await sendMail({
@@ -39,7 +118,7 @@ export const  register = async (data) => {
         text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/auth/verify-email/${verificationToken}`
     });
     delete user.passwordHash;
-    return user;
+    return {};
 }
 
 export const refresh = async  (refreshToken) => {
@@ -108,3 +187,13 @@ export const resendVerification = async (email) => {
     return { message: 'Verification email sent' };
 }
 
+
+module.exports = {
+    login,
+    register,
+    refresh,
+    logout,
+    verifyEmail,
+    resendVerification,
+    verifyLoginWith2FA
+}

@@ -6,9 +6,17 @@ const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
 const accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;
 const refreshTokenSecret = env.REFRESH_TOKEN_SECRET;
 const refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
+const tempTokenSecret = env.TEMP_TOKEN_SECRET || accessTokenSecret;
+const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY || "5m";
 
-
-export const generateAuthTokens =  (payload) => {
+const generateTempToken = (payload) =>
+{
+    return sign(payload, tempTokenSecret, { expiresIn: tempTokenExpiry });
+};
+const verifyTempToken = (payload) => {
+    return verify(payload, tempTokenSecret);
+};
+const generateAuthTokens =  (payload) => {
     const accessToken = sign(payload,accessTokenSecret,{
             expiresIn : accessTokenExpiry
         })
@@ -76,3 +84,17 @@ export const generateVerificationToken = async (userId, email) => {
     const token = sign(payload,accessTokenSecret,{expiresIn: "24h"});
     return token;
 }
+
+module.exports = {
+    generateAuthTokens,
+    verify,
+    verifyAccessToken,
+    verifyRefreshToken,
+    sign,
+    decode,
+    refreshAccessToken,
+    verifyVerificationToken,
+    generateVerificationToken,
+    generateTempToken,
+    verifyTempToken
+};
