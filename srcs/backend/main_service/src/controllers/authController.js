@@ -1,5 +1,5 @@
-const env =  require('../config/env');
-const authService = require('../services/authService');
+import env from'../config/env.js';
+import * as authService from'../services/authService.js';
 
 const cookieOptions = {
     httpOnly: true,
@@ -8,7 +8,7 @@ const cookieOptions = {
     secure: env.NODE_ENV === "production"
 }
 
-const login = async (req, res, next) => {
+export const login = async (req, res, next) => {
     try {
         // 2FA
         const result = await authService.login(req.body);
@@ -27,6 +27,7 @@ const login = async (req, res, next) => {
         .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)
         .json({
+                success: true,
                 message: 'login successful',
                 data:{
                     user,
@@ -73,7 +74,7 @@ const register = async (req, res, next) => {
     }
 }
 
-const refresh =  async (req, res, next) => {
+export const refresh =  async (req, res, next) => {
     try {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken) {
@@ -87,6 +88,7 @@ const refresh =  async (req, res, next) => {
         res
         .status(200)
         .json({
+            success: true,
             message: 'token refreshed successfully',
             data:{
                 user,
@@ -98,7 +100,7 @@ const refresh =  async (req, res, next) => {
     }
 }
 
-const logout =  async (req, res, next) => {
+export const logout =  async (req, res, next) => {
     try {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken)
@@ -119,7 +121,7 @@ const getAuthStatus = (req, res) => {
     }
 };
 
-const verifyEmail = async (req, res, next) => {
+export const verifyEmail = async (req, res, next) => {
     try {
         const token = req.params.token;
         console.log("token = " , token)
@@ -130,7 +132,7 @@ const verifyEmail = async (req, res, next) => {
     }
 };
 
-const resendVerification = async (req, res, next) => {
+export const resendVerification = async (req, res, next) => {
     try {
         const email = req.body.email;
         const message = await authService.resendVerification(email);

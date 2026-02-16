@@ -61,7 +61,7 @@ export const FeaturesSection = () => {
     <section className="w-full h-full md:overflow-auto  no-scrollbar">
       {/* Header Section */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
             Everything you need to <span className="text-blue-600">succeed</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-2xl">
