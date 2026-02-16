@@ -6,18 +6,18 @@ const twoFAService = new TwoFAService(userService);
 export const    setup = async (req, res) =>
     {
         // to validate
-        const data = await twoFAService.setup(req.user.id);
+        const data = await twoFAService.setup(req.body.id);
         res.json(data);
     };
 
 export const    verifySetup = async (req, res) => {
         const { token } = req.body;
-        const data = await twoFAService.verifySetup(req.user.id, token);
+        const data = await twoFAService.verifySetup(req.body.id, token);
         res.json(data);
     };
 
 export const    disable = async (req, res) => {
         const { token } = req.body;
-        const data = await twoFAService.disable(req.user.id, token);
+        const data = await twoFAService.disable(req.body.id, token);
         res.json(data);
 };
