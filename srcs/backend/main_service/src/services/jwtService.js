@@ -9,14 +9,14 @@ const refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
 const tempTokenSecret = env.TEMP_TOKEN_SECRET || accessTokenSecret;
 const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY || "5m";
 
-const generateTempToken = (payload) =>
+export const generateTempToken = (payload) =>
 {
     return sign(payload, tempTokenSecret, { expiresIn: tempTokenExpiry });
 };
-const verifyTempToken = (payload) => {
+export const verifyTempToken = (payload) => {
     return verify(payload, tempTokenSecret);
 };
-const generateAuthTokens =  (payload) => {
+export const generateAuthTokens =  (payload) => {
     const accessToken = sign(payload,accessTokenSecret,{
             expiresIn : accessTokenExpiry
         })
