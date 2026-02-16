@@ -1,5 +1,5 @@
-const applicationController =  require('../controllers/applicationController');
-const express = require('express');
+import * as applicationController from '../controllers/applicationController.js';
+import express from 'express';
 const router = express.Router();
 
 
@@ -11,4 +11,4 @@ router.get('/:id', applicationController.getApplicaticationById)
     .patch('/:id/reject', applicationController.rejectApplication)
     .patch('/:id/advance', applicationController.advance)
 
-module.exports = router
+export default router

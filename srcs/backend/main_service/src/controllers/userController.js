@@ -1,6 +1,6 @@
-const userService = require('../services/userService');
+import * as userService from '../services/userService.js';
 
-const createUser =  async (req,res,next) => {
+export const createUser =  async (req,res,next) => {
     try {
         const {email,password,firstName,lastName,role} = req.body;
         const user = await userService.createUser({
@@ -11,7 +11,7 @@ const createUser =  async (req,res,next) => {
             role
         });
         res.status(201).json({
-            status : true,
+            success: true,
             message: 'user created successfully',
             data: user
         })
@@ -23,11 +23,11 @@ const createUser =  async (req,res,next) => {
 
 }
 
-const getUserById = async (req,res,next) => {
+export const getUserById = async (req,res,next) => {
     try {
         const user = await userService.getUserById(req.params.id);
         res.status(200).json({
-            status : true,
+            success: true,
             data : user
         })
 
@@ -35,7 +35,7 @@ const getUserById = async (req,res,next) => {
         next(error)
     }
 }
-const updateUser = async (req,res,next) => {
+export const updateUser = async (req,res,next) => {
     try{
         const user = await userService.updateUser(req.params.id,req.body);
         res.status(200).json({
@@ -47,7 +47,7 @@ const updateUser = async (req,res,next) => {
         next(error);
     }
 }
-const deleteUser = async (req,res,next) => {
+export const deleteUser = async (req,res,next) => {
     try{
         await userService.deleteUser(req.params.id);
         res.status(204).end();
@@ -56,7 +56,7 @@ const deleteUser = async (req,res,next) => {
         next(error);
     }
 }
-const listUsers = async (req,res,next) => {
+export const listUsers = async (req,res,next) => {
     try {
         const {page,limit,role,search} = req.query;
         const result = await userService.listUsers({
@@ -74,7 +74,7 @@ const listUsers = async (req,res,next) => {
         next(error);
     }
 }
-const deleteAvatar =  async (req, res, next) => {
+export const deleteAvatar =  async (req, res, next) => {
     try {
         await userService.detletAvatar(req.params.id);
         res.status(204).end();
@@ -83,12 +83,12 @@ const deleteAvatar =  async (req, res, next) => {
     }
 }
 
-const uploadAvatar = async(req, res, next) => {
+export const uploadAvatar = async(req, res, next) => {
     try {
         const avatar = await userService.uploadAvatar(req.params.id, req.file);
         res.status(201)
         .json({
-            status: true,
+            success: true,
             message: 'avatar uploaded successfully',
             data: avatar
         })
@@ -97,27 +97,15 @@ const uploadAvatar = async(req, res, next) => {
     }
 }
 
-const getAvatar = async (req, res, next) => {
+export const getAvatar = async (req, res, next) => {
     try {
         const avatar =  await userService.getAvatar(req.params.id);
         res.status(200)
         .json({
-            status: true,
+            success: true,
             data: avatar
         })
     } catch (error) {
         next(error)
     }
-}
-
-
-module.exports = {
-    createUser,
-    getUserById,
-    updateUser,
-    deleteUser,
-    listUsers,
-    deleteAvatar,
-    uploadAvatar,
-    getAvatar
 }

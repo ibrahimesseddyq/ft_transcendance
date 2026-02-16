@@ -1,13 +1,12 @@
 generator client {
-  provider   = "prisma-client-js"
-  output     = "../generated/prisma"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/main_db"
 }
+
 
 model ApplicationPhase {
   id            String                  @id @default(dbgenerated("(uuid())")) @db.Char(36)

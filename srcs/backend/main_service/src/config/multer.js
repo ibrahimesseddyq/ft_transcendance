@@ -1,10 +1,10 @@
-const multer =  require('multer');
-const path =  require('path');
-const fs = require('fs');
-const {HttpException} = require('../utils/httpExceptions');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import {HttpException} from '../utils/httpExceptions.js';
 
-fs.mkdirSync(`${__dirname}/../../uploads/avatars`, {recursive: true});
-fs.mkdirSync(`${__dirname}/../../uploads/resumes`, {recursive: true});
+fs.mkdirSync(`${import.meta.dirname}/../../uploads/avatars`, {recursive: true});
+fs.mkdirSync(`${import.meta.dirname}/../../uploads/resumes`, {recursive: true});
 
 const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
@@ -14,7 +14,6 @@ const diskStorage =  multer.diskStorage({
         cb(null, uploadPath);
     },
     filename:(req, file, cb) => {
-        console.log(req.body)
         const filename = req.params?.id || req.body.userId;
         const ext = path.extname(file.originalname);
         cb(null,`${filename}${ext}`)
@@ -37,7 +36,7 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
-const upload =  multer({
+export const upload =  multer({
     storage: diskStorage,
     fileFilter: fileFilter,
     limits  :{
@@ -46,7 +45,7 @@ const upload =  multer({
     }
 });
 
-const uploadProfile = multer({
+export const uploadProfile = multer({
     
     storage: diskStorage,
     fileFilter: fileFilter,
@@ -55,8 +54,3 @@ const uploadProfile = multer({
         files: 2
     } 
 })
-
-module.exports = {
-    upload,
-    uploadProfile
-};
