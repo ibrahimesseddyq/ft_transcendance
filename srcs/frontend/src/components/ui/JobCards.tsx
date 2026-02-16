@@ -1,6 +1,6 @@
 import Notification from "@/utils/TostifyNotification";
-import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from '@/utils/ZuStand';
 import {Eye, Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -14,6 +14,8 @@ interface props {
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
   const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
@@ -45,18 +47,11 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
           jobsArray.map((item: any) => (
             <div
               key={item.id}
-              className="relative flex flex-col w-full sm:w-[350px] 
+              className="relative flex flex-col w-full md:w-[350px] 
                 bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
 
               <div className="absolute top-3 right-3 flex items-center gap-2">
-                {/* see Application */}
-                <Link to={`/Application/${item.id}`}
-                    className='cursor-pointer'
-                    title="See the Job Application">
-                  <Eye
-                    className="w-6 h-6 text-black hover:text-[#00adef]"/>
-                </Link>
                 {/* closed or open or archived*/}
                 {item.status === "closed" ? (
                   <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
@@ -132,12 +127,18 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormO
                 </button>
                 
                 <div className="flex items-center gap-3">
-                   <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="text-gray-900 hover:text-blue-500">
-                    <SquarePen size={20} />
-                  </button>
-                  <button onClick={() => DeleteJob(item.id)} className="text-gray-900 hover:text-red-500">
-                    <Trash size={20} />
-                  </button>
+                  {isAdminOrRecruiter
+                    ?
+                      <>
+                        <button onClick={() => { setJobItem(item); setIsFormOpen(true); } } className="text-gray-900 hover:text-blue-500">
+                          <SquarePen size={20} />
+                        </button>
+                        <button onClick={() => DeleteJob(item.id)} className="text-gray-900 hover:text-red-500">
+                          <Trash size={20} />
+                        </button>
+                      </> 
+                    : null}
+              
                   <button className="text-gray-900 hover:text-green-500">
                     <Bookmark size={20} />
                   </button>

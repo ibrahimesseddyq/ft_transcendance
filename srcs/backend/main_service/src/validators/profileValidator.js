@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 const fileSchema = z
   .file()
-  .max(5_000_000)
+  .max(10_000_000)
   
 export const createProfileSchema = z.object({
   // avatar: z

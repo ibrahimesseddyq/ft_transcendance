@@ -1,24 +1,24 @@
 import { Link } from 'react-router-dom';
 import { ArrowDownFromLine } from 'lucide-react';
+import { useState } from 'react';
+import { useAuthStore } from '@/utils/ZuStand';
 
 interface props{
   profile: any;
   user: any;
 }
 export function ProfileCover({ profile, user }: props) {
-  const fields = [
-    { label: 'First Name', value: user?.firstName },
-    { label: 'Last Name', value: user?.lastName },
-    { label: 'Email', value: user?.email },
-    { label: 'Phone Number', value: user?.phone || 'Not provided' },
-    { label: 'Position', value: user?.currentTitle || 'Full Stack Developer' }
-  ];
-
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-  console.log("user : ", user);
-  console.log("resume Url = ", resumeUrl);
+  const loggedUser = useAuthStore((state) => state.user);
+  const [profileUrl, setProfileUrl] = useState(window.location.href);
+  const [copyState, setCopyState] = useState('');
+  const handleCopy = async () =>{
+    await navigator.clipboard.writeText(profileUrl);
+    setCopyState('Copied!');
+    setTimeout(()=>{setCopyState('')}, 2000);
+  }
 
   return (
     <div className="relative flex flex-col gap-4 p-6 pt-20 bg-white border rounded-xl items-center shadow-sm">
@@ -40,9 +40,9 @@ export function ProfileCover({ profile, user }: props) {
       {/* Contact Info */}
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600">
         <span className="text-sm font-light">{user?.email}</span>
-        {user?.numberPhone && (
+        {user?.phone && (
           <span className="text-sm font-light border-l border-slate-300 pl-4">
-            {user?.numberPhone}
+            {user?.phone}
           </span>
         )}
       </div>
@@ -58,17 +58,24 @@ export function ProfileCover({ profile, user }: props) {
             <ArrowDownFromLine className="h-4 w-4"/>
             CV
           </Link>
-          <button className="flex-1 bg-[#00adef] rounded-lg text-white py-2 text-sm font-semibold hover:bg-[#009cd6] transition-colors">
-            Share
-          </button>
+            <button onClick={handleCopy}
+              className="flex-1 bg-[#00adef] rounded-lg text-white py-2 text-sm font-semibold hover:bg-[#009cd6] transition-colors">
+              {copyState ? <p className='rounded-md shadow-sm'>{copyState}</p>: <p>Share</p>}
+            </button>
         </div>
 
-        <Link 
-          to="/Settings"
-          className="w-full sm:w-auto px-4 py-2 text-center bg-slate-100 rounded-lg text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors"
-        >
-          Edit Profile
-        </Link>
+        {loggedUser?.id === user?.id
+          ?
+            <Link 
+              to="/Settings"
+              className="w-full sm:w-auto px-4 py-2 text-center bg-slate-100 rounded-lg text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors"
+            >
+              Edit Profile
+            </Link>
+          :
+          null
+        }
+        
       </div>
     </div>
   );

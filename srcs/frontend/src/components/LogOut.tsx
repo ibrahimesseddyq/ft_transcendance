@@ -17,7 +17,8 @@ export function Logout({ className }: LogoutProps) {
   return (
     <button 
       onClick={handleLogout}
-      className={className || "text-red-500 hover:text-red-700 font-medium transition-colors"}
+      className={className || "w-fit text-red-500 border rounded-md p-2 px-10 shadow-sm\
+        hover:text-red-600 font-medium transition-colors bg-white backdrop-sepia-0"}
     >
       Logout
     </button>  
