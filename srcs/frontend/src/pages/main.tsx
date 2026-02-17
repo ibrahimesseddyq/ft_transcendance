@@ -51,7 +51,6 @@ export function Main() {
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/otp" element={<OTPpage/>} />
-          <Route path="/qrcode" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
@@ -64,6 +63,7 @@ export function Main() {
     return (
       <FullScreenWrapper>
         <Routes>
+          <Route path="/qrcode" element={<QRcode/>} />
           <Route path="/Createprofile" element={<ProfileInformations />} />
           <Route path="*" element={<Navigate to="/Createprofile" replace />} />
         </Routes>

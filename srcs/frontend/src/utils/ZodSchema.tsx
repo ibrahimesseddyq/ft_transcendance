@@ -169,27 +169,38 @@ export const CandidateProfileSchema = z.object({
     .optional(),
 });
 
-export const QuizSchema = z.object({
-  type: z
-    .string(),
-
-  title: z
-    .string()
-    .min(1, "Title is required")
-    .max(15, "Title is too long"),
-
-  description: z
-    .string()
-    .min(10, "min Characters should be 10")
-    .max(100, "description is too long"),
-
-  durationMinutes: z
-    .number(),
-
-  category: z
-    .string(),
-
-  difficulty: z
-    .string(),
-
+const chicesSchema =  z.object({
+    text: z.string().min(1, "Choice text cannot be empty"),
+    isCorrect: z
+      .boolean()
+      .default(false)
+})
+export const mcqSchema =  z.object({
+    question: z
+      .string()
+      .min(1, "min Characters should be 10"),
+    choices: z
+      .array(chicesSchema)
+      .length(4, "Must provide exactly 4 choices"),
+    points: z.coerce.number() 
+      .int()
+      .min(1, "the minimum is 1")
+      .max(5, "the maximum is 5")
+      .positive("Points must be a positive integer")
+      .default(1),
+    explanation: z
+      .string()
+      .optional(),
+    category: z
+      .string()
+      .max(100),
+    difficulty: z
+      .string()
+      .default('EASY'),
+    tags:  z
+      .array(z.string())
+      .optional(),
+    isPublished: z
+      .boolean()
+      .optional(),
 })
