@@ -11,11 +11,9 @@ export const submitApplication = async (applicationData) => {
 			candidateId: applicationData.candidateId,
 			currentPhaseId: null,
 		});
-		application =  await applicationRepository.updateApplication(application.id,
-			{
-				applicationPhases: createApplicationPhases(application.id,applicationData.jobId)
-			}
-		)
+		application =  await applicationRepository.updateApplication(application.id, {
+				applicationPhases: await createApplicationPhases(application.id,applicationData.jobId)
+			})
 		return application;
 	} catch (error) {
 		if (error.code === "P2002")
