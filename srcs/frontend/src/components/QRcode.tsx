@@ -38,7 +38,7 @@ export function QRcode() {
                     const result = await res.json();
                     console.log("result : ", result);
 
-                    img.src = 'data:image/png;base64,iVBORw0K...';
+                    img.src = result.qrDataUrl;
                     document.body.appendChild(img);
                     steQrLink(img.src);
                     // steQrLink(qrData);
