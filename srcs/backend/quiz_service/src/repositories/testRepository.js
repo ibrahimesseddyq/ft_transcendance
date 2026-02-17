@@ -2,7 +2,7 @@ import  {prisma} from '../config/prisma.js'
 
 export const createTest = async (testData) => {
     return await prisma.test.create({
-        testData
+        data:testData
     })
 }
 
@@ -30,6 +30,6 @@ export const gettests = async (skip = 0, take = 10, filters = []) => {
     return await prisma.findMany({
         skip,
         take,
-        filters
+        where : {filters}
     })
 }
