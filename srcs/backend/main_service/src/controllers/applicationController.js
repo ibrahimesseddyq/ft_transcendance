@@ -80,7 +80,7 @@ export const getCurrentPhase = async (req, res, next) => {
 export const advance = async (req, res, next) => {
     try {
         const id = req.params?.id;
-        const nextPhase = applicationService.advance(id);
+        const nextPhase = await applicationService.advance(id);
         res.status(200)
         .json({
             success: true,
