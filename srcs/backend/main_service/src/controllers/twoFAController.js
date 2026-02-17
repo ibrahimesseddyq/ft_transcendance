@@ -6,6 +6,7 @@ const twoFAService = new TwoFAService(userService);
 export const    setup = async (req, res) =>
     {
         // to validate
+        console.log("iam here");
         const data = await twoFAService.setup(req.body.id);
         res.json(data);
     };
