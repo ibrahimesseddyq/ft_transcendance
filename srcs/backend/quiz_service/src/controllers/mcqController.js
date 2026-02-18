@@ -1,3 +1,4 @@
+import data from '../config/env.js';
 import * as mcqService from '../services/mcqService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
@@ -35,5 +36,10 @@ export const getMcqById = asyncHandler(async (req, res, next) => {
 })
 
 export const getManyMcqs = asyncHandler( async (req, res, next) => {
-    await mcqService.getManyMcqs(req.params)
+   const result =  await mcqService.getManyMcqs(req.query);
+    res.status(200)
+    .json({
+        success: true,
+        data: result
+    })
 })

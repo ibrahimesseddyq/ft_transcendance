@@ -1,4 +1,4 @@
-import jobPhaseController from '../controllers/jobPhaseController.js';
+import * as jobPhaseController from '../controllers/jobPhaseController.js';
 import express from 'express';
 
 const router =  express.Router();
