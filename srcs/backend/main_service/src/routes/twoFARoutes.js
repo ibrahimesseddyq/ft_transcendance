@@ -1,8 +1,11 @@
-const twoFAController = require('../controllers/twoFAController');
-const express = require('express');
-const router = express.Router();
+import * as  twoFAController from'../controllers/twoFAController.js';
+import  express from'express';
+import  {verifyToken} from'../middleware/auth.js';
+import  {registerUserSchema,loginUserSchema} from'../validators/userValidator.js';
 
+const  router = express.Router();
 
-router.post('/setup',validateRequest(registerUserSchema),twoFAController.setup);
-router.post('/verify-setup',twoFAController.verifySetup);
-router.post('/disable',twoFAController.disable);
+router.post('/setup',verifyToken,twoFAController.setup);
+router.post('/verify-setup',verifyToken, twoFAController.verifySetup);
+router.post('/disable',verifyToken,twoFAController.disable);
+export default router

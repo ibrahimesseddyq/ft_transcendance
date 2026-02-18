@@ -42,7 +42,7 @@ const Features = [
 
 const InfoCard = ({ id, title, description, icon: Icon }: FeatureItem) => {
   return (
-    <div className="group p-6 bg-[#e1d8d8e0] border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+    <div className="group p-6 bg-[#ffffff]/60 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
       <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
         <Icon size={24} />
       </div>
@@ -61,7 +61,7 @@ export const FeaturesSection = () => {
     <section className="w-full h-full md:overflow-auto  no-scrollbar">
       {/* Header Section */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
             Everything you need to <span className="text-blue-600">succeed</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-2xl">
@@ -70,7 +70,7 @@ export const FeaturesSection = () => {
         </div>
 
       {/* Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col max-w-2xl gap-6">
             {Features.map((item) => (
                 <div key={item.id} className='h-full w-full'>
                     <InfoCard
