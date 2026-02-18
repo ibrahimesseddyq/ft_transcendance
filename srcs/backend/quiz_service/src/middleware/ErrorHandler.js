@@ -1,4 +1,4 @@
-import {CustomError} from '../utils/httpExceptions';
+import {CustomError} from '../utils/httpExceptions.js';
 import {Prisma} from '../../generated/prisma/index.js';
 import handlePrismaError from '../utils/prismaErrorHandler.js'
 
