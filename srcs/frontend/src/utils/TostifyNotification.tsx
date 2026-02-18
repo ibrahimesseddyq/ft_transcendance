@@ -2,12 +2,16 @@ import {toast} from "react-toastify";
 
 const Notification = (msg:string, type:string)=>{
     if (type === "success"){
-        toast.success(msg,{
-            position: "top-center",
+        toast(msg,{
+            position: "bottom-right",
+            style: { 
+                color: '#00adef',
+                background: '#ffffff'
+            },
         })
     }else{
         toast.error(msg,{
-            position: "top-center",
+            position: "bottom-right",
         })
     }
 }

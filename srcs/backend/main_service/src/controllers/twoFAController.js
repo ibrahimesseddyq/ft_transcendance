@@ -1,26 +1,23 @@
-export class TwoFAController
-{
-    constructor(twoFAService)
-    {
-        this.twoFAService = twoFAService;
-    }
+import  TwoFAService from  '../services/twoFAService.js';
+import * as userService from  '../services/userService.js';
 
-    setup = async (req, res) =>
+const twoFAService = new TwoFAService(userService);
+
+export const    setup = async (req, res) =>
     {
         // to validate
-        const data = await this.twoFAService.setup(req.setup.id);
+        const data = await twoFAService.setup(req.body.id);
         res.json(data);
     };
 
-    verifySetup = async (req, res) => {
+export const    verifySetup = async (req, res) => {
         const { token } = req.body;
-        const data = await this.twoFAService.verifySetup(req.user.id, token);
+        const data = await twoFAService.verifySetup(req.body.id, token);
         res.json(data);
     };
 
-    disable = async (req, res) => {
+export const    disable = async (req, res) => {
         const { token } = req.body;
-        const data = await this.twoFAService.disable(req.user.id, token);
+        const data = await twoFAService.disable(req.body.id, token);
         res.json(data);
-    };
 };

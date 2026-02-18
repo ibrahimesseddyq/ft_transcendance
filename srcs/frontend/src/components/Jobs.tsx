@@ -4,6 +4,7 @@ import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
 import JobFilter from "@/components/ui/JobFilter"
 import JobCards  from '@/components/ui/JobCards'
+import { useAuthStore } from '@/utils/ZuStand';
 
 interface Job {
   title : string;
@@ -30,9 +31,11 @@ export function Jobs() {
   const [jobDescp, setJobDescp] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden">
+    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden p-5 md:p-0">
         <ToastContainer/>
       {/* Job Form */}
       {isFormOpen && (
@@ -68,13 +71,15 @@ export function Jobs() {
         />
       )}
 
-      <button 
-        onClick={() => {setJobItem(null); setIsFormOpen(true)}}
-        className="fixed bottom-10 right-10 z-50 bg-[#10B77F] hover:bg-[#0d9668] 
-          text-black font-bold py-3 px-4 rounded-md 
-          shadow-2xl transition-all transform hover:scale-105 active:scale-95">
-        + Post Job
-      </button>
+      {isAdminOrRecruiter
+        ?
+        <button onClick={() => {setJobItem(null); setIsFormOpen(true)}}
+          className="fixed bottom-10 right-10 z-50 bg-[#10B77F] hover:bg-[#0d9668] 
+            text-black font-bold py-3 px-4 rounded-md 
+            shadow-2xl transition-all transform hover:scale-105 active:scale-95">
+          + Post Job
+        </button> 
+        : null}
     </div>
   );
 }
