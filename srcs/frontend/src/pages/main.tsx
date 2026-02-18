@@ -15,7 +15,6 @@ import { Application } from '@/components/Application'
 import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
-import { OTPpage } from '@/components/OTPpage'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 
@@ -28,7 +27,7 @@ export function Main() {
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/qrcode', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   if (!token && !isPublicPage) {
@@ -50,7 +49,6 @@ export function Main() {
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/otp" element={<OTPpage/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
@@ -63,7 +61,7 @@ export function Main() {
     return (
       <FullScreenWrapper>
         <Routes>
-          <Route path="/qrcode" element={<QRcode/>} />
+          <Route path="/Otp" element={<QRcode/>} />
           <Route path="/Createprofile" element={<ProfileInformations />} />
           <Route path="*" element={<Navigate to="/Createprofile" replace />} />
         </Routes>
@@ -89,7 +87,6 @@ export function Main() {
             <Route path="/Condidates" element={<Condidates />} />
             <Route path="/Profile/:postId" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />
-            <Route path="/Createprofile" element={<Navigate to="/Dashboard" replace />} />
             <Route path="/AppAllCards" element={<AppAllCards />} />
             <Route path="/QuizPage" element={<QuizPage />} />
             <Route path="/" element={<Navigate to="/Dashboard" replace />} />

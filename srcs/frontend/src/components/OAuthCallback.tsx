@@ -21,10 +21,9 @@ export const OAuthCallback = () => {
                 const user = JSON.parse(userFromUrl);
                 const hasProfile = await ProfileChecker({ user, token, setProfile });
                 const updatedUser = { ...user, hasProfile: hasProfile };
-                const destination = hasProfile ? "/Dashboard" : "/Createprofile";
 
                 setUser(updatedUser, token);
-                navigate(destination, { replace: true });
+                navigate('/Otp', { replace: true });
             } catch (error) {
                 navigate('/Login', { replace: true });
             }

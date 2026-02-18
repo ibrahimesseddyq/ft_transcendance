@@ -59,11 +59,11 @@ const Signin = () => {
         if (token && user) {
             setUser(user, token);
             const check = await ProfileChecker({ user, token, setProfile });
-            if (check) {
-                navigate("/Dashboard", { replace: true });
-            } else {
-                navigate("/Createprofile", { replace: true });
-            }
+            // if (check) {
+            //     navigate("/Dashboard", { replace: true });
+            // } else {
+            //     navigate("/Createprofile", { replace: true });
+            // }
         }
       } catch (error: any) {
         Notification(error.message || "Error Login", "error");
