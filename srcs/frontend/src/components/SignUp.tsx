@@ -34,10 +34,11 @@ const Signup = () => {
                 throw new Error(`Server responded with status: ${response.status}`);
             }
             Notification("succes Sign Up", "success");
-            window.location.href = '/'
+            window.location.href = '/';
         } catch (error) {
             console.error("Submission failed:", error);
             Notification("error Sign Up", "error");
+            window.location.href = '/';
         }
         reset();
     };

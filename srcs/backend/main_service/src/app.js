@@ -16,7 +16,7 @@ import path from 'path';
 import {HttpException} from './utils/httpExceptions.js';
 import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
-
+import  twoFARoutes from './routes/twoFARoutes.js';
 const app =  express();
 
 app.use(cors({
@@ -51,6 +51,7 @@ app.use(passport.session());
 
 // routes 
 app.use('/api/auth', authRoutes); 
+app.use('/api/2fa', twoFARoutes); 
 
 app.use('/api/users',
   verifyToken,

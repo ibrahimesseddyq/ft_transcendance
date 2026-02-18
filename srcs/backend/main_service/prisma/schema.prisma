@@ -57,7 +57,7 @@ model Profile {
   portfolioUrl    String?   @db.VarChar(255)
   currentCompany  String?   @db.VarChar(255)
   currentTitle    String?   @db.VarChar(255)
-  numberPhone     String?   @db.VarChar(255)
+  phone           String?   @db.VarChar(255)
   yearsExperience Int?
   skills          String?   @db.LongText
   availableFrom   DateTime? @db.Date
@@ -235,6 +235,9 @@ model User {
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
   sessions              Session[]
+  twoFAEnabled          Boolean                @default(true)
+  twoFASecret           String? 
+  twoFATempSecret       String?
 }
 
 enum InterviewMode {

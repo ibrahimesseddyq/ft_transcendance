@@ -40,7 +40,7 @@ export const upload =  multer({
     storage: diskStorage,
     fileFilter: fileFilter,
     limits  :{
-        fileSize : 5 * 1024 * 1024,
+        fileSize : 10 * 1024 * 1024,
         files: 1
     }
 });
@@ -50,7 +50,7 @@ export const uploadProfile = multer({
     storage: diskStorage,
     fileFilter: fileFilter,
     limits : {
-        fileSize : 5 * 1024 * 1024,
+        fileSize : 10 * 1024 * 1024,
         files: 2
     } 
 })

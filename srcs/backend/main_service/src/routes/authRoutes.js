@@ -11,6 +11,8 @@ router.post('/login',validateRequest(loginUserSchema),authController.login);
 router.post('/register',validateRequest(registerUserSchema),authController.register);
 router.post('/refresh',authController.refresh);
 router.post('/logout',authController.logout);
+router.post('/verify-2fa', authController.verify2FA);
+
 router.get('/verify-email/:token',authController.verifyEmail);
 router.post('/resend-verification',authController.resendVerification);
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
