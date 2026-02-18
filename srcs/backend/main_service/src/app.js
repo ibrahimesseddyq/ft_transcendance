@@ -59,7 +59,6 @@ app.use('/api/users',
   userRoutes);
 
 app.use('/api/jobs',  verifyToken,
-          verifyRoles([UserRole.recruiter,UserRole.admin]),
           jobRoutes);
 
 app.use('/api/profiles/',

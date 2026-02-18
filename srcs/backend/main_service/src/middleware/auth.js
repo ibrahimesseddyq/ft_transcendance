@@ -6,17 +6,17 @@ import { getPermissionsByRole } from '../config/permissions.js';
 
 export const verifyToken = async (req, res, next) => {
     try {
-        // const {authorization} = req.headers;
-        // if (!authorization)
-        //     throw new HttpException(401,"Unauthorized");
-        // const [type, token] = authorization.split(" ");
-        // if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
-        // const decoded = await jwtService.verifyAccessToken(token);
-        // req.user = {
-        //     id : decoded.id,
-        //     email : decoded.email,
-        //     role:decoded.role
-        // }
+        const {authorization} = req.headers;
+        if (!authorization)
+            throw new HttpException(401,"Unauthorized");
+        const [type, token] = authorization.split(" ");
+        if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
+        const decoded = await jwtService.verifyAccessToken(token);
+        req.user = {
+            id : decoded.id,
+            email : decoded.email,
+            role:decoded.role
+        }
         next()
     } catch (error) {
         next(error);
@@ -27,10 +27,10 @@ export const verifyToken = async (req, res, next) => {
 export const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
-        // if(!req.user || !req.user.role)
-        //     throw new HttpException(403, "Forbidden");
-        // if(!allowedRoles.includes(req.user.role))
-        //     throw new HttpException(403,"Forbidden");
+        if(!req.user || !req.user.role)
+            throw new HttpException(403, "Forbidden");
+        if(!allowedRoles.includes(req.user.role))
+            throw new HttpException(403,"Forbidden");
         next();
     }
 }
