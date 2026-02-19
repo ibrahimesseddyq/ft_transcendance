@@ -12,8 +12,6 @@ const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
-    const setProfile = useAuthStore((state) => state.setProfile);
-    const setUser = useAuthStore((state) => state.setUser);
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setToken = useAuthStore((state) => state.setToken);
     const setUserId = useAuthStore((state) => state.setUserId);

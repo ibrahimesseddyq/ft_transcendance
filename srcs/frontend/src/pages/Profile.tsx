@@ -12,7 +12,6 @@ export function Profile() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
 
   useEffect(() => {
     const fetchUser = async () => {

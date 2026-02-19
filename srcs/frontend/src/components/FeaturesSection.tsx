@@ -1,7 +1,7 @@
 import { Info, Briefcase, Search, Bell, UserCheck, LucideIcon } from 'lucide-react';
 
 interface FeatureItem {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   icon: LucideIcon;
@@ -40,7 +40,7 @@ const Features = [
   }
 ];
 
-const InfoCard = ({ id, title, description, icon: Icon }: FeatureItem) => {
+const InfoCard = ({ title, description, icon: Icon }: FeatureItem) => {
   return (
     <div className="group p-6 bg-[#ffffff]/60 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
       <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">

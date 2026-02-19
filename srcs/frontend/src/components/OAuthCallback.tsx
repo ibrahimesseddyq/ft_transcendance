@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
 import { Loading } from '@/components/Loading'
-import { ProfileChecker } from '@/components/ProfileChecker';
 
 export const OAuthCallback = () => {
     const [searchParams] = useSearchParams();

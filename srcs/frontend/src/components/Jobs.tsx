@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
@@ -28,11 +28,10 @@ interface Job {
 export function Jobs() {
   const [jobsArray, setJobsArray] = useState<Job[]>([]);
   const [jobItem, setJobItem] = useState<Job | null>(null);
-  const [jobDescp, setJobDescp] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const user = useAuthStore((state) => state.user);
-  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden p-5 md:p-0">
@@ -65,7 +64,6 @@ export function Jobs() {
         <JobCards 
           jobsArray={jobsArray}
           setJobsArray={setJobsArray}
-          setJobDescp={setJobDescp}
           setJobItem={setJobItem}
           setIsFormOpen={setIsFormOpen}
         />
