@@ -1,21 +1,20 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import {Eye, Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
+import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
   jobsArray: any[];
   setJobsArray: (item: any) => void;
   setJobItem: (item: any) => void;
-  setJobDescp: (open: boolean) => void;
   setIsFormOpen: (open: boolean) => void;
 }
 
-const JobCards = ({ jobsArray, setJobsArray, setJobItem, setJobDescp, setIsFormOpen }: props) => {
+const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
   const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const user = useAuthStore((state) => state.user);
-  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;

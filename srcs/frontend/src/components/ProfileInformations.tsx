@@ -7,7 +7,7 @@ import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 

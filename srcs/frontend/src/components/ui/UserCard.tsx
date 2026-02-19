@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import { bigint } from "zod";
 
-const UserCard = (candidateId: string) => {
+const UserCard = (candidateId: any) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const token = useAuthStore((state) => state.token);
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+    const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
     console.log("candidateId : ", candidateId);
 
     useEffect(()=>{
       const fetchUserContent = async () =>{
-        const res = await fetch(`${BACKEND_URL}/api/users/${candidateId?.candidateId}`, {
+        const res = await fetch(`${BACKEND_URL}/api/users/${candidateId}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}`}
         })
@@ -48,8 +47,8 @@ const UserCard = (candidateId: string) => {
             }}
           />
           <div className='flex flex-col gap-0'>
-            <h1 className='text-center text-md font-bold font-sans text-[#445a84]'>{user?.firstName} {user?.lastName}</h1>
-            <h1 className='text-center text-md font-ligth font-sans text-[#445a84]'>{user?.email}</h1>
+            <h1 className='text-center text-md font-bold font-sans text-[#445a84]'>{(user as any)?.firstName} {(user as any)?.lastName}</h1>
+            <h1 className='text-center text-md font-ligth font-sans text-[#445a84]'>{(user as any)?.email}</h1>
           </div>
 
 

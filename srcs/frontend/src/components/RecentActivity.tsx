@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { CheckCircle2, XCircle, Clock } from "lucide-react";
 
 export function RecentActivity() {
   const [users] = useState([
