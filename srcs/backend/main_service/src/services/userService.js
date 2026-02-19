@@ -32,6 +32,7 @@ export const getUserById = async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
+    return user;
 }
 
 export const getUserByEmail = async (email) => {
