@@ -1,12 +1,11 @@
-import { mcqSchema } from '@/utils/ZodSchema';
+import { McqSchema } from '@/utils/ZodSchema';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CopyCheck, Check, Plus, Trash2, Sparkle, DiamondPlus } from 'lucide-react';
 import { useState } from 'react';
-import { ResetPassword } from '../ResetPassword';
 
-type MCQFormValues = z.infer<typeof mcqSchema>;
+type MCQFormValues = z.infer<typeof McqSchema>;
 
 interface TestProps {
     id: number;
@@ -27,7 +26,7 @@ const CreateTest = () => {
         reset,
         formState: { errors } 
     } = useForm<MCQFormValues>({
-        resolver: zodResolver(mcqSchema),
+        resolver: zodResolver(McqSchema) as any,
     });
 
    
@@ -76,7 +75,7 @@ const CreateTest = () => {
 
     return (
         <form 
-            onSubmit={handleSubmit(TestSubmit)}
+            onSubmit={handleSubmit(()=>TestSubmit)}
             className='flex flex-col gap-4 divide-y-2 p-5 border border-black rounded-lg overflow-hidden'
         >
             <div className='flex justify-between'>
@@ -261,6 +260,7 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
 
 const SingleTagInput = ({ tags, onAddTag }: any) => {
     const [currentTag, setCurrentTag] = useState("");
+    console.log("tags:", tags);
     return (
         <div className='flex gap-2'>
             <input 

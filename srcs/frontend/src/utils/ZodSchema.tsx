@@ -175,7 +175,7 @@ const chicesSchema =  z.object({
       .boolean()
       .default(false)
 })
-export const mcqSchema =  z.object({
+export const McqSchema =  z.object({
     question: z
       .string()
       .min(1, "min Characters should be 10"),

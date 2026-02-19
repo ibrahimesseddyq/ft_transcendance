@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
-import { useAuthStore } from "@/utils/ZuStand"
 import Notification from "@/utils/TostifyNotification";
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
@@ -61,7 +60,6 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
 
   const JobSubmit = async (data: JobFormData) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const token = useAuthStore((state) => state.token);
     if (jobItem){
       console.log("job id is : ",  jobItem.id);
       try {

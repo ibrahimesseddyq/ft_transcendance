@@ -1,4 +1,3 @@
-import { userInfo } from 'os';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -7,7 +6,7 @@ export type UserRole = 'candidate' | 'recruiter' | 'admin';
 interface User {
   id: string;
   email: string;
-  role: UserRole;
+  role: UserRole | string;
   firstName: string;
   lastName: string;
   phone?: string | null;

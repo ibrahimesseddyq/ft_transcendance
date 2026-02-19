@@ -8,7 +8,6 @@ import { ProfileInformations } from "@/components/ProfileInformations";
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
-import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
 import { Application } from '@/components/Application'
@@ -94,7 +93,6 @@ export function Main() {
             <Route path="/Jobs" element={<Jobs />} />
             <Route path="/Jobdescription" element={<JobDescription />} />
             <Route path="/Application/:jobId" element={<Application />} />
-            <Route path="/Condidates" element={<Condidates />} />
             <Route path="/Profile/:postId" element={<Profile />} />
             <Route path="/Messages" element={<NotFound />} />
             <Route path="/AppAllCards" element={<AppAllCards />} />

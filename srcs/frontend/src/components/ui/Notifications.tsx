@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Bell } from "lucide-react";
 
 const MOCK_NOTIFICATION = [

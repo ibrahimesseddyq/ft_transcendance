@@ -2,7 +2,6 @@ import { ArrowRightToLine, ChevronLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
-import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
@@ -11,11 +10,9 @@ export function QRcode() {
     const [qrLink, setQrLink] = useState('');
     const [loading, setLoading] = useState(false);
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
-    const navigate = useNavigate();
     
     const setUser = useAuthStore((state) => state.setUser);
     const userId = useAuthStore((state) => state.userId);
-    const user = useAuthStore((state) => state.user);
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
