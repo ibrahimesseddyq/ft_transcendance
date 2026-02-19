@@ -20,8 +20,8 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 const app =  express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH "],
+    origin: `${env.FRONTEND_URL}`,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true 
   }));
 app.use(helmet());
@@ -38,7 +38,7 @@ app.use('/uploads', (req, res, next) => {
 }, express.static(path.join(import.meta.dirname, '../uploads')));
 
 app.use(session({
-    secret: env.SESSION_SECRET || 'dev-secret',
+    secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -46,11 +46,13 @@ app.use(session({
       secure: false
     }}));
 // Initialize Passport
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 // routes 
-app.use('/api/auth', authRoutes); 
+app.use('/api/auth', authRoutes);
+
 app.use('/api/2fa', twoFARoutes); 
 
 app.use('/api/users',
@@ -58,21 +60,21 @@ app.use('/api/users',
   verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
 
-app.use('/api/jobs',  verifyToken,
+app.use('/api/jobs', verifyToken,
           jobRoutes);
 
 app.use('/api/profiles/',
   verifyToken,
   profileRoutes);
 
-
-app.use('/api/applications',applicationRoutes)
-
-
+app.use('/api/applications',
+  verifyToken,
+  applicationRoutes)
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
 })
+
 app.use(errorHandler);
 
 export default app;
