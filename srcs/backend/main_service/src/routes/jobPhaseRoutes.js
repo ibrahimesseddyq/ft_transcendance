@@ -4,9 +4,15 @@ import express from 'express';
 const router =  express.Router();
 
 router.get('/:id',jobPhaseController.getJobPhaseById)
-    .post('/',jobPhaseController.createJobPhase)
     .get('/:id/phase',jobPhaseController.getJobPhases)
-    .delete('/:id',jobPhaseController.deleteJobPhase)
-    .patch('/:id',jobPhaseController.updateJobPhase);
+    .post('/',
+        verifyRoles([UserRole.recruiter,UserRole.admin]),
+        jobPhaseController.createJobPhase)
+    .delete('/:id',
+        verifyRoles([UserRole.recruiter,UserRole.admin]),
+        jobPhaseController.deleteJobPhase)
+    .patch('/:id',
+        verifyRoles([UserRole.recruiter,UserRole.admin]),
+        jobPhaseController.updateJobPhase);
 
 export default router;
