@@ -39,9 +39,7 @@ export const createUserSchema = z.object({
     avatarUrl: z.string()
         .url({ message: "Must be a valid URL" })
         .optional()
-        .nullable(),
-    refreshToken: z.string()
-        .optional(),
+        .nullable()
 }).strict();
 
 export const updateUserSchema = createUserSchema
