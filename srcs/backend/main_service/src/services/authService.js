@@ -4,8 +4,9 @@ import env from '../config/env.js';
 import argon2 from 'argon2';
 import { HttpException } from '../utils/httpExceptions.js';
 import sendMail from './emailService.js';
-
+import twoFAService from './twoFAService.js';
 const DUMMY_HASH = process.env.DUMMY_PASSWORD_HASH;
+const twoFAService2 = new twoFAService();
 
 export const login = async (data) =>
     {
@@ -85,9 +86,8 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
         throw new HttpException(403, "Invalid request");
     }
 
-    const twoFAService = require('./twoFAService');
 
-    const isValid = await twoFAService.verifyLogin(user.id, twoFACode);
+    const isValid = await twoFAService2.verifyLogin(user.id, twoFACode);
 
     if (!isValid)
     {
@@ -102,6 +102,14 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
         }
     );
     await userService.updateUser(user.id, { refreshToken: tokens.refreshToken});
+    if (user.firstLogin == true)
+    {
+        console.log("first login \n");
+        console.log(user)
+        await userService.updateUser(user.id, { firstLogin:false });
+    }
+    console.log(user)
+
     const { passwordHash, ...saferUser} = user;
     return { user: saferUser, ...tokens};
 }
