@@ -7,7 +7,7 @@ const accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;
 const refreshTokenSecret = env.REFRESH_TOKEN_SECRET;
 const refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
 const tempTokenSecret = env.TEMP_TOKEN_SECRET || accessTokenSecret;
-const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY || "5m";
+const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY || "55m";
 
 export const generateTempToken = (payload) =>
 {

@@ -1,13 +1,13 @@
 import speakeasy from "speakeasy";
 import QRCode from "qrcode";
 import {HttpException} from '../utils/httpExceptions.js';
+import * as userRepository from '../repositories/userRepository.js';
 
 
  class TwoFAService
 {
-    constructor(userRepo)
-    {
-        this.userRepo = userRepo;
+    constructor() {
+        this.userRepo = userRepository;
     }
 
     async setup(userId)
@@ -74,4 +74,4 @@ import {HttpException} from '../utils/httpExceptions.js';
         return { success: true};
     }
 };
-export default  TwoFAService;
+export default TwoFAService;

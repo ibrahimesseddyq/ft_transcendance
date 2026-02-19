@@ -1,7 +1,7 @@
 import  TwoFAService from  '../services/twoFAService.js';
 import * as userService from  '../services/userService.js';
 
-const twoFAService = new TwoFAService(userService);
+const twoFAService = new TwoFAService();
 
 export const    setup = async (req, res ,next) =>
     {

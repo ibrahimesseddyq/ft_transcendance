@@ -15,8 +15,9 @@ export function QRcode() {
     const userId = useAuthStore((state) => state.userId);
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
-    const setProfile = useAuthStore((state) => state.setProfile);
+    // const setProfile = useAuthStore((state) => state.setProfile);
     const token = useAuthStore((state) => state.token);
+    const setToken = useAuthStore((state)=> state.setToken)
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     console.log("User id : ", userId);
@@ -70,31 +71,24 @@ export function QRcode() {
         }
         setLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/2fa/verify-setup/`, {
+            const res = await fetch(`${BACKEND_URL}/api/auth/verify-2fa/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ token: finalOtp, id: userId }),
+                body: JSON.stringify({ tempToken: token, code: finalOtp }),
             });
 
             if (res.ok) {
                 console.log("2FA Verified Successfully!");
-                const myuser = await fetch(`${BACKEND_URL}/api/users/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                })
-                if (myuser.ok)
-                {
-                    const newUser = await myuser.json();
+                const newUser = await res.json();
+                if (newUser.data){
+                    console.log("user data", newUser);
                     setQrVerified(true);
-                    setUser(newUser.data);
-                    return (await ProfileChecker({ userId, token, setProfile }));
-                }
+                    setUser(newUser.data.user);
+                    setToken(newUser.data.accessToken);
+                }              
         
             } else {
                 setQrVerified(false);
