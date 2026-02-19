@@ -45,7 +45,8 @@ const envSchema = z.object({
   VERIFY_SECRET_EXPIRY:z.string(),
   FRONTEND_URL: z.string(),
   BACKEND_URL:z.string(),
-  APP_NAME:z.string().min(1).default("service")
+  APP_NAME:z.string().min(1).default("service"),
+  SESSION_SECRET: z.string()
 });
 
 const envVars = envSchema.safeParse(process.env);
