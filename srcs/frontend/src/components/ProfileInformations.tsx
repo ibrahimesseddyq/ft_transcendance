@@ -7,6 +7,7 @@ import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -43,8 +44,9 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 export function ProfileInformations() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
-  const setUser = useAuthStore((state)=> state.setUser);
+  const user = useAuthStore((state) => state.user);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
+  const navigate = useNavigate();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const {
     register,
@@ -90,7 +92,10 @@ export function ProfileInformations() {
         console.log("from ProfileInformations :", result.data);
         if (response.ok) {
           setProfile(result.data);
-          // setUser(result.data.user);
+          if (user?.role === "recruiter" || user?.role === "admin")
+            navigate("/Dashboard");
+          else
+            navigate("/Jobs");
         }
     } catch (error) {
         console.error("Submission failed:", error);

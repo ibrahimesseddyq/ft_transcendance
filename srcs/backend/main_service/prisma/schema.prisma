@@ -236,6 +236,7 @@ model User {
   isVerified            Boolean?               @default(false)
   sessions              Session[]
   twoFAEnabled          Boolean                @default(true)
+  firstLogin            Boolean                @default(true)
   twoFASecret           String? 
   twoFATempSecret       String?
 }
