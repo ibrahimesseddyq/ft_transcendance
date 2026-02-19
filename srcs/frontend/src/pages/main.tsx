@@ -21,13 +21,15 @@ import { QuizPage } from '@/components/QuizPage'
 export function Main() {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
+  const userId = useAuthStore((state) => state.userId);
   const token = useAuthStore((state) => state.token);
   const profile = useAuthStore((state) => state.profile);
+  const qrVerified = useAuthStore((state) => state.qrVerified);
 
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   if (!token && !isPublicPage) {
@@ -39,10 +41,6 @@ export function Main() {
       {children}
     </main>
   );
-
-  if (token && !user) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
 
   if (!token && isPublicPage) {
     return (
@@ -56,12 +54,24 @@ export function Main() {
     );
   }
   
-  console.log("has profile : ", hasProfile);
-  if (token && user && !hasProfile) {
+  console.log("qrVerified : ", qrVerified);
+  console.log("userId : ", userId);
+  if (token && userId && !qrVerified){
+    {console.log("Was here")}
     return (
       <FullScreenWrapper>
         <Routes>
-          <Route path="/Otp" element={<QRcode/>} />
+          <Route path="/otp" element={<QRcode/>} />
+          <Route path="*" element={<Navigate to="/otp" replace />} />
+        </Routes>
+      </FullScreenWrapper>
+    );
+  }
+  console.log("has profile : ", hasProfile);
+ if (token && user && qrVerified && !hasProfile) {
+    return (
+      <FullScreenWrapper>
+        <Routes>
           <Route path="/Createprofile" element={<ProfileInformations />} />
           <Route path="*" element={<Navigate to="/Createprofile" replace />} />
         </Routes>

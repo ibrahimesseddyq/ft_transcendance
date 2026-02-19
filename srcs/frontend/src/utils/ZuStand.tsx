@@ -1,3 +1,4 @@
+import { userInfo } from 'os';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -30,16 +31,16 @@ interface Profile{
 }
 
 interface Profile {
-  userId: string
-  availableFrom: string | null
-  currentCompany: string | null
-  currentTitle: string
-  linkedinUrl: string
-  numberPhone: string
-  portfolioUrl: string | null
-  resumeUrl: string
-  skills: string | null
-  yearsExperience: string
+  userId: string;
+  availableFrom: string;
+  currentCompany: string;
+  currentTitle: string;
+  linkedinUrl: string;
+  numberPhone: string;
+  portfolioUrl: string;
+  resumeUrl: string;
+  skills: string;
+  yearsExperience: string;
   user: User;
 }
 
@@ -47,14 +48,21 @@ type State = {
   user: User | null;
   profile: Profile | null;
   token: string | null;
+  qrVerified: boolean;
+  userId: string | null;
+  firstLogin: boolean;
 };
 
 
 type Action = {
-  setUser: (user: User, token: string) => void;
+  setUser: (user: User) => void;
+  setToken: (token: string) => void;
   setProfile: (profileData: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
+  setUserId: (id: string) => void;
+  setQrVerified: (qrVerified:boolean) => void;
+  setFirstLogin: (firstLogin:boolean) => void;
 };
 
 export const useAuthStore = create<State & Action>()(
@@ -63,11 +71,31 @@ export const useAuthStore = create<State & Action>()(
       user: null,
       token: null,
       profile: null,
+      userId: null,
+      qrVerified: false,
+      firstLogin: false,
 
-      setUser: (user, token) =>
+      setFirstLogin: (status) =>
+        set(()=>({
+          firstLogin: status,
+        })),
+
+      setQrVerified: (status) =>
+        set(() => ({
+          qrVerified: status,
+      })),
+      setToken: (status) =>
+        set(() => ({
+          token: status,
+      })),
+
+      setUserId: (status) =>
+        set(() => ({
+          userId: status,
+      })),
+      setUser: (user) =>
         set(() => ({
           user: { ...user, hasProfile: user.hasProfile ?? false },
-          token,
         })),
 
       setProfile: (profileData) =>
@@ -79,7 +107,14 @@ export const useAuthStore = create<State & Action>()(
             : null,
         })),
 
-      clearAuth: () => set(() => ({ user: null, token: null, profile: null })),
+      clearAuth: () => set({ 
+        user: null, 
+        token: null, 
+        profile: null, 
+        userId: null, 
+        qrVerified: false,
+        firstLogin: false
+      }),
 
       updateAvatar: (url) =>
         set((state) => ({
