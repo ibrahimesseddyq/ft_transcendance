@@ -1,15 +1,15 @@
 
 interface ProfileProps {
-    user: any;
-    token: string;
-    setUser: (user: any, token: string) => void;
+    userId: string | null;
+    token: string | null;
+    setUser?: (user: any, token: string) => void;
     setProfile: (profile: any) => void;
 }
 
-export async function ProfileChecker({ user, token, setProfile }: ProfileProps) {
+export async function ProfileChecker({ userId, token, setProfile }: ProfileProps) {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     try {
-        const res = await fetch(`${BACKEND_URL}/api/profiles/${user.id}`, {
+        const res = await fetch(`${BACKEND_URL}/api/profiles/${userId}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}`}
         });

@@ -13,16 +13,18 @@ export const login = async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
 
+        const {userId, accessToken, refreshToken, firstLogin} = result;
         if (result.require2FA)
         {
             return res.status(200).json({
                 message: "2FA required",
                 require2FA: true,
-                tempToken: result.tempToken
+                tempToken: result.tempToken,
+                userId: userId,
+                firstLogin: firstLogin
             });
         }
         // Normal flow
-        const {user, accessToken, refreshToken} = result;
         res
         .cookie('jwt', refreshToken ,cookieOptions)
         .status(200)

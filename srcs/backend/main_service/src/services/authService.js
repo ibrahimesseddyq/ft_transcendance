@@ -12,7 +12,8 @@ export const login = async (data) =>
     const { email, password } = data;
   
     const user = await userService.getUserByEmail(email);
-  
+        
+    console.log("current user : ", user);
     // Always verify: real hash if user exists, dummy hash otherwise
     const hashToCheck = user ? user.passwordHash : DUMMY_HASH;
   
@@ -29,14 +30,14 @@ export const login = async (data) =>
   
     // Keep errors uniform for auth failure
     if (!user || !passwordOk) {
-      throw new HttpException(400, "Wrong credentials");
+      throw new HttpException(400, "Wrong credentials or user doesnt exist");
     }
   
     // Consider making this message generic too if you want to avoid
     // "verified account enumeration"
     if (!user.isVerified) {
       // Safer: same as wrong credentials (or same status/message)
-      throw new HttpException(400, "Wrong credentials");
+      throw new HttpException(400, "User is not verified");
       // Alternative: still block but generic
       // throw new HttpException(400, "Wrong credentials");
     }
@@ -51,7 +52,8 @@ export const login = async (data) =>
 
         return {
             require2FA: true,
-            tempToken, 
+            tempToken,
+            firstLogin: user.firstLogin,
             userId: user.id
         };
     }
@@ -65,7 +67,7 @@ export const login = async (data) =>
     await userService.updateUser(user.id, { refreshToken: tokens.refreshToken });
   
     const { passwordHash, ...safeUser } = user;
-    return { user: safeUser, ...tokens };
+    return { user: safeUser, ...tokens, userId: user.id};
   };
 
 export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
@@ -105,8 +107,10 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
 }
 export const  register = async (data) => {
     const existingUser = await userService.getUserByEmail(data.email);
-    if (existingUser)
+    if (existingUser){
+        console.log("user exist");
         return {};
+    }
     const user = await userService.createUser(data);
     const verificationToken =await jwtService.generateVerificationToken(user.id,user.email);
     await sendMail({

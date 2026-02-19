@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
 import { useNavigate } from 'react-router-dom';
+import { ProfileChecker } from '@/components/ProfileChecker'
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -12,12 +13,20 @@ export function QRcode() {
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
     
+    const setUser = useAuthStore((state) => state.setUser);
+    const userId = useAuthStore((state) => state.userId);
     const user = useAuthStore((state) => state.user);
+    const firstLogin = useAuthStore((state) => state.firstLogin);
+    const setQrVerified = useAuthStore((state) => state.setQrVerified);
+    const setProfile = useAuthStore((state) => state.setProfile);
     const token = useAuthStore((state) => state.token);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+    console.log("User id : ", userId);
+
     const fetchNewQr = async () => {
-        if (!user?.id) return;
+        if (!userId || !firstLogin) 
+            return;
         setLoading(true);
         try {
             const res = await fetch(`${BACKEND_URL}/api/2fa/setup/`, {
@@ -26,7 +35,7 @@ export function QRcode() {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: user.id }),
+                body: JSON.stringify({ id: userId }),
             });
             if (res.ok) {
                 const result = await res.json();
@@ -42,7 +51,7 @@ export function QRcode() {
 
     useEffect(() => {
         fetchNewQr();
-    }, [user?.id]);
+    }, [userId, firstLogin]);
 
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -70,14 +79,28 @@ export function QRcode() {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ token: finalOtp, id: user?.id }),
+                body: JSON.stringify({ token: finalOtp, id: userId }),
             });
 
             if (res.ok) {
                 console.log("2FA Verified Successfully!");
-                const destination = user?.hasProfile ? "/Dashboard" : "/Createprofile";
-                navigate(destination, { replace: true });
+                const myuser = await fetch(`${BACKEND_URL}/api/users/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                })
+                if (myuser.ok)
+                {
+                    const newUser = await myuser.json();
+                    setQrVerified(true);
+                    setUser(newUser.data);
+                    return (await ProfileChecker({ userId, token, setProfile }));
+                }
+        
             } else {
+                setQrVerified(false);
                 alert("Invalid Code. Please try again.");
             }
         } catch (err) {
@@ -93,16 +116,16 @@ export function QRcode() {
                 
                 <div className="flex flex-col gap-1 items-center text-center">
                     <h1 className="font-bold text-black text-lg md:text-xl">
-                        {step === 'QR_CODE' ? "Scan QR Code" : "Verify Code"}
+                        {firstLogin && step === 'QR_CODE' ? "Scan QR Code" : "Verify Code"}
                     </h1>
                     <p className="font-light text-black text-xs md:text-sm">
-                        {step === 'QR_CODE' 
+                        {firstLogin && step === 'QR_CODE' 
                             ? "Scan this image with your Authenticator App to begin setup." 
                             : "Enter the 6-digit code from your app."}
                     </p>
                 </div>
 
-                {step === 'QR_CODE' ? (
+                {firstLogin && step === 'QR_CODE' ? (
                     <div className='relative flex items-center justify-center p-2 border-2 border-dashed border-gray-200 rounded-lg'>
                         {qrLink ? (
                             <img src={qrLink} alt="2FA QR Code" className='h-40 w-40' />
@@ -127,7 +150,7 @@ export function QRcode() {
                     </button>
 
                     <div className="flex flex-col items-center gap-2">
-                        {step === 'VERIFY_OTP' && (
+                        {firstLogin && step === 'VERIFY_OTP' && (
                             <button 
                                 type="button" 
                                 onClick={() => setStep('QR_CODE')}
@@ -137,10 +160,15 @@ export function QRcode() {
                             </button>
                         )}
                         <p className="font-light text-black text-sm">
-                            Need help? 
-                            <span onClick={handleReset} className="font-bold underline cursor-pointer">
-                                Reset 2FA
-                            </span>
+                            Need help?
+                            {firstLogin
+                                ?
+                                <span onClick={handleReset} className="font-bold underline cursor-pointer">
+                                    Reset 2FA    
+                                </span> 
+                                : null
+                            }
+                            
                         </p>
                     </div>
                 </form>
