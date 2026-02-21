@@ -63,14 +63,14 @@ const Signin = () => {
             setUserId(userId);
             setToken(token);
             navigate("/otp", { replace: true });
+            reset();
         }
         else{
             console.log("***********iam here**********");
         }
-      } catch (error: any) {
+    } catch (error: any) {
         Notification(error.message || "Error Login", "error");
-      }
-      reset();
+    }
     };
 
 
