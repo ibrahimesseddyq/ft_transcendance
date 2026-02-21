@@ -2,6 +2,7 @@ import speakeasy from "speakeasy";
 import QRCode from "qrcode";
 import {HttpException} from '../utils/httpExceptions.js';
 import * as userRepository from '../repositories/userRepository.js';
+import * as userService from './userService.js';
 
 
  class TwoFAService
@@ -27,7 +28,8 @@ import * as userRepository from '../repositories/userRepository.js';
     {
         console.log("user id :", userId, "token :", token);
         const user = await this.userRepo.getUserById(userId);
-        if (!user?.twoFATempSecret) throw new HttpException(400, "No Setup in Progress");
+        if (!user?.twoFATempSecret)
+            throw new HttpException(400, "No Setup in Progress");
 
         const ok = speakeasy.totp.verify(
             {
@@ -44,7 +46,21 @@ import * as userRepository from '../repositories/userRepository.js';
             twoFASecret: user.twoFATempSecret,
             twoFATempSecret: null
         });
-        return { success: true};
+        if (user.firstLogin === true)
+        {
+            console.log("\x1b[31m" + "first login \n" + "\x1b[0m");
+            console.log(user)
+            const check = await userService.updateUser(user.id, { firstLogin: false });
+            if (check.ok)
+            {
+                console.log("succed");
+                user.firstLogin = false;
+            }
+        }
+        delete user.passwordHash;
+        delete user.twoFASecret;
+        delete user.twoFATempSecret;
+        return { success: true, user: user};
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)

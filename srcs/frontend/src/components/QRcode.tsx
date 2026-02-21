@@ -2,7 +2,10 @@ import { ArrowRightToLine, ChevronLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
+import { Logout } from '@/components/LogOut';
+import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
+import { Navigate } from 'react-router-dom';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -10,7 +13,7 @@ export function QRcode() {
     const [qrLink, setQrLink] = useState('');
     const [loading, setLoading] = useState(false);
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
-    
+    const navigate = useNavigate();
     const setUser = useAuthStore((state) => state.setUser);
     const userId = useAuthStore((state) => state.userId);
     const firstLogin = useAuthStore((state) => state.firstLogin);
@@ -23,7 +26,7 @@ export function QRcode() {
     console.log("User id : ", userId);
 
     const fetchNewQr = async () => {
-        if (!userId || !firstLogin) 
+        if (!userId) 
             return;
         setLoading(true);
         try {
@@ -47,9 +50,11 @@ export function QRcode() {
         }
     };
 
-    useEffect(() => {
-        fetchNewQr();
-    }, [userId, firstLogin]);
+    if (firstLogin){
+        useEffect(() => {
+            fetchNewQr();
+        }, [userId]);
+    }
 
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -58,6 +63,44 @@ export function QRcode() {
         }
     };
 
+    const verify = async (method:string, route:string, finalOtp:string) =>{
+        const obj = method === "verify-setup" 
+            ? { token: finalOtp, id: userId } 
+            : { tempToken: token, code: finalOtp };
+        
+        try {
+            const res = await fetch(`${BACKEND_URL}/${route}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj),
+            });
+            if (res.ok) {
+                console.log("Verified Successfully!");
+                const newUser = await res.json();
+                console.log(newUser);
+                if (newUser.data){
+                    console.log("user data", newUser);
+                    setUser(newUser.data.user);
+                    setToken(newUser.data.accessToken);
+                    navigate("/Createprofile", { replace: true });
+                    console.log("Iam Here");
+                }
+                setQrVerified(true);
+            } else {
+                setQrVerified(false);
+                setOtpArray(new Array(6).fill(""));
+                alert("Invalid Code. Please try again.");
+            }
+        } catch (err) {
+            console.error("Verification error:", err);
+        } finally {
+            setLoading(false);
+        }
+    }
+   
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (step === 'QR_CODE') {
@@ -70,35 +113,10 @@ export function QRcode() {
             return;
         }
         setLoading(true);
-        try {
-            const res = await fetch(`${BACKEND_URL}/api/auth/verify-2fa/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ tempToken: token, code: finalOtp }),
-            });
-
-            if (res.ok) {
-                console.log("2FA Verified Successfully!");
-                const newUser = await res.json();
-                if (newUser.data){
-                    console.log("user data", newUser);
-                    setQrVerified(true);
-                    setUser(newUser.data.user);
-                    setToken(newUser.data.accessToken);
-                }              
-        
-            } else {
-                setQrVerified(false);
-                alert("Invalid Code. Please try again.");
-            }
-        } catch (err) {
-            console.error("Verification error:", err);
-        } finally {
-            setLoading(false);
-        }
+        if (firstLogin)
+            await verify("verify-setup", "api/2fa/verify-setup/", finalOtp);
+        else
+            await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
     };
 
     return (
@@ -163,6 +181,9 @@ export function QRcode() {
                         </p>
                     </div>
                 </form>
+                <div className='items-center'>
+                    <Logout />
+                </div>
             </div>
         </div>
     );
