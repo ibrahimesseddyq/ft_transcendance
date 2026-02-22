@@ -5,23 +5,16 @@ import * as jobPhaseService from './jobPhaseService.js';
 
 
 export const submitApplication = async (applicationData) => {
-	try {
-		 let application = await applicationRepository.createApplication({
-			jobId : applicationData.jobId,
-			candidateId: applicationData.candidateId,
-			currentPhaseId: null,
-		});
-		application =  await applicationRepository.updateApplication(application.id, {
-				applicationPhases: await createApplicationPhases(application.id,applicationData.jobId)
-			})
-		return application;
-	} catch (error) {
-		if (error.code === "P2002")
-			throw new HttpException(400, 'application already exists');
-		else if (error.code === "P2003")
-			throw new HttpException(404, "job or user not found");
-		throw error
-	}
+
+		let application = await applicationRepository.createApplication({
+		jobId : applicationData.jobId,
+		candidateId: applicationData.candidateId,
+		currentPhaseId: null,
+	});
+	application =  await applicationRepository.updateApplication(application.id, {
+			applicationPhases: await createApplicationPhases(application.id,applicationData.jobId)
+		})
+	return application;
 }
 
 const createApplicationPhases = async (applicationId, jobId) => {
