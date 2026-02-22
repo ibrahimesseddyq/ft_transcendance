@@ -19,8 +19,6 @@ export const OAuthCallback = () => {
                 try {
                     setToken(token);
                     setUserId(userId);
-
-                    console.log("---- Auth Success ----");
                     navigate('/otp', { replace: true });
                 } catch (error) {
                     navigate('/Login', { replace: true });

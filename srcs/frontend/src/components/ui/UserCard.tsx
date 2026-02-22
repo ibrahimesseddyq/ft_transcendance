@@ -8,7 +8,7 @@ const UserCard = (candidateId: any) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
-    console.log("candidateId : ", candidateId);
+    // console.log("candidateId : ", candidateId);
 
     useEffect(()=>{
       const fetchUserContent = async () =>{
@@ -17,9 +17,9 @@ const UserCard = (candidateId: any) => {
             headers: { "Authorization": `Bearer ${token}`}
         })
         if (res.ok){
-          console.log(res);
+          // console.log(res);
           const data = await res.json();
-          console.log(data.data);
+          // console.log(data.data);
           if (data.data){
             setUser(data.data);
           }
