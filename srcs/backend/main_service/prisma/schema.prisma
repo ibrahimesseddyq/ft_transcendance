@@ -90,6 +90,7 @@ model Interview {
   startedAt           DateTime?        @db.Timestamp(0)
   endedAt             DateTime?        @db.Timestamp(0)
   createdAt           DateTime?        @default(now()) @db.Timestamp(0)
+  hasWhiteboard Boolean?      @default(false)
 
   participants     InterviewParticipant[]
   applicationPhase ApplicationPhase       @relation(fields: [applicationPhaseId], references: [id], onDelete: Cascade)
@@ -113,8 +114,8 @@ model JobPhase {
   applicationPhases ApplicationPhase[]
   applications      Application[]
   job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  phaseInterview    PhaseInterview?
-  phaseTest         PhaseTest?
+  testId  String? @db.Char(36)
+  interviewId  String? @db.Char(36)
 
   @@unique([jobId, orderIndex])
 }
@@ -182,21 +183,6 @@ model Offer {
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }
 
-model PhaseInterview {
-  phaseId       String        @id @db.Char(36)
-  interviewMode InterviewMode
-  location      String?       @db.VarChar(255)
-  hasWhiteboard Boolean?      @default(false)
-
-  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-}
-
-model PhaseTest {
-  phaseId String @id @db.Char(36)
-  testId  String @db.Char(36)
-
-  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-}
 
 model Session {
   id           String   @id @default(uuid()) @db.Char(36)
@@ -249,10 +235,6 @@ enum PhaseType {
   interview
 }
 
-enum TestType {
-  quiz
-  problem
-}
 
 enum ApplicationPhaseStatus {
   pending
