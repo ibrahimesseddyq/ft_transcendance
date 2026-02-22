@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import {HttpException} from '../utils/httpExceptions.js';
 import * as userRepository from '../repositories/userRepository.js';
 import * as userService from './userService.js';
+import * as  jwtService from './jwtService.js';
 
 
  class TwoFAService
@@ -46,6 +47,13 @@ import * as userService from './userService.js';
             twoFASecret: user.twoFATempSecret,
             twoFATempSecret: null
         });
+        const tokens = jwtService.generateAuthTokens(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            }
+        );
         if (user.firstLogin === true)
         {
             console.log("\x1b[31m" + "first login \n" + "\x1b[0m");
@@ -60,7 +68,7 @@ import * as userService from './userService.js';
         delete user.passwordHash;
         delete user.twoFASecret;
         delete user.twoFATempSecret;
-        return { success: true, user: user};
+        return { success: true, user: user, accessToken: token};
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)

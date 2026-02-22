@@ -18,9 +18,14 @@ export const    setup = async (req, res ,next) =>
 export const    verifySetup = async (req, res,next) => {
      try {
 
-        const { token } = req.body;
-        const data = await twoFAService.verifySetup(req.body.id, token);
-        res.json(data);
+        const { code } = req.body;
+        const data = await twoFAService.verifySetup(req.body.id, code);
+        res.json(  {             
+            data: {
+                    user : data.user,
+                    accessToken : data.accessToken
+                }
+            });
             } catch (error) {
         next(error)
     }

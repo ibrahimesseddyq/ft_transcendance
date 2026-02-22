@@ -18,12 +18,12 @@ export function QRcode() {
     const userId = useAuthStore((state) => state.userId);
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
-    // const setProfile = useAuthStore((state) => state.setProfile);
+    const setProfile = useAuthStore((state) => state.setProfile);
     const token = useAuthStore((state) => state.token);
     const setToken = useAuthStore((state)=> state.setToken)
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-    console.log("User id : ", userId);
+    // console.log("User id : ", userId);
 
     const fetchNewQr = async () => {
         if (!userId) 
@@ -41,7 +41,7 @@ export function QRcode() {
             if (res.ok) {
                 const result = await res.json();
                 setQrLink(result.qrDataUrl);
-                setStep('QR_CODE'); 
+                setStep('QR_CODE');
             }
         } catch (error) {
             console.error("Failed to fetch QR:", error);
@@ -65,7 +65,7 @@ export function QRcode() {
 
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
-            ? { token: finalOtp, id: userId } 
+            ? { code: finalOtp, id: userId }
             : { tempToken: token, code: finalOtp };
         
         try {
@@ -80,13 +80,15 @@ export function QRcode() {
             if (res.ok) {
                 console.log("Verified Successfully!");
                 const newUser = await res.json();
-                console.log(newUser);
                 if (newUser.data){
-                    console.log("user data", newUser);
+                    // console.log("user data", newUser);
                     setUser(newUser.data.user);
                     setToken(newUser.data.accessToken);
-                    navigate("/Createprofile", { replace: true });
-                    console.log("Iam Here");
+                    const check = await ProfileChecker({userId, token, setProfile});
+                    if (!check)
+                        navigate("/Createprofile", { replace: true });
+                    else
+                        navigate("/", { replace: true });
                 }
                 setQrVerified(true);
             } else {
@@ -175,7 +177,9 @@ export function QRcode() {
                                 <span onClick={handleReset} className="font-bold underline cursor-pointer">
                                     Reset 2FA    
                                 </span> 
-                                : null
+                                : <span className="font-bold underline cursor-pointer">
+                                    Contact support 
+                                </span> 
                             }
                             
                         </p>
