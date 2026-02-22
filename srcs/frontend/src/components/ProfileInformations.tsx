@@ -64,7 +64,7 @@ export function ProfileInformations() {
   });
 
   let avatarValue = watch('avatar');
-  console.log("avatarValue : ", avatarValue);
+  // console.log("avatarValue : ", avatarValue);
 
   
   const onApplySubmit = async (data: any) => {
@@ -89,7 +89,7 @@ export function ProfileInformations() {
             body: formData,
         });
         const result = await response.json();
-        console.log("from ProfileInformations :", result.data);
+        // console.log("from ProfileInformations :", result.data);
         if (response.ok) {
           setProfile(result.data);
           if (user?.role === "recruiter" || user?.role === "admin")
