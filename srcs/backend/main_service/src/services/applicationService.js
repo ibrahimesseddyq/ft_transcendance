@@ -5,39 +5,24 @@ import * as jobPhaseService from './jobPhaseService.js';
 
 
 export const submitApplication = async (applicationData) => {
-
-		let application = await applicationRepository.createApplication({
-		jobId : applicationData.jobId,
-		candidateId: applicationData.candidateId,
-		currentPhaseId: null,
+	const applicationPhases = [];
+	const[ application, jobPhases] = await Promise.all([
+		applicationRepository.createApplication(applicationData),
+		jobPhaseService.getJobPhases(applicationData.jobId)
+	]);
+	jobPhases.array.forEach(phase => {
+		applicationPhases.push(
+			applicationPhaseservice.createApplicationphase({
+				applicationId: application.id,
+				phaseId: phase.id,
+			})
+		)
 	});
-	application =  await applicationRepository.updateApplication(application.id, {
-			applicationPhases: await createApplicationPhases(application.id,applicationData.jobId)
-		})
+	await Promise.all(applicationPhases);
 	return application;
 }
 
-const createApplicationPhases = async (applicationId, jobId) => {
-	const jobPhases =  await jobPhaseService.getJobPhases(jobId);
-	const applicationPhases = [];
-	if (!jobPhases)
-		return []
-		// throw new HttpException(400, "no phases for this job")
-	for (let jobPhase of  jobPhases)
-	{
-		applicationPhases.push(await applicationPhaseservice.createApplicationphase({
-			phaseId : jobPhase.id,
-			applicationId,
-			startedAt:null,
-			notes: null,
-			score: 0,
-		}))
-	}
-	return applicationPhases;
-}
-
 export const getApplicaticationById = async (applicationId) => {
-
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
