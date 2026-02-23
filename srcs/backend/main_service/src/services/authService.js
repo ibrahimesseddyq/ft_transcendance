@@ -102,14 +102,12 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
         }
     );
     await userService.updateUser(user.id, { refreshToken: tokens.refreshToken});
-    if (user.firstLogin == true)
-    {
-        console.log("first login \n");
-        console.log(user)
-        await userService.updateUser(user.id, { firstLogin:false });
-    }
-    console.log(user)
+    console.log(user);
+    console.log("")
 
+    console.log(user)
+    delete user.twoFASecret;
+    delete user.twoFATempSecret;
     const { passwordHash, ...saferUser} = user;
     return { user: saferUser, ...tokens};
 }

@@ -31,7 +31,7 @@ const CreateTest = () => {
 
    
     const TestSubmit = async (data: MCQFormValues) => {
-        console.log("Final Form Data:", data);
+        // console.log("Final Form Data:", data);
         reset();
     };
 
@@ -260,7 +260,7 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
 
 const SingleTagInput = ({ tags, onAddTag }: any) => {
     const [currentTag, setCurrentTag] = useState("");
-    console.log("tags:", tags);
+    // console.log("tags:", tags);
     return (
         <div className='flex gap-2'>
             <input 
