@@ -2,7 +2,7 @@
 # Use one shell per target (fixes & + wait, multi-line scripts)
 .ONESHELL:
 SHELL := /bin/sh
-
+ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 DEV_COMPOSE  := docker compose -f srcs/compose.yml
 PROD_COMPOSE := docker compose -f srcs/compose.yml -f srcs/compose.prod.yml
 
@@ -37,7 +37,8 @@ dev: clean-dev down-dev
 	$(DEV_COMPOSE) up -d
 	
 	# (cd srcs/frontend && npm install && npm run dev ) 
-	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
+# 	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
+# 	(cd srcs/frontend && npm install && npm run dev ) 
 
 re: clean up
 
@@ -55,25 +56,43 @@ clear:
 
 # ---------- Kubernetes ----------
 kube-build:
-	docker build -t eureka:dev ./srcs/backend/eureka
-	docker build -t gateway:dev ./srcs/backend/gateway
-	docker build -t main-service:dev ./srcs/backend/main_service
-	docker build -t quiz-service:dev ./srcs/backend/quiz_service
-	docker build -t ai-service:dev ./srcs/backend/ai_service
+	@mkdir -p logs
+	@cd $(ROOT)srcs/backend/eureka  && ./gradlew clean bootJar
+	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
+
+	docker build -t eureka:dev      $(ROOT)srcs/backend/eureka
+	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway
+	docker build -t main-service:dev $(ROOT)srcs/backend/main_service
+	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service
+	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service
+	docker build -t frontend:dev   $(ROOT)srcs/frontend
 
 kube-load: kube-build
 	CONTEXT=$$(kubectl config current-context)
-	if echo $$CONTEXT | grep -q "kind"; then
-		CLUSTER=$$(echo $$CONTEXT | sed 's/kind-//')
-		kind load docker-image eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev --name $$CLUSTER
+	if echo $$CONTEXT | grep -q "k3d"; then
+		CLUSTER=$$(echo $$CONTEXT | sed 's/k3d-//')
+		k3d image import  eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev -c $$CLUSTER
 	fi
 
 kube-deploy:
 	kubectl apply -f srcs/k8s/base/namespace.yaml
-	kubectl apply -f srcs/k8s/base/vault.yaml
-	kubectl wait --for=condition=ready pod -l app=vault -n hirefy --timeout=300s
+# 	kubectl apply -f srcs/k8s/base/vault.yaml
+	helm repo add hashicorp https://helm.releases.hashicorp.com
+	helm repo update
+
+
+	helm upgrade --install vault hashicorp/vault \
+		-n hirefy --create-namespace \
+		-f srcs/k8s/base/vault-values.yaml 
+	
+
+	kubectl wait --for=condition=ready pod \
+	 -l app.kubenetes.io/name=vault \
+	  -n hirefy --timeout=300s
+
+
 	echo "Initializing Vault..."
-	POD=$$(kubectl get pod -n hirefy -l app=vault -o jsonpath='{.items[0].metadata.name}')
+	POD=$$(kubectl get pod -n hirefy -l app.kubenetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp init-vault.sh hirefy/$$POD:/tmp/init-vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init-vault.sh
 
@@ -87,7 +106,7 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/base/gateway.yaml
 	kubectl get pods -n hirefy
 
-kube: kube-load kube-deploy kube-forward
+kube: kube-build kube-load kube-deploy kube-forward
 
 kube-forward:
 	kubectl port-forward -n hirefy svc/gateway 8081:8081 &
