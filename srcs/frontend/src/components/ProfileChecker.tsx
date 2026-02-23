@@ -2,7 +2,6 @@
 interface ProfileProps {
     userId: string | null;
     token: string | null;
-    setUser?: (user: any, token: string) => void;
     setProfile: (profile: any) => void;
 }
 

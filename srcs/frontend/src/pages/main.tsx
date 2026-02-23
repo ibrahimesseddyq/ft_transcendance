@@ -86,18 +86,28 @@ export function Main() {
 
       <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
         <main className="w-full ">
-          <Routes> 
-            <Route element={<ProtectedRoute />}/>
+          <Routes>
+            {/* STAFF ROUTES (Admin & Recruiter) */}
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
               <Route path="/Dashboard" element={<Dashboard />} />
-            <Route/>
-            <Route path="/Jobs" element={<Jobs />} />
-            <Route path="/Jobdescription" element={<JobDescription />} />
-            <Route path="/Application/:jobId" element={<Application />} />
-            <Route path="/Profile/:postId" element={<Profile />} />
-            <Route path="/Messages" element={<NotFound />} />
-            <Route path="/AppAllCards" element={<AppAllCards />} />
-            <Route path="/QuizPage" element={<QuizPage />} />
-            <Route path="/" element={<Navigate to="/Dashboard" replace />} />
+              <Route path="/AppAllCards" element={<AppAllCards />} />
+              <Route path="/QuizPage" element={<QuizPage />} />
+            </Route>
+
+            {/* CANDIDATE ROUTES */}
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
+              <Route path="/Jobs" element={<Jobs />} />
+              <Route path="/Jobdescription" element={<JobDescription />} />
+              <Route path="/Application/:jobId" element={<Application />} />
+              <Route path="/Profile/:postId" element={<Profile />} />
+            </Route>
+
+            {/* ROOT REDIRECT */}
+            <Route path="/" element={
+              user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
+            } />
+
+            <Route path="/NotFound" element={<NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

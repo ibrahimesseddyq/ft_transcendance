@@ -53,24 +53,21 @@ const Signin = () => {
         const result = await response.json();
         if (!response.ok) 
             throw new Error(result.message || "Login failed");
-        console.log("result :", result);
+        // console.log("result :", result);
         const token = result?.tempToken;
         const userId = result?.userId;
         setFirstLogin(result?.firstLogin);
-        console.log("userId :", userId, "token :", token);
+        // console.log("userId :", userId, "token :", token);
         if (token && userId) {
-            console.log("Iam herererererere");
+            // console.log("Iam herererererere");
             setUserId(userId);
             setToken(token);
             navigate("/otp", { replace: true });
+            reset();
         }
-        else{
-            console.log("***********iam here**********");
-        }
-      } catch (error: any) {
+    } catch (error: any) {
         Notification(error.message || "Error Login", "error");
-      }
-      reset();
+    }
     };
 
 
