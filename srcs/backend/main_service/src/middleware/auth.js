@@ -4,23 +4,31 @@ import { getPermissionsByRole } from '../config/permissions.js';
 
 export const verifyToken = async (req, res, next) => {
     try {
-        const {authorization} = req.headers;
-        if (!authorization)
-            throw new HttpException(401,"Unauthorized");
-        const [type, token] = authorization.split(" ");
-        if (type !== "Bearer") throw new HttpException(401,"Unauthorized");
-        const decoded = await jwtService.verifyAccessToken(token);
-        req.user = {
-            id : decoded.id,
-            email : decoded.email,
-            role:decoded.role
+        // Get token from cookie or Authorization header
+        let token = req.cookies?.token;
+        if (!token && req.headers.authorization) {
+            const [type, authToken] = req.headers.authorization.split(" ");
+            if (type !== "Bearer") throw new HttpException(401, "Unauthorized");
+            token = authToken;
         }
-        next()
+
+        if (!token) throw new HttpException(401, "Unauthorized");
+
+        // Verify the token
+        const decoded = await jwtService.verifyAccessToken(token);
+
+        // Attach user info to request
+        req.user = {
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role
+        };
+
+        next();
     } catch (error) {
         next(error);
     }
-   
-}
+};
 
 export const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
