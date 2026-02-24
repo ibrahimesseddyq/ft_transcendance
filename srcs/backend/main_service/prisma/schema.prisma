@@ -220,7 +220,8 @@ model User {
   isVerified            Boolean?               @default(false)
   sessions              Session[]
   twoFAEnabled          Boolean                @default(true)
-  twoFASecret           String?
+  firstLogin            Boolean                @default(true)
+  twoFASecret           String? 
   twoFATempSecret       String?
 }
 

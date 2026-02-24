@@ -6,15 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
-import { ProfileChecker } from '@/components/ProfileChecker'
 import Notification from "@/utils/TostifyNotification"
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
-    const setProfile = useAuthStore((state) => state.setProfile);
-    const setUser = useAuthStore((state) => state.setUser);
+    const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
+    const setToken = useAuthStore((state) => state.setToken);
+    const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const {
@@ -44,31 +44,30 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
 
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message || "Login failed");
-
-        const token = result.data?.accessToken;
-        const user = result.data?.user;
-
-        if (token && user) {
-            setUser(user, token);
-            const check = await ProfileChecker({ user, token, setProfile });
-            if (check) {
-                navigate("/Dashboard", { replace: true });
-            } else {
-                navigate("/Createprofile", { replace: true });
-            }
+        if (!response.ok) 
+            throw new Error(result.message || "Login failed");
+        // console.log("result :", result);
+        const token = result?.tempToken;
+        const userId = result?.userId;
+        setFirstLogin(result?.firstLogin);
+        // console.log("userId :", userId, "token :", token);
+        if (token && userId) {
+            // console.log("Iam herererererere");
+            setUserId(userId);
+            setToken(token);
+            navigate("/otp", { replace: true });
+            reset();
         }
-      } catch (error: any) {
+    } catch (error: any) {
         Notification(error.message || "Error Login", "error");
-      }
-      reset();
+    }
     };
 
 
