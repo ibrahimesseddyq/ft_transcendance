@@ -3,11 +3,11 @@ import { PrismaClient, UserRole } from '../generated/prisma/index.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import argon2 from 'argon2';
 
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL || 'mysql://root:root@main_service_db:3306/hirify');
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL || 'mysql://root:root@localhost:3306/hirify');
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const plainPassword = 'pass123';
+  const plainPassword = 'Abdellatif123@@';
   const passwordHash = await argon2.hash(plainPassword);
 
   const recruiter = await prisma.user.upsert({

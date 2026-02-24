@@ -4,7 +4,6 @@ import { useAuthStore } from '@/utils/ZuStand';
 
 const UserCard = (candidateId: any) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const token = useAuthStore((state) => state.token);
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
@@ -14,7 +13,7 @@ const UserCard = (candidateId: any) => {
       const fetchUserContent = async () =>{
         const res = await fetch(`${BACKEND_URL}/api/users/${candidateId}`, {
             method: "GET",
-            headers: { "Authorization": `Bearer ${token}`}
+            credentials: 'include'
         })
         if (res.ok){
           // console.log(res);

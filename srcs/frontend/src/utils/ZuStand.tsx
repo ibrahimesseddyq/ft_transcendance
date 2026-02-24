@@ -46,7 +46,6 @@ interface Profile {
 type State = {
   user: User | null;
   profile: Profile | null;
-  token: string | null;
   qrVerified: boolean;
   userId: string | null;
   firstLogin: boolean;
@@ -55,7 +54,6 @@ type State = {
 
 type Action = {
   setUser: (user: User) => void;
-  setToken: (token: string) => void;
   setProfile: (profileData: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
@@ -68,7 +66,6 @@ export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
       profile: null,
       userId: null,
       qrVerified: false,
@@ -82,10 +79,6 @@ export const useAuthStore = create<State & Action>()(
       setQrVerified: (status) =>
         set(() => ({
           qrVerified: status,
-      })),
-      setToken: (status) =>
-        set(() => ({
-          token: status,
       })),
 
       setUserId: (status) =>
@@ -108,7 +101,6 @@ export const useAuthStore = create<State & Action>()(
 
       clearAuth: () => set({ 
         user: null, 
-        token: null, 
         profile: null, 
         userId: null, 
         qrVerified: false,

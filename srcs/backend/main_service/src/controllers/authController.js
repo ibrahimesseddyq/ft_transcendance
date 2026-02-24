@@ -57,6 +57,7 @@ export const verify2FA = asyncHandler(async (req, res, next) =>{
 })
 
 export const register = asyncHandler(async (req, res, next) => {
+    console.log('-------------------------Iam Hereeee-------------------')
     const user = await authService.register(req.body)
     res
     .status(201)
