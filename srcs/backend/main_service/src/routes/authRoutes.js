@@ -39,16 +39,8 @@ router.post('/login',
                 email: req.user.email,
                 role: req.user.role
             });
-            const userData = {
-                id: req.user.id,
-                email: req.user.email,
-                firstName: req.user.firstName,
-                lastName: req.user.lastName,
-                avatarUrl: req.user.avatarUrl,
-                role: req.user.role
-            };
-            const userString = encodeURIComponent(JSON.stringify(userData));
-            res.redirect(`${env.FRONTEND_URL}/auth/callback?token=${tokens.accessToken}&user=${userString}`);
+            const userId = req.user.id;
+            res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
         } catch (error) {
             res.status(400)
             .json({

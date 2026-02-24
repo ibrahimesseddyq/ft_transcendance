@@ -1,18 +1,21 @@
 import speakeasy from "speakeasy";
 import QRCode from "qrcode";
+import {HttpException} from '../utils/httpExceptions.js';
+import * as userRepository from '../repositories/userRepository.js';
+import * as userService from './userService.js';
+import * as  jwtService from './jwtService.js';
 
 
  class TwoFAService
 {
-    constructor(userRepo)
-    {
-        this.userRepo = userRepo;
+    constructor() {
+        this.userRepo = userRepository;
     }
 
     async setup(userId)
     {
         const user = await this.userRepo.getUserById(userId);
-        if (!user) throw new Error("User Not Found");
+        if (!user) throw new HttpException(400, "User Not Found");
         const secret = speakeasy.generateSecret({
             name: `MyApp (${user.email})`,
         });
@@ -24,8 +27,10 @@ import QRCode from "qrcode";
 
     async verifySetup(userId, token)
     {
+        console.log("user id :", userId, "token :", token);
         const user = await this.userRepo.getUserById(userId);
-        if (!user?.twoFATempSecret) throw new Error("No Setup in Progress");
+        if (!user?.twoFATempSecret)
+            throw new HttpException(400, "No Setup in Progress");
 
         const ok = speakeasy.totp.verify(
             {
@@ -35,21 +40,42 @@ import QRCode from "qrcode";
                 window: 1
             }
         );
-        if (!ok) throw new Error("Invalid 2FA CODE");
+        if (!ok) throw new HttpException(400, "Invalid 2FA CODE");
         // enable 2fa
         await this.userRepo.updateUser(userId,{
             twoFAEnabled: true,
             twoFASecret: user.twoFATempSecret,
             twoFATempSecret: null
         });
-        return { success: true};
+        const tokens = jwtService.generateAuthTokens(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            }
+        );
+        if (user.firstLogin === true)
+        {
+            console.log("\x1b[31m" + "first login \n" + "\x1b[0m");
+            console.log(user)
+            const check = await userService.updateUser(user.id, { firstLogin: false });
+            if (check.ok)
+            {
+                console.log("succed");
+                user.firstLogin = false;
+            }
+        }
+        delete user.passwordHash;
+        delete user.twoFASecret;
+        delete user.twoFATempSecret;
+        return { success: true, user: user, accessToken: token};
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)
     {
         const user = await this.userRepo.getUserById(userId);
 
-        if (!user?.twoFAEnabled || !user.twoFASecret) throw new Error("2FA NOT ENABLED");
+        if (!user?.twoFAEnabled || !user.twoFASecret) throw new HttpException(400, "2FA NOT ENABLED");
 
         const ok = speakeasy.totp.verify({
             secret: user.twoFASecret,
@@ -57,7 +83,7 @@ import QRCode from "qrcode";
             token,
             window: 1
         });
-        if (!ok) throw new Error("Invalid 2FA Code");
+        if (!ok) throw new HttpException(400, "Invalid 2FA Code");
         return true;
     }
 
@@ -72,4 +98,4 @@ import QRCode from "qrcode";
         return { success: true};
     }
 };
-export default  TwoFAService;
+export default TwoFAService;

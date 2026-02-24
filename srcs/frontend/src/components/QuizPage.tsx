@@ -1,4 +1,3 @@
-import QuizCard from '@/components/ui/QuizCard'
 import CreateTest from '@/components/ui/CreateTest'
 import TestsList from '@/components/ui/TestsList'
 
