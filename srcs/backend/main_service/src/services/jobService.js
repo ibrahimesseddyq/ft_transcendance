@@ -3,15 +3,11 @@ import {HttpException} from '../utils/httpExceptions.js';
 
 
 export const createJob = async (jobData) => {
-    const job = await jobRepository.createJob(jobData);
-    return job;
+    return await jobRepository.createJob(jobData);
 }
 
 export const updateJob = async (jobId, updateData) => {
-    if (!await jobRepository.findJobById(jobId))
-        throw new HttpException(404, 'job does not exists');
-    const job = await jobRepository.updateJob(jobId, updateData);
-    return job;
+    return await jobRepository.updateJob(jobId, updateData);
 }
 
 export const getJobById = async (jobId) => {
@@ -22,8 +18,6 @@ export const getJobById = async (jobId) => {
 }
 
 export const deleteJob =  async(jobId) => {
-    if (!await jobRepository.findJobById(jobId))
-        throw new HttpException(404, "job not found");
     await jobRepository.deleteJob(jobId);
 }
 

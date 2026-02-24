@@ -7,6 +7,52 @@ datasource db {
   provider = "mysql"
 }
 
+model JobPhase {
+  id              String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  jobId           String    @db.Char(36)
+  phaseType       PhaseType
+  name            String    @db.VarChar(100)
+  description     String?   @db.Text
+  orderIndex      Int
+  isRequired      Boolean?  @default(true)
+  durationMinutes Int?
+  createdAt       DateTime? @default(now()) @db.Timestamp(0)
+
+  applicationPhases ApplicationPhase[]
+  applications      Application[]
+  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  testId            String?            @db.Char(36)
+  interviewId       String?            @db.Char(36)
+
+  @@unique([jobId, orderIndex])
+}
+
+model Job {
+  id             String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  title          String     @db.VarChar(255)
+  department     String?    @db.VarChar(100)
+  description    String?    @db.Text
+  requirements   String?    @db.LongText
+  location       String?    @db.VarChar(255)
+  skills         String?    @db.Text
+  isRemote       Boolean?   @default(false)
+  employmentType String?    @db.VarChar(50)
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String?    @default("USD") @db.VarChar(3)
+  status         JobStatus? @default(open)
+  createdAt      DateTime?  @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
+  closedAt       DateTime?  @db.Timestamp(0)
+
+  applications Application[]
+  jobPhases    JobPhase[]
+  user         User?         @relation(fields: [userId], references: [id])
+  userId       String?       @db.Char(36)
+
+  @@index([status])
+}
+
 model ApplicationPhase {
   id            String                  @id @default(dbgenerated("(uuid())")) @db.Char(36)
   applicationId String                  @db.Char(36)
@@ -90,58 +136,13 @@ model Interview {
   startedAt           DateTime?        @db.Timestamp(0)
   endedAt             DateTime?        @db.Timestamp(0)
   createdAt           DateTime?        @default(now()) @db.Timestamp(0)
+  hasWhiteboard       Boolean?         @default(false)
 
   participants     InterviewParticipant[]
   applicationPhase ApplicationPhase       @relation(fields: [applicationPhaseId], references: [id], onDelete: Cascade)
 
   @@index([applicationPhaseId])
   @@index([scheduledAt, status])
-  @@index([status])
-}
-
-model JobPhase {
-  id              String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  jobId           String    @db.Char(36)
-  phaseType       PhaseType
-  name            String    @db.VarChar(100)
-  description     String?   @db.Text
-  orderIndex      Int
-  isRequired      Boolean?  @default(true)
-  durationMinutes Int?
-  createdAt       DateTime? @default(now()) @db.Timestamp(0)
-
-  applicationPhases ApplicationPhase[]
-  applications      Application[]
-  job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  phaseInterview    PhaseInterview?
-  phaseTest         PhaseTest?
-
-  @@unique([jobId, orderIndex])
-}
-
-model Job {
-  id             String     @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  title          String     @db.VarChar(255)
-  department     String?    @db.VarChar(100)
-  description    String?    @db.Text
-  requirements   String?    @db.LongText
-  location       String?    @db.VarChar(255)
-  skills         String?    @db.Text
-  isRemote       Boolean?   @default(false)
-  employmentType String?    @db.VarChar(50)
-  salaryMin      Int?
-  salaryMax      Int?
-  salaryCurrency String?    @default("USD") @db.VarChar(3)
-  status         JobStatus? @default(open)
-  createdAt      DateTime?  @default(now()) @db.Timestamp(0)
-  updatedAt      DateTime?  @default(now()) @db.Timestamp(0)
-  closedAt       DateTime?  @db.Timestamp(0)
-
-  applications Application[]
-  jobPhases    JobPhase[]
-  user         User?         @relation(fields: [userId], references: [id])
-  userId       String?       @db.Char(36)
-
   @@index([status])
 }
 
@@ -180,22 +181,6 @@ model Offer {
   responseNotes   String?      @db.Text
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-}
-
-model PhaseInterview {
-  phaseId       String        @id @db.Char(36)
-  interviewMode InterviewMode
-  location      String?       @db.VarChar(255)
-  hasWhiteboard Boolean?      @default(false)
-
-  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-}
-
-model PhaseTest {
-  phaseId String @id @db.Char(36)
-  testId  String @db.Char(36)
-
-  jobPhase JobPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 }
 
 model Session {
@@ -248,11 +233,6 @@ enum InterviewMode {
 enum PhaseType {
   test
   interview
-}
-
-enum TestType {
-  quiz
-  problem
 }
 
 enum ApplicationPhaseStatus {
