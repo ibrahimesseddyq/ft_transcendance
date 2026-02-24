@@ -1,50 +1,32 @@
 import * as applicationRepository from '../repositories/applicationRepository.js';
 import * as applicationPhaseservice from './applicationPhaseService.js';
 import {HttpException} from '../utils/httpExceptions.js';
+import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
 
 
-export const submitApplication = async (applicationData) => {
-	try {
-		 let application = await applicationRepository.createApplication({
-			jobId : applicationData.jobId,
-			candidateId: applicationData.candidateId,
-			currentPhaseId: null,
-		});
-		application =  await applicationRepository.updateApplication(application.id, {
-				applicationPhases: await createApplicationPhases(application.id,applicationData.jobId)
+export const submitApplication = async (data) => {
+	const job = jobService.getJobById();
+	if (!job.jobPhases)
+		throw new HttpException(400, 'cannot apply to this job');
+	const tasks = [];
+	const[ application, jobPhases] = await Promise.all([
+		applicationRepository.createApplication(data),
+		jobPhaseService.getJobPhases(data.jobId)
+	]);
+	jobPhases.array.forEach(phase => {
+		tasks.push(
+			applicationPhaseservice.createApplicationphase({
+				applicationId: application.id,
+				phaseId: phase.id,
 			})
-		return application;
-	} catch (error) {
-		if (error.code === "P2002")
-			throw new HttpException(400, 'application already exists');
-		else if (error.code === "P2003")
-			throw new HttpException(404, "job or user not found");
-		throw error
-	}
-}
-
-const createApplicationPhases = async (applicationId, jobId) => {
-	const jobPhases =  await jobPhaseService.getJobPhases(jobId);
-	const applicationPhases = [];
-	if (!jobPhases)
-		return []
-		// throw new HttpException(400, "no phases for this job")
-	for (let jobPhase of  jobPhases)
-	{
-		applicationPhases.push(await applicationPhaseservice.createApplicationphase({
-			phaseId : jobPhase.id,
-			applicationId,
-			startedAt:null,
-			notes: null,
-			score: 0,
-		}))
-	}
-	return applicationPhases;
+		)
+	});
+	await Promise.all(tasks);
+	return application;
 }
 
 export const getApplicaticationById = async (applicationId) => {
-
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");

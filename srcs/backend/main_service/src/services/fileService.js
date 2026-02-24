@@ -3,32 +3,22 @@ import path from 'path';
 import fs from 'fs/promises';
 
 export const saveResume = async (userId, file) => {
-    try {
-        const fileExt = path.extname(file.originalname);
-        const filename = `${userId}${fileExt}`;
-        const resumePath = '/uploads/resumes/' + filename;
-        return {
-            resumeUrl: resumePath,
-            fileSize: file.size,
-            originalName: file.originalname
-        }
-    } catch (error) {
-        throw new HttpException(500, "failed to save file");
+    const fileExt = path.extname(file.originalname);
+    const filename = `${userId}${fileExt}`;
+    const resumePath = '/uploads/resumes/' + filename;
+    return {
+        type: 'resume',
+        resumeUrl: resumePath
     }
 }
 
 export const saveAvatar = async (userId, file) => {
-    try {
-        const fileExt = path.extname(file.originalname);
-        const filename = `${userId}${fileExt}`;
-        const avatarPath = '/uploads/avatars/' + filename;
-        return {
-            avatarUrl: avatarPath,
-            fileSize: file.size,
-            originalName: file.originalname
-        }
-    } catch (error) {
-        throw new HttpException(500, "failed to save file");
+    const fileExt = path.extname(file.originalname);
+    const filename = `${userId}${fileExt}`;
+    const avatarPath = '/uploads/avatars/' + filename;
+    return {
+        type :'avatar',
+        avatarUrl: avatarPath,
     }
 }
 
