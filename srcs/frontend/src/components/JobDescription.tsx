@@ -11,7 +11,7 @@ export function JobDescription(){
   const SKILLS = jobItem.skills?.split(',');
   const user = useAuthStore((state) => state.user);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   const submitData = {
     jobId: jobItem.id,

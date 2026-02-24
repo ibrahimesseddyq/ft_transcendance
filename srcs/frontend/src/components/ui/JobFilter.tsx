@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
-import { SearchField } from "@/components/ui/SearchField";
+
 interface JobsArrayProps {
   totalJobs: any,
   setJobsArray: (data: any) => void;
   setIsLoading: (data: boolean) => void;
 }
+
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
