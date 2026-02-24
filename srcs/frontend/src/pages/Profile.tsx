@@ -16,8 +16,8 @@ export function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
         const [res1, res2] = await Promise.all([
-          fetch(`${BACKEND_URL}/api/users/${id}`),
-          fetch(`${BACKEND_URL}/api/profiles/${id}`),
+          fetch(`${BACKEND_URL}/api/users/${id}`, {credentials: 'include'}),
+          fetch(`${BACKEND_URL}/api/profiles/${id}`, {credentials: 'include'}),
         ]);
 
         if (res1.ok && res2.ok) {

@@ -67,6 +67,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
+          credentials: 'include'
         });
         
         if (!response.ok)
@@ -87,10 +88,10 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
         const response = await fetch(`${BACKEND_URL}/api/jobs`, {
           method: "POST",
           headers: {
-            
             "Content-Type": "application/json" 
           },
           body: JSON.stringify(data),
+          credentials: 'include'
         });
         
         if (!response.ok)

@@ -14,6 +14,7 @@ export function ProfileCover({ profile, user }: props) {
   const loggedUser = useAuthStore((state) => state.user);
   const [profileUrl] = useState(window.location.href);
   const [copyState, setCopyState] = useState('');
+
   const handleCopy = async () =>{
     await navigator.clipboard.writeText(profileUrl);
     setCopyState('Copied!');
