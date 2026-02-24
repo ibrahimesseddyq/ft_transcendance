@@ -8,7 +8,9 @@ export const createJobPhase = async(phaseData) => {
 
 export const updateJobPhase = async (jobPhaseId, updateData) => {
 	return await prisma.jobPhase.update({
-		where : {id : jobPhaseId},
+		where : {
+			id : jobPhaseId
+		},
 		data: updateData
 	})
 }

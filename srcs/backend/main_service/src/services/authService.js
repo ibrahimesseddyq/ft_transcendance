@@ -69,49 +69,29 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
     const decoded = await jwtService.verifyTempToken(tempToken);
 
     if (decoded.purpose !== '2fa-pending')
-    {
         throw new HttpException(403, "Invalid Token");
-    }
 
     const user = await userService.getUserById(decoded.id);
 
     if (!user || !user.twoFAEnabled) 
-    {
         throw new HttpException(403, "Invalid request");
-    }
-
 
     const isValid = await twoFAService2.verifyLogin(user.id, twoFACode);
 
     if (!isValid)
-    {
         throw new HttpException(400, "Invalid 2FA Code");
-    }
 
-    const tokens = jwtService.generateAuthTokens(
-        {
-            id: user.id,
-            email: user.email,
-            role: user.role,
-        }
-    );
+    const tokens = jwtService.generateAuthTokens({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+    });
     await userService.updateUser(user.id, { refreshToken: tokens.refreshToken});
-    console.log(user);
-    console.log("")
-
-    console.log(user)
-    delete user.twoFASecret;
-    delete user.twoFATempSecret;
     const { passwordHash, ...saferUser} = user;
     return { user: saferUser, ...tokens};
 }
 
 export const  register = async (data) => {
-    const existingUser = await userService.getUserByEmail(data.email);
-    if (existingUser){
-        console.log("user exist");
-        return {};
-    }
     const user = await userService.createUser(data);
     const verificationToken = await jwtService.generateVerificationToken(user.id,user.email);
     await sendMail({
@@ -120,7 +100,6 @@ export const  register = async (data) => {
         subject: "Email Verification",
         text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/auth/verify-email/${verificationToken}`
     });
-    delete user.passwordHash;
     return {};
 }
 
@@ -136,8 +115,7 @@ export const refresh = async  (refreshToken) => {
         email : user.email,
         role: user.role
     });
-    delete user.passwordHash;
-    delete user.refreshToken;
+
     return {
         user,
         accessToken,
@@ -150,9 +128,7 @@ export const logout = async (refreshToken) => {
         const decoded = await jwtService.verifyRefreshToken(refreshToken);
         const user = await userService.getUserById(decoded.id);
         if(user && user.refreshToken === refreshToken)
-        {
             await userService.updateUser(user.id, { refreshToken: null});
-        }
     }
     catch(error){
 
@@ -169,7 +145,6 @@ export const verifyEmail = async(token) => {
     if (user.isVerified)
          throw new HttpException(400, "email already verified");
     await userService.updateUser(user.id, {isVerified : true});
-    delete user.passwordHash;
     return user;
 }
 export const resendVerification = async (email) => {

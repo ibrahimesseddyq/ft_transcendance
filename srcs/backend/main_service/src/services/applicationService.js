@@ -8,20 +8,29 @@ import {prisma} from '../config/prisma.js';
 
 export const submitApplication = async (data) => {
 	const job = await jobService.getJobById(data.jobId);
-	if (!job.jobPhases || job.jobPhases.length === 0)
+	if (!job || !job.jobPhases || job.jobPhases.length === 0 || job.status != 'open')
 		throw new HttpException(400, 'cannot apply to this job');
-	await prisma.$transaction( async (tx) => {
-		const application = await tx.application.create(data);
+	return await prisma.$transaction( async (tx) => {
+		const application = await tx.application.create({data,
+			select: {
+				applicationPhases: true
+			}
+		});
 		await Promise.all(
 			job.jobPhases.map(phase => {
 				tx.applicationPhase.create({
+					data : {
 					applicationId: application.id,
-					phaseId: phase.id,
+					phaseId: phase.id,}
 				})
 			})
 		)
+		await tx.application.update({
+			where : {id : application.id},
+			data : {currentPhaseId : application.applicationPhases[0].id}
+		})
+		return application;
 	})
-	return application;
 }
 
 export const getApplicaticationById = async (applicationId) => {
@@ -41,10 +50,11 @@ export const advance = async (applicationId) => {
 	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
 	if (currentPhase.status !== 'completed')
 		throw new HttpException(400,"can't advance to next phase");
-	if(phases.indexOf(currentPhase) + 1 == phases.length)
+	const currentIndex = phases.indexOf(currentPhase);
+	if(currentIndex + 1 == phases.length)
 		throw new HttpException(400, 'application already completed');
-	const nextPhase = phases[phases.indexOf(currentPhase) + 1];
-	const {newPhase, newApplication} = await Promise.all([
+	const nextPhase = phases[currentIndex + 1];
+	const [newPhase, newApplication] = await Promise.all([
 		applicationPhaseservice.updateApplicationPhase(nextPhase.id, {
 			status:"in_progress"
 		}),
