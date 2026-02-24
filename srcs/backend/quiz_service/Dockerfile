@@ -13,6 +13,6 @@ COPY . .
 
 # Expose port
 EXPOSE 3001
-
+RUN npm install -g nodemon
 # Start the application
 CMD ["npm", "run", "dev"]

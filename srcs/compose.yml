@@ -12,10 +12,13 @@ services:
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    networks:
+      - microservices
   quiz_service_db:
     image: mariadb
     restart: always
@@ -29,10 +32,13 @@ services:
     ports:
       - "3307:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    networks:
+    - microservices
   
 volumes:
   quiz_service_db:
