@@ -11,7 +11,7 @@ export const createTest =  asyncHandler( async (req, res, next) => {
 })
 
 export const updateTest = asyncHandler(async (req, res, next) => {
-    const test = await testSevice.updateTest(req.params?.id, req,body);
+    const test = await testSevice.updateTest(req.params?.id, req.body);
     res.status(200)
     .json({
         success: true,
@@ -20,7 +20,7 @@ export const updateTest = asyncHandler(async (req, res, next) => {
 })
 
 export const getTestById =  asyncHandler(async (req, res, next) => {
-    const test =  await testSevice.getTestById(req,params?.id);
+    const test =  await testSevice.getTestById(req.params?.id);
     res.status(200)
     .json({
         success : true,
@@ -35,7 +35,7 @@ export const deleteTest = asyncHandler( async (req, res, next) => {
 })
 
 export const getTests = asyncHandler(async (req, res, next) => {
-    const result = await testSevice.gettests(req.params);
+    const result = await testSevice.gettests(req.query);
     res.status(200)
     .json({
         success: true,

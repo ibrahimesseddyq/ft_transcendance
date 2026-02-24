@@ -13,7 +13,7 @@ export const deleteMcq = async (mcqId) => {
 }
 
 export const getMcqById = async (mcqId) => {
-    return await mcqRepository.getManyMcq(mcqId);
+    return await mcqRepository.getMcqById(mcqId);
 }
 
 export const getManyMcqs = async (mcqFilter) => {
