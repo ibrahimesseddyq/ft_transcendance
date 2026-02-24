@@ -1,5 +1,6 @@
 import * as jobPhaseRepository from '../repositories/jobPhaseRepository.js';
 import {HttpException} from '../utils/httpExceptions.js';
+import * as quizClientService from './quizClientService.js'
 
 export const createJobPhase = async (jobPhaseData) => {
 	return await jobPhaseRepository.createJobPhase(jobPhaseData);
