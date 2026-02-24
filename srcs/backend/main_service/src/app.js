@@ -24,7 +24,14 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH "],
     credentials: true 
   }));
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "frame-ancestors": ["'self'", "http://localhost:5173"],
+    },
+  },
+}));
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
@@ -36,6 +43,9 @@ app.use('/uploads', (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
+
+// Serve chat UI
+app.use('/chat', express.static(path.join(import.meta.dirname, '../public_chat')));
 
 app.use(session({
     secret: env.SESSION_SECRET || 'dev-secret',
