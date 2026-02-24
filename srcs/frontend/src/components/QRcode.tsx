@@ -6,6 +6,7 @@ import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
 import { SetToken } from '@/components/SetToken'
+import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
@@ -21,6 +22,7 @@ export function QRcode() {
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const token = Cookies.get('accessToken');
 
     // console.log("User id : ", userId);
 
@@ -32,6 +34,7 @@ export function QRcode() {
             const res = await fetch(`${BACKEND_URL}/api/2fa/setup/`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: userId }),
@@ -71,6 +74,7 @@ export function QRcode() {
             const res = await fetch(`${BACKEND_URL}/${route}`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(obj),
