@@ -65,7 +65,7 @@ model ApplicationPhase {
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   jobPhase    JobPhase    @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-  interviews  Interview[] // should be reviwed
+  interviews  Interview[]
 
   @@unique([applicationId, phaseId])
   @@index([applicationId, status])
