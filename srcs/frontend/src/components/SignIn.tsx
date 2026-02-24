@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
+import { SetToken } from '@/components/SetToken'
 import Notification from "@/utils/TostifyNotification"
 
 const Signin = () => {
@@ -13,7 +14,6 @@ const Signin = () => {
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
-    const setToken = useAuthStore((state) => state.setToken);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -45,9 +45,10 @@ const Signin = () => {
     const LoginSubmit = async (data: any) => {
       try {
           const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+            credentials: 'include'
         });
 
         const result = await response.json();
@@ -61,7 +62,7 @@ const Signin = () => {
         if (token && userId) {
             // console.log("Iam herererererere");
             setUserId(userId);
-            setToken(token);
+            SetToken(token);
             navigate("/otp", { replace: true });
             reset();
         }

@@ -21,7 +21,6 @@ export function Main() {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const userId = useAuthStore((state) => state.userId);
-  const token = useAuthStore((state) => state.token);
   const profile = useAuthStore((state) => state.profile);
   const qrVerified = useAuthStore((state) => state.qrVerified);
 
@@ -31,43 +30,26 @@ export function Main() {
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
-  if (!token && !isPublicPage) {
-    return <Navigate to="/Login" state={{ from: location }} replace />;
-  }
-
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
     <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] md:h-screen md:overflow-hidden pt-4 px-4">
       {children}
     </main>
   );
 
-  if (!token && isPublicPage) {
+  if (isPublicPage) {
     return (
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
+          <Route path="/otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
       </FullScreenWrapper>
     );
   }
-  
-  console.log("qrVerified : ", qrVerified);
-  console.log("userId : ", userId);
-  if (token && userId && !qrVerified){
-    {console.log("Was here")}
-    return (
-      <FullScreenWrapper>
-        <Routes>
-          <Route path="/otp" element={<QRcode/>} />
-          <Route path="*" element={<Navigate to="/otp" replace />} />
-        </Routes>
-      </FullScreenWrapper>
-    );
-  }
-  console.log("has profile : ", hasProfile);
- if (token && user && qrVerified && !hasProfile) {
+
+ if (user && qrVerified && !hasProfile) {
     return (
       <FullScreenWrapper>
         <Routes>
