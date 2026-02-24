@@ -3,26 +3,24 @@ import * as applicationPhaseservice from './applicationPhaseService.js';
 import {HttpException} from '../utils/httpExceptions.js';
 import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
+import {prisma} from '../config/prisma.js'; 
 
 
 export const submitApplication = async (data) => {
-	const job = jobService.getJobById();
-	if (!job.jobPhases)
+	const job = await jobService.getJobById(data.jobId);
+	if (!job.jobPhases || job.jobPhases.length === 0)
 		throw new HttpException(400, 'cannot apply to this job');
-	const tasks = [];
-	const[ application, jobPhases] = await Promise.all([
-		applicationRepository.createApplication(data),
-		jobPhaseService.getJobPhases(data.jobId)
-	]);
-	jobPhases.array.forEach(phase => {
-		tasks.push(
-			applicationPhaseservice.createApplicationphase({
-				applicationId: application.id,
-				phaseId: phase.id,
+	await prisma.$transaction( async (tx) => {
+		const application = await tx.application.create(data);
+		await Promise.all(
+			job.jobPhases.map(phase => {
+				tx.applicationPhase.create({
+					applicationId: application.id,
+					phaseId: phase.id,
+				})
 			})
 		)
-	});
-	await Promise.all(tasks);
+	})
 	return application;
 }
 
@@ -37,11 +35,13 @@ export const advance = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not fount");
+	if (application.status != 'inProgress' || application.job.status != 'open')
+		throw new HttpException(400, 'cannot make progress in this application');
 	const phases = application.applicationPhases;
 	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
 	if (currentPhase.status !== 'completed')
 		throw new HttpException(400,"can't advance to next phase");
-	if(phases.indexOf(currentPhase) + 1 >= phases.length)
+	if(phases.indexOf(currentPhase) + 1 == phases.length)
 		throw new HttpException(400, 'application already completed');
 	const nextPhase = phases[phases.indexOf(currentPhase) + 1];
 	const {newPhase, newApplication} = await Promise.all([
