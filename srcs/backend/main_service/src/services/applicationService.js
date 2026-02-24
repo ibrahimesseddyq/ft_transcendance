@@ -1,24 +1,28 @@
 import * as applicationRepository from '../repositories/applicationRepository.js';
 import * as applicationPhaseservice from './applicationPhaseService.js';
 import {HttpException} from '../utils/httpExceptions.js';
+import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
 
 
-export const submitApplication = async (applicationData) => {
-	const applicationPhases = [];
+export const submitApplication = async (data) => {
+	const job = jobService.getJobById();
+	if (!job.jobPhases)
+		throw new HttpException(400, 'cannot apply to this job');
+	const tasks = [];
 	const[ application, jobPhases] = await Promise.all([
-		applicationRepository.createApplication(applicationData),
-		jobPhaseService.getJobPhases(applicationData.jobId)
+		applicationRepository.createApplication(data),
+		jobPhaseService.getJobPhases(data.jobId)
 	]);
 	jobPhases.array.forEach(phase => {
-		applicationPhases.push(
+		tasks.push(
 			applicationPhaseservice.createApplicationphase({
 				applicationId: application.id,
 				phaseId: phase.id,
 			})
 		)
 	});
-	await Promise.all(applicationPhases);
+	await Promise.all(tasks);
 	return application;
 }
 
