@@ -3,6 +3,7 @@ import express from 'express';
 import  {UserRole} from '../../generated/prisma/index.js'
 import {createJobSchema, updateJobSchema} from '../validators/jobValidator.js';
 import validateRequest from '../middleware/ValidateRequest.js';
+import {verifyRoles} from '../middleware/auth.js';
 
 const router = express.Router();
 
