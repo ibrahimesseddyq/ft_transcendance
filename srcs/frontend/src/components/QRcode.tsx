@@ -50,11 +50,12 @@ export function QRcode() {
         }
     };
 
-    if (firstLogin){
         useEffect(() => {
-            fetchNewQr();
+            if (firstLogin)
+                fetchNewQr();
+            else
+                setStep('VERIFY_OTP');
         }, [userId]);
-    }
 
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();

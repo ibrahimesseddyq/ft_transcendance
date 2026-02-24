@@ -13,7 +13,7 @@ export const login = async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
 
-        const {userId, accessToken, refreshToken, firstLogin} = result;
+        const {userId, accessToken, refreshToken, firstLogin, user} = result;
         if (result.require2FA)
         {
             return res.status(200).json({
