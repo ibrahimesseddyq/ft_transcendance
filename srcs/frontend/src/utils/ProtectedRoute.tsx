@@ -1,15 +1,26 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
 
-export function ProtectedRoute(){
+interface Props {
+  allowedRoles: string[];
+}
+
+export function ProtectedRoute({ allowedRoles }: Props) {
     const user = useAuthStore((state) => state.user);
-    console.log("user role : ", user?.role);
-    if (user?.role === "recruiter" || user?.role === "admin")
-    {
-        // setTimeout(()=>{}, 10000000);
-        console.log("***************hi iam here 1 *************");
-        return (<Outlet />);
+    const location = useLocation();
+    
+    console.log("allowedRoles: ", allowedRoles);
+    if (!user) {
+      return <Navigate to="/Login" state={{ from: location }} replace />;
     }
-    console.log("***************hi iam here 2 *************");
-    return <Navigate to={'/NotFound'}/>;
+
+    const hasAccess = allowedRoles.includes(user.role);
+
+    if (hasAccess) {
+      return <Outlet />;
+    }
+
+    return user.role === "candidate" 
+      ? <Navigate to="/Jobs" replace /> 
+      : <Navigate to="/NotFound" replace />;
 }

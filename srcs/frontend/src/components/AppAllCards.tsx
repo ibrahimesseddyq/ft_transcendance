@@ -6,10 +6,9 @@ import { Search, ChevronLeft, Users as UsersIcon } from 'lucide-react';
 export function AppAllCards() {
   const navigate = useNavigate();
   const location = useLocation();
-  
   const Title = location.state?.title || "Default Title";
   const applications = location.state?.applications || [];
-
+  // console.log("Applications :", applications);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredApplications = useMemo(() => {
@@ -61,7 +60,7 @@ export function AppAllCards() {
                 className="animate-in fade-in slide-in-from-bottom-5 duration-500"
                 style={{ animationDelay: `${index * 40}ms` }}
               >
-                <UserCard User={item.user} Profile={item.profile} />
+                <UserCard candidateId={item.candidateId}/>
               </div>
             ))}
           </div>
