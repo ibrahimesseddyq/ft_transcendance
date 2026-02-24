@@ -20,14 +20,14 @@ export const getUserById = async (userId)=> {
 export const getUserByEmail = async (email) => {
     return await prisma.user.findUnique({
         where :{email : email },
-          select : {
-            id,
-            role,
-            email,
-            firstName,
-            lastName,
-            avatarUrl
-        },
+        //   select : {
+        //     id,
+        //     role,
+        //     email,
+        //     firstName,
+        //     lastName,
+        //     avatarUrl
+        // },
         include : {
             profile : true
         }
@@ -38,13 +38,13 @@ export const getUserByEmail = async (email) => {
 export const createUser = async (userData) => {
     return await prisma.user.create({
         data : userData,
-        select : {
-            id,
-            email,
-            firstName,
-            lastName,
-            avatarUrl
-        }
+        // select : {
+        //     id,
+        //     email,
+        //     firstName,
+        //     lastName,
+        //     avatarUrl
+        // }
     })
 }
 
