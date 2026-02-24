@@ -36,7 +36,6 @@ app.use('/uploads', (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
-
 app.use(session({
     secret: env.SESSION_SECRET,
     resave: false,

@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import env from '../config/env.js';
 import {HttpException} from '../utils/httpExceptions.js';
 import * as jwtService from '../services/jwtService.js';
 import { getPermissionsByRole } from '../config/permissions.js';
@@ -59,7 +57,6 @@ export const optionalAuth = async (req, res, next) => {
                     role: decoded.role
                 }
             }
-
         }
         next();
     } catch (error) {

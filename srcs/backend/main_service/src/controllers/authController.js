@@ -97,7 +97,6 @@ export const logout =  asyncHandler(async (req, res, next) => {
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
     const token = req.params.token;
-    console.log("token = " , token)
     await authService.verifyEmail(token);
     res.redirect(`${env.FRONTEND_URL}`);
 
