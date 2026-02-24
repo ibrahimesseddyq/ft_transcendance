@@ -21,6 +21,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
     try {
       const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
         method: "DELETE",
+        credentials: 'include'
       });
       if (response.ok){
         setJobsArray(jobsArray.filter(job => job.id !== jobId));

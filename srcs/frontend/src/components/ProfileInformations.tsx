@@ -87,6 +87,7 @@ export function ProfileInformations() {
         const response = await fetch(`${BACKEND_URL}/api/profiles/${data.userId}`, {
             method: "POST",
             body: formData,
+            credentials: 'include'
         });
         const result = await response.json();
         // console.log("from ProfileInformations :", result.data);

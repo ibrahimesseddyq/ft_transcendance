@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
 import { Loading } from '@/components/Loading'
+import { SetToken } from '@/components/SetToken'
 
 export const OAuthCallback = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const setUserId = useAuthStore((state) => state.setUserId);
-    const setToken = useAuthStore((state) => state.setToken);
+
 
 
     useEffect(() => {
@@ -17,7 +18,7 @@ export const OAuthCallback = () => {
 
             if (token && userId) {
                 try {
-                    setToken(token);
+                    SetToken(token);
                     setUserId(userId);
                     navigate('/otp', { replace: true });
                 } catch (error) {

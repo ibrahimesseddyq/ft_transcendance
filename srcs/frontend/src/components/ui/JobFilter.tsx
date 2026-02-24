@@ -37,7 +37,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = fetch(`${BACKEND_URL}/api/jobs?${params.toString()}`);
+      const fetchPromise = fetch(`${BACKEND_URL}/api/jobs?${params.toString()}`, {credentials: 'include'});
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 
