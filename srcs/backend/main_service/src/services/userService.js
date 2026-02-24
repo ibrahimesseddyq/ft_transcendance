@@ -7,23 +7,17 @@ import * as fileService from './fileService.js';
 export const createUser = async (userData) => {
     const {password, ...data} = userData;
     const passwordHash = await argon2.hash(password);
-    const user = await userRepository.createUser({passwordHash, ...data})
-    delete user.passwordHash;
-    return user;
+    return await userRepository.createUser({passwordHash, ...data})
 }
 
 export const findUserOrCreate = async (profile) => {
     const email = profile.emails[0].value.toLowerCase().trim();
-    let user = await userRepository.getByEmail(email);
-    if (user) {
-        delete user.passwordHash;
-        delete user.refreshToken;
+    let user = await userRepository.getUserByEmail(email);
+    if (user) 
         return user;
-    }
     const randomPassword = crypto.randomBytes(32).toString('hex');
     const passwordHash = await argon2.hash(randomPassword);
-
-    user = await userRepository.createUser({
+    return await userRepository.createUser({
         email,
         firstName: profile.name.givenName || profile.displayName.split(' ')[0] || 'User',
         lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
@@ -32,22 +26,16 @@ export const findUserOrCreate = async (profile) => {
         role: 'candidate',
         isVerified: true
     });
-
-    delete user.passwordHash;
-    delete user.refreshToken;
-    return user;
 }
 
 export const getUserById = async (userId) => {
     const user = await userRepository.getUserById(userId);
-    return user;
+    if (!user)
+        throw new HttpException(404, 'user not found');
 }
 
 export const getUserByEmail = async (email) => {
-    const user = await userRepository.getByEmail(email);
-    if (!user)
-        return;
-    return user;
+    return await userRepository.getUserByEmail(email);
 }
 
 export const updateUser = async (userId, updateData) => {
@@ -65,9 +53,6 @@ export const updateUser = async (userId, updateData) => {
 }
 
 export const deleteUser = async (userId) => {
-    const user =  await getUserById(userId);
-    if (!user)
-        throw new HttpException(404, "user not found");
     await userRepository.deleteUser(userId);
 }
 
@@ -77,21 +62,27 @@ export const getUsers = async (filters) => {
 
 export const uploadAvatar = async (userId, file) => {
     const user = await userRepository.getUserById(userId);
+    if (!user)
+        throw new HttpException(404, 'user not found');
     const {avatarUrl} =  await fileService.saveAvatar(userId,file);
-    if (avatarUrl !== user.avatarUrl) {
-        await fileService.deleteFile(user.avatarUrl);
-    }
-    const updatedUser = await userRepository.updateUser(userId, {avatarUrl});
-    return updatedUser;
+    const tasks = [userRepository.updateUser(userId, {avatarUrl})];
+    if (avatarUrl !== user.avatarUrl)
+        tasks.push(fileService.deleteFile(user.avatarUrl));
+    await Promise.all(tasks);
+    return tasks[0];
 }
+
+
 export const detletAvatar =  async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
     if (!user.avatarUrl)
         throw new HttpException(400, "avatar not set yet");
-    await fileService.deleteFile(user.avatarUrl);
-    await userRepository.updateUser(userId, {avatarUrl : null});
+    await Promise.all([
+        fileService.deleteFile(user.avatarUrl),
+        userRepository.updateUser(userId, {avatarUrl : null})
+    ])
 }
 
 export const getAvatar = async (userId) => {

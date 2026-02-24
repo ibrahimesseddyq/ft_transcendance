@@ -1,20 +1,50 @@
+import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
 
 export const getUserById = async (userId)=> {
     return await prisma.user.findUnique({
-        where : {id : userId}
+        where : {id : userId},
+          select : {
+            id,
+            email,
+            firstName,
+            lastName,
+            avatarUrl
+        },
+        include : {
+            profile : true
+        }
     })
 }
 
-export const getByEmail = async (email) => {
+export const getUserByEmail = async (email) => {
     return await prisma.user.findUnique({
-        where :{email : email }
+        where :{email : email },
+          select : {
+            id,
+            role,
+            email,
+            firstName,
+            lastName,
+            avatarUrl
+        },
+        include : {
+            profile : true
+        }
     })
 }
+
 
 export const createUser = async (userData) => {
     return await prisma.user.create({
         data : userData,
+        select : {
+            id,
+            email,
+            firstName,
+            lastName,
+            avatarUrl
+        }
     })
 }
 
@@ -23,6 +53,13 @@ export const updateUser = async (userId , updateData) => {
     return await prisma.user.update({
         where : {id : userId},
         data: updateData,
+        select : {
+            id,
+            email,
+            firstName,
+            lastName,
+            avatarUrl
+        }
     })
 }
 
@@ -48,5 +85,4 @@ export const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
         skip,
         orderBy : {createdAt:'desc'}
     })
-
 }

@@ -1,7 +1,7 @@
 import {prisma} from '../../generated/prisma/index.js'
 
 const handlePrismaError = (err, res) => {
-    if (!(err instanceof Prisma.PrismaClientKnownRequestError)) {
+    if (!(err instanceof prisma.PrismaClientKnownRequestError)) {
         return false;
     }
 

@@ -1,6 +1,6 @@
 import env from'../config/env.js';
 import * as authService from'../services/authService.js';
-
+import asyncHandler from '../utils/asyncHandler.js';
 const cookieOptions = {
     httpOnly: true,
     maxAge:7 * 24 * 60 * 60 * 1000,
@@ -8,8 +8,7 @@ const cookieOptions = {
     secure: env.NODE_ENV === "production"
 }
 
-export const login = async (req, res, next) => {
-    try {
+export const login = asyncHandler(async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
 
@@ -37,47 +36,36 @@ export const login = async (req, res, next) => {
                 }
             }
         );
-    }catch(error) {
-        next(error);
-    }
-}
-export const verify2FA = async (req, res, next) =>{
-    try 
-    {
-        const { tempToken, code } = req.body;
-        const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+})
 
-        res.cookie('jwt', refreshToken, cookieOptions)
-        .status(200)
-        .json(
-            {
-                message:'login successful',
-                data: {
-                    user,
-                    accessToken
-                }
+export const verify2FA = asyncHandler(async (req, res, next) =>{
+
+    const { tempToken, code } = req.body;
+    const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+
+    res.cookie('jwt', refreshToken, cookieOptions)
+    .status(200)
+    .json(
+        {
+            message:'login successful',
+            data: {
+                user,
+                accessToken
             }
-        );
-    }catch(error)
-    {
-        next(error);
-    }
-}
-export const register = async (req, res, next) => {
-    try {
-        const user = await authService.register(req.body)
-        res
-        .status(201)
-        .json({
-            message : 'If the email is valid, an account will be created.',
-        });
-    }catch(error) {
-        next(error)
-    }
-}
+        }
+    );
+})
 
-export const refresh =  async (req, res, next) => {
-    try {
+export const register = asyncHandler(async (req, res, next) => {
+    const user = await authService.register(req.body)
+    res
+    .status(201)
+    .json({
+        message : 'If the email is valid, an account will be created.',
+    });
+})
+
+export const refresh =  asyncHandler(async (req, res, next) => {
         const refreshToken = req.cookies.jwt;
         if (!refreshToken) {
             return res
@@ -97,52 +85,29 @@ export const refresh =  async (req, res, next) => {
                 accessToken
             }
         });
-    }catch(error) {
-        next(error);
-    }
-}
+})
 
-export const logout =  async (req, res, next) => {
-    try {
-        const refreshToken = req.cookies.jwt;
-        if (!refreshToken)
-            return res.sendStatus(204);
-        await authService.logout(refreshToken);
-        res.clearCookie('jwt', cookieOptions).sendStatus(204);
-    }catch(error) {
-        res.clearCookie('jwt',cookieOptions).sendStatus(204);
-        next(error);
-    }
-}
+export const logout =  asyncHandler(async (req, res, next) => {
+    const refreshToken = req.cookies.jwt;
+    if (!refreshToken)
+        return res.sendStatus(204);
+    await authService.logout(refreshToken);
+    res.clearCookie('jwt', cookieOptions).sendStatus(204);
+})
 
-const getAuthStatus = (req, res) => {
-    if (req.isAuthenticated()) {
-        res.status(200).json({ loggedIn: true, user: req.user });
-    } else {
-        res.status(401).json({ loggedIn: false });
-    }
-};
+export const verifyEmail = asyncHandler(async (req, res, next) => {
+    const token = req.params.token;
+    console.log("token = " , token)
+    await authService.verifyEmail(token);
+    res.redirect(`${env.FRONTEND_URL}`);
 
-export const verifyEmail = async (req, res, next) => {
-    try {
-        const token = req.params.token;
-        console.log("token = " , token)
-        await authService.verifyEmail(token);
-      res.redirect(`${env.FRONTEND_URL}`);
-    } catch (error) {
-        next(error);
-    }
-};
+})
 
-export const resendVerification = async (req, res, next) => {
-    try {
-        const email = req.body.email;
-        const message = await authService.resendVerification(email);
-        res.status(200).json({ message });
-    } catch (error) {
-        next(error);
-    }
-};  
+export const resendVerification = asyncHandler(async (req, res, next) => {
+    const email = req.body.email;
+    const message = await authService.resendVerification(email);
+    res.status(200).json({ message });
+}) 
 
 
 
