@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Briefcase } from 'lucide-react';
 
 const SkillsCard = () =>{
     const [skills] = useState([

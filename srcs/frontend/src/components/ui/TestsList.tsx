@@ -1,14 +1,8 @@
 import { useState } from 'react'
 import { CopyCheck, Ellipsis } from 'lucide-react';
 
-interface TestProps{
-    id: number;
-    title: string;
-    description:string;
-}
-
 const TestsList = () =>{
-    const [tests, setTests] = useState([
+    const [tests] = useState([
         {id:1, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdghhgdhgdfhjgghftdfghhfhjgghftdfghhg"},
         {id:2, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdfghhgdhgdfhdfghhgdhgdfhjgghftdfghhg"},
         {id:3, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgggghftdfghhgdhftdfghhgdhgdfhjgghftdfghhg"}

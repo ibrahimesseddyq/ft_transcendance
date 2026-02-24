@@ -8,27 +8,27 @@ import { ProfileInformations } from "@/components/ProfileInformations";
 import { Dashboard } from "@/pages/Dashboard"
 import { Profile } from "@/pages/Profile"
 import { Jobs } from "@/components/Jobs"
-import { Condidates } from "@/components/Condidates"
 import { NotFound } from "@/components/NotFound";
 import { useAuthStore } from '@/utils/ZuStand';
 import { Application } from '@/components/Application'
 import { AppAllCards } from '@/components/AppAllCards'
 import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
-import { OTPpage } from '@/components/OTPpage'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 
 export function Main() {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
+  const userId = useAuthStore((state) => state.userId);
   const token = useAuthStore((state) => state.token);
   const profile = useAuthStore((state) => state.profile);
+  const qrVerified = useAuthStore((state) => state.qrVerified);
 
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/qrcode', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   if (!token && !isPublicPage) {
@@ -41,17 +41,11 @@ export function Main() {
     </main>
   );
 
-  if (token && !user) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
-
   if (!token && isPublicPage) {
     return (
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/otp" element={<OTPpage/>} />
-          <Route path="/qrcode" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
@@ -59,8 +53,21 @@ export function Main() {
     );
   }
   
+  console.log("qrVerified : ", qrVerified);
+  console.log("userId : ", userId);
+  if (token && userId && !qrVerified){
+    {console.log("Was here")}
+    return (
+      <FullScreenWrapper>
+        <Routes>
+          <Route path="/otp" element={<QRcode/>} />
+          <Route path="*" element={<Navigate to="/otp" replace />} />
+        </Routes>
+      </FullScreenWrapper>
+    );
+  }
   console.log("has profile : ", hasProfile);
-  if (token && user && !hasProfile) {
+ if (token && user && qrVerified && !hasProfile) {
     return (
       <FullScreenWrapper>
         <Routes>
@@ -79,20 +86,28 @@ export function Main() {
 
       <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
         <main className="w-full ">
-          <Routes> 
-            <Route element={<ProtectedRoute />}/>
+          <Routes>
+            {/* STAFF ROUTES (Admin & Recruiter) */}
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
               <Route path="/Dashboard" element={<Dashboard />} />
-            <Route/>
-            <Route path="/Jobs" element={<Jobs />} />
-            <Route path="/Jobdescription" element={<JobDescription />} />
-            <Route path="/Application/:jobId" element={<Application />} />
-            <Route path="/Condidates" element={<Condidates />} />
-            <Route path="/Profile/:postId" element={<Profile />} />
-            <Route path="/Messages" element={<NotFound />} />
-            <Route path="/Createprofile" element={<Navigate to="/Dashboard" replace />} />
-            <Route path="/AppAllCards" element={<AppAllCards />} />
-            <Route path="/QuizPage" element={<QuizPage />} />
-            <Route path="/" element={<Navigate to="/Dashboard" replace />} />
+              <Route path="/AppAllCards" element={<AppAllCards />} />
+              <Route path="/QuizPage" element={<QuizPage />} />
+            </Route>
+
+            {/* CANDIDATE ROUTES */}
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
+              <Route path="/Jobs" element={<Jobs />} />
+              <Route path="/Jobdescription" element={<JobDescription />} />
+              <Route path="/Application/:jobId" element={<Application />} />
+              <Route path="/Profile/:postId" element={<Profile />} />
+            </Route>
+
+            {/* ROOT REDIRECT */}
+            <Route path="/" element={
+              user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
+            } />
+
+            <Route path="/NotFound" element={<NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

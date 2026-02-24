@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Search, MapPin, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, MapPin } from "lucide-react";
 
 const MOCK_JOBS = [
   { id: 1, title: "Front-End Developer", category: "Engineering", location: "Remote", type: "Full-time" },

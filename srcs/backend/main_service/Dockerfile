@@ -7,12 +7,12 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-
+RUN npm install -g ts-node typescript
 # Copy source code
 COPY . .
-
+RUN npm install -g nodemon
 # Expose port
 EXPOSE 3000
-
 # Start the application
-CMD ["npm", "run", "dev"]
+# Instead of RUN npm run seed at build time...
+CMD ["sh", "-c", "echo $DATABASE_URL && echo 'HIIIIIIIIIII' && npm run seed && npm run dev"]

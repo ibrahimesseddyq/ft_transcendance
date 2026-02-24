@@ -1,10 +1,7 @@
-
-import { User } from "lucide-react";
-import { useState, useEffect } from "react";
-import { MessageSquareText } from 'lucide-react';
+import { useState} from "react";
 
 export function ActiveJobStatus() {
-    const [users, setUsers] = useState([
+    const [users] = useState([
         {id:1, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Back-end', status:'Online'},
         {id:2, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Offline'},
         {id:3, firstName:'abdellatif', lastName:'Elfagrouch', profil:'Front-end', status:'Online'},
