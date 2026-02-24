@@ -5,6 +5,7 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
+import { SetToken } from '@/components/SetToken'
 import { Navigate } from 'react-router-dom';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
@@ -19,8 +20,6 @@ export function QRcode() {
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
-    const token = useAuthStore((state) => state.token);
-    const setToken = useAuthStore((state)=> state.setToken)
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     // console.log("User id : ", userId);
@@ -33,10 +32,10 @@ export function QRcode() {
             const res = await fetch(`${BACKEND_URL}/api/2fa/setup/`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: userId }),
+                credentials: 'include'
             });
             if (res.ok) {
                 const result = await res.json();
@@ -66,13 +65,12 @@ export function QRcode() {
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
-            : { tempToken: token, code: finalOtp };
+            : { code: finalOtp };
         
         try {
             const res = await fetch(`${BACKEND_URL}/${route}`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(obj),
@@ -83,8 +81,8 @@ export function QRcode() {
                 if (newUser.data){
                     // console.log("user data", newUser);
                     setUser(newUser.data.user);
-                    setToken(newUser.data.accessToken);
-                    const check = await ProfileChecker({userId, token, setProfile});
+                    SetToken(newUser.data.accessToken);
+                    const check = await ProfileChecker({userId, setProfile});
                     if (!check)
                         navigate("/Createprofile", { replace: true });
                     else

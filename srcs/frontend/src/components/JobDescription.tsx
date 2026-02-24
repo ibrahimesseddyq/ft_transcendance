@@ -27,6 +27,7 @@ export function JobDescription(){
           "Content-Type": "application/json"
         },
         body: JSON.stringify(item),
+        credentials: 'include'
       });
       
       if (!response.ok)

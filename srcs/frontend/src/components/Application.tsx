@@ -10,7 +10,8 @@ export function Application(){
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/applications`);
+            const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/applications`, 
+                {credentials: 'include'});
             
             if (res.ok) {
               const jobApplications = await res.json();
