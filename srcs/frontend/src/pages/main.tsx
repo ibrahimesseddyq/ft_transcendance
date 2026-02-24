@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
+import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 
 export function Main() {
   const location = useLocation();
@@ -27,7 +28,7 @@ export function Main() {
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback', '/CandidateQuiz'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -82,6 +83,7 @@ export function Main() {
               <Route path="/Jobdescription" element={<JobDescription />} />
               <Route path="/Application/:jobId" element={<Application />} />
               <Route path="/Profile/:postId" element={<Profile />} />
+              <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
             </Route>
 
             {/* ROOT REDIRECT */}
