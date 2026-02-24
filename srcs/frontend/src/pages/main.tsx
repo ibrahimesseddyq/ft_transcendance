@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
+import { Chat } from '@/components/Chat'
 
 export function Main() {
   const location = useLocation();
@@ -100,6 +101,7 @@ export function Main() {
               <Route path="/Jobdescription" element={<JobDescription />} />
               <Route path="/Application/:jobId" element={<Application />} />
               <Route path="/Profile/:postId" element={<Profile />} />
+              <Route path="/chat" element={<Chat />} />
             </Route>
 
             {/* ROOT REDIRECT */}
