@@ -15,4 +15,4 @@ RUN npm install -g nodemon
 EXPOSE 3000
 # Start the application
 # Instead of RUN npm run seed at build time...
-CMD ["sh", "-c", "echo $DATABASE_URL && echo 'HIIIIIIIIIII' && npm run seed && npm run dev"]
+CMD ["sh", "-c", " npm run seed && npm run dev"]
