@@ -2,7 +2,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install && npm install --save-dev @types/js-cookie
+RUN npm install && npm install js-cookie
 COPY . .
 RUN npx vite build
 
