@@ -2,7 +2,7 @@ import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const createUser = asyncHandler(async (req,res,next) => {
-    const user = await userService.createUser(requestAnimationFrame.body);
+    const user = await userService.createUser(req.body);
     res.status(201).json({
         success: true,
         message: 'user created successfully',
