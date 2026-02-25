@@ -6,8 +6,6 @@ const twoFAService = new TwoFAService();
 export const    setup = async (req, res ,next) =>
 {
     try {
-
-        console.log("iam here");
         const data = await twoFAService.setup(req.body.id);
         res.json(data);
             } catch (error) {
