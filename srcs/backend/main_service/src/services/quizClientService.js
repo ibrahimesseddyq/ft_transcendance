@@ -1,4 +1,4 @@
-import quizClient from "../utils/quizClinet";
+import quizClient from "../utils/quizClinet.js";
 
 
 export const getTestById = async (testId) => {

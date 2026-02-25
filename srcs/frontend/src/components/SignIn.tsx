@@ -59,7 +59,6 @@ const Signin = () => {
         setFirstLogin(result?.firstLogin);
         // console.log("userId :", userId, "token :", token);
         if (token && userId) {
-            // console.log("Iam herererererere");
             setUserId(userId);
             navigate("/otp", { replace: true });
             reset();
