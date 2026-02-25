@@ -6,7 +6,7 @@ export const evaluateQuiz = async (test, answers) => {
     let totalScore = 0;
     let maxPossibleScore = 0;
     const result = [];
-    mcqs.array.forEach(mcq => {
+    mcqs.forEach(mcq => {
         maxPossibleScore += mcq.points;
         const userAnswer = answers.find(answer => answer.questionId === mcq.id);
         const correctIds = mcq.choices.filtter(c => c.isCorrect)
