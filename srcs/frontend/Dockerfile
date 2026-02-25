@@ -2,9 +2,9 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install && npm install --save-dev @types/js-cookie
 COPY . .
-RUN npm run build
+RUN npx vite build
 
 # Serve stage
 FROM nginx:alpine
