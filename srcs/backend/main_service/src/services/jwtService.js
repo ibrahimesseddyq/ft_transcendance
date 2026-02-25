@@ -27,6 +27,7 @@ export const generateAuthTokens =  (payload) => {
 }
 
 export const verify = async (token, secret) => {
+    console.log('*****************token is :', token)
     return new Promise((resolve,reject) => {
         jwt.verify(token,secret, (err, decoded) => {
             if(err) {

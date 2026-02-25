@@ -69,7 +69,7 @@ export function QRcode() {
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
             : { code: finalOtp };
-        
+        console.log('token is:', token)
         try {
             const res = await fetch(`${BACKEND_URL}/${route}`, {
                 method: 'POST',
