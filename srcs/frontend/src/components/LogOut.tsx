@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
+import Cookies from 'js-cookie';
 
 interface LogoutProps {
   className?: string;
@@ -11,6 +12,7 @@ export function Logout({ className }: LogoutProps) {
 
   const handleLogout = () => {
     clearAuth();
+    Cookies.remove('accessToken', { path: '/' });
     navigate('/Login', { replace: true });
   };
 
