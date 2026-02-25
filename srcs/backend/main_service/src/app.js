@@ -44,8 +44,6 @@ app.use(session({
     httpOnly: true,
     secure: false
   }}));
-  // Initialize Passport
-  console.log('Iam here')
 
 app.use(passport.initialize());
 app.use(passport.session());

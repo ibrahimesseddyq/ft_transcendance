@@ -1,6 +1,6 @@
 import axios from 'axios';
 import env from '../config/env.js';
-import { HttpException } from '.httpExceptions.js';
+import { HttpException } from './httpExceptions.js';
 
 const quizClient = axios.create({
     baseURL: env.QUIZ_SERVICE_URL,
