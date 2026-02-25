@@ -52,31 +52,32 @@ export function Profile() {
     const SingleLine = ({title, value}: any) => {
       return (
         <div className='flex gap-10 p-2'>
-          <h1 className='text-black font-medium text-sm'>{title}:</h1>
+          <h1 className='text-black dark:text-white font-medium text-sm'>{title}:</h1>
           {value 
             ? 
-              <p className='text-gray-500 font-medium text-sm'>{value}</p>
+              <p className='text-gray-500 dark:text-gray-400 font-medium text-sm'>{value}</p>
             :
-              <p className='text-gray-500 font-medium text-sm'>Not set</p>}
+              <p className='text-gray-500 dark:text-gray-600 font-medium text-sm italic'>Not set</p>}
         </div>
       );
     }
+
     return (
-      <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2 ">
+      <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="pramary-text text-xl flex items-center gap-2">
+            <h2 className="pramary-text text-xl font-bold flex items-center gap-2">
               Personal details
             </h2>
           </div>
-          <div className='flex flex-col mt-5 divide-y-2 divide-gray-200 '>
-            <SingleLine title="firstName" value={info.firstName}/>
-            <SingleLine title="lastName" value={info.lastName}/>
-            <SingleLine title="email" value={info.email}/>
-            <SingleLine title="phoneNumber" value={info.phone}/>
-            <SingleLine title="currentTitle" value={info.currentTitle}/>
-            <SingleLine title="linkedinUrl" value={info.linkedinUrl}/>
-            <SingleLine title="portfolioUrl" value={info.portfolioUrl}/>
-            <SingleLine title="currentCompany" value={info.currentCompany}/>
+          <div className='flex flex-col mt-5 divide-y-2 divide-gray-200 dark:divide-gray-800'>
+            <SingleLine title="First Name" value={info.firstName}/>
+            <SingleLine title="Last Name" value={info.lastName}/>
+            <SingleLine title="Email" value={info.email}/>
+            <SingleLine title="Phone Number" value={info.phone}/>
+            <SingleLine title="Current Title" value={info.currentTitle}/>
+            <SingleLine title="LinkedIn URL" value={info.linkedinUrl}/>
+            <SingleLine title="Portfolio URL" value={info.portfolioUrl}/>
+            <SingleLine title="Current Company" value={info.currentCompany}/>
           </div>
       </div>
     );
@@ -87,23 +88,30 @@ export function Profile() {
       <div className='w-full mt-10'>
         <ProfileCover profile={profile} user={user}/>
       </div>
-      <div className='w-full  grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <div className='col-span-1 lg:col-span-3  p-2 bg-white border rounded-lg'>
+
+      <div className='w-full grid grid-cols-1 lg:grid-cols-5 gap-4'>
+        <div className='col-span-1 lg:col-span-3 p-2 bg-white dark:bg-slate-900 border 
+          border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           <UserInfoCard profile={profile} user={user}/>
         </div>
-        <div className='col-span-1 lg:col-span-2  w-full p-2 bg-white border rounded-lg'>
+        <div className='col-span-1 lg:col-span-2 w-full p-2 bg-white dark:bg-slate-900 border
+           border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           <SkillsCard />
         </div>
       </div>
+
       <div className='w-full grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <div className='col-span-1 lg:col-span-3 p-2 bg-white border rounded-lg'>
+        <div className='col-span-1 lg:col-span-3 p-2 bg-white dark:bg-slate-900 border 
+          border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           <CareerCard />
         </div>
-        <div className='col-span-1 lg:col-span-2 p-2  bg-white border rounded-lg h-full'>
+        <div className='col-span-1 lg:col-span-2 p-2 bg-white dark:bg-slate-900 border 
+          border-gray-200 dark:border-gray-800 rounded-lg h-full transition-colors'>
           <EducationCard/>
         </div>
       </div>
-      <div className='w-full items-center'>
+
+      <div className='w-full items-center mb-10'>
         <Logout />
       </div>
     </div>
