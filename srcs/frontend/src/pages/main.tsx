@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
+import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 
 export function Main() {
   const location = useLocation();
@@ -27,11 +28,12 @@ export function Main() {
 
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback', '/QuizPage'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
-    <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] md:h-screen md:overflow-hidden pt-4 px-4">
+    <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] 
+      dark:bg-[#0f172a] md:h-screen md:overflow-hidden pt-4 px-4 transition-colors duration-300">
       {children}
     </main>
   );
@@ -40,6 +42,7 @@ export function Main() {
     return (
       <FullScreenWrapper>
         <Routes>
+          <Route path="/QuizPage" element={<QuizPage />} />
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
@@ -61,7 +64,8 @@ export function Main() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#F0F3FA] md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
+    <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a] 
+      md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
       <div className="h-20 w-full sticky top-2 z-50">
         <Header />
       </div>
@@ -82,6 +86,7 @@ export function Main() {
               <Route path="/Jobdescription" element={<JobDescription />} />
               <Route path="/Application/:jobId" element={<Application />} />
               <Route path="/Profile/:postId" element={<Profile />} />
+              <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
             </Route>
 
             {/* ROOT REDIRECT */}
