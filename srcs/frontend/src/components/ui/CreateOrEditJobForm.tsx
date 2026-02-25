@@ -109,16 +109,23 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
     reset();
   };
 
-  const selectClass = "h-11 w-full text-sm text-white border bg-[#1d273e] border-[#405673] \
+  const selectClass = "h-11 w-full text-sm text-black dark:text-white border \
+    bg-gray-50 dark:bg-[#1d273e] border-gray-300 dark:border-[#405673] \
     outline-none focus:border-[#10B77F] transition-colors rounded-md px-3 cursor-pointer appearance-none";
 
+  const inputClass = "h-11 w-full text-sm text-black dark:text-white border \
+    bg-gray-50 dark:bg-[#1d273e] border-gray-300 dark:border-[#405673] \
+    outline-none focus:border-[#10B77F] transition-colors rounded-md px-3";
+
   return (
-    <div className="h-full w-full flex flex-col items-center">
-      <div className='border rounded-xl px-5 py-2 border-[#1e2e52] bg-[#121b31] mb-6'>
-        <h1 className='text-white text-lg font-bold'>Post New Job</h1>
+    <div className="h-full w-full flex flex-col items-center transition-colors duration-300">
+      {/* Header Badge */}
+      <div className='border rounded-xl px-5 py-2 border-gray-200 dark:border-[#1e2e52] bg-white dark:bg-[#121b31] mb-6 shadow-sm'>
+        <h1 className='text-black dark:text-white text-lg font-bold'>Post New Job</h1>
       </div>
 
-      <div className='h-auto w-full max-w-[500px] bg-[#121b31]/50 p-6 rounded-2xl border border-[#1e2e52] max-h-[85vh] overflow-y-auto custom-scrollbar shadow-2xl'>
+      {/* Form Container */}
+      <div className='h-auto w-full max-w-[500px] bg-white dark:bg-[#121b31]/50 p-6 rounded-2xl border border-gray-200 dark:border-[#1e2e52] max-h-[85vh] overflow-y-auto custom-scrollbar shadow-2xl'>
         <form onSubmit={handleSubmit(JobSubmit)} className='flex flex-col gap-4 w-full'>
           
           {/* Title & Department */}
@@ -142,12 +149,11 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
                 register={register} error={errors.location?.message} placeholder="Location (City, Country)" />
                 <div className='flex-1 flex items-center gap-2 px-2'>
                   <input type="checkbox" {...register("isRemote")} id="isRemote" className="accent-[#10B77F] h-4 w-4" />
-                  <label htmlFor="isRemote" className="text-white text-sm cursor-pointer">Remote</label>
+                  <label htmlFor="isRemote" className="text-black dark:text-white text-sm cursor-pointer">Remote</label>
               </div>
           </div>
 
           {/* Salary Min, Max & Currency */}
-
           <div className='flex flex-col sm:flex-row gap-2'>
             <div className='flex-1'>
               <input type='number' {...register("salaryMin", { valueAsNumber: true })} placeholder="Min Salary" className={inputClass} />
@@ -186,57 +192,30 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
             </div>
           </div>
 
-          {/* Skills / Tags Section */}
-          <div className='flex-1'>
-            <textarea 
-              {...register("skills")} 
-              placeholder="e.g. UI, UX, Figma, React (separate with commas)" 
-              className={`${inputClass} h-auto py-2 resize-none focus:border-[#00adef]`}
-              onChange={(e) => {
-                e.target.value = e.target.value.toLowerCase();
-                register("skills").onChange(e); 
-              }}
-            />
-            {errors.skills && (<p className="text-red-400 text-[10px] italic">{errors.skills.message}</p>)}
-          </div>
-
-          {/* Requirements */}
-          <div className='flex-1'>
-            <textarea {...register("requirements")}
-              placeholder="Requirements (one per line or comma separated)" rows={2} 
-              className={`${inputClass} h-auto py-2 resize-none`} />
-          </div>
-
           {/* Description */}
           <div className='flex-1'>
             <textarea {...register("description")}
               placeholder="Job Description" rows={4}
-              className="w-full text-sm text-white outline-none p-3 border border-[#405673] 
-                rounded-md bg-transparent focus:border-[#10B77F] resize-none oveflow-auto custom-scrollbar" />
+              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
             {errors.description && <p className="mt-1 text-red-500 text-[10px]">{errors.description.message}</p>}
           </div>
 
+          {/* Action Buttons */}
           <div className="flex gap-3 mt-2">
             <button type="button" onClick={() => setIsFormOpen(false)} 
-              className="h-11 flex-1 text-white border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors">
+              className="h-11 flex-1 text-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               Cancel
             </button>
-            {jobItem ? 
-              <button type="submit"
-                className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
-                Save
-              </button>
-               : 
-              <button type="submit" 
-                className="h-11 flex-1 text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors">
-                Create Job
-              </button>
-            }
+            <button type="submit"
+                className="h-11 flex-1 text-white dark:text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors shadow-lg shadow-[#10B77F]/20">
+                {jobItem ? "Save Changes" : "Create Job"}
+            </button>
           </div>
         </form>
       </div>
     </div>
-  );
+);
 }
 
 const InputField = ({name, register, error, placeholder, type }: InputFieldProps) => {
