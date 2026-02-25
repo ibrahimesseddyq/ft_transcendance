@@ -72,13 +72,9 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
   const normalizedValue = value.toLowerCase();
 
   setFilters(prev => {
-    // Access the current array for the specific key
     const currentValues = prev[key]; 
-    
-    // Check if the normalized value is already there
     const isAlreadySelected = currentValues.includes(normalizedValue);
-
-    // If it exists, remove otherwise, add
+  
     const updatedValues = isAlreadySelected
       ? currentValues.filter(v => v !== normalizedValue)
       : [...currentValues, normalizedValue];
