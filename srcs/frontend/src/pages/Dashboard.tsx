@@ -31,51 +31,62 @@ const TotalStats = [
   },
 ]
 
-export function Dashboard(){
-   const TotalStatistics = () =>{
+export function Dashboard() {
+  const TotalStatistics = () => {
     return (
       <div className="flex flex-col md:flex-row gap-2 items-center h-full w-full">
-          {TotalStats.map((item) =>{
-            return(
-              <div key={item.id} className="w-full p-4  m-auto flex flex-col justify-between flex-1
-                  overflow-hidden text-black bg-white border hover:border-[#1194b1] rounded-xl">
-                <p className="text-xl font-bold">{item.title}</p>
-                <p className="text-md">{item.number}</p>
-                <p className="text-xs text-[#1194b1]">{item.day}</p>
-              </div>
-            );
-          })}
+        {TotalStats.map((item) => {
+          return (
+            <div 
+              key={item.id} 
+              className="w-full p-4 m-auto flex flex-col justify-between flex-1 overflow-hidden 
+                         /* DARK MODE CLASSES BELOW */
+                         bg-white dark:bg-slate-800 
+                         text-black dark:text-white 
+                         border border-gray-200 dark:border-slate-700 
+                         hover:border-[#1194b1] dark:hover:border-[#1194b1] 
+                         rounded-xl transition-colors duration-200"
+            >
+              <p className="text-xl font-bold">{item.title}</p>
+              <p className="text-md opacity-80">{item.number}</p>
+              <p className="text-xs text-[#1194b1] font-semibold">{item.day}</p>
+            </div>
+          );
+        })}
       </div>
     );
   }
-  return (
-      <div className="w-full h-full p-2 flex flex-col gap-4 transition-all  overflow-y-auto custom-scrollba">
-          <ToastContainer />
-            <div className="w-full h-fit p-2 place-content-center">
-                <TotalStatistics/>
-            </div>
-          {/* Left Column - Main Content */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="h-[500px] w-full items-center">
-              <OverviewStatistics /> 
-            </div>
-            <div className="h-[500px] w-full items-center">
-              <ActiveJobStatus />
-            </div>
-          </div>
-  
-          
-          {/* Right Column - Sidebar Content */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="h-[500px] w-full rounded-lg ">
-              <RecentActivity />
-            </div>
-            
-            <div className="h-[500px] w-full rounded-lg">
-              <SourceOfHire />
-            </div>
-          </div>
 
-      </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+  return (
+    <div className="w-full h-full p-2 flex flex-col gap-4 overflow-y-auto custom-scrollbar 
+                    bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+      
+      <ToastContainer />
+
+      <div className="w-full h-fit p-2 place-content-center">
+        <TotalStatistics />
+      </div>
+
+      {/* Chart Sections */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="h-[500px] w-full items-center bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700">
+          <OverviewStatistics /> 
+        </div>
+        <div className="h-[500px] w-full items-center bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700">
+          <ActiveJobStatus />
+        </div>
+      </div>
+
+      {/* Activity Sections */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="h-[500px] w-full rounded-xl bg-white dark:bg-slate-800 border dark:border-slate-700 ">
+          <RecentActivity />
+        </div>
+        
+        <div className="h-[500px] w-full rounded-xl bg-white dark:bg-slate-800 border dark:border-slate-700">
+          <SourceOfHire />
+        </div>
+      </div>
+    </div>
   );
-};
+}
