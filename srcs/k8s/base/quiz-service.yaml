@@ -35,7 +35,7 @@ spec:
             - -c
             - |
               # Source Vault secrets
-              source /vault/secrets/database
+              . /vault/secrets/database
               # Start the application
               npm run dev
 ---
