@@ -1,6 +1,7 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
+import { useSecureFetch } from '@/utils/SecureFetch'
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -12,16 +13,15 @@ interface props {
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
   const navigate = useNavigate();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const secureFetch = useSecureFetch();
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
-        method: "DELETE",
-        credentials: 'include'
+      const response = await secureFetch(`/api/jobs/${jobId}`, {
+          method: 'DELETE',
       });
       if (response.ok){
         setJobsArray(jobsArray.filter(job => job.id !== jobId));

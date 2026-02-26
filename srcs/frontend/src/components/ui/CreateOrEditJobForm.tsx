@@ -3,6 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
+import { useSecureFetch } from '@/utils/SecureFetch'
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
@@ -59,19 +60,19 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
   });
 
   const JobSubmit = async (data: JobFormData) => {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const secureFetch = useSecureFetch();
+
     if (jobItem){
       // console.log("job id is : ",  jobItem.id);
       try {
-        const response = await fetch(`${BACKEND_URL}/api/jobs/${jobItem.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-          credentials: 'include'
+        const response = await secureFetch(`/api/jobs/${jobItem.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data)
         });
         
         if (!response.ok)
           throw new Error(`Server error: ${response.status}`);
+
         const result = await response.json();
         const savedJob = result.data;
         Notification("Job updated successfully!", "success");
@@ -85,17 +86,14 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await fetch(`${BACKEND_URL}/api/jobs`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json" 
-          },
-          body: JSON.stringify(data),
-          credentials: 'include'
+        const response = await secureFetch(`/api/jobs`, {
+            method: 'POST',
+            body: JSON.stringify(data)
         });
         
         if (!response.ok)
           throw new Error(`Server error: ${response.status}`);
+
         const result = await response.json();
         const savedJob = result.data;
         setJobsArray((prev:any) => [savedJob, ...prev]);

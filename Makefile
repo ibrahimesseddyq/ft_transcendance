@@ -37,8 +37,8 @@ dev: clean-dev down-dev
 	$(DEV_COMPOSE) up -d
 	
 	# (cd srcs/frontend && npm install && npm run dev ) 
-# 	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
-# 	(cd srcs/frontend && npm install && npm run dev ) 
+	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
+	(cd srcs/frontend && npm install && npm run dev ) 
 
 re: clean up
 
