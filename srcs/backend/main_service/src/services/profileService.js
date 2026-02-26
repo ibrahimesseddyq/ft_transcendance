@@ -11,7 +11,7 @@ export const createProfile = async  (userId , profileData) => {
         uploadTasks.push(fileService.saveAvatar(userId, profileData.files.avatar[0]))     
     if (profileData.files?.resume?.[0])
         uploadTasks.push(fileService.saveResume(userId, profileData.files.resume[0]))
-    const [avatarUrl,resumeUrl] = await Promise.all(tasks)
+    const [{avatarUrl},{resumeUrl}] = await Promise.all(tasks)
     tasks.push(profileRepository.createProfile({
         ...createData,
         userId,
@@ -19,7 +19,7 @@ export const createProfile = async  (userId , profileData) => {
     }))
     if (avatarUrl)
         tasks.push(userService.updateUser(userId, {avatarUrl}))
-    await Promise.all(tasks2);
+    await Promise.all(tasks);
     return tasks[0];
 }
 

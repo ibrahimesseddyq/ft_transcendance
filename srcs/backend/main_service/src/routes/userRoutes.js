@@ -17,5 +17,5 @@ router.get('/',userController.listUsers)
   .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
   .get('/avatar/:id',userController.getAvatar)
   .delete('/avatar/:id',userController.deleteAvatar)
-
+  .get('/me',userController.checkAuth);
 export default router;

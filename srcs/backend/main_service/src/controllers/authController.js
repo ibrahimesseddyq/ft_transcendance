@@ -1,38 +1,44 @@
 import env from'../config/env.js';
 import * as authService from'../services/authService.js';
 import asyncHandler from '../utils/asyncHandler.js';
-const cookieOptions = {
+
+const accessTokenOptions = {
     httpOnly: true,
     maxAge:7 * 24 * 60 * 60 * 1000,
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production"
 }
+const refreshTokenOptions = {
+    httpOnly: true,
+    maxAge:7 * 24 * 60 * 60 * 1000,
+    sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
+    secure: env.NODE_ENV === "production",
+    path: '/api/auth/refresh'
+}
+
 
 export const login = asyncHandler(async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
-
-        const {userId, accessToken, refreshToken, firstLogin} = result;
         if (result.require2FA)
         {
             return res.status(200).json({
                 message: "2FA required",
                 require2FA: true,
                 tempToken: result.tempToken,
-                userId: userId,
-                firstLogin: firstLogin
+                userId: result.user.id,
+                firstLogin: result.firstLogin
             });
         }
-        // Normal flow
         res
-        .cookie('jwt', refreshToken ,cookieOptions)
+        .cookie('accessToken',result.accessToken,accessTokenOptions)
+        .cookie('refreshToken', result.refreshToken ,refreshTokenOptions)
         .status(200)
         .json({
                 success: true,
                 message: 'login successful',
                 data:{
-                    user,
-                    accessToken
+                    user: result.user,
                 }
             }
         );
@@ -42,22 +48,21 @@ export const verify2FA = asyncHandler(async (req, res, next) =>{
 
     const { tempToken, code } = req.body;
     const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
-
-    res.cookie('jwt', refreshToken, cookieOptions)
+    res
+    .cookie('accessToken',accessToken,accessTokenOptions)
+    .cookie('refreshToken', refreshToken ,refreshTokenOptions)
     .status(200)
     .json(
         {
             message:'login successful',
             data: {
                 user,
-                accessToken
             }
         }
     );
 })
 
 export const register = asyncHandler(async (req, res, next) => {
-    console.log('-------------------------Iam Hereeee-------------------')
     const user = await authService.register(req.body)
     res
     .status(201)
@@ -67,7 +72,7 @@ export const register = asyncHandler(async (req, res, next) => {
 })
 
 export const refresh =  asyncHandler(async (req, res, next) => {
-        const refreshToken = req.cookies.jwt;
+        const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
             return res
             .status(401)
@@ -78,22 +83,22 @@ export const refresh =  asyncHandler(async (req, res, next) => {
         const {user, accessToken} = await  authService.refresh(refreshToken);
         res
         .status(200)
+        .cookie('accessToken',accessToken,accessTokenOptions)
         .json({
             success: true,
             message: 'token refreshed successfully',
             data:{
                 user,
-                accessToken
             }
         });
 })
 
 export const logout =  asyncHandler(async (req, res, next) => {
-    const refreshToken = req.cookies.jwt;
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken)
         return res.sendStatus(204);
     await authService.logout(refreshToken);
-    res.clearCookie('jwt', cookieOptions).sendStatus(204);
+    res.clearCookie('accessToken', accessTokenOptions).sendStatus(204);
 })
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
