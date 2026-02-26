@@ -25,6 +25,8 @@ vault write auth/kubernetes/config \
   kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
   token_reviewer_jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
 
+
+
 echo "Creating Policies..."
 vault policy write main-service - << 'EOF'
 path "secret/data/main-service/*" { capabilities = [ "read", "list" ] }
@@ -41,9 +43,33 @@ EOF
 vault policy write ai-service - << 'EOF'
 path "secret/data/ai-service/*" { capabilities = [ "read", "list" ] }
 EOF
+#service account
+vault write auth/kubernetes/role/main-service \
+    bound_service_account_names=app-service-account \
+    bound_service_account_namespaces=hirefy \
+    policies=main-service \
+    ttl=24h
+
+# vault write auth/kubernetes/role/quiz-service \
+#     bound_service_account_names=app-service-account \
+#     bound_service_account_namespaces=hirefy \
+#     policies=quiz-service \
+#     ttl=24h
+
+# vault write auth/kubernetes/role/ai-service \
+#     bound_service_account_names=app-service-account \
+#     bound_service_account_namespaces=hirefy \
+#     policies=ai-service \
+#     ttl=24h
+
+vault write auth/kubernetes/role/mariadb \
+    bound_service_account_names=app-service-account \
+    bound_service_account_namespaces=hirefy \
+    policies=mariadb \
+    ttl=24h
 
 echo "Storing secrets in vault..."
-vault kv put secret/mariadb/credentials \
+vault kv put secret/mariadb/config \
   MYSQL_ROOT_PASSWORD="change-me" \
   MYSQL_DATABASE="hirefy" \
   MYSQL_USER="hirefy" \
