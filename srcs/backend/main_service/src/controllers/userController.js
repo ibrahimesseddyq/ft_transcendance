@@ -2,7 +2,7 @@ import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const createUser = asyncHandler(async (req,res,next) => {
-    const user = await userService.createUser(requestAnimationFrame.body);
+    const user = await userService.createUser(req.body);
     res.status(201).json({
         success: true,
         message: 'user created successfully',
@@ -61,5 +61,12 @@ export const getAvatar = asyncHandler(async (req, res, next) => {
     .json({
         success: true,
         data: avatar
+    })
+})
+
+export const checkAuth = asyncHandler(async (req,res,next) => {
+    res.status(200)
+    .json({
+        success: true,
     })
 })
