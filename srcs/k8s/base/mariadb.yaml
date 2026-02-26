@@ -43,10 +43,10 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
-          volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: mariadb-pvc
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mariadb-pvc
 ---
 apiVersion: v1
 kind: Service
