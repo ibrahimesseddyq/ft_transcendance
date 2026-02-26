@@ -93,7 +93,7 @@ kube-deploy:
 
 
 	echo "Initializing Vault..."
-	POD=$$(kubectl get pod -n hirefy -l app.kubenertes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
+	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp init-vault.sh hirefy/$$POD:/tmp/init-vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init-vault.sh
 
