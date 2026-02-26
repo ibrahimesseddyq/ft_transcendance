@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
+import { useSecureFetch } from '@/utils/SecureFetch'
 
 interface JobsArrayProps {
   totalJobs: any,
@@ -10,7 +11,7 @@ interface JobsArrayProps {
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const secureFetch = useSecureFetch();
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -37,7 +38,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = fetch(`${BACKEND_URL}/api/jobs?${params.toString()}`, {credentials: 'include'});
+      const fetchPromise = await secureFetch(`/api/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 

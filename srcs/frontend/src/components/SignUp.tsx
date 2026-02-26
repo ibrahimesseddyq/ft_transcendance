@@ -3,9 +3,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
+import { useSecureFetch} from '@/utils/SecureFetch'
 
 
 const Signup = () => {
+    const secureFetch = useSecureFetch();
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const {
         register,
@@ -22,13 +24,9 @@ const Signup = () => {
 
     const SignUpSubmit = async (data: any) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-                credentials: 'include'
+            const response = await secureFetch('/api/auth/register', {
+                method: 'POST',
+                body: JSON.stringify(data)
             });
 
             if (!response.ok) {
