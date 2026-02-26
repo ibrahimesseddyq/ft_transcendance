@@ -96,7 +96,7 @@ kube-deploy:
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
-
+	kubectl apply -f srcs/k8s/base/serviceaccount.yaml
 	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
 	kubectl apply -f srcs/k8s/base/mariadb.yaml
 	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
@@ -105,7 +105,6 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/base/quiz-service.yaml
 	kubectl apply -f srcs/k8s/base/ai-service.yaml
 	kubectl apply -f srcs/k8s/base/gateway.yaml
-	kubectl apply -f srcs/k8s/base/serviceaccount.yaml
 	kubectl get pods -n hirefy
 
 kube: kube-build kube-load kube-deploy kube-forward
