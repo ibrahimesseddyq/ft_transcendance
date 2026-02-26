@@ -20,7 +20,7 @@ import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 
 export function Main() {
-  localStorage.theme = 'ligth';
+  localStorage.theme = 'dark';
   const location = useLocation();
   const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;
