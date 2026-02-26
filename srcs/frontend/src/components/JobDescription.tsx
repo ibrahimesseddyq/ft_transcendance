@@ -3,14 +3,15 @@ import Notification from "@/utils/TostifyNotification"
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/utils/ZuStand';
 import {ToastContainer} from "react-toastify";
+import { useSecureFetch } from '@/utils/SecureFetch'
 
 export function JobDescription(){
+  const secureFetch = useSecureFetch();
   const location = useLocation();
   const navigate = useNavigate();
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
   const user = useAuthStore((state) => state.user);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   const submitData = {
@@ -21,17 +22,14 @@ export function JobDescription(){
 
   const ApplySubmit = async (item: any) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/applications`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(item),
-        credentials: 'include'
+      const response = await secureFetch(`/api/applications`, {
+          method: 'POST',
+          body: JSON.stringify(item)
       });
       
       if (!response.ok)
         throw new Error(`Server error: ${response.status}`);
+
       Notification("Job Applyed successfully!", "success");
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {
