@@ -76,35 +76,35 @@ kube-load: kube-build
 	fi
 
 kube-deploy:
+	# 1. Namespace first
 	kubectl apply -f srcs/k8s/base/namespace.yaml
-# 	kubectl apply -f srcs/k8s/base/vault.yaml
+	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm repo update
-
-
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
-		-f srcs/k8s/base/vault-values.yaml 
-	
-
+		-f srcs/k8s/base/vault-values.yaml
+	# 3. Wait for Vault pod to be ready
 	kubectl wait --for=condition=ready pod \
-	 -l app.kubernetes.io/name=vault \
-	  -n hirefy --timeout=300s
-
-
+		-l app.kubernetes.io/name=vault \
+		-n hirefy --timeout=300s
+	# 4. Seed secrets into Vault
 	echo "Initializing Vault..."
-	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
+	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
+	# 5. Service account (required before any Vault-injected pod)
 	kubectl apply -f srcs/k8s/base/serviceaccount.yaml
+	# 6. Database layer — wait for it to be ready before apps start
 	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
 	kubectl apply -f srcs/k8s/base/mariadb.yaml
 	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
-
+	# 7. Application services
 	kubectl apply -f srcs/k8s/base/main-service.yaml
 	kubectl apply -f srcs/k8s/base/quiz-service.yaml
 	kubectl apply -f srcs/k8s/base/ai-service.yaml
 	kubectl apply -f srcs/k8s/base/gateway.yaml
+	kubectl apply -f srcs/k8s/base/frontend.yaml
 	kubectl get pods -n hirefy
 
 kube: kube-build kube-load kube-deploy kube-forward

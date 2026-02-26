@@ -38,7 +38,7 @@ spec:
             - |
               . /vault/secrets/config
               # Start the application
-              python app.py
+              python3 app.py
 ---
 apiVersion: v1
 kind: Service
