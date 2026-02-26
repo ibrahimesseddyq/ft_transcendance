@@ -75,9 +75,9 @@ vault kv put secret/mariadb/config \
   MYSQL_USER="hirefy" \
   MYSQL_PASSWORD="change-me-too"
 
-kubectl exec -n hirefy vault-0 -- vault kv put secret/quiz-service/database \
+vault kv put secret/quiz-service/database \
   DATABASE_URL="mysql://hirefy:change-me-too@mariadb:3306/hirefy"
-  
+
 vault kv put secret/main-service/oauth \
   GOOGLE_CLIENT_ID="your-id" \
   GOOGLE_CLIENT_SECRET="your-secret" \
