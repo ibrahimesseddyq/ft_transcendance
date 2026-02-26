@@ -63,6 +63,7 @@ export const getAvatar = asyncHandler(async (req, res, next) => {
         data: avatar
     })
 })
+
 export const checkAuth = asyncHandler(async (req,res,next) => {
     res.status(200)
     .json({

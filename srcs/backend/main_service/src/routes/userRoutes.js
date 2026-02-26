@@ -18,5 +18,4 @@ router.get('/',userController.listUsers)
   .get('/avatar/:id',userController.getAvatar)
   .delete('/avatar/:id',userController.deleteAvatar)
   .get('/me',userController.checkAuth);
-
 export default router;
