@@ -65,7 +65,7 @@ kube-build:
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service
-# 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service
+	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service
 	docker build -t frontend:dev   $(ROOT)srcs/frontend
 
 kube-load: kube-build
