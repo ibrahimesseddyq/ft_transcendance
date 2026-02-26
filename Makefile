@@ -94,7 +94,7 @@ kube-deploy:
 
 	echo "Initializing Vault..."
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
-	kubectl cp init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
+	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
 
 	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
@@ -124,11 +124,11 @@ kube-down:
 # ---------- Vault helpers ----------
 vault-init:
 	echo "=== Initializing Vault Secrets ==="
-	chmod +x init_vault.sh
+	chmod +x srcs/init_vault.sh
 	kubectl port-forward -n hirefy svc/vault 8200:8200 &
 	PF_PID=$$!
 	sleep 5
-	./init_vault.sh
+	./srcs/init_vault.sh
 	kill $$PF_PID || true
 
 vault-ui:
