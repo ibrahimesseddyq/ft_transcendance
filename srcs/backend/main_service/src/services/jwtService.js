@@ -18,11 +18,9 @@ export const verifyTempToken = (payload) => {
 };
 export const generateAuthTokens =  (payload) => {
     const accessToken = sign(payload,accessTokenSecret,{
-            expiresIn : accessTokenExpiry
-        })
+        expiresIn : accessTokenExpiry})
     const refreshToken = sign(payload,refreshTokenSecret,{
-            expiresIn: refreshTokenExpiry
-        }) 
+        expiresIn: refreshTokenExpiry }) 
     return {accessToken , refreshToken};  
 }
 
@@ -49,7 +47,7 @@ export const verifyAccessToken = (token) => {
 }
 
 export const verifyRefreshToken = (token) => {
-        return verify(token , refreshTokenSecret);
+    return verify(token , refreshTokenSecret);
 }
 
 export const sign = (payload , secret , options = {}) =>{
