@@ -29,8 +29,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              # Source Vault secrets
-              source /vault/secrets/config
+              . /vault/secrets/config
               # Start the application
               python app.py
 ---

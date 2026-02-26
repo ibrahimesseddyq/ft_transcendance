@@ -50,17 +50,17 @@ vault write auth/kubernetes/role/main-service \
     policies=main-service \
     ttl=24h
 
-# vault write auth/kubernetes/role/quiz-service \
-#     bound_service_account_names=app-service-account \
-#     bound_service_account_namespaces=hirefy \
-#     policies=quiz-service \
-#     ttl=24h
+vault write auth/kubernetes/role/quiz-service \
+    bound_service_account_names=app-service-account \
+    bound_service_account_namespaces=hirefy \
+    policies=quiz-service \
+    ttl=24h
 
-# vault write auth/kubernetes/role/ai-service \
-#     bound_service_account_names=app-service-account \
-#     bound_service_account_namespaces=hirefy \
-#     policies=ai-service \
-#     ttl=24h
+vault write auth/kubernetes/role/ai-service \
+    bound_service_account_names=app-service-account \
+    bound_service_account_namespaces=hirefy \
+    policies=ai-service \
+    ttl=24h
 
 vault write auth/kubernetes/role/mariadb \
     bound_service_account_names=app-service-account \

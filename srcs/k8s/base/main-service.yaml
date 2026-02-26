@@ -44,9 +44,9 @@ spec:
           - /bin/sh
           - -c
           - |
-            source /vault/secrets/database
-            source /vault/secrets/jwt
-            source /vault/secrets/oauth
+            . /vault/secrets/database
+            . /vault/secrets/jwt
+            . /vault/secrets/oauth
             exec node /app/server.js
           ports:
             - name: http
@@ -66,7 +66,7 @@ spec:
                 sleep 2
               done
               # Source the secrets and run Prisma
-              source /vault/secrets/database
+              . /vault/secrets/database
               npx prisma db push
               # npx prisma studio
  
