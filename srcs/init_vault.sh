@@ -75,9 +75,19 @@ vault kv put secret/mariadb/config \
   MYSQL_USER="hirefy" \
   MYSQL_PASSWORD="change-me-too"
 
+vault kv put secret/main-service/oauth \
+  GOOGLE_CLIENT_ID="your-id" \
+  GOOGLE_CLIENT_SECRET="your-secret" \
+  GOOGLE_CALLBACK_URL="your-url"
+
 vault kv put secret/main-service/database \
   DATABASE_URL="mysql://hirefy:change-me-too@mariadb:3306/hirefy"
+echo "Storing AI service secrets..."
 
+vault kv put secret/ai-service/config \
+  AI_MODEL_NAME="gpt-3.5-turbo" \
+  AI_API_KEY="your-api-key-here"
+  
 vault kv put secret/main-service/jwt \
   JWT_SECRET="your-super-secret-jwt-key-change-this" \
   JWT_EXPIRES_IN="24h"
