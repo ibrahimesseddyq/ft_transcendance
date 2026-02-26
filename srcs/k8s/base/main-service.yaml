@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-service
+  namespace: hirefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-service
+  template:
+    metadata:
+      labels:
+        app: main-service
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "main-service"
+        vault.hashicorp.com/agent-inject-secret-database: "secret/data/main-service/database"
+        vault.hashicorp.com/agent-inject-template-database: |
+          {{- with secret "secret/data/main-service/database" -}}
+          export DATABASE_URL="{{ .Data.data.DATABASE_URL }}"
+          {{- end }}
+        vault.hashicorp.com/agent-inject-secret-jwt: "secret/data/main-service/jwt"
+        vault.hashicorp.com/agent-inject-template-jwt: |
+          {{- with secret "secret/data/main-service/jwt" -}}
+          export JWT_SECRET="{{ .Data.data.JWT_SECRET }}"
+          export JWT_EXPIRES_IN="{{ .Data.data.JWT_EXPIRES_IN }}"
+          {{- end }}
+        vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/oauth"
+        vault.hashicorp.com/agent-inject-template-oauth: |
+          {{- with secret "secret/data/main-service/oauth" -}}
+          export GOOGLE_CLIENT_ID="{{ .Data.data.GOOGLE_CLIENT_ID }}"
+          export GOOGLE_CLIENT_SECRET="{{ .Data.data.GOOGLE_CLIENT_SECRET }}"
+          export GOOGLE_CALLBACK_URL="{{ .Data.data.GOOGLE_CALLBACK_URL }}"
+          {{- end }}
+        # vault.hashicorp.com/agent-inject-command-database: "/bin/sh -c 'source /vault/secrets/database && source /vault/secrets/config && source /vault/secrets/jwt && source /vault/secrets/oauth && exec node /app/server.js'"
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: main-service
+          image: main-service:dev
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/sh
+          - -c
+          - |
+            source /vault/secrets/database
+            source /vault/secrets/jwt
+            source /vault/secrets/oauth
+            exec node /app/server.js
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+      initContainers:
+        - name: prisma-db-push
+          image: main-service:dev
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Wait for Vault secrets to be available
+              while [ ! -f /vault/secrets/database ]; do
+                echo "Waiting for Vault secrets..."
+                sleep 2
+              done
+              # Source the secrets and run Prisma
+              source /vault/secrets/database
+              npx prisma db push
+              npx prisma studio
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-service
+  namespace: hirefy
+spec:
+  selector:
+    app: main-service
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-service-config
+  namespace: hirefy
+data:
+  PORT: "3000"
+  NODE_ENV: "production"
+  HOSTNAME: "main-service"
+  HOST_IP: "main-service"

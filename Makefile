@@ -88,7 +88,7 @@ kube-deploy:
 	
 
 	kubectl wait --for=condition=ready pod \
-	 -l app.kubenetes.io/name=vault \
+	 -l app.kubernetes.io/name=vault \
 	  -n hirefy --timeout=300s
 
 

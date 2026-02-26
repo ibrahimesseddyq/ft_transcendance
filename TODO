@@ -6,4 +6,4 @@ The kubectl wait uses label app.kubenetes.io/name=vault — note the typo: kuben
 4. main-service never created
 It's not in the error output at all, which means kubectl apply -f srcs/k8s/base/main-service.yaml either errored silently or the file has the same spec.template.metadata.spec bug. Check that file too.
 5. Port-forward failing
-This is a cascade — once the above are fixed and pods are actually Running, port-forward will work. The kube-forward target also has a structural issue: the & backgrounded commands followed by wait will hang forever. For a make target that's fine if intentional, but if you want it non-blocking just remove the wait.
+This is a cascade — once the above are fixed and pods are actually Running, port-forward will work. The kube-forward  also has a structural issue: the & backgrounded commands followed by wait will hang forever. For a make target that's fine if intentional, but if you want it non-blocking just remove the wait.

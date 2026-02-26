@@ -23,27 +23,30 @@ spec:
           export MYSQL_USER="{{ .Data.data.MYSQL_USER }}"
           export MYSQL_PASSWORD="{{ .Data.data.MYSQL_PASSWORD }}"
           {{- end }}
-      spec:
-        serviceAccountName: app-service-account
-        containers:
-          - name: mariadb
-            image: mariadb:11
-            ports:
-              - name: mysql
-                containerPort: 3306
-                protocol: TCP
-            command:
-              - /bin/sh
-              - -c
-              - |
-                # Source Vault secrets
-                source /vault/secrets/config
-                # Start MariaDB
-                docker-entrypoint.sh mariadbd
-            volumeMounts:
-              - name: data
-                persistentVolumeClaim:
-                  claimName: mariadb-pvc
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: mariadb
+          image: mariadb:11
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Source Vault secrets
+              source /vault/secrets/config
+              # Start MariaDB
+              docker-entrypoint.sh mariadbd
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: mariadb-pvc
 ---
 apiVersion: v1
 kind: Service
