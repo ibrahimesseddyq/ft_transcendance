@@ -68,7 +68,7 @@ spec:
               # Source the secrets and run Prisma
               source /vault/secrets/database
               npx prisma db push
-              npx prisma studio
+              # npx prisma studio
  
 ---
 apiVersion: v1
