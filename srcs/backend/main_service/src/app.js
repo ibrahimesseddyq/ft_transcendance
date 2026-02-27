@@ -20,7 +20,7 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 const app =  express();
 
 app.use(cors({
-  origin: `${env.FRONTEND_URL}`,
+  origin: [env.FRONTEND_URL, 'http://127.0.0.1:5173'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
@@ -37,7 +37,7 @@ app.use('/uploads', (req, res, next) => {
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
 app.use(session({
-  secret: `${env.SESSION_SECRET}`,
+  secret: env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {

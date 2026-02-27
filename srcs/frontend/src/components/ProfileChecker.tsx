@@ -3,12 +3,11 @@ import { useSecureFetch } from '@/utils/SecureFetch'
 interface ProfileProps {
     userId: string | null;
     setProfile: (profile: any) => void;
+    secureFetch: ReturnType<typeof useSecureFetch>;
 }
 
-export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
-    const secureFetch = useSecureFetch();
+export async function ProfileChecker({ userId, setProfile, secureFetch }: ProfileProps) {
     try {
-
         const res = await secureFetch(`/api/profiles/${userId}`, {
             method: 'GET',
         });
@@ -17,7 +16,7 @@ export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
             throw new Error("Profile Checker failed");
 
         const result = await res.json();
-        if (result.ok){
+        if (result.ok) {
             setProfile(result.data);
             return true;
         }
