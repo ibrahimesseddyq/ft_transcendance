@@ -76,7 +76,7 @@ export function QRcode() {
                 if (newUser.data){
                     // console.log("user data", newUser);
                     setUser(newUser.data.user);
-                    const check = await ProfileChecker({userId, setProfile});
+                    const check = await ProfileChecker({ userId, setProfile, secureFetch });
                     if (!check)
                         navigate("/Createprofile", { replace: true });
                     else

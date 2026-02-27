@@ -3,7 +3,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 // import Cookies from 'js-cookie';
 
 export function useSecureFetch() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const clearAuth = useAuthStore((state) => state.clearAuth);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -31,11 +31,11 @@ export function useSecureFetch() {
                 if (refreshRes.ok) {
                     return await fetch(fullUrl, fetchOptions);
                 } else {
-                    // handleLogout();
+                    handleLogout();
                     throw new Error("Session expired. Please login again.");
                 }
             } catch (error) {
-                // handleLogout();
+                handleLogout();
                 return Promise.reject(error);
             }
         }
@@ -43,11 +43,11 @@ export function useSecureFetch() {
         return response;
     };
 
-    // const handleLogout = () => {
-    //     clearAuth();
-    //     // Cookies.remove('accessToken', { path: '/' }); 
-    //     navigate('/Login', { replace: true });
-    // };
+    const handleLogout = () => {
+        clearAuth();
+        // Cookies.remove('accessToken', { path: '/' }); 
+        navigate('/Login', { replace: true });
+    };
 
     return secureFetch;
 }
