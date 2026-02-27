@@ -105,7 +105,7 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/base/ai-service.yaml
 	kubectl apply -f srcs/k8s/base/gateway.yaml
 	kubectl apply -f srcs/k8s/base/frontend.yaml
-	kubectl get pods -n hirefy
+	kubectl get pods -n hirefy 
 
 kube: kube-build kube-load kube-deploy kube-forward
 
