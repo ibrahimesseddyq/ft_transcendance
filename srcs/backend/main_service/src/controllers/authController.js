@@ -22,11 +22,12 @@ export const login = asyncHandler(async (req, res, next) => {
         const result = await authService.login(req.body);
         if (result.require2FA)
         {
-            return res.status(200).json({
+            return res
+            .status(200).json({
                 message: "2FA required",
                 require2FA: true,
                 tempToken: result.tempToken,
-                userId: result.user.id,
+                userId: result.userId,
                 firstLogin: result.firstLogin
             });
         }

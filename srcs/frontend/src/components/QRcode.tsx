@@ -5,7 +5,7 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { useSecureFetch } from '@/utils/SecureFetch'
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
@@ -21,7 +21,7 @@ export function QRcode() {
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
-    const token = Cookies.get('accessToken');
+    // const token = Cookies.get('accessToken');
 
     // console.log("User id : ", userId);
 
@@ -46,11 +46,13 @@ export function QRcode() {
         }
     };
 
-    if (firstLogin){
-        useEffect(() => {
+
+    useEffect(() => {
+        if (firstLogin)
             fetchNewQr();
-        }, [userId]);
-    }
+        else
+            setStep('VERIFY_OTP');
+    }, [userId]);
 
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -63,7 +65,6 @@ export function QRcode() {
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
             : { code: finalOtp };
-        console.log('token is:', token)
         try {
             const res = await secureFetch(`/${route}`, {
                 method: 'POST',
@@ -95,7 +96,7 @@ export function QRcode() {
     }
    
     const handleSubmit = async (e: any) => {
-        // e.preventDefault();
+        e.preventDefault();
         if (step === 'QR_CODE') {
             setStep('VERIFY_OTP');
             return;
