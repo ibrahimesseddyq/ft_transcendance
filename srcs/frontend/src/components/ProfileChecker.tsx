@@ -1,3 +1,4 @@
+import { useSecureFetch } from '@/utils/SecureFetch'
 
 interface ProfileProps {
     userId: string | null;
@@ -5,14 +6,18 @@ interface ProfileProps {
 }
 
 export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const secureFetch = useSecureFetch();
     try {
-        const res = await fetch(`${BACKEND_URL}/api/profiles/${userId}`, {
-            method: "GET",
-            credentials: 'include'
+
+        const res = await secureFetch(`/api/profiles/${userId}`, {
+            method: 'GET',
         });
+
+        if (!res.ok)
+            throw new Error("Profile Checker failed");
+
         const result = await res.json();
-        if (res.ok){
+        if (result.ok){
             setProfile(result.data);
             return true;
         }
