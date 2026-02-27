@@ -47,6 +47,7 @@ spec:
             . /vault/secrets/database
             . /vault/secrets/jwt
             . /vault/secrets/oauth
+            npx prisma generate
             npx prisma db push
             exec node /app/server.js
           ports:
