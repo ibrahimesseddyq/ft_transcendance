@@ -6,6 +6,6 @@ import  {registerUserSchema,loginUserSchema} from'../validators/userValidator.js
 const  router = express.Router();
 
 router.post('/setup',twoFAController.setup);
-router.post('/verify-setup',verifyToken, twoFAController.verifySetup);
+router.post('/verify-setup', twoFAController.verifySetup);
 router.post('/disable',verifyToken,twoFAController.disable);
 export default router

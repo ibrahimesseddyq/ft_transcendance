@@ -11,7 +11,8 @@ export const getUserById = async (userId)=> {
             firstName: true,
             lastName: true,
             avatarUrl: true,
-            profile : true
+            profile : true,
+            twoFATempSecret : true,
         }
     })
 }
