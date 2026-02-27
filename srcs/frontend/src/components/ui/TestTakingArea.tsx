@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useSecureFetch } from '@/utils/SecureFetch'
 import { Timer, ChevronRight, Diamond, Loader2, AlertCircle } from 'lucide-react';
 
 const TestTakingArea = ({ testData, candidateId, phaseId, onComplete }: any) => {
@@ -6,6 +7,7 @@ const TestTakingArea = ({ testData, candidateId, phaseId, onComplete }: any) => 
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const secureFetch = useSecureFetch();
 
     const questions = testData?.questions || [];
     const currentQuestion = questions[currentStep];
@@ -32,13 +34,9 @@ const TestTakingArea = ({ testData, candidateId, phaseId, onComplete }: any) => 
         };
 
         try {
-            const response = await fetch('/api/', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload),
-                credentials: 'include'
+            const response = await secureFetch(`/api/test`, {
+                method: 'POST',
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
