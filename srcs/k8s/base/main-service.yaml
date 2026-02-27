@@ -47,28 +47,29 @@ spec:
             . /vault/secrets/database
             . /vault/secrets/jwt
             . /vault/secrets/oauth
+            npx prisma db push
             exec node /app/server.js
           ports:
             - name: http
               containerPort: 3000
               protocol: TCP
-      initContainers:
-        - name: prisma-db-push
-          image: main-service:dev
-          imagePullPolicy: IfNotPresent
-          command:
-            - /bin/sh
-            - -c
-            - |
-              # Wait for Vault secrets to be available
-              while [ ! -f /vault/secrets/database ]; do
-                echo "Waiting for Vault secrets..."
-                sleep 2
-              done
-              # Source the secrets and run Prisma
-              . /vault/secrets/database
-              npx prisma db push
-              # npx prisma studio
+      # initContainers:
+      #   - name: prisma-db-push
+      #     image: main-service:dev
+      #     imagePullPolicy: IfNotPresent
+      #     command:
+      #       - /bin/sh
+      #       - -c
+      #       - |
+      #         # Wait for Vault secrets to be available
+      #         while [ ! -f /vault/secrets/database ]; do
+      #           echo "Waiting for Vault secrets..."
+      #           sleep 2
+      #         done
+      #         # Source the secrets and run Prisma
+      #         . /vault/secrets/database
+      #         npx prisma db push
+      #         # npx prisma studio
  
 ---
 apiVersion: v1
