@@ -9,9 +9,7 @@ dotenv.config({
 });
 
 const vaultFiles = [
-  '/vault/secrets/.env.database ',
-  '/vault/secrets/.env.oauth ',
-  '/vault/secrets/.env.jw'];
+];
 
 vaultFiles.forEach(file => {
   if (fs.existsSync(file)) {
