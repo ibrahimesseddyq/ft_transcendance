@@ -40,15 +40,7 @@ export const LoginSchema = z.object({
         .toLowerCase()
         .email({ message: "Must be a valid email address" }),
     password: z.string()
-        .min(8, {message: "Password must be at least 8 characters long"})
-        .max(100, { message: "Password must be less than 100 characters" })
-        .regex(/[a-z]/, {message: "Password must contain at least one lowercase letter"})
-        .regex(/[A-Z]/, { message:  "Password must contain at least one uppercase letter" })
-        .regex(/[0-9]/, { message: "Password must contain at least one number" })
-        .regex(/[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/, {
-            message: "Password must contain at least one special character"})
-        .regex(/^\S+$/, { message: "Password must not contain spaces" }),  
-
+        .min(1, {message: "Password is required"})
 });
 
 

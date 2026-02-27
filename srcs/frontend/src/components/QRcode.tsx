@@ -6,10 +6,11 @@ import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
 import Cookies from 'js-cookie';
-import { Navigate } from 'react-router-dom';
+import { useSecureFetch } from '@/utils/SecureFetch'
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
+    const secureFetch = useSecureFetch();
     const [step, setStep] = useState<AuthStep>('QR_CODE');
     const [qrLink, setQrLink] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,7 +21,6 @@ export function QRcode() {
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const token = Cookies.get('accessToken');
 
     // console.log("User id : ", userId);
@@ -30,14 +30,9 @@ export function QRcode() {
             return;
         setLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/2fa/setup/`, {
+            const res = await secureFetch(`/api/2fa/setup/`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: userId }),
-                credentials: 'include'
+                body: JSON.stringify({ id: userId })
             });
             if (res.ok) {
                 const result = await res.json();
@@ -70,13 +65,9 @@ export function QRcode() {
             : { code: finalOtp };
         console.log('token is:', token)
         try {
-            const res = await fetch(`${BACKEND_URL}/${route}`, {
+            const res = await secureFetch(`/${route}`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj),
+                body: JSON.stringify(obj)
             });
             if (res.ok) {
                 console.log("Verified Successfully!");
@@ -103,8 +94,8 @@ export function QRcode() {
         }
     }
    
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (e: any) => {
+        // e.preventDefault();
         if (step === 'QR_CODE') {
             setStep('VERIFY_OTP');
             return;
@@ -120,6 +111,13 @@ export function QRcode() {
         else
             await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
     };
+
+    // if (otpArray.length === 6){
+    //     useEffect(() => {
+    //         console.log("IAm Here");
+    //         handleSubmit(otpArray);
+    //     }, [otpArray]);
+    // }
 
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 
