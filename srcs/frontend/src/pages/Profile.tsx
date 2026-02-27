@@ -5,25 +5,27 @@ import CareerCard from "@/components/ui/CareerCard"
 import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import EducationCard from "@/components/ui/EducationCard"
+import { useSecureFetch} from '@/utils/SecureFetch'
 
 export function Profile() {
+  const secureFetch = useSecureFetch();
   const params = useParams();
   const id = params.postId;
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+ 
   useEffect(() => {
     const fetchUser = async () => {
         const [res1, res2] = await Promise.all([
-          fetch(`${BACKEND_URL}/api/users/${id}`, {credentials: 'include'}),
-          fetch(`${BACKEND_URL}/api/profiles/${id}`, {credentials: 'include'}),
+          secureFetch(`/api/users/${id}`),
+          secureFetch(`/api/profiles/${id}`),
         ]);
 
         if (res1.ok && res2.ok) {
           const userData = await res1.json();
           const profileData = await res2.json();
-          console.log("Iam Here");
+          console.log("Iam Here in profile");
           setUser(userData.data);
           setProfile(profileData.data);
           console.log("userData.data : ", userData.data);
