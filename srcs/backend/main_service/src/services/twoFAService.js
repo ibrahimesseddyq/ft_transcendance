@@ -69,7 +69,7 @@ import { refresh } from "./authService.js";
         delete user.passwordHash;
         delete user.twoFASecret;
         delete user.twoFATempSecret;
-        return { success: true, user: user, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken};
+        return { success: true, user: user, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)
