@@ -15,6 +15,13 @@ spec:
       annotations:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "ai-service"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/ai-service/config"
+        vault.hashicorp.com/agent-inject-template-config: |
+          {{- with secret "secret/data/ai-service/config" -}}
+          {{- range $k, $v := .Data.data }}
+          export {{ $k }}="{{ $v }}"
+          {{- end }}
+          {{- end }}
     spec:
       serviceAccountName: app-service-account
       containers:
@@ -29,10 +36,9 @@ spec:
             - /bin/sh
             - -c
             - |
-              # Source Vault secrets
-              source /vault/secrets/config
+              . /vault/secrets/config
               # Start the application
-              python app.py
+              python3 app.py
 ---
 apiVersion: v1
 kind: Service

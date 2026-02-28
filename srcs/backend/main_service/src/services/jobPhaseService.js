@@ -2,11 +2,12 @@ import * as jobPhaseRepository from '../repositories/jobPhaseRepository.js';
 import {HttpException} from '../utils/httpExceptions.js';
 import * as quizClientService from './quizClientService.js'
 
-export const createJobPhase = async (data) => {
-	const test = await quizClientService.getTestById(data.testId);
-	if (!test)
-		throw new HttpException(404, 'invalid test Id');
-	return await jobPhaseRepository.createJobPhase(data);
+export const createJobPhase = async (jobPhaseData) => {
+	const response = await quizClientService.getTestById(jobPhaseData.testId);
+	if (!response.body.success)
+		throw new HttpException(400, 'test not found');
+
+	return await jobPhaseRepository.createJobPhase(jobPhaseData);
 }
 
 export const updateJobPhase = async (jobPhaseId, updateData) => {

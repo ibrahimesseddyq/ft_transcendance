@@ -7,6 +7,7 @@ import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
+import { useSecureFetch} from '@/utils/SecureFetch'
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
@@ -15,6 +16,7 @@ const Signin = () => {
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const secureFetch = useSecureFetch();
 
     const {
         register,
@@ -43,13 +45,12 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
       try {
-          const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-            credentials: 'include'
-        });
+            const response = await secureFetch('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
 
+<<<<<<< HEAD
         const result = await response.json();
         if (!response.ok) 
             throw new Error(result.message || "Login failed");
@@ -62,10 +63,22 @@ const Signin = () => {
             setUserId(userId);
             navigate("/otp", { replace: true });
             reset();
+=======
+            const result = await response.json();
+            if (!response.ok) 
+                throw new Error(result.message || "Login failed");
+            const token = result?.tempToken;
+            const userId = result?.userId;
+            setFirstLogin(result?.firstLogin);
+            if (token && userId) {
+                setUserId(userId);
+                navigate("/otp", { replace: true });
+                reset();
+            }
+        } catch (error: any) {
+            Notification(error.message || "Error Login", "error");
+>>>>>>> 38d73f4684202334f78a9311b78d57c555198653
         }
-    } catch (error: any) {
-        Notification(error.message || "Error Login", "error");
-    }
     };
 
 
