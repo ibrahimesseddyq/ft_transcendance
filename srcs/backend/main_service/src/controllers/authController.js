@@ -23,6 +23,7 @@ export const login = asyncHandler(async (req, res, next) => {
         if (result.require2FA)
         {
             return res
+            .cookie('accessToken',result.accessToken,accessTokenOptions)
             .status(200).json({
                 message: "2FA required",
                 require2FA: true,
@@ -43,12 +44,15 @@ export const login = asyncHandler(async (req, res, next) => {
                 }
             }
         );
+        console.log('cookies set:', result.accessToken, result.refreshToken);
 })
 
 export const verify2FA = asyncHandler(async (req, res, next) =>{
-
+    console.log("body :", req.body);
     const { tempToken, code } = req.body;
     const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+    console.log('accessToken:', accessToken);
+    console.log('refreshToken:', refreshToken);
     res
     .cookie('accessToken',accessToken,accessTokenOptions)
     .cookie('refreshToken', refreshToken ,refreshTokenOptions)

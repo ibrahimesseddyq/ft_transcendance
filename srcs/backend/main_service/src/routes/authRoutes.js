@@ -40,7 +40,9 @@ router.post('/login',
                 role: req.user.role
             });
             const userId = req.user.id;
-            res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
+            res
+            .cookie('accessToken', tokens.accessToken)
+            .redirect(`http://localhost:5173/auth/callback?userId=${userId}`);
         } catch (error) {
             res.status(400)
             .json({
