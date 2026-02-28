@@ -17,15 +17,12 @@ import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
+import { AuthGuard } from '@/utils/AuthGard'
 
 export function Main() {
+  localStorage.theme = 'dark';
   const location = useLocation();
-  const user = useAuthStore((state) => state.user);
-  const userId = useAuthStore((state) => state.userId);
-  const profile = useAuthStore((state) => state.profile);
-  const qrVerified = useAuthStore((state) => state.qrVerified);
-
-
+  const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;
   
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback', '/QuizPage'];
@@ -64,41 +61,43 @@ export function Main() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a] 
-      md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
-      <div className="h-20 w-full sticky top-2 z-50">
-        <Header />
+    <AuthGuard>
+      <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a] 
+        md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
+        <div className="h-20 w-full sticky top-2 z-50">
+          <Header />
+        </div>
+
+        <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
+          <main className="w-full ">
+            <Routes>
+              {/* STAFF ROUTES (Admin & Recruiter) */}
+              <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
+                <Route path="/Dashboard" element={<Dashboard />} />
+                <Route path="/AppAllCards" element={<AppAllCards />} />
+                <Route path="/QuizPage" element={<QuizPage />} />
+              </Route>
+
+              {/* CANDIDATE ROUTES */}
+              <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
+                <Route path="/Jobs" element={<Jobs />} />
+                <Route path="/Jobdescription" element={<JobDescription />} />
+                <Route path="/Application/:jobId" element={<Application />} />
+                <Route path="/Profile/:postId" element={<Profile />} />
+                <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
+              </Route>
+
+              {/* ROOT REDIRECT */}
+              <Route path="/" element={
+                user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
+              } />
+
+              <Route path="/NotFound" element={<NotFound />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+        </div>
       </div>
-
-      <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
-        <main className="w-full ">
-          <Routes>
-            {/* STAFF ROUTES (Admin & Recruiter) */}
-            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
-              <Route path="/Dashboard" element={<Dashboard />} />
-              <Route path="/AppAllCards" element={<AppAllCards />} />
-              <Route path="/QuizPage" element={<QuizPage />} />
-            </Route>
-
-            {/* CANDIDATE ROUTES */}
-            <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
-              <Route path="/Jobs" element={<Jobs />} />
-              <Route path="/Jobdescription" element={<JobDescription />} />
-              <Route path="/Application/:jobId" element={<Application />} />
-              <Route path="/Profile/:postId" element={<Profile />} />
-              <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
-            </Route>
-
-            {/* ROOT REDIRECT */}
-            <Route path="/" element={
-              user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
-            } />
-
-            <Route path="/NotFound" element={<NotFound />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-      </div>
-    </div>
+    </AuthGuard>
   );
 }

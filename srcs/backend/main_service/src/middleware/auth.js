@@ -4,6 +4,7 @@ import { getPermissionsByRole } from '../config/permissions.js';
 
 export const verifyToken = async (req, res, next) => {
     try {
+        console.log('cookie',req.cookies)
         const token = req.cookies?.accessToken;
         if (!token) throw new HttpException(401, "Unauthorized");
         const decoded = await jwtService.verifyAccessToken(token);
