@@ -10,5 +10,5 @@ export const createJobPhaseSchema = z.object({
 	orderIndex: z.number(), //maybe should ignored and the oreder will be based on creation
 	isRequired: z.boolean().default(true),
 	durationMinutes: z.number(),
-
+	testId: z.string().uuid(),
 });
