@@ -11,6 +11,8 @@ import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import env from './config/env.js';
 import path from 'path';
 import {HttpException} from './utils/httpExceptions.js';
@@ -21,7 +23,7 @@ const app =  express();
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH "],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true 
   }));
 app.use(helmet({
@@ -78,6 +80,10 @@ app.use('/api/profiles/',
 
 
 app.use('/api/applications',applicationRoutes)
+
+// Chat routes (protected)
+app.use('/chat/conversations', verifyToken, conversationRoutes);
+app.use('/chat/messages', verifyToken, messageRoutes);
 
 
 
