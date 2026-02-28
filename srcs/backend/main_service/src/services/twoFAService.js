@@ -4,6 +4,7 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as userRepository from '../repositories/userRepository.js';
 import * as userService from './userService.js';
 import * as  jwtService from './jwtService.js';
+import { refresh } from "./authService.js";
 
 
  class TwoFAService
@@ -68,7 +69,7 @@ import * as  jwtService from './jwtService.js';
         delete user.passwordHash;
         delete user.twoFASecret;
         delete user.twoFATempSecret;
-        return { success: true, user: user, accessToken: token};
+        return { success: true, user: user, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)
