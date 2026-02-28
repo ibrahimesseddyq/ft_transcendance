@@ -21,6 +21,7 @@ export function QRcode() {
     const firstLogin = useAuthStore((state) => state.firstLogin);
     const setQrVerified = useAuthStore((state) => state.setQrVerified);
     const setProfile = useAuthStore((state) => state.setProfile);
+    const [tempToken, setTempToken] = useState(null);
     // const token = Cookies.get('accessToken');
 
     // console.log("User id : ", userId);
@@ -37,7 +38,9 @@ export function QRcode() {
             if (res.ok) {
                 const result = await res.json();
                 setQrLink(result.qrDataUrl);
+                setTempToken(result.manualKey);
                 setStep('QR_CODE');
+                console.log(typeof(result.manualKey));
             }
         } catch (error) {
             console.error("Failed to fetch QR:", error);
@@ -64,7 +67,8 @@ export function QRcode() {
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
-            : { code: finalOtp };
+            : { code: finalOtp , tempToken: tempToken};
+            // console.log()
         try {
             const res = await secureFetch(`/${route}`, {
                 method: 'POST',
@@ -74,7 +78,6 @@ export function QRcode() {
                 console.log("Verified Successfully!");
                 const newUser = await res.json();
                 if (newUser.data){
-                    // console.log("user data", newUser);
                     setUser(newUser.data.user);
                     const check = await ProfileChecker({ userId, setProfile, secureFetch });
                     if (!check)
