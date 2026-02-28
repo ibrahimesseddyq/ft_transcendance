@@ -21,14 +21,30 @@ export const    verifySetup = async (req, res,next) => {
         const { code } = req.body;
         
         const data = await twoFAService.verifySetup(req.body.id, code);
-        res.json(  {             
+
+        res
+        .cookie("accessToken", data.accessToken, {
+            httpOnly: true,
+            secure: false,        
+            sameSite: "lax",      
+            maxAge: 15 * 60 * 1000
+        })
+        .cookie("refreshToken", data.refreshToken, {
+            httpOnly: true,
+            secure: false,        
+            sameSite: "lax",      
+            maxAge: 15 * 60 * 1000
+        })
+        .status(200)
+        .json({
+            message: "2FA setup successful",
             data: {
-                    user : data.user,
-                    accessToken : data.accessToken
-                }
-            });
-            } catch (error) {
-        next(error)
+            user: data.user
+            }
+        });
+
+    } catch (error) {
+        next(error);
     }
 };
 
