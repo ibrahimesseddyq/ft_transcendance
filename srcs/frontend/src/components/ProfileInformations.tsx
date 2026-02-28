@@ -8,6 +8,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState } from "react";
 import {useNavigate } from "react-router-dom";
+import { useSecureFetch } from '@/utils/SecureFetch'
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -45,12 +46,12 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 );
 
 export function ProfileInformations() {
+  const secureFetch = useSecureFetch();
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
   const user = useAuthStore((state) => state.user);
   const [avatarPreview, setAvatarPreview] = useState("/icons/placeholder.jpg");
   const navigate = useNavigate();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const {
     register,
     handleSubmit,
@@ -87,20 +88,23 @@ export function ProfileInformations() {
     if (data.resume)
       formData.append("resume", data.resume);
     try {
-        const response = await fetch(`${BACKEND_URL}/api/profiles/${data.userId}`, {
-            method: "POST",
-            body: formData,
-            credentials: 'include'
+        const response = await secureFetch(`/api/profiles/${data.userId}`, {
+            method: 'POST',
+            body: formData
         });
+        
+        if (!response.ok)
+          throw new Error("Profile Information failed");
+  
         const result = await response.json();
-        // console.log("from ProfileInformations :", result.data);
-        if (response.ok) {
+        if (result.ok){
           setProfile(result.data);
           if (user?.role === "recruiter" || user?.role === "admin")
             navigate("/Dashboard");
           else
             navigate("/Jobs");
         }
+        
     } catch (error) {
         console.error("Submission failed:", error);
         Notification("Technical error occurred", "error");

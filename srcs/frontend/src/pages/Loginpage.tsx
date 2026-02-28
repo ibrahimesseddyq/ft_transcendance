@@ -14,7 +14,7 @@ export function LoginPage() {
     const isActive = activeCard === tabName;
 
     if (isActive) {
-      baseClasses += 'bg-white dark:bg-black z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
+      baseClasses += 'bg-white dark:bg-black/30 z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
     } else {
       baseClasses += 'bg-gray-100 dark:bg-zinc-900 z-10 scale-95 h-[70px] w-full md:h-full md:w-[15%]';
     }
@@ -41,7 +41,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-gray-500 dark:bg-black text-sm font-bold uppercase transition-colors">
+                text-gray-500 dark:bg-black/30 text-sm font-bold uppercase transition-colors">
                 SignIn
               </h1>
             )}
@@ -58,7 +58,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-gray-500 dark:bg-black text-sm font-bold uppercase transition-colors">
+                text-gray-500 dark:bg-black/30 text-sm font-bold uppercase transition-colors">
                 SignUp
               </h1>
             )}
