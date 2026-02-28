@@ -26,13 +26,13 @@ export const login = asyncHandler(async (req, res, next) => {
                 message: "2FA required",
                 require2FA: true,
                 tempToken: result.tempToken,
-                userId: result.userId,
+                userId: result.user.id,
                 firstLogin: result.firstLogin
             });
         }
         res
-        .cookie('accessToken',accessToken,accessTokenOptions)
-        .cookie('refreshToken', refreshToken ,refreshTokenOptions)
+        .cookie('accessToken',result.accessToken,accessTokenOptions)
+        .cookie('refreshToken', result.refreshToken ,refreshTokenOptions)
         .status(200)
         .json({
                 success: true,

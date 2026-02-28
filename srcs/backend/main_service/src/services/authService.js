@@ -62,7 +62,8 @@ export const login = async (data) => {
       role: user.role,
     });
   
-    return await userService.updateUser(user.id, { refreshToken: tokens.refreshToken });
+    const updatedUser = await userService.updateUser(user.id, { refreshToken: tokens.refreshToken });
+    return { user: updatedUser, ...tokens};
   };
 
 export const verifyLoginWith2FA = async (tempToken, twoFACode) => {

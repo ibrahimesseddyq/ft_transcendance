@@ -1,8 +1,7 @@
-import quizClient from "../utils/quizClinet.js";
-
+import quizClient from "../utils/quizClient.js";
 
 export const getTestById = async (testId) => {
-    const response = await quizClient.get();
+    const response = await quizClient.get(/* need to set uRI*/);
     return response;
 }
 
