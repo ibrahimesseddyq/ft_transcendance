@@ -87,13 +87,15 @@ const ChatApp = {
             
             // Conversations
             conversationsList: document.getElementById('conversations-list'),
-            newConversationBtn: document.getElementById('new-conversation-btn'),
+            conversationSearch: document.getElementById('conversation-search'),
             
             // Chat area
             chatLayout: document.querySelector('.chat-layout'),
             chatEmptyState: document.getElementById('chat-empty-state'),
             chatActive: document.getElementById('chat-active'),
             chatAvatar: document.getElementById('chat-avatar'),
+            chatAvatarImage: document.getElementById('chat-avatar-image'),
+            chatAvatarInitials: document.getElementById('chat-avatar-initials'),
             chatName: document.getElementById('chat-name'),
             chatStatus: document.getElementById('chat-status'),
             messagesContainer: document.getElementById('messages-container'),
@@ -142,9 +144,9 @@ const ChatApp = {
             this.elements.logoutBtn.addEventListener('click', () => this.handleLogout());
         }
         
-        // New conversation
-        if (this.elements.newConversationBtn) {
-            this.elements.newConversationBtn.addEventListener('click', () => this.openModal());
+        // Conversation search
+        if (this.elements.conversationSearch) {
+            this.elements.conversationSearch.addEventListener('input', (e) => this.filterConversations(e.target.value));
         }
         if (this.elements.modalClose) {
             this.elements.modalClose.addEventListener('click', () => this.closeModal());
@@ -253,6 +255,7 @@ const ChatApp = {
         SocketService.on('onUserOffline', (data) => this.onUserStatusChange(data.userId, false));
         SocketService.on('onNewConversation', (data) => this.onNewConversation(data));
         SocketService.on('onNotification', (data) => this.onNotification(data));
+        SocketService.on('onOnlineUsers', (data) => this.onOnlineUsers(data));
     },
 
     // ============================================
@@ -296,7 +299,8 @@ const ChatApp = {
 
         // Fallback to sessionStorage/localStorage
         if (!token) {
-            token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+            // Try sessionStorage first (set by parent)
+            token = sessionStorage.getItem('authToken');
             const storedUser = sessionStorage.getItem('authUser');
             if (storedUser) {
                 try {
@@ -305,16 +309,40 @@ const ChatApp = {
                     console.warn('Failed to parse stored user data');
                 }
             }
+
+            // Try Zustand persist storage from parent (auth-storage)
+            if (!token) {
+                try {
+                    const authStorage = localStorage.getItem('auth-storage');
+                    if (authStorage) {
+                        const parsed = JSON.parse(authStorage);
+                        token = parsed.state?.token;
+                        userData = parsed.state?.user;
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse auth-storage:', e);
+                }
+            }
         }
 
         // If running in iframe, try parent storage
         if (!token && window.parent !== window) {
             try {
-                token = window.parent.sessionStorage?.getItem('authToken') || 
-                       window.parent.localStorage?.getItem('authToken');
+                // Try parent sessionStorage
+                token = window.parent.sessionStorage?.getItem('authToken');
                 const parentUser = window.parent.sessionStorage?.getItem('authUser');
                 if (parentUser && !userData) {
                     userData = JSON.parse(parentUser);
+                }
+
+                // Try parent Zustand storage
+                if (!token) {
+                    const authStorage = window.parent.localStorage?.getItem('auth-storage');
+                    if (authStorage) {
+                        const parsed = JSON.parse(authStorage);
+                        token = parsed.state?.token;
+                        userData = parsed.state?.user;
+                    }
                 }
             } catch (e) {
                 console.warn('Cannot access parent storage (CORS):', e.message);
@@ -366,12 +394,18 @@ const ChatApp = {
     async startChat() {
         const user = this.state.user;
         
-        // Update UI with user info
-        this.elements.userAvatar.textContent = (user.firstName || user.id || 'U').charAt(0).toUpperCase();
-        this.elements.userName.textContent = user.firstName && user.lastName 
-            ? `${user.firstName} ${user.lastName}` 
-            : user.email || user.id;
-        this.elements.userRoleBadge.textContent = user.role;
+        // Update UI with user info (only if elements exist - they're removed in RH view)
+        if (this.elements.userAvatar) {
+            this.elements.userAvatar.textContent = (user.firstName || user.id || 'U').charAt(0).toUpperCase();
+        }
+        if (this.elements.userName) {
+            this.elements.userName.textContent = user.firstName && user.lastName 
+                ? `${user.firstName} ${user.lastName}` 
+                : user.email || user.id;
+        }
+        if (this.elements.userRoleBadge) {
+            this.elements.userRoleBadge.textContent = user.role;
+        }
         
         // Show appropriate sidebar based on role
         this.setupSidebarForRole(user.role);
@@ -382,6 +416,8 @@ const ChatApp = {
         
         // Connect to socket with JWT token
         try {
+            console.log('[Chat] Connecting to socket with user:', this.state.user);
+            console.log('[Chat] Using token:', API.token ? 'Token exists' : 'NO TOKEN');
             SocketService.connect(this.state.user, API.token);
         } catch (error) {
             console.error('Socket connection error:', error);
@@ -425,16 +461,8 @@ const ChatApp = {
      */
     async loadRHProfile() {
         try {
-            // TODO: Get actual RH info from API
-            // For now, use placeholder data
-            const rhUser = {
-                firstName: 'ABDELMAJID',
-                lastName: 'ACHALLAH',
-                email: 'recruiter@company.com',
-                company: 'Company Inc.',
-                profilePicture: null, // URL if available
-                isOnline: true
-            };
+            // Fetch actual RH info from API
+            const rhUser = await API.getRecruiter();
 
             // Store RH info in state for later use
             this.state.rhUser = rhUser;
@@ -443,34 +471,42 @@ const ChatApp = {
             const initials = (rhUser.firstName.charAt(0) + rhUser.lastName.charAt(0)).toUpperCase();
             this.elements.rhProfileInitials.textContent = initials;
             
-            if (rhUser.profilePicture) {
-                this.elements.rhProfileImage.src = rhUser.profilePicture;
+            if (rhUser.avatarUrl) {
+                // Add backend base URL to avatar path
+                const avatarUrl = rhUser.avatarUrl.startsWith('http') 
+                    ? rhUser.avatarUrl 
+                    : `${API.baseUrl}${rhUser.avatarUrl}`;
+                this.elements.rhProfileImage.src = avatarUrl;
                 this.elements.rhProfileImage.style.display = 'block';
                 this.elements.rhProfileInitials.style.display = 'none';
+            } else {
+                this.elements.rhProfileImage.style.display = 'none';
+                this.elements.rhProfileInitials.style.display = 'flex';
             }
             
-            this.elements.rhProfileName.innerHTML = `${rhUser.firstName}<br>${rhUser.lastName}`;
-            this.elements.rhProfileCompany.childNodes[2].textContent = "Company's HR";
+            this.elements.rhProfileName.textContent = `${rhUser.firstName} ${rhUser.lastName}`;
+            this.elements.rhProfileEmail.textContent = rhUser.email || '';
             
-            // Update online indicator and status
-            if (rhUser.isOnline) {
-                this.elements.rhOnlineIndicator.classList.remove('offline');
-                this.elements.rhProfileStatus.textContent = 'Online';
-            } else {
-                this.elements.rhOnlineIndicator.classList.add('offline');
-                this.elements.rhProfileStatus.textContent = 'Offline';
+            // Check actual online status
+            const isRhOnline = this.state.onlineUsers.has(rhUser.id);
+            const onlineIndicator = document.getElementById('rh-online-indicator');
+            if (onlineIndicator) {
+                if (isRhOnline) {
+                    onlineIndicator.classList.remove('offline');
+                    onlineIndicator.classList.add('online');
+                    this.elements.rhProfileStatus.textContent = 'Online';
+                } else {
+                    onlineIndicator.classList.remove('online');
+                    onlineIndicator.classList.add('offline');
+                    this.elements.rhProfileStatus.textContent = 'Offline';
+                }
             }
 
-            // Update mobile RH header
-            this.elements.mobileRhInitials.textContent = initials;
-            if (rhUser.profilePicture) {
-                this.elements.mobileRhImage.src = rhUser.profilePicture;
-                this.elements.mobileRhImage.style.display = 'block';
-            }
-            this.elements.mobileRhName.textContent = `${rhUser.firstName} ${rhUser.lastName}`;
-            this.elements.mobileRhStatus.textContent = rhUser.isOnline ? 'Online' : 'Offline';
+            console.log('[Chat] RH profile loaded:', rhUser);
         } catch (error) {
             console.error('Failed to load RH profile:', error);
+            this.elements.rhProfileName.textContent = 'Recruiter';
+            this.showToast('Failed to load recruiter profile', 'error');
         }
     },
 
@@ -506,36 +542,79 @@ const ChatApp = {
         const isCandidate = this.state.user.role.toLowerCase() === 'candidate';
         
         if (isCandidate) {
-            // For candidates, no need to fetch conversations
-            // They chat directly with RH - show chat interface immediately
-            console.log('[Chat] Candidate view - showing direct RH chat interface');
-            this.elements.chatEmptyState.classList.remove('active');
-            this.elements.chatActive.classList.add('active');
+            // For candidates, create/get conversation with RH automatically
+            console.log('[Chat] Candidate view - creating/getting RH conversation');
             
-            // Use RH name from state if available
-            const rhName = this.state.rhUser 
-                ? `${this.state.rhUser.firstName} ${this.state.rhUser.lastName}`
-                : 'Recruiter';
-            const rhInitials = this.state.rhUser
-                ? (this.state.rhUser.firstName.charAt(0) + this.state.rhUser.lastName.charAt(0)).toUpperCase()
-                : 'RH';
-            
-            // Set up RH as the chat partner
-            this.elements.chatName.textContent = rhName;
-            this.elements.chatStatus.textContent = 'Online';
-            this.elements.chatAvatar.textContent = rhInitials;
-            
-            // Initialize empty messages
-            this.state.messages = [];
-            this.renderMessages();
+            try {
+                // Create or get existing conversation with RH
+                const conversation = await API.createConversation();
+                console.log('[Chat] Conversation API response:', conversation);
+                
+                if (!conversation || !conversation.id) {
+                    throw new Error('Invalid conversation response from API');
+                }
+                
+                // Set as current conversation
+                this.state.currentConversation = conversation;
+                console.log('[Chat] Current conversation set:', conversation.id);
+                
+                // Show chat interface
+                this.elements.chatEmptyState.classList.remove('active');
+                this.elements.chatActive.classList.add('active');
+                
+                // Use RH name from state if available
+                const rhName = this.state.rhUser 
+                    ? `${this.state.rhUser.firstName} ${this.state.rhUser.lastName}`
+                    : 'Recruiter';
+                const rhInitials = this.state.rhUser
+                    ? (this.state.rhUser.firstName.charAt(0) + this.state.rhUser.lastName.charAt(0)).toUpperCase()
+                    : 'RH';
+                
+                // Set up RH as the chat partner
+                this.elements.chatName.textContent = rhName;
+                this.elements.chatStatus.textContent = 'Online';
+                this.elements.chatAvatar.textContent = rhInitials;
+                
+                // Join the conversation room via socket
+                if (SocketService.socket) {
+                    SocketService.joinConversation(conversation.id);
+                }
+                
+                // Load existing messages if any
+                await this.loadMessages(conversation.id);
+            } catch (error) {
+                console.error('Failed to create/get conversation:', error);
+                this.showToast('Failed to initialize chat', 'error');
+            }
             return;
         }
         
         // For RH/Admin, fetch and display conversation list
         try {
+            console.log('[Chat] RH fetching conversations...');
             const conversations = await API.getConversations();
+            console.log('[Chat] RH received conversations:', conversations);
+            console.log('[Chat] Number of conversations:', conversations.length);
+            
             this.state.conversations = conversations;
             this.renderConversations();
+            
+            // Join all conversation rooms for real-time updates
+            if (SocketService.socket) {
+                console.log('[Chat] RH joining conversation rooms:', conversations.map(c => c.id));
+                conversations.forEach(conv => {
+                    SocketService.joinConversation(conv.id);
+                    console.log('[Chat] Joined room:', conv.id);
+                });
+            } else {
+                console.warn('[Chat] Socket not connected, cannot join rooms');
+            }
+            
+            // Automatically select the first conversation if available
+            if (conversations.length > 0) {
+                console.log('[Chat] Auto-selecting first conversation for RH');
+                await this.selectConversation(conversations[0].id);
+            }
         } catch (error) {
             console.error('Failed to load conversations:', error);
             this.showToast('Failed to load conversations', 'error');
@@ -559,11 +638,33 @@ const ChatApp = {
             const lastMessage = conv.messages?.[0];
             const unreadCount = conv.unreadCount || 0;
             
+            // Get participant name and initials
+            const participantName = otherParticipant.firstName && otherParticipant.lastName
+                ? `${otherParticipant.firstName} ${otherParticipant.lastName}`
+                : otherParticipant.email || 'Unknown User';
+            const participantInitials = otherParticipant.firstName && otherParticipant.lastName
+                ? (otherParticipant.firstName.charAt(0) + otherParticipant.lastName.charAt(0)).toUpperCase()
+                : (participantName.charAt(0) || '?').toUpperCase();
+            
+            // Check if participant has avatar
+            const avatarUrl = otherParticipant.avatarUrl 
+                ? (otherParticipant.avatarUrl.startsWith('http') ? otherParticipant.avatarUrl : `${API.baseUrl}${otherParticipant.avatarUrl}`)
+                : null;
+            
+            // Check if user is online
+            const isOnline = this.state.onlineUsers.has(otherParticipant.id);
+            const onlineClass = isOnline ? 'online' : '';
+            
+            // Avatar HTML with image or initials
+            const avatarHtml = avatarUrl 
+                ? `<div class="avatar ${onlineClass}"><img src="${avatarUrl}" alt="${participantName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;"></div>`
+                : `<div class="avatar ${onlineClass}">${participantInitials}</div>`;
+            
             return `
                 <div class="conversation-item ${isActive ? 'active' : ''}" data-id="${conv.id}">
-                    <div class="avatar">${(otherParticipant.id || '?').charAt(0).toUpperCase()}</div>
+                    ${avatarHtml}
                     <div class="conversation-info">
-                        <div class="conversation-name">${otherParticipant.id || 'Unknown'}</div>
+                        <div class="conversation-name">${participantName}</div>
                         <div class="conversation-preview">
                             <span class="conversation-last-message">
                                 ${lastMessage ? this.truncateText(lastMessage.content, 30) : 'No messages yet'}
@@ -573,7 +674,10 @@ const ChatApp = {
                             </span>
                         </div>
                     </div>
-                    ${unreadCount > 0 ? `<div class="conversation-unread">${unreadCount}</div>` : ''}
+                    <div class="conversation-status">
+                        <div class="status-indicator ${isOnline ? 'online' : 'offline'}"></div>
+                        ${unreadCount > 0 ? `<div class="conversation-unread">${unreadCount}</div>` : ''}
+                    </div>
                 </div>
             `;
         }).join('');
@@ -585,25 +689,43 @@ const ChatApp = {
     },
 
     /**
+     * Filter conversations based on search query
+     */
+    filterConversations(query) {
+        const normalizedQuery = query.toLowerCase().trim();
+        const conversationItems = this.elements.conversationsList.querySelectorAll('.conversation-item');
+        
+        conversationItems.forEach(item => {
+            const name = item.querySelector('.conversation-name')?.textContent.toLowerCase() || '';
+            const preview = item.querySelector('.conversation-last-message')?.textContent.toLowerCase() || '';
+            const matches = name.includes(normalizedQuery) || preview.includes(normalizedQuery);
+            item.style.display = matches ? 'flex' : 'none';
+        });
+    },
+
+    /**
      * Get the other participant in a conversation
      */
     getOtherParticipant(conversation) {
-        // If the conversation includes populated participant relations (from User model)
-        if (conversation.participant1 && conversation.participant2) {
-            if (conversation.participant1Id === this.state.user.id) {
-                return conversation.participant2;
+        // If conversation has participants array (from backend)
+        if (conversation.participants && Array.isArray(conversation.participants)) {
+            const otherParticipant = conversation.participants.find(p => p.userId !== this.state.user.id);
+            if (otherParticipant && otherParticipant.user) {
+                return otherParticipant.user;
             }
-            return conversation.participant1;
         }
+        
         // Fallback: if otherParticipant is already computed by the API
         if (conversation.otherParticipant) {
             return conversation.otherParticipant;
         }
+        
         // Minimal fallback
-        if (conversation.participant1Id === this.state.user.id) {
-            return { id: conversation.participant2Id };
-        }
-        return { id: conversation.participant1Id };
+        return { 
+            id: 'unknown',
+            firstName: 'Unknown',
+            lastName: 'User'
+        };
     },
 
     /**
@@ -628,9 +750,18 @@ const ChatApp = {
         // Update header
         const otherParticipant = this.getOtherParticipant(conversation);
         const isOnline = this.state.onlineUsers.has(otherParticipant.id);
-        this.elements.chatAvatar.textContent = (otherParticipant.id || '?').charAt(0).toUpperCase();
+        
+        // Get participant name and initials
+        const participantName = otherParticipant.firstName && otherParticipant.lastName
+            ? `${otherParticipant.firstName} ${otherParticipant.lastName}`
+            : otherParticipant.email || 'Unknown User';
+        const participantInitials = otherParticipant.firstName && otherParticipant.lastName
+            ? (otherParticipant.firstName.charAt(0) + otherParticipant.lastName.charAt(0)).toUpperCase()
+            : (participantName.charAt(0) || '?').toUpperCase();
+        
+        this.elements.chatAvatar.textContent = participantInitials;
         this.elements.chatAvatar.classList.toggle('online', isOnline);
-        this.elements.chatName.textContent = otherParticipant.id || 'Unknown';
+        this.elements.chatName.textContent = participantName;
         this.elements.chatStatus.textContent = isOnline ? 'Online' : (otherParticipant.role || 'Offline');
         this.elements.chatStatus.classList.toggle('online', isOnline);
         
@@ -705,7 +836,11 @@ const ChatApp = {
      */
     async loadMessages(conversationId) {
         try {
+            console.log('[Chat] Loading messages for conversation:', conversationId);
             const messages = await API.getMessages(conversationId);
+            console.log('[Chat] Loaded messages from API:', messages);
+            console.log('[Chat] Number of messages:', messages.length);
+            
             this.state.messages = messages.reverse(); // Oldest first
             this.renderMessages();
             this.scrollToBottom();
@@ -731,6 +866,10 @@ const ChatApp = {
         }
 
         this.elements.messagesList.innerHTML = messages.map(msg => {
+            if (!msg || !msg.senderId) {
+                console.error('[Chat] Invalid message object:', msg);
+                return '';
+            }
             const isSent = msg.senderId === user.id;
             const messageClass = msg.messageType === 'system' ? 'system' : (isSent ? 'sent' : 'received');
             const attachmentHtml = this.renderAttachments(msg);
@@ -787,15 +926,23 @@ const ChatApp = {
         const file = this.elements.fileInput.files[0];
 
         if (!content && !file) return;
-        if (!this.state.currentConversation) return;
+        
+        if (!this.state.currentConversation) {
+            console.error('No current conversation set!');
+            this.showToast('Please wait for chat to initialize', 'error');
+            return;
+        }
 
         const conversationId = this.state.currentConversation.id;
+        console.log('[Chat] Sending message to conversation:', conversationId);
         
         // Clear input immediately
         this.elements.messageInput.value = '';
         
         // Stop typing indicator
-        SocketService.stopTyping(conversationId);
+        if (SocketService.socket) {
+            SocketService.stopTyping(conversationId);
+        }
 
         try {
             let message;
@@ -805,12 +952,16 @@ const ChatApp = {
                 message = await API.uploadFile(conversationId, file);
                 this.clearFileSelection();
             } else {
-                // Send text via socket for real-time delivery
-                message = await SocketService.sendMessage(conversationId, content);
+                // Send text message via API
+                message = await API.sendMessage(conversationId, content);
             }
             
+            console.log('[Chat] Message sent successfully:', message);
+            
             // Add to local state
-            this.state.messages.push(message);
+            if (message) {
+                this.state.messages.push(message);
+            }
             this.renderMessages();
             this.scrollToBottom();
             
@@ -861,10 +1012,66 @@ const ChatApp = {
     },
 
     /**
+     * Handle socket connection
+     */
+    onSocketConnect() {
+        console.log('[Chat] Socket connected successfully');
+        // Request current online users list
+        if (SocketService.socket) {
+            SocketService.socket.emit('user:getOnlineUsers', {}, (response) => {
+                if (response && response.success) {
+                    this.onOnlineUsers({ userIds: response.data });
+                }
+            });
+        }
+    },
+
+    /**
+     * Handle initial online users list
+     */
+    onOnlineUsers(data) {
+        console.log('[Status] Received online users:', data.userIds);
+        if (data.userIds && Array.isArray(data.userIds)) {
+            // Clear current online users and add all from list
+            this.state.onlineUsers.clear();
+            data.userIds.forEach(userId => {
+                this.state.onlineUsers.add(userId);
+            });
+            
+            // Update UI for all online users
+            data.userIds.forEach(userId => {
+                this.onUserStatusChange(userId, true);
+            });
+            
+            // Update RH profile if candidate
+            if (this.state.user.role.toLowerCase() === 'candidate' && this.state.rhUser) {
+                const isRhOnline = this.state.onlineUsers.has(this.state.rhUser.id);
+                this.onUserStatusChange(this.state.rhUser.id, isRhOnline);
+            }
+            
+            // Re-render conversations to show online status
+            if (this.state.conversations.length > 0) {
+                this.renderConversations();
+            }
+        }
+    },
+
+    /**
      * Handle new message from socket
      */
     onNewMessage(data) {
+        console.log('[Chat] onNewMessage received:', data);
         const { message, conversationId } = data;
+        const isRH = this.state.user.role.toLowerCase() === 'recruiter';
+        
+        console.log('[Chat] Current user role:', this.state.user.role, 'isRH:', isRH);
+        console.log('[Chat] Current conversations:', this.state.conversations.map(c => c.id));
+        
+        // For RH, if conversation doesn't exist in list, reload conversations
+        if (isRH && !this.state.conversations.find(c => c.id === conversationId)) {
+            console.log('[Chat] Conversation not found in list, reloading...');
+            this.loadConversations();
+        }
         
         // Update conversation preview
         this.updateConversationPreview(conversationId, message);
@@ -902,6 +1109,8 @@ const ChatApp = {
      * Handle user status change
      */
     onUserStatusChange(userId, isOnline) {
+        console.log(`[Status] User ${userId} is now ${isOnline ? 'online' : 'offline'}`);
+        
         if (isOnline) {
             this.state.onlineUsers.add(userId);
         } else {
@@ -910,15 +1119,23 @@ const ChatApp = {
         
         // Update RH online indicator for candidates
         const isCandidate = this.state.user.role.toLowerCase() === 'candidate';
-        if (isCandidate && this.elements.rhOnlineIndicator) {
-            // TODO: Check if userId is the RH user
-            // For now, update indicator if any RH comes online
-            if (isOnline) {
-                this.elements.rhOnlineIndicator.classList.remove('offline');
-            } else {
-                this.elements.rhOnlineIndicator.classList.add('offline');
+        if (isCandidate && this.elements.rhOnlineIndicator && this.state.rhUser) {
+            // Check if this is the RH user
+            if (userId === this.state.rhUser.id) {
+                if (isOnline) {
+                    this.elements.rhOnlineIndicator.classList.remove('offline');
+                    this.elements.rhOnlineIndicator.classList.add('online');
+                    this.elements.rhProfileStatus.textContent = 'Online';
+                } else {
+                    this.elements.rhOnlineIndicator.classList.remove('online');
+                    this.elements.rhOnlineIndicator.classList.add('offline');
+                    this.elements.rhProfileStatus.textContent = 'Offline';
+                }
             }
         }
+        
+        // Update conversation list avatars
+        this.updateConversationOnlineStatus(userId, isOnline);
         
         // Update UI if viewing this user's conversation
         const conv = this.state.currentConversation;
@@ -926,10 +1143,65 @@ const ChatApp = {
             const otherParticipant = this.getOtherParticipant(conv);
             if (otherParticipant.id === userId) {
                 this.elements.chatAvatar.classList.toggle('online', isOnline);
-                this.elements.chatStatus.textContent = isOnline ? 'Online' : (otherParticipant.role || 'Offline');
+                this.elements.chatStatus.textContent = isOnline ? 'Online' : 'Offline';
                 this.elements.chatStatus.classList.toggle('online', isOnline);
+                
+                // Update mobile RH header if candidate view
+                if (isCandidate && this.elements.mobileRhStatus) {
+                    this.elements.mobileRhStatus.textContent = isOnline ? 'Online' : 'Offline';
+                }
             }
         }
+    },
+
+    /**
+     * Update online status indicator in conversation list
+     */
+    updateConversationOnlineStatus(userId, isOnline) {
+        const conversationItems = this.elements.conversationsList?.querySelectorAll('.conversation-item');
+        if (!conversationItems) return;
+        
+        conversationItems.forEach(item => {
+            const conv = this.state.conversations.find(c => c.id === item.dataset.id);
+            if (conv) {
+                const otherParticipant = this.getOtherParticipant(conv);
+                if (otherParticipant.id === userId) {
+                    const avatar = item.querySelector('.avatar');
+                    if (avatar) {
+                        if (isOnline) {
+                            avatar.classList.add('online');
+                        } else {
+                            avatar.classList.remove('online');
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    /**
+     * Update online status indicator in conversation list
+     */
+    updateConversationOnlineStatus(userId, isOnline) {
+        const conversationItems = this.elements.conversationsList?.querySelectorAll('.conversation-item');
+        if (!conversationItems) return;
+        
+        conversationItems.forEach(item => {
+            const conv = this.state.conversations.find(c => c.id === item.dataset.id);
+            if (conv) {
+                const otherParticipant = this.getOtherParticipant(conv);
+                if (otherParticipant.id === userId) {
+                    const avatar = item.querySelector('.avatar');
+                    if (avatar) {
+                        if (isOnline) {
+                            avatar.classList.add('online');
+                        } else {
+                            avatar.classList.remove('online');
+                        }
+                    }
+                }
+            }
+        });
     },
 
     /**
@@ -1034,26 +1306,27 @@ const ChatApp = {
         if (!msg.attachments || msg.attachments.length === 0) return '';
 
         return msg.attachments.map(att => {
-            const fileType = att.fileType || '';
+            const mimeType = att.mimeType || '';
+            const fileUrl = att.filePath.startsWith('http') ? att.filePath : `${API.baseUrl}${att.filePath}`;
 
-            if (fileType.startsWith('image/')) {
+            if (mimeType.startsWith('image/')) {
                 return `<div class="message-attachment">
-                    <img src="${att.url}" alt="${this.escapeHtml(att.fileName)}" loading="lazy"
-                         class="attachment-image" data-url="${att.url}">
+                    <img src="${fileUrl}" alt="${this.escapeHtml(att.fileName)}" loading="lazy"
+                         class="attachment-image" data-url="${fileUrl}" onclick="ChatApp.openImageViewer('${fileUrl}')">
                 </div>`;
             }
-            if (fileType.startsWith('video/')) {
+            if (mimeType.startsWith('video/')) {
                 return `<div class="message-attachment">
-                    <video controls preload="metadata">
-                        <source src="${att.url}" type="${fileType}">
+                    <video controls preload="metadata" style="max-width: 100%; border-radius: 8px;">
+                        <source src="${fileUrl}" type="${mimeType}">
                         Your browser does not support the video tag.
                     </video>
                 </div>`;
             }
             // PDF and other files — download link
-            const icon = fileType === 'application/pdf' ? '📄' : '📁';
+            const icon = mimeType === 'application/pdf' ? '📄' : '📁';
             return `<div class="message-attachment">
-                <a href="${att.url}" class="file-link" target="_blank" download="${this.escapeHtml(att.fileName)}">
+                <a href="${fileUrl}" class="file-link" target="_blank" download="${this.escapeHtml(att.fileName)}">
                     ${icon} ${this.escapeHtml(att.fileName)}
                     <span class="file-size">${this.formatFileSize(att.fileSize)}</span>
                 </a>

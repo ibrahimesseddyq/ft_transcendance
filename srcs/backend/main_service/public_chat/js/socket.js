@@ -57,9 +57,12 @@ const SocketService = {
      * Set up all socket event listeners
      */
     setupEventListeners() {
+        console.log('[SocketService] Setting up event listeners');
+        
         // Connection events
         this.socket.on('connect', () => {
-            console.log('Socket connected');
+            console.log('Socket connected, socket.id:', this.socket.id);
+            console.log('Socket connected:', this.socket.connected);
             this.emit('onConnect');
         });
 
@@ -75,8 +78,13 @@ const SocketService = {
 
         // Message events
         this.socket.on('message:new', (data) => {
-            console.log('New message received:', data);
+            console.log('[SocketService] message:new event received:', data);
             this.emit('onNewMessage', data);
+        });
+
+        // Add a catch-all listener to see ALL events
+        this.socket.onAny((eventName, ...args) => {
+            console.log('[SocketService] Event received:', eventName, args);
         });
 
         this.socket.on('message:updated', (data) => {
@@ -112,6 +120,10 @@ const SocketService = {
 
         this.socket.on('user:offline', (data) => {
             this.emit('onUserOffline', data);
+        });
+
+        this.socket.on('user:onlineUsers', (data) => {
+            this.emit('onOnlineUsers', data);
         });
 
         // Conversation events

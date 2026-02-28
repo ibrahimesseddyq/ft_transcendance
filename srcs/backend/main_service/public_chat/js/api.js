@@ -105,8 +105,14 @@ const API = {
      * @returns {Promise<Array>} List of conversations
      */
     async getConversations() {
-        const response = await this.request('/api/conversations');
-        return response.data || [];
+        console.log('[API] Fetching conversations...');
+        const response = await this.request('/chat/conversations');
+        console.log('[API] getConversations raw response:', response);
+        
+        // Backend returns array directly, not wrapped in data property
+        const conversations = Array.isArray(response) ? response : (response.data || []);
+        console.log('[API] Parsed conversations:', conversations);
+        return conversations;
     },
 
     /**
@@ -115,7 +121,7 @@ const API = {
      * @returns {Promise<Object>} Conversation data
      */
     async getConversation(conversationId) {
-        const response = await this.request(`/api/conversations/${conversationId}`);
+        const response = await this.request(`/chat/conversations/${conversationId}`);
         return response.data;
     },
 
@@ -125,25 +131,35 @@ const API = {
      * @returns {Promise<Object>} Conversation with messages
      */
     async getConversationWithMessages(conversationId) {
-        const response = await this.request(`/api/conversations/${conversationId}/messages`);
+        const response = await this.request(`/chat/conversations/${conversationId}/messages`);
         return response.data;
     },
 
     /**
+     * Get recruiter (RH) profile
+     * @returns {Promise<Object>} RH user data
+     */
+    async getRecruiter() {
+        const response = await this.request('/chat/conversations/rh-profile');
+        // Backend returns the user object directly, not wrapped in data
+        return response.data || response;
+    },
+
+    /**
      * Create a new conversation
-     * @param {string} participantId - ID of the other participant
-     * @param {string} participantRole - Role of the other participant
+     * @param {string} participantId - ID of the other participant (optional for candidates)
      * @returns {Promise<Object>} Created conversation
      */
-    async createConversation(participantId, participantRole) {
-        const response = await this.request('/api/conversations', {
+    async createConversation(participantId = null) {
+        const body = participantId ? { participantId } : {};
+        console.log('[API] Creating conversation with body:', body);
+        const response = await this.request('/chat/conversations', {
             method: 'POST',
-            body: JSON.stringify({ 
-                targetUserId: participantId, 
-                targetUserRole: participantRole 
-            })
+            body: JSON.stringify(body)
         });
-        return response.data;
+        console.log('[API] Full response from createConversation:', response);
+        console.log('[API] response.data:', response.data);
+        return response.data || response;
     },
 
     /**
@@ -152,8 +168,8 @@ const API = {
      * @returns {Promise<Object>} Response
      */
     async markConversationAsRead(conversationId) {
-        const response = await this.request(`/api/conversations/${conversationId}/read`, {
-            method: 'POST'
+        const response = await this.request(`/chat/conversations/${conversationId}/read`, {
+            method: 'PATCH'
         });
         return response.data;
     },
@@ -170,12 +186,18 @@ const API = {
      * @returns {Promise<Array>} List of messages
      */
     async getMessages(conversationId, limit = 50, before = null) {
-        let endpoint = `/api/messages/conversation/${conversationId}?limit=${limit}`;
+        let endpoint = `/chat/messages/conversation/${conversationId}?limit=${limit}`;
         if (before) {
             endpoint += `&before=${before}`;
         }
+        console.log('[API] Fetching messages from:', endpoint);
         const response = await this.request(endpoint);
-        return response.data || [];
+        console.log('[API] getMessages raw response:', response);
+        
+        // Backend returns array directly
+        const messages = Array.isArray(response) ? response : (response.data || []);
+        console.log('[API] Parsed messages:', messages);
+        return messages;
     },
 
     /**
@@ -186,11 +208,14 @@ const API = {
      * @returns {Promise<Object>} Created message
      */
     async sendMessage(conversationId, content, messageType = 'text') {
-        const response = await this.request('/api/messages', {
+        console.log('[API] Sending message to conversation:', conversationId, 'content:', content);
+        const response = await this.request(`/chat/messages/conversation/${conversationId}`, {
             method: 'POST',
-            body: JSON.stringify({ conversationId, content, messageType })
+            body: JSON.stringify({ content, messageType })
         });
-        return response.data;
+        console.log('[API] sendMessage response:', response);
+        console.log('[API] response.data:', response.data);
+        return response.data || response;
     },
 
     /**
@@ -200,7 +225,7 @@ const API = {
      * @returns {Promise<Object>} Updated message
      */
     async editMessage(messageId, content) {
-        const response = await this.request(`/api/messages/${messageId}`, {
+        const response = await this.request(`/chat/messages/${messageId}`, {
             method: 'PATCH',
             body: JSON.stringify({ content })
         });
@@ -213,7 +238,7 @@ const API = {
      * @returns {Promise<Object>} Response
      */
     async deleteMessage(messageId) {
-        const response = await this.request(`/api/messages/${messageId}`, {
+        const response = await this.request(`/chat/messages/${messageId}`, {
             method: 'DELETE'
         });
         return response.data;
@@ -225,7 +250,7 @@ const API = {
      * @returns {Promise<Object>} Response
      */
     async markMessageAsRead(messageId) {
-        const response = await this.request(`/api/messages/${messageId}/read`, {
+        const response = await this.request(`/chat/messages/${messageId}/read`, {
             method: 'POST'
         });
         return response.data;
@@ -242,7 +267,8 @@ const API = {
         formData.append('file', file);
         formData.append('conversationId', conversationId);
 
-        const url = `${this.baseUrl}/api/messages/upload`;
+        console.log('[API] Uploading file:', file.name, 'to conversation:', conversationId);
+        const url = `${this.baseUrl}/chat/messages/upload`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -253,10 +279,14 @@ const API = {
         });
 
         const data = await response.json();
+        console.log('[API] Upload response:', data);
+        
         if (!response.ok) {
             throw new Error(data.errors?.[0] || data.message || 'Upload failed');
         }
-        return data.data;
+        
+        // Backend returns message object directly, not wrapped in data
+        return Array.isArray(data) ? data : (data.data || data);
     }
 };
 
