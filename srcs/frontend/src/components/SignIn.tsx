@@ -50,20 +50,6 @@ const Signin = () => {
                 body: JSON.stringify(data)
             });
 
-<<<<<<< HEAD
-        const result = await response.json();
-        if (!response.ok) 
-            throw new Error(result.message || "Login failed");
-        // console.log("result :", result);
-        const token = result?.tempToken;
-        const userId = result?.userId;
-        setFirstLogin(result?.firstLogin);
-        // console.log("userId :", userId, "token :", token);
-        if (token && userId) {
-            setUserId(userId);
-            navigate("/otp", { replace: true });
-            reset();
-=======
             const result = await response.json();
             if (!response.ok) 
                 throw new Error(result.message || "Login failed");
@@ -77,7 +63,6 @@ const Signin = () => {
             }
         } catch (error: any) {
             Notification(error.message || "Error Login", "error");
->>>>>>> 38d73f4684202334f78a9311b78d57c555198653
         }
     };
 
