@@ -7,16 +7,16 @@ import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
-import { useSecureFetch} from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
+    const setTmpToken = useAuthStore((state) => state.setTmpToken);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const secureFetch = useSecureFetch();
 
     const {
         register,
@@ -43,26 +43,28 @@ const Signin = () => {
         window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
-    const LoginSubmit = async (data: any) => {
-      try {
-            const response = await secureFetch('/api/auth/login', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
 
-            const result = await response.json();
-            if (!response.ok) 
-                throw new Error(result.message || "Login failed");
-            const token = result?.tempToken;
+    const LoginSubmit = async (data: any) => {
+        try {
+            const response = await api.post('/api/auth/login', data);
+            const result = response.data;
+
+            const tmpToken = result?.tempToken;
             const userId = result?.userId;
+
+            console.log ("first Login :", result?.firstLogin);
             setFirstLogin(result?.firstLogin);
-            if (token && userId) {
+
+            if (tmpToken && userId) {
+                console.log('login secsusfull');
+                setTmpToken(tmpToken);
                 setUserId(userId);
                 navigate("/otp", { replace: true });
                 reset();
             }
         } catch (error: any) {
-            Notification(error.message || "Error Login", "error");
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
+            Notification(errorMessage, "error");
         }
     };
 
@@ -80,14 +82,13 @@ const Signin = () => {
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome Back!
                     </h2>
-                    {/* Fixed text color here */}
                     <h1 className="text-md font-electrolize text-black dark:text-white whitespace-nowrap overflow-hidden transition-colors">
                         We are happy to see you again.
                     </h1>
                 </div>
 
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden">
-                    <form onSubmit={handleSubmit(LoginSubmit)} className='flex flex-col gap-2 w-full'>
+                    <form onSubmit={handleSubmit(()=>LoginSubmit)} className='flex flex-col gap-2 w-full'>
                         
                         {/* Email Input Container */}
                         <div className="flex justify-between items-center h-[50px] px-5
@@ -95,7 +96,6 @@ const Signin = () => {
                             <input
                                 {...register("email", { required: true })}
                                 placeholder="Enter your Email"
-                                /* Updated text color and placeholder */
                                 className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
@@ -110,7 +110,6 @@ const Signin = () => {
                                 {...register("password", { required: true })}
                                 placeholder="Enter your Password"
                                 type={passtype}
-                                /* Updated text color */
                                 className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />

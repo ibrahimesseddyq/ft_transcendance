@@ -9,32 +9,15 @@ import {
 
 const router =  express.Router();
 
-router.get('/',
-            // verifyToken,
-            userController.listUsers)
-  .get('/:id', 
-            // verifyToken,
-            userController.getUserById)
-  .post('/',
-            // verifyToken,
-            ValidateRequest(createUserSchema),userController.createUser)
-  .delete('/:id',
-            // verifyToken,
-            userController.deleteUser)
-  .patch('/:id', 
-            // verifyToken,
-            ValidateRequest(updateUserSchema),userController.updateUser)
-  .post('/avatar/:id',
-            // verifyToken,
-            upload.single('avatar'),userController.uploadAvatar)
-  .get('/avatar/:id',
-              // verifyToken,
-              userController.getAvatar)
-  .delete('/avatar/:id',
-              // verifyToken,
-
-              userController.deleteAvatar)
-  .get('/me',
-            // verifyToken,
-            userController.checkAuth);
+router
+  .get('/me',userController.checkAuth)
+  .get('/:id', userController.getUserById)
+  .get('/',userController.listUsers)
+  .post('/',ValidateRequest(createUserSchema),userController.createUser)
+  .delete('/:id',userController.deleteUser)
+  .patch('/:id', ValidateRequest(updateUserSchema),userController.updateUser)
+  .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
+  .get('/avatar/:id',userController.getAvatar)
+  .delete('/avatar/:id',userController.deleteAvatar)
+  
 export default router;

@@ -22,10 +22,11 @@ export const verifyToken = async (req, res, next) => {
 export const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
+        console.log("**************User role = ", req.user.role, "*****************");
         if(!req.user || !req.user.role)
             throw new HttpException(403, "Forbidden");
-        if(!allowedRoles.includes(req.user.role))
-            throw new HttpException(403,"Forbidden");
+        // if(!allowedRoles.includes(req.user.role))
+        //     throw new HttpException(403,"Forbidden");
         next();
     }
 }

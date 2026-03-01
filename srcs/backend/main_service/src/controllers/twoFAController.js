@@ -17,6 +17,7 @@ export const    verifySetup = async (req, res,next) => {
      try {
 
         const { code } = req.body;
+        
         const data = await twoFAService.verifySetup(req.body.id, code);
 
         res

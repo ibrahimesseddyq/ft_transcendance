@@ -3,11 +3,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
-import { useSecureFetch} from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 
 const Signup = () => {
-    const secureFetch = useSecureFetch();
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const {
         register,
@@ -24,14 +23,8 @@ const Signup = () => {
 
     const SignUpSubmit = async (data: any) => {
         try {
-            const response = await secureFetch('/api/auth/register', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server responded with status: ${response.status}`);
-            }
+            await api.post('/api/auth/register', data);
+            console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
             window.location.href = '/';
         } catch (error) {

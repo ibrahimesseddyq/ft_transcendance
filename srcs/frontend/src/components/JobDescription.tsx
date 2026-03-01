@@ -3,15 +3,15 @@ import Notification from "@/utils/TostifyNotification"
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/utils/ZuStand';
 import {ToastContainer} from "react-toastify";
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 export function JobDescription(){
-  const secureFetch = useSecureFetch();
   const location = useLocation();
   const navigate = useNavigate();
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
   const user = useAuthStore((state) => state.user);
+  
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   const submitData = {
@@ -22,14 +22,7 @@ export function JobDescription(){
 
   const ApplySubmit = async (item: any) => {
     try {
-      const response = await secureFetch(`/api/applications`, {
-          method: 'POST',
-          body: JSON.stringify(item)
-      });
-      
-      if (!response.ok)
-        throw new Error(`Server error: ${response.status}`);
-
+      await api.post(`/api/applications`, item);
       Notification("Job Applyed successfully!", "success");
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {
@@ -133,14 +126,17 @@ export function JobDescription(){
           </section>
 
           {/* Skills Badges */}
-          <div className="flex flex-wrap gap-2">
-            {SKILLS?.map((item: string, index: number) => (
-              <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
-                text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
-                {item.trim()}
-              </span>
-            ))}
-          </div>
+          {SKILLS.length 
+            ? <div className="flex flex-wrap gap-2">
+                {SKILLS?.map((item: string, index: number) => (
+                  <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
+                    text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+                    {item.trim()}
+                  </span>
+                ))}
+              </div>
+            : null
+          }
 
           {/* Footer Info */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pt-6 

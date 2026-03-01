@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
@@ -60,20 +60,12 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
   });
 
   const JobSubmit = async (data: JobFormData) => {
-    const secureFetch = useSecureFetch();
 
     if (jobItem){
-      // console.log("job id is : ",  jobItem.id);
       try {
-        const response = await secureFetch(`/api/jobs/${jobItem.id}`, {
-            method: 'PATCH',
-            body: JSON.stringify(data)
-        });
-        
-        if (!response.ok)
-          throw new Error(`Server error: ${response.status}`);
+        const response = await api.patch(`/api/jobs/${jobItem.id}`, data);
 
-        const result = await response.json();
+        const result = response.data;
         const savedJob = result.data;
         Notification("Job updated successfully!", "success");
         setJobsArray((prev:any) => 
@@ -86,15 +78,9 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await secureFetch(`/api/jobs`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-        
-        if (!response.ok)
-          throw new Error(`Server error: ${response.status}`);
+        const response = await api.post(`/api/jobs`, data);
 
-        const result = await response.json();
+        const result = await response.data;
         const savedJob = result.data;
         setJobsArray((prev:any) => [savedJob, ...prev]);
         Notification("Job added successfully!", "success");
@@ -188,6 +174,24 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
                 <option value="archived">Archived</option>
               </select>
             </div>
+          </div>
+
+          {/* Skills */}
+          <div className='flex-1'>
+            <textarea {...register("skills")}
+              placeholder="Job skills" rows={4}
+              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
+            {errors.skills && <p className="mt-1 text-red-500 text-[10px]">{errors.skills.message}</p>}
+          </div>
+    
+          {/* Requirement */}
+          <div className='flex-1'>
+            <textarea {...register("requirements")}
+              placeholder="Job requirements" rows={4}
+              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
+            {errors.requirements && <p className="mt-1 text-red-500 text-[10px]">{errors.requirements.message}</p>}
           </div>
 
           {/* Description */}

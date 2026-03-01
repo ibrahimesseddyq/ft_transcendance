@@ -8,7 +8,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState } from "react";
 import {useNavigate } from "react-router-dom";
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -46,7 +46,6 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
 );
 
 export function ProfileInformations() {
-  const secureFetch = useSecureFetch();
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
   const user = useAuthStore((state) => state.user);
@@ -88,22 +87,16 @@ export function ProfileInformations() {
     if (data.resume)
       formData.append("resume", data.resume);
     try {
-        const response = await secureFetch(`/api/profiles/${data.userId}`, {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (!response.ok)
-          throw new Error("Profile Information failed");
+        const response = await api.post(`/api/profiles/${data.userId}`, formData);
   
-        const result = await response.json();
-        if (result.ok){
-          setProfile(result.data);
-          if (user?.role === "recruiter" || user?.role === "admin")
-            navigate("/Dashboard");
-          else
-            navigate("/Jobs");
-        }
+        const result = response.data;
+        console.log('result :', result)
+        console.log('Iam here in profile information')
+        setProfile(result.data);
+        if (user?.role === "recruiter" || user?.role === "admin")
+          navigate("/Dashboard", { replace: true });
+        else
+          navigate("/Jobs", { replace: true });
         
     } catch (error) {
         console.error("Submission failed:", error);

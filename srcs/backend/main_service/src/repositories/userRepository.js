@@ -13,6 +13,7 @@ export const getUserById = async (userId)=> {
             avatarUrl: true,
             profile : true,
             twoFATempSecret : true,
+            firstLogin: true,
         }
     })
 }
