@@ -26,7 +26,7 @@ router.post('/login',
     .get('/google',
         passport.authenticate('google', {scope: ['profile', 'email']}))
     .get('/google/callback', 
-        passport.authenticate('google', { 
+        passport.authenticate('google', {
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),

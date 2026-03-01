@@ -1,21 +1,21 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ApplicationContent from '@/components/ui/ApplicationContent';
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 export function Application(){
-    const secureFetch = useSecureFetch();
     const params = useParams();
     const jobId = params.jobId;
     const [applications, setApplications] = useState([]);
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await secureFetch(`/api/jobs/${jobId}/applications`);
-            
-            if (res.ok) {
-              const jobApplications = await res.json();
-              setApplications(jobApplications.data);
+            try{
+                const res = await api.get(`/api/jobs/${jobId}/applications`);
+                const jobApplications = res.data;
+                setApplications(jobApplications.data);
+            }catch(err){
+                console.log(err);
             }
         };
     

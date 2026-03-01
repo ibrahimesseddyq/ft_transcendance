@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
-import { useSecureFetch } from '@/utils/SecureFetch';
-import { Loading } from '@/components/Loading'
+import api from '@/utils/Api';
+import { Loading } from '@/components/Loading';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -11,7 +11,6 @@ interface AuthGuardProps {
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { userId, setUserId, clearAuth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(!userId);
-  const secureFetch = useSecureFetch();
   const location = useLocation();
 
   useEffect(() => {
@@ -22,11 +21,12 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       }
 
       try {
-        const response = await secureFetch('/api/users/me');
-        
-        if (response.ok) {
-          const data = await response.json();
-          setUserId(data.userId);
+        const response = await api.get(`/api/users/${userId}/me`);
+        const fetchedUserId = response.data.userId;
+        console.log("response.data :", fetchedUserId);
+
+        if (fetchedUserId) {
+          setUserId(fetchedUserId);
         } else {
           clearAuth();
         }
@@ -38,13 +38,13 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     };
 
     verifySession();
-  }, [userId, setUserId, clearAuth, secureFetch]);
+  }, [userId, setUserId, clearAuth]);
 
   if (isLoading) {
     return (
-        <div className="flex-1 flex items-center justify-center">
-            <Loading />
-        </div>
+      <div className="flex-1 flex items-center justify-center">
+        <Loading />
+      </div>
     );
   }
 
