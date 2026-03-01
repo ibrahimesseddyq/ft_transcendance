@@ -13,12 +13,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
-  
 }
 
 // ===================
@@ -40,7 +39,7 @@ enum Difficulty {
 // MCQ LIBRARY (Independent, Reusable)
 // ===================
 
-model MCQ {
+model Mcq {
   id       String @id @default(uuid()) @db.Char(36)
   question String @db.Text
 
@@ -170,7 +169,7 @@ model Test {
   updatedAt DateTime @updatedAt
 
   // Many-to-many relations (Prisma creates junction tables)
-  mcqs           MCQ[]
+  mcqs           Mcq[]
   codeChallenges CodeChallenge[]
 
   @@index([type])

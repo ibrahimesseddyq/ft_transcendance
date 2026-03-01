@@ -1,7 +1,6 @@
 import * as authController from '../controllers/authController.js';
 import express from 'express';
 import env from '../config/env.js'
-import * as jwtService from '../services/jwtService.js';
 import validateRequest from '../middleware/ValidateRequest.js';
 import passport from '../config/passport.js';
 import {registerUserSchema,loginUserSchema} from '../validators/userValidator.js';
@@ -31,24 +30,9 @@ router.post('/login',
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),
+        authController.googleCallBack
     // the followin async function should moved to the controller
-    async (req, res) => {
-        try {
-            const tokens = jwtService.generateAuthTokens({
-                id: req.user.id,
-                email: req.user.email,
-                role: req.user.role
-            });
-            const userId = req.user.id;
-            res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
-        } catch (error) {
-            res.status(400)
-            .json({
-                    success: false,
-                    message: 'Google authentication failed' 
-                });
-        }
-    }
+    
 );
 
 export default router;

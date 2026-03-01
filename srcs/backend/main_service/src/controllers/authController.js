@@ -1,6 +1,7 @@
 import env from'../config/env.js';
 import * as authService from'../services/authService.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import * as jwtService from '../services/jwtService.js';
 
 const accessTokenOptions = {
     httpOnly: true,
@@ -115,6 +116,12 @@ export const resendVerification = asyncHandler(async (req, res, next) => {
     res.status(200).json({ message });
 }) 
 
-
-
-
+export const googleCallBack = asyncHandler(async (req, res, next) => {
+    const tokens = jwtService.generateAuthTokens({
+        id: req.user.id,
+        email: req.user.email,
+        role: req.user.role
+    });
+    const userId = req.user.id;
+    res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
+})
