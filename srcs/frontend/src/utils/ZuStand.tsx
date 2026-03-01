@@ -49,14 +49,14 @@ type State = {
   qrVerified: boolean;
   userId: string | null;
   firstLogin: boolean;
-  tmpToken: string;
+  tmpToken: any;
 };
 
 
 type Action = {
   setUser: (user: User) => void;
   setProfile: (profileData: any) => void;
-  setTmpToken: (setTmpToken: string) => void;
+  setTmpToken: (setTmpToken: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
   setUserId: (id: string) => void;
@@ -70,7 +70,7 @@ export const useAuthStore = create<State & Action>()(
       user: null,
       profile: null,
       userId: null,
-      tmpToken: "",
+      tmpToken: null,
       qrVerified: false,
       firstLogin: false,
 
@@ -100,7 +100,7 @@ export const useAuthStore = create<State & Action>()(
 
       setProfile: (profileData) =>
         set((state) => ({
-          profile: profileData,
+          profile: profileData.data ?? profileData,
           user: state.user 
             ? { ...state.user, avatarUrl: profileData.avatarUrl,
               phone: profileData.phone } 
