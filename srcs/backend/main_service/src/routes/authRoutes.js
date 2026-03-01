@@ -27,28 +27,33 @@ router.post('/login',
     .get('/google',
         passport.authenticate('google', {scope: ['profile', 'email']}))
     .get('/google/callback', 
-        passport.authenticate('google', { 
+        passport.authenticate('google', {
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),
-    // the followin async function should moved to the controller
-    async (req, res) => {
-        try {
-            const tokens = jwtService.generateAuthTokens({
-                id: req.user.id,
-                email: req.user.email,
-                role: req.user.role
-            });
-            const userId = req.user.id;
-            res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
-        } catch (error) {
-            res.status(400)
-            .json({
+        async (req, res) => {
+            try {
+                const tokens = jwtService.generateAuthTokens({
+                    id: req.user.id,
+                    email: req.user.email,
+                    role: req.user.role
+                });
+            
+                const userId = req.user.id;
+                const firstLogin = !!req.user.firstLogin;
+                console.log("firstLogin :", firstLogin);
+            
+                res.cookie('accessToken', tokens)
+                    .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
+            } catch (error) {
+                res.status(400).json({
                     success: false,
                     message: 'Google authentication failed' 
                 });
+            }
         }
-    }
-);
+    );
+
+
 
 export default router;
