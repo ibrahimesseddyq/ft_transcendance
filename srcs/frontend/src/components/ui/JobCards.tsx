@@ -1,7 +1,7 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -13,20 +13,15 @@ interface props {
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
   const navigate = useNavigate();
-  const secureFetch = useSecureFetch();
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      const response = await secureFetch(`/api/jobs/${jobId}`, {
-          method: 'DELETE',
-      });
-      if (response.ok){
-        setJobsArray(jobsArray.filter(job => job.id !== jobId));
-        Notification("Job Deleted", "success");
-      } 
+      await api.delete(`/api/jobs/${jobId}`);
+      setJobsArray(jobsArray.filter(job => job.id !== jobId));
+      Notification("Job Deleted", "success");
     } catch (error) {
       Notification("Error Deleting job", "error");
     }
@@ -107,14 +102,17 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
               </div>
 
               {/* Skills Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
-                    text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
-                    {tag.trim()}
-                  </span>
-                ))}
-              </div>
+              {item.skills.length
+                ? <div className="flex flex-wrap gap-2 mb-6">
+                    {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
+                      <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
+                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                : null
+               }
 
               <hr className="border-gray-100 dark:border-slate-800 mb-6" />
 

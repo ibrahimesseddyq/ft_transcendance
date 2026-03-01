@@ -24,6 +24,7 @@ export const login = asyncHandler(async (req, res, next) => {
         if (result.require2FA)
         {
             return res
+            .cookie('accessToken',result.accessToken,accessTokenOptions)
             .status(200).json({
                 message: "2FA required",
                 require2FA: true,
@@ -44,12 +45,15 @@ export const login = asyncHandler(async (req, res, next) => {
                 }
             }
         );
+        console.log('cookies set:', result.accessToken, result.refreshToken);
 })
 
 export const verify2FA = asyncHandler(async (req, res, next) =>{
-
+    console.log("body :", req.body);
     const { tempToken, code } = req.body;
     const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+    console.log('accessToken:', accessToken);
+    console.log('refreshToken:', refreshToken);
     res
     .cookie('accessToken',accessToken,accessTokenOptions)
     .cookie('refreshToken', refreshToken ,refreshTokenOptions)
@@ -72,6 +76,28 @@ export const register = asyncHandler(async (req, res, next) => {
         message : 'If the email is valid, an account will be created.',
     });
 })
+
+export const googleCallback = async (req, res, next) => {
+    try {
+        const tokens = jwtService.generateAuthTokens({
+            id: req.user.id,
+            email: req.user.email,
+            role: req.user.role
+        });
+
+        const userId = req.user.id;
+        const firstLogin = !!req.user.firstLogin;
+        console.log("firstLogin :", firstLogin);
+
+        res.cookie('accessToken', tokens)
+            .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Google authentication failed' 
+        });
+    }
+};
 
 export const refresh =  asyncHandler(async (req, res, next) => {
         const refreshToken = req.cookies.refreshToken;
@@ -116,12 +142,15 @@ export const resendVerification = asyncHandler(async (req, res, next) => {
     res.status(200).json({ message });
 }) 
 
-export const googleCallBack = asyncHandler(async (req, res, next) => {
+export const googleCallBack = asyncHandler(async (req, res) => {
     const tokens = jwtService.generateAuthTokens({
         id: req.user.id,
         email: req.user.email,
         role: req.user.role
     });
     const userId = req.user.id;
-    res.redirect(`http://localhost:5173/auth/callback?token=${tokens.accessToken}&userId=${userId}`);
+    const firstLogin = !!req.user.firstLogin;
+    console.log("firstLogin :", firstLogin);
+    res.cookie('accessToken', tokens)
+    .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
 })
