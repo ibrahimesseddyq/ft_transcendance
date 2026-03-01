@@ -51,15 +51,16 @@ export function ProfileCover({ profile, user }: props) {
       {/* Actions Section */}
       <div className="flex flex-wrap gap-3 mt-4 w-full justify-center">
         <div className="flex gap-2 flex-1 w-full sm:w-96 max-w-80">
-          <Link 
+          <a 
+            href={resumeUrl} 
             target="_blank" 
-            to={resumeUrl} 
+            rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-2 border border-[#00adef] rounded-lg 
-              text-[#00adef] py-2 text-sm font-semibold hover:bg-[#00adef]/10 transition-colors"
+                       text-[#00adef] py-2 text-sm font-semibold hover:bg-[#00adef]/10 transition-colors"
           >
             <ArrowDownFromLine className="h-4 w-4"/>
             CV
-          </Link>
+          </a>
           <button onClick={handleCopy}
             className="flex-1 bg-[#00adef] rounded-lg text-white py-2 text-sm 
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-[#00adef]/20">

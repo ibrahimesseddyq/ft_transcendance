@@ -40,7 +40,6 @@ export function Dashboard() {
             <div 
               key={item.id} 
               className="w-full p-4 m-auto flex flex-col justify-between flex-1 overflow-hidden 
-                         /* DARK MODE CLASSES BELOW */
                          bg-white dark:bg-slate-800 
                          text-black dark:text-white 
                          border border-gray-200 dark:border-slate-700 

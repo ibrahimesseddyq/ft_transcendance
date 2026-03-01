@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 interface JobsArrayProps {
   totalJobs: any,
@@ -11,7 +11,6 @@ interface JobsArrayProps {
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
-  const secureFetch = useSecureFetch();
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -38,15 +37,15 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = await secureFetch(`/api/jobs?${params.toString()}`);
+      const fetchPromise = await api.get(`/api/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 
       const [response] = await Promise.all([fetchPromise, timerPromise]);
-      if (response.ok) {
-        const result = await response.json();
-        setJobsArray(result.data);
-      }
+
+      const result =  response.data;
+      console.log("all Jobs :", result.data);
+      setJobsArray(result.data);
     } catch (error) {
       console.error("Fetch Error:", error);
     }finally{
