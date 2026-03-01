@@ -76,6 +76,28 @@ export const register = asyncHandler(async (req, res, next) => {
     });
 })
 
+export const googleCallback = async (req, res, next) => {
+    try {
+        const tokens = jwtService.generateAuthTokens({
+            id: req.user.id,
+            email: req.user.email,
+            role: req.user.role
+        });
+
+        const userId = req.user.id;
+        const firstLogin = !!req.user.firstLogin;
+        console.log("firstLogin :", firstLogin);
+
+        res.cookie('accessToken', tokens)
+            .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: 'Google authentication failed' 
+        });
+    }
+};
+
 export const refresh =  asyncHandler(async (req, res, next) => {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
