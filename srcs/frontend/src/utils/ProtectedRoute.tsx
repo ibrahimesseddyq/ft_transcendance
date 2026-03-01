@@ -9,7 +9,6 @@ export function ProtectedRoute({ allowedRoles }: Props) {
     const user = useAuthStore((state) => state.user);
     const location = useLocation();
     
-    console.log("allowedRoles: ", allowedRoles);
     if (!user) {
       return <Navigate to="/Login" state={{ from: location }} replace />;
     }

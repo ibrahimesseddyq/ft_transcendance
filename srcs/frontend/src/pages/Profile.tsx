@@ -5,10 +5,9 @@ import CareerCard from "@/components/ui/CareerCard"
 import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import EducationCard from "@/components/ui/EducationCard"
-import { useSecureFetch} from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 export function Profile() {
-  const secureFetch = useSecureFetch();
   const params = useParams();
   const id = params.postId;
   const [user, setUser] = useState(null);
@@ -17,20 +16,23 @@ export function Profile() {
  
   useEffect(() => {
     const fetchUser = async () => {
+      try{
+
         const [res1, res2] = await Promise.all([
-          secureFetch(`/api/users/${id}`),
-          secureFetch(`/api/profiles/${id}`),
+          api.get(`/api/users/${id}`),
+          api.get(`/api/profiles/${id}`),
         ]);
 
-        if (res1.ok && res2.ok) {
-          const userData = await res1.json();
-          const profileData = await res2.json();
-          console.log("Iam Here in profile");
-          setUser(userData.data);
-          setProfile(profileData.data);
-          console.log("userData.data : ", userData.data);
-          console.log("profileData.data : ", profileData.data);
-        }
+        const userData = res1.data;
+        const profileData = res2.data;
+
+        console.log("userData :", userData);
+        console.log("profileData :", profileData);
+        setUser(userData.data);
+        setProfile(profileData.data);
+      }catch (err){
+        console.log("Err :", err);
+      }
     };
 
     fetchUser();

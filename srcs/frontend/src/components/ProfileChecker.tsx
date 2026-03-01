@@ -1,27 +1,18 @@
-import { useSecureFetch } from '@/utils/SecureFetch'
+
+import api from '@/utils/Api';
 
 interface ProfileProps {
     userId: string | null;
     setProfile: (profile: any) => void;
-    secureFetch: ReturnType<typeof useSecureFetch>;
 }
 
-export async function ProfileChecker({ userId, setProfile, secureFetch }: ProfileProps) {
+export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
     try {
-        const res = await secureFetch(`/api/profiles/${userId}`, {
-            method: 'GET',
-        });
-
-        if (!res.ok)
-            throw new Error("Profile Checker failed");
-
-        const result = await res.json();
-        if (result.ok) {
-            setProfile(result.data);
-            return true;
-        }
+        const res = await api.get(`/api/profiles/${userId}`);
+        setProfile(res.data);
+        return true;
     } catch (error) {
-        console.error("Profile check error:", error);
+        console.log("No Profile Provided", error);
         return false;
     }
     return false;

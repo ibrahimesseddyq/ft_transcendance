@@ -10,6 +10,7 @@ export function Header() {
   const profile = useAuthStore((state) => state.profile);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const avatarUrl = `${BACKEND_URL}${profile?.user?.avatarUrl ?? user?.avatarUrl}`;
+  console.log("avatarUrl: ", avatarUrl)
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
   const handleTheme = () => {
