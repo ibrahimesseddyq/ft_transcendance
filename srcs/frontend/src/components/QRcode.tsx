@@ -15,8 +15,7 @@ export function QRcode() {
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
     const userId = useAuthStore(state => state.userId);
-    const setTmpToken = useAuthStore(state => state.setTmpToken);
-    const tmpToken = useAuthStore(state => state.tmpToken);
+    const [tmpToken, setTmpToken] = useState(null);
     const user = useAuthStore(state => state.user);
     const setProfile = useAuthStore(state => state.setProfile);
     const setQrVerified = useAuthStore(state => state.setQrVerified);
@@ -24,20 +23,17 @@ export function QRcode() {
     const setUser = useAuthStore(state => state.setUser);
 
     const fetchNewQr = async () => {
-        if (!userId)
+        if (!userId) 
             return;
         setLoading(true);
         try {
             const res = await api.post(`/api/2fa/setup/`, { id: userId });
-            const result = res.data; 
-
+            const result = res.data;
             setQrLink(result.qrDataUrl);
+            setStep('QR_CODE');
             setTmpToken(result.manualKey);
-            // setStep('QR_CODE');
-
-        } catch (error: any) {
-            const errorMsg = error.response?.data?.message || "Failed to fetch QR";
-            console.error("Failed to fetch QR:", errorMsg);
+        } catch (error) {
+            console.log("Failed to fetch QR:", error);
         } finally {
             setLoading(false);
         }
@@ -84,11 +80,15 @@ export function QRcode() {
                 const hasProfile = await ProfileChecker({ userId, setProfile });
                 console.log("hasProfile: ", hasProfile);
                 setQrVerified(true);
-                let userpath = '/';
-                if (user?.role === 'recruiter' || user?.role === 'admin')
+                let userpath;
+                if (user?.role === 'recruiter' || user?.role === 'admin'){
+                    console.log("Admin or recruiter user")
                     userpath = '/Dashboard';
-                else
+                }
+                else{
+                    console.log("normal user")
                     userpath = '/Jobs';
+                }
 
                 const targetPath = hasProfile ? userpath : "/Createprofile";
                 navigate(targetPath, { replace: true });
@@ -117,14 +117,9 @@ export function QRcode() {
             await verify("verify-setup", "api/2fa/verify-setup/", finalOtp);
         else
             await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
+        setOtpArray(new Array(6).fill(""));
     };
 
-    // if (otpArray.length === 6){
-    //     useEffect(() => {
-    //         console.log("IAm Here");
-    //         handleSubmit(otpArray);
-    //     }, [otpArray]);
-    // }
 
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 

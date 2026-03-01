@@ -9,11 +9,11 @@ interface ProfileProps {
 export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
     try {
         const res = await api.get(`/api/profiles/${userId}`);
+        console.log("profile checker :", res.data);
         setProfile(res.data);
-        return true;
     } catch (error) {
         console.log("No Profile Provided", error);
         return false;
     }
-    return false;
+    return true;
 }
