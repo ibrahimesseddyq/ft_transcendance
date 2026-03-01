@@ -33,4 +33,4 @@ const mcqSchema =  z.object({
 export const createMcqSchema = mcqSchema.strict();
 export const updateMcqSchema = mcqSchema.partial();
 
-const createMcqSchema = mcqSchema
+// const createMcqSchema = mcqSchema

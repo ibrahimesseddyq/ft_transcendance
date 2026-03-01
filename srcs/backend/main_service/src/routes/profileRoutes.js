@@ -10,13 +10,18 @@ import express from 'express';
 const router = express.Router();
 
 // the validate request should be refactored based on req.body & req.files
-router.get('/:id', profileController.getProfile)
-    .post('/:id',uploadProfile.fields([
+router.get('/:id', 
+            // verifyToken,
+            profileController.getProfile)
+    .post('/:id',
+            // verifyToken,
+        uploadProfile.fields([
             {name : "avatar" , maxCount: 1},
             {name : "resume", maxCount: 1}
         ])
         ,profileController.createProfile)
     .patch('/:id',
+            // verifyToken,
             uploadProfile.fields([
             {name : "avatar" , maxCount: 1},
             {name : "resume", maxCount: 1},
