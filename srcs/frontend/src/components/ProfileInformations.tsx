@@ -19,10 +19,11 @@ interface FormFieldProps {
   error?: string;
   placeholder?: string;
   type?: string;
+  maxLength?: number;
   optional: boolean;
 }
 
-const FormField = ({ label, name, register, error, placeholder, type, optional }: FormFieldProps) => (
+const FormField = ({ label, name, register, maxLength, error, placeholder, type, optional }: FormFieldProps) => (
   <div className="flex flex-col lg:flex-row md:items-center gap-2 md:gap-6 group">
     <label htmlFor={name} className="w-full md:w-40 text-sm font-medium text-gray-400 
       group-focus-within:text-[#00adef] transition-colors">
@@ -33,6 +34,7 @@ const FormField = ({ label, name, register, error, placeholder, type, optional }
       <input
         id={name}
         type={type}
+        maxLength={maxLength}
         {...register(name, { valueAsNumber: type === "number" })}
         placeholder={placeholder}
         className="h-11 w-full text-sm text-black dark:text-white outline-none px-3 
@@ -151,11 +153,11 @@ export function ProfileInformations() {
             Professional Information
           </h2>
           <div className="flex flex-col gap-5 pl-4">
-            <FormField label="LinkedIn URL" name="linkedinUrl" optional={false} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..." />
-            <FormField label="Portfolio URL" name="portfolioUrl" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com" />
+            <FormField label="LinkedIn URL" name="linkedinUrl" type="url" optional={false} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..."/>
+            <FormField label="Portfolio URL" name="portfolioUrl" type="url" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com"/>
             <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} placeholder="Company Name" />
             <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
-            <FormField label="Years of Experience" name="yearsExperience" optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
+            <FormField label="Years of Experience" name="yearsExperience" maxLength={2} optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" />
             <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} placeholder="Ex: React, Node.js, TypeScript..." />
           </div>
         </section>
