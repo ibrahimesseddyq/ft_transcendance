@@ -91,14 +91,12 @@ export function ProfileInformations() {
   
         const result = response.data;
         console.log('result :', result)
-        if (result.ok){
-          console.log('Iam here in profile information')
-          setProfile(result.data);
-          if (user?.role === "recruiter" || user?.role === "admin")
-            navigate("/Dashboard");
-          else
-            navigate("/Jobs");
-        }
+        console.log('Iam here in profile information')
+        setProfile(result.data);
+        if (user?.role === "recruiter" || user?.role === "admin")
+          navigate("/Dashboard", { replace: true });
+        else
+          navigate("/Jobs", { replace: true });
         
     } catch (error) {
         console.error("Submission failed:", error);

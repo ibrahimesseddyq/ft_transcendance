@@ -41,7 +41,7 @@ router.post('/login',
             });
             const userId = req.user.id;
             res
-            .cookie('accessToken', tokens.accessToken)
+            .cookie('accessToken', tokens)
             .redirect(`http://localhost:5173/auth/callback?userId=${userId}`);
         } catch (error) {
             res.status(400)

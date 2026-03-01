@@ -82,14 +82,13 @@ const Signin = () => {
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome Back!
                     </h2>
-                    {/* Fixed text color here */}
                     <h1 className="text-md font-electrolize text-black dark:text-white whitespace-nowrap overflow-hidden transition-colors">
                         We are happy to see you again.
                     </h1>
                 </div>
 
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden">
-                    <form onSubmit={handleSubmit(LoginSubmit)} className='flex flex-col gap-2 w-full'>
+                    <form onSubmit={handleSubmit(()=>LoginSubmit)} className='flex flex-col gap-2 w-full'>
                         
                         {/* Email Input Container */}
                         <div className="flex justify-between items-center h-[50px] px-5
@@ -97,7 +96,6 @@ const Signin = () => {
                             <input
                                 {...register("email", { required: true })}
                                 placeholder="Enter your Email"
-                                /* Updated text color and placeholder */
                                 className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
@@ -112,7 +110,6 @@ const Signin = () => {
                                 {...register("password", { required: true })}
                                 placeholder="Enter your Password"
                                 type={passtype}
-                                /* Updated text color */
                                 className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />

@@ -16,7 +16,8 @@ import { refresh } from "./authService.js";
     async setup(userId)
     {
         const user = await this.userRepo.getUserById(userId);
-        if (!user) throw new HttpException(400, "User Not Found");
+        if (!user)
+            throw new HttpException(400, "User Not Found");
         const secret = speakeasy.generateSecret({
             name: `MyApp (${user.email})`,
         });

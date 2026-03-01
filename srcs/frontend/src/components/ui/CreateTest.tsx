@@ -275,9 +275,9 @@ const SingleTagInput = ({ onAddTag }: any) => {
                     border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:border-[#00adef]'
             />
             <button type='button' onClick={() => { onAddTag(currentTag); setCurrentTag(""); }} 
-                className='h-12 px-4 border-2 border-dashed border-gray-300 dark:border-gray-700 
-                    rounded-lg text-gray-500 hover:border-[#00adef] transition-colors'>
-                <Plus size={18} />
+                className='group h-12 px-4 border-2 border-dashed border-gray-300 dark:border-gray-700 
+                    rounded-lg text-gray-500 hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors'>
+                <Plus size={18} className='group-hover:text-[#00adef]'/>
             </button>
         </div>
     );
