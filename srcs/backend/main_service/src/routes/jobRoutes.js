@@ -8,21 +8,28 @@ import {verifyRoles } from '../middleware/auth.js'
 const router = express.Router();
 
 router.post('/',
+        // verifyToken,
         validateRequest(createJobSchema),
         verifyRoles([UserRole.recruiter,UserRole.admin]),
         jobController.createJob)
     .get('/',
+        // verifyToken,
         jobController.getJobs)
     .get('/:id',
+        // verifyToken,
         jobController.getJobById)
     .patch('/:id',
+        // verifyToken,
         validateRequest(updateJobSchema),
         verifyRoles([UserRole.recruiter,UserRole.admin]),
         jobController.updateJob)
     .delete('/:id',
+        // verifyToken,
         verifyRoles([UserRole.recruiter,UserRole.admin]),
         jobController.deleteJob)
     .get('/:id/applications',
+        // verifyToken,
+
         verifyRoles([UserRole.recruiter, UserRole.admin]),
         jobController.getApplicationsByJobId);
 
