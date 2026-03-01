@@ -102,14 +102,17 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
               </div>
 
               {/* Skills Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
-                    text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
-                    {tag.trim()}
-                  </span>
-                ))}
-              </div>
+              {item.skills.length
+                ? <div className="flex flex-wrap gap-2 mb-6">
+                    {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
+                      <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
+                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                : null
+               }
 
               <hr className="border-gray-100 dark:border-slate-800 mb-6" />
 

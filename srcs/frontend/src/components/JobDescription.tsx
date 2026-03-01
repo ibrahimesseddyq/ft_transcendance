@@ -126,14 +126,17 @@ export function JobDescription(){
           </section>
 
           {/* Skills Badges */}
-          <div className="flex flex-wrap gap-2">
-            {SKILLS?.map((item: string, index: number) => (
-              <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
-                text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
-                {item.trim()}
-              </span>
-            ))}
-          </div>
+          {SKILLS.length 
+            ? <div className="flex flex-wrap gap-2">
+                {SKILLS?.map((item: string, index: number) => (
+                  <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
+                    text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+                    {item.trim()}
+                  </span>
+                ))}
+              </div>
+            : null
+          }
 
           {/* Footer Info */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pt-6 
