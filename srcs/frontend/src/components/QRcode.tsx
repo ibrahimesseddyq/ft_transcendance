@@ -5,45 +5,39 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-// import Cookies from 'js-cookie';
-import { useSecureFetch } from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
-    const secureFetch = useSecureFetch();
     const [step, setStep] = useState<AuthStep>('QR_CODE');
     const [qrLink, setQrLink] = useState('');
     const [loading, setLoading] = useState(false);
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
-    const setUser = useAuthStore((state) => state.setUser);
-    const userId = useAuthStore((state) => state.userId);
-    const firstLogin = useAuthStore((state) => state.firstLogin);
-    const setQrVerified = useAuthStore((state) => state.setQrVerified);
-    const setProfile = useAuthStore((state) => state.setProfile);
-    const [tempToken, setTempToken] = useState(null);
-    // const token = Cookies.get('accessToken');
-
-    // console.log("User id : ", userId);
+    const userId = useAuthStore(state => state.userId);
+    const setTmpToken = useAuthStore(state => state.setTmpToken);
+    const tmpToken = useAuthStore(state => state.tmpToken);
+    const user = useAuthStore(state => state.user);
+    const setProfile = useAuthStore(state => state.setProfile);
+    const setQrVerified = useAuthStore(state => state.setQrVerified);
+    const firstLogin = useAuthStore(state => state.firstLogin);
+    const setUser = useAuthStore(state => state.setUser);
 
     const fetchNewQr = async () => {
-        if (!userId) 
+        if (!userId)
             return;
         setLoading(true);
         try {
-            const res = await secureFetch(`/api/2fa/setup/`, {
-                method: 'POST',
-                body: JSON.stringify({ id: userId })
-            });
-            if (res.ok) {
-                const result = await res.json();
-                setQrLink(result.qrDataUrl);
-                setTempToken(result.manualKey);
-                setStep('QR_CODE');
-                console.log(typeof(result.manualKey));
-            }
-        } catch (error) {
-            console.error("Failed to fetch QR:", error);
+            const res = await api.post(`/api/2fa/setup/`, { id: userId });
+            const result = res.data; 
+
+            setQrLink(result.qrDataUrl);
+            setTmpToken(result.manualKey);
+            // setStep('QR_CODE');
+
+        } catch (error: any) {
+            const errorMsg = error.response?.data?.message || "Failed to fetch QR";
+            console.error("Failed to fetch QR:", errorMsg);
         } finally {
             setLoading(false);
         }
@@ -67,32 +61,41 @@ export function QRcode() {
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
-            : { code: finalOtp , tempToken: tempToken};
-            // console.log()
+            : { code: finalOtp , tempToken: tmpToken};
+
+        console.log("Temp token = ", tmpToken);
         try {
-            const res = await secureFetch(`/${route}`, {
-                method: 'POST',
-                body: JSON.stringify(obj)
-            });
-            if (res.ok) {
-                console.log("Verified Successfully!");
-                const newUser = await res.json();
-                if (newUser.data){
-                    setUser(newUser.data.user);
-                    const check = await ProfileChecker({ userId, setProfile, secureFetch });
-                    if (!check)
-                        navigate("/Createprofile", { replace: true });
-                    else
-                        navigate("/", { replace: true });
-                }
-                setQrVerified(true);
-            } else {
+            const res = await api.post(`/${route}`, obj);
+
+            if (!res) {
                 setQrVerified(false);
                 setOtpArray(new Array(6).fill(""));
                 alert("Invalid Code. Please try again.");
+                return;
             }
-        } catch (err) {
-            console.error("Verification error:", err);
+        
+            console.log("Verified Successfully!");
+            console.log("res :", res);
+            const { data } = res.data;
+        
+            if (data?.user) {
+                setUser(data.user);
+
+                const hasProfile = await ProfileChecker({ userId, setProfile });
+                console.log("hasProfile: ", hasProfile);
+                setQrVerified(true);
+                let userpath = '/';
+                if (user?.role === 'recruiter' || user?.role === 'admin')
+                    userpath = '/Dashboard';
+                else
+                    userpath = '/Jobs';
+
+                const targetPath = hasProfile ? userpath : "/Createprofile";
+                navigate(targetPath, { replace: true });
+            }
+        } catch (error) {
+            console.error("Verification failed:", error);
+            alert("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }

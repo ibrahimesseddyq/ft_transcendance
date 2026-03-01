@@ -26,6 +26,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
+
 app.use(helmet());
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
@@ -59,7 +60,6 @@ app.use('/api/2fa', twoFARoutes);
 
 app.use('/api/users',
   verifyToken,
-  verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
 
 app.use('/api/jobs', verifyToken,

@@ -7,16 +7,16 @@ import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
-import { useSecureFetch} from '@/utils/SecureFetch'
+import api from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
+    const setTmpToken = useAuthStore((state) => state.setTmpToken);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const secureFetch = useSecureFetch();
 
     const {
         register,
@@ -43,26 +43,28 @@ const Signin = () => {
         window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
-    const LoginSubmit = async (data: any) => {
-      try {
-            const response = await secureFetch('/api/auth/login', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
 
-            const result = await response.json();
-            if (!response.ok) 
-                throw new Error(result.message || "Login failed");
-            const token = result?.tempToken;
+    const LoginSubmit = async (data: any) => {
+        try {
+            const response = await api.post('/api/auth/login', data);
+            const result = response.data;
+
+            const tmpToken = result?.tempToken;
             const userId = result?.userId;
+
+            console.log ("first Login :", result?.firstLogin);
             setFirstLogin(result?.firstLogin);
-            if (token && userId) {
+
+            if (tmpToken && userId) {
+                console.log('login secsusfull');
+                setTmpToken(tmpToken);
                 setUserId(userId);
                 navigate("/otp", { replace: true });
                 reset();
             }
         } catch (error: any) {
-            Notification(error.message || "Error Login", "error");
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
+            Notification(errorMessage, "error");
         }
     };
 

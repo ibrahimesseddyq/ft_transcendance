@@ -11,28 +11,28 @@ export function Notifications() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
 
-  useEffect(() => {
-    const newSocket = io(SOCKET_URL);
-    setSocket(newSocket);
+  // useEffect(() => {
+  //   const newSocket = io(SOCKET_URL);
+  //   setSocket(newSocket);
 
-    if (userId) {
-      newSocket.emit("join-private-room", userId);
-    }
+  //   if (userId) {
+  //     newSocket.emit("join-private-room", userId);
+  //   }
 
-    // Listen for New Jobs
-    newSocket.on("new-job-posted", (data) => {
-      setNotifications((prev) => [...prev, { type: "JOB", ...data }]);
-    });
+  //   // Listen for New Jobs
+  //   newSocket.on("new-job-posted", (data) => {
+  //     setNotifications((prev) => [...prev, { type: "JOB", ...data }]);
+  //   });
 
-    // Listen for Application Status
-    newSocket.on("application-update", (data) => {
-      setNotifications((prev) => [...prev, { type: "STATUS", ...data }]);
-    });
+  //   // Listen for Application Status
+  //   newSocket.on("application-update", (data) => {
+  //     setNotifications((prev) => [...prev, { type: "STATUS", ...data }]);
+  //   });
 
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [userId]);
+  //   return () => {
+  //     newSocket.disconnect();
+  //   };
+  // }, [userId]);
 
   return (
     <div className="flex-1 flex justify-center items-center relative px-4" >
