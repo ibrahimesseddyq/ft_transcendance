@@ -3,8 +3,10 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as quizClientService from './quizClientService.js'
 
 export const createJobPhase = async (jobPhaseData) => {
+
 	const response = await quizClientService.getTestById(jobPhaseData.testId);
-	if (!response.body.success)
+	console.log(response)
+	if (!response.data.success)
 		throw new HttpException(400, 'test not found');
 
 	return await jobPhaseRepository.createJobPhase(jobPhaseData);

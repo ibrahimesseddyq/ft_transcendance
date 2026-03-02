@@ -31,7 +31,7 @@ router.post('/login',
             session: false 
         }),
         authController.googleCallBack
-    // the followin async function should moved to the controller
+
     
 );
 
