@@ -88,7 +88,7 @@ const Signin = () => {
                 </div>
 
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden">
-                    <form onSubmit={handleSubmit(()=>LoginSubmit)} className='flex flex-col gap-2 w-full'>
+                    <form onSubmit={handleSubmit(LoginSubmit)} className='flex flex-col gap-2 w-full'>
                         
                         {/* Email Input Container */}
                         <div className="flex justify-between items-center h-[50px] px-5
