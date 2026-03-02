@@ -1,7 +1,6 @@
 import * as authController from '../controllers/authController.js';
 import express from 'express';
 import env from '../config/env.js'
-import * as jwtService from '../services/jwtService.js';
 import validateRequest from '../middleware/ValidateRequest.js';
 import passport from '../config/passport.js';
 import {registerUserSchema,loginUserSchema} from '../validators/userValidator.js';
@@ -31,29 +30,7 @@ router.post('/login',
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),
-        async (req, res) => {
-            try {
-                const tokens = jwtService.generateAuthTokens({
-                    id: req.user.id,
-                    email: req.user.email,
-                    role: req.user.role
-                });
-            
-                const userId = req.user.id;
-                const firstLogin = !!req.user.firstLogin;
-                console.log("firstLogin :", firstLogin);
-            
-                res.cookie('accessToken', tokens)
-                    .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
-            } catch (error) {
-                res.status(400).json({
-                    success: false,
-                    message: 'Google authentication failed' 
-                });
-            }
-        }
-    );
-
-
+        authController.googleCallBack
+);
 
 export default router;

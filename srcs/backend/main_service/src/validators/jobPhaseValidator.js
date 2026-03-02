@@ -11,5 +11,4 @@ export const createJobPhaseSchema = z.object({
 	isRequired: z.boolean().default(true),
 	durationMinutes: z.number(),
 	testId: z.string().uuid(),
-
 });

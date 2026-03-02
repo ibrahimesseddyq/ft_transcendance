@@ -15,7 +15,7 @@ export function QRcode() {
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
     const userId = useAuthStore(state => state.userId);
-    const [tmpToken, setTmpToken] = useState(null);
+    const tmpToken = useAuthStore((state) => state.tmpToken);
     const user = useAuthStore(state => state.user);
     const setProfile = useAuthStore(state => state.setProfile);
     const setQrVerified = useAuthStore(state => state.setQrVerified);
@@ -31,7 +31,6 @@ export function QRcode() {
             const result = res.data;
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
-            setTmpToken(result.manualKey);
         } catch (error) {
             console.log("Failed to fetch QR:", error);
         } finally {
