@@ -126,7 +126,7 @@ export function JobDescription(){
           </section>
 
           {/* Skills Badges */}
-          {SKILLS.length 
+          {SKILLS.length > 1
             ? <div className="flex flex-wrap gap-2">
                 {SKILLS?.map((item: string, index: number) => (
                   <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
