@@ -4,7 +4,6 @@ import { getPermissionsByRole } from '../config/permissions.js';
 
 export const verifyToken = async (req, res, next) => {
     try {
-        console.log('cookie',req.cookies)
         const token = req.cookies?.accessToken;
         if (!token) throw new HttpException(401, "Unauthorized");
         const decoded = await jwtService.verifyAccessToken(token);
@@ -22,11 +21,11 @@ export const verifyToken = async (req, res, next) => {
 export const verifyRoles =  (...allowedRoles) => {
     return (req, res, next) =>
     {
-        console.log("**************User role = ", req.user.role, "*****************");
         if(!req.user || !req.user.role)
             throw new HttpException(403, "Forbidden");
-        // if(!allowedRoles.includes(req.user.role))
-        //     throw new HttpException(403,"Forbidden");
+        const roles = allowedRoles.flat()
+        if(!roles.includes(req.user.role))
+            throw new HttpException(403,"Forbidden");
         next();
     }
 }
@@ -38,26 +37,6 @@ export const verifyPermissions = (permission) => {
         const userPermissions = getPermissionsByRole(req.user.role);
         if (!userPermissions || !userPermissions.includes(permission))
             next(new HttpException(403, `You are forbidden to ${permission}`));
-        next();
-    }
-}
-
-export const optionalAuth = async (req, res, next) => {
-    try {
-        const {authorization} = req.headers;
-        if (authorization) {
-            const [type, token] = authorization.split(' ');
-            if (type === "Bearer") {
-                const decoded = jwtService.verifyAccessToken(token);
-                req.user = {
-                    id : decoded.id,
-                    email : decoded.email,
-                    role: decoded.role
-                }
-            }
-        }
-        next();
-    } catch (error) {
         next();
     }
 }

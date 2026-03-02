@@ -15,7 +15,7 @@ export const createTest = async (testData) => {
            isPublished: false,
            ...(testData.type === TestType.QUIZ &&
            {mcqs : {
-            connect : mcqsIds.map(id => ({id}))
+            connect : testData.mcqIds.map(id => ({id}))
            }}),
            ...(testData.type === TestType.CODE && {
                 codeChallenges : {
@@ -38,11 +38,11 @@ export const updateData = async (testId, updateData) => {
             ...data,
             ...(mcqIds && {
                 mcqs :{
-                    set : mcqIds.map(id => ({id}))
+                    set : updateData.mcqIds.map(id => ({id}))
                 }
             }),
             ...(codeChallengeId && {
-                set : [{id : codeChallengeId}]
+                set : [{id : updateData.codeChallengeId}]
             })
         },
         include : {
