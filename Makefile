@@ -21,8 +21,7 @@ down:
 clean: clear
 	$(PROD_COMPOSE) down --remove-orphans || true
 	docker system prune -f
-	fuser -k 3000/tcp 2>/dev/null || true
-	fuser -k 5173/tcp 2>/dev/null || true
+
 
 # ---------- Docker Compose (dev) ----------
 down-dev:
@@ -32,7 +31,7 @@ clean-dev: clear
 	$(DEV_COMPOSE) down --remove-orphans || true
 
 # Main dev target
-dev: clear clean-dev down-dev
+dev: clean-dev down-dev
 	sudo npm install -g concurrently
 	# (cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev') &
 
@@ -44,18 +43,13 @@ dev: clear clean-dev down-dev
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
-
+	(cd srcs/backend/main_service && npm run seed ) 
 re: clean up
 
 # Kill local dev processes/ports only (NO docker compose here)
 clear:
-	@echo "Cleaning dev processes and ports..."
-	-@fuser -k -KILL 3000/tcp 2>/dev/null; true
-	-@fuser -k -KILL 5173/tcp 2>/dev/null; true
-	-@fuser -k -KILL 3306/tcp 2>/dev/null; true
-	-@fuser -k -KILL 3307/tcp 2>/dev/null; true
-	@sleep 1
-	@echo "Done."
+	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
 
 # ---------- Kubernetes ----------
 kube-build:
