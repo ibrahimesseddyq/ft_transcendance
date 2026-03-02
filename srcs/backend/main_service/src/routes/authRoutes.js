@@ -31,8 +31,6 @@ router.post('/login',
             session: false 
         }),
         authController.googleCallBack
-
-    
 );
 
 export default router;
