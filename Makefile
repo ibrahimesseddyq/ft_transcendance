@@ -22,6 +22,7 @@ clean: clear
 	$(PROD_COMPOSE) down --remove-orphans || true
 	docker system prune -f
 
+
 # ---------- Docker Compose (dev) ----------
 down-dev:
 	$(DEV_COMPOSE) down
@@ -31,7 +32,7 @@ clean-dev: clear
 
 # Main dev target
 dev: clean-dev down-dev
-	npm install -g concurrently
+	sudo npm install -g concurrently
 	# (cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev') &
 
 	$(DEV_COMPOSE) build --no-cache
@@ -42,20 +43,13 @@ dev: clean-dev down-dev
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
-
+	(cd srcs/backend/main_service && npm run seed ) 
 re: clean up
 
 # Kill local dev processes/ports only (NO docker compose here)
 clear:
-	@echo "Cleaning dev processes and ports..."
-	@# Kill only processes LISTENING on the ports (safer than pkill -f)
-	-@PIDS=$$(lsof -t -iTCP:3000 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	-@PIDS=$$(lsof -t -iTCP:3306 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	-@PIDS=$$(lsof -t -iTCP:3307 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	@echo "Done."
+	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
 
 # ---------- Kubernetes ----------
 kube-build:
