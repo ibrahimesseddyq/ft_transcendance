@@ -44,7 +44,7 @@ const envSchema = z.object({
   FRONTEND_URL: z.string(),
   BACKEND_URL:z.string(),
   APP_NAME:z.string().min(1).default("service"),
-  SESSION_SECRET: z.string()
+  QUIZ_SERVICE_URL: z.string(),
 });
 
 const envVars = envSchema.safeParse(process.env);
