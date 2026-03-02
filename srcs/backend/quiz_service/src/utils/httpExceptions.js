@@ -9,13 +9,13 @@ class CustomError extends Error {
 
 class HttpException extends CustomError {
     constructor(statusCode = 500, message = 'Something went wrong',isLogging = false) {
-        super(message,statusCode,message,isLogging)
+        super(message,statusCode,[message],isLogging)
     }
 }
 
 class HttpValidationException extends  CustomError {
     constructor(errors = ['Bad Request'], isLogging = false) {
-        super('Bad Request',400,errors,isLogging);
+        super(400,'Bad Request',errors,isLogging);
     }
 }
 

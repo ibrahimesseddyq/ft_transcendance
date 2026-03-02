@@ -9,7 +9,7 @@ const choicesSchema =  z.object({
     isCorrect: z.boolean()
 })
 const mcqSchema =  z.object({
-    question: z.string().min(),
+    question: z.string().min(1,),
     choices: z.array(choicesSchema)
         .length(4, "Must provide exactly 4 choices")
         .refine(choices => {
@@ -27,10 +27,8 @@ const mcqSchema =  z.object({
         .max(100),
     difficulty: z.nativeEnum(Difficulty),
     tags:  z.array(z.string()).optional(),
-    isPublished: z.boolean()
+    isPublished: z.boolean().default(false)
 })
 
 export const createMcqSchema = mcqSchema.strict();
 export const updateMcqSchema = mcqSchema.partial();
-
-const createMcqSchema = mcqSchema
