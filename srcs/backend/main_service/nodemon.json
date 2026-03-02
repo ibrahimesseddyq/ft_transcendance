@@ -1,0 +1,7 @@
+{
+  "watch": ["."],
+  "ext": "js,mjs,cjs,json",
+  "ignore": ["node_modules/", "generated/", "prisma/"],
+  "delay": 1500,
+  "exec": "node server.js"
+}
