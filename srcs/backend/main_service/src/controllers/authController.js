@@ -76,27 +76,6 @@ export const register = asyncHandler(async (req, res, next) => {
     });
 })
 
-export const googleCallback = async (req, res, next) => {
-    try {
-        const tokens = jwtService.generateAuthTokens({
-            id: req.user.id,
-            email: req.user.email,
-            role: req.user.role
-        });
-
-        const userId = req.user.id;
-        const firstLogin = !!req.user.firstLogin;
-        console.log("firstLogin :", firstLogin);
-
-        res.cookie('accessToken', tokens)
-            .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: 'Google authentication failed' 
-        });
-    }
-};
 
 export const refresh =  asyncHandler(async (req, res, next) => {
         const refreshToken = req.cookies.refreshToken;
@@ -125,7 +104,9 @@ export const logout =  asyncHandler(async (req, res, next) => {
     if (!refreshToken)
         return res.sendStatus(204);
     await authService.logout(refreshToken);
-    res.clearCookie('accessToken', accessTokenOptions).sendStatus(204);
+    res.clearCookie('accessToken', accessTokenOptions)
+    .clearCookie('refreshToken',refreshTokenOptions)
+    .sendStatus(204);
 })
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
@@ -150,6 +131,7 @@ export const googleCallBack = asyncHandler(async (req, res) => {
     const userId = req.user.id;
     const firstLogin = !!req.user.firstLogin;
     console.log("firstLogin :", firstLogin);
-    res.cookie('accessToken', tokens)
+    res.cookie('accessToken', tokens.accessToken, accessTokenOptions)
+    .cookie('refreshToken',tokens.refreshToken, refreshTokenOptions)
     .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
 })

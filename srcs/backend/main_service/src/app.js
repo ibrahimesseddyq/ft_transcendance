@@ -3,7 +3,6 @@ import passport from 'passport';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import session from 'express-session';
 import cokieParser from 'cookie-parser';
 import errorHandler from './middleware/ErrorHandler.js';
 import userRoutes from './routes/userRoutes.js';
@@ -17,6 +16,7 @@ import {HttpException} from './utils/httpExceptions.js';
 import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
+import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 const app =  express();
 
 console.log(process.env.FRONTEND_URL)
@@ -35,33 +35,29 @@ app.use(cokieParser());
 app.use(morgan('combined'));
 
 //The cross-origin value tells the browser that it is safe to load this resource on a different port
-app.use('/uploads', (req, res, next) => {
+app.use('/uploads',
+  verifyToken, (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
-app.use(session({
-  secret: env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: false
-  }}));
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 // routes 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth',
+  authRoutes);
 
-app.use('/api/2fa', twoFARoutes); 
+app.use('/api/2fa',
+  verifyToken,
+  twoFARoutes); 
 
 app.use('/api/users',
   verifyToken,
   userRoutes);
 
-app.use('/api/jobs', verifyToken,
-          jobRoutes);
+app.use('/api/jobs',
+  verifyToken,
+  jobRoutes);
 
 app.use('/api/profiles/',
   verifyToken,
@@ -70,6 +66,10 @@ app.use('/api/profiles/',
 app.use('/api/applications',
   verifyToken,
   applicationRoutes)
+
+app.use('/api/jobPhases',
+  verifyToken
+,jobPhasesRoutes)
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

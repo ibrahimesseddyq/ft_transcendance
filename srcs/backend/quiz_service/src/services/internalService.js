@@ -46,8 +46,8 @@ export const getTestForEvalution = async (testId) => {
     const test = testService.getTestById(testId);
     if (!test)
         throw new HttpException(404, 'test not found');
-    if (!test.isPublished)
-        throw new HttpException(401, 'unauthorized evaluation');
+    // if (!test.isPublished)
+    //     throw new HttpException(401, 'unauthorized evaluation');
     return test;
 }
 
