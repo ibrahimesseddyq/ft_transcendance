@@ -23,7 +23,6 @@ export const login = asyncHandler(async (req, res, next) => {
         if (result.require2FA)
         {
             return res
-            .cookie('accessToken',result.accessToken,accessTokenOptions)
             .status(200).json({
                 message: "2FA required",
                 require2FA: true,
