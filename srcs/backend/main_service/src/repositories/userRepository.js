@@ -1,19 +1,23 @@
 import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
 
-export const getUserById = async (userId)=> {
+export const getUserById = async (userId) => {
     return await prisma.user.findUnique({
-        where : {id : userId},
-        select : {
-            id : true,
+        where: { id: userId },
+        select: {
+            id: true,
             role: true,
             email: true,
             firstName: true,
             lastName: true,
             avatarUrl: true,
-            profile : true,
-            twoFATempSecret : true,
+            profile: true,
+            twoFATempSecret: true,
             firstLogin: true,
+            twoFAEnabled: true,   
+            twoFASecret: true,   
+            passwordHash: true,   
+            refreshToken: true,   
         }
     })
 }
