@@ -52,9 +52,8 @@ export function ProfileInformations() {
   const setProfile = useAuthStore((state)=> state.setProfile);
   const profile = useAuthStore((state)=> state.profile);
   const user = useAuthStore((state) => state.user);
-   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-   console.log("avatarUrl :", avatarUrl);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   const [avatarPreview, setAvatarPreview] = useState(avatarUrl);
   const navigate = useNavigate();
   const {

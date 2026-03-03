@@ -164,7 +164,7 @@ export function EditProfile() {
       {/* Avatar Section */}
       <div className={`relative h-32 w-32 rounded-full bg-gray-100 dark:bg-[#1e1e1e] 
           bg-cover bg-center border-2 mx-auto my-5 transition-colors duration-200 ${
-                errors.resumeUrl ? 'border-red-500' : hasAvatar 
+                errors.avatar ? 'border-red-500' : hasAvatar 
                 ? 'border-green-500' 
                 : 'border-gray-300 dark:border-gray-700 hover:border-[#00adef]'}`}
           style={{ backgroundImage: `url(${avatarPreview})`}}>
