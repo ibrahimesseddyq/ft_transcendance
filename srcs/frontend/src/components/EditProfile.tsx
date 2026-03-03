@@ -47,15 +47,17 @@ const FormField = ({ label, name, register, maxLength, error, placeholder, type,
   </div>
 );
 
-export function ProfileInformations() {
+export function EditProfile() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state)=> state.setProfile);
   const profile = useAuthStore((state)=> state.profile);
-  const user = useAuthStore((state) => state.user);
    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
-   console.log("avatarUrl :", avatarUrl);
-  const [avatarPreview, setAvatarPreview] = useState(avatarUrl);
+  const [avatarPreview, setAvatarPreview] = 
+    useState(
+      profile?.user?.avatarUrl 
+      ? BACKEND_URL + profile.user.avatarUrl 
+      : "/icons/placeholder.jpg"
+    );
   const navigate = useNavigate();
   const {
   register,
@@ -65,24 +67,32 @@ export function ProfileInformations() {
   reset,
   formState: { errors, isSubmitting }
 } = useForm<ProfileFormData>({
-  resolver: zodResolver(CandidateProfileSchema)
+  resolver: zodResolver(CandidateProfileSchema),
+  defaultValues: (profile ? {
+    avatar: profile?.user?.avatarUrl ?? "",
+    resumeUrl: profile?.resumeUrl ?? "",
+    phone: profile?.phone?.toString() ?? "",
+    linkedinUrl: profile?.linkedinUrl ?? "",
+    portfolioUrl: profile?.portfolioUrl ?? "",
+    currentCompany: profile?.currentCompany ?? "",
+    currentTitle: profile?.currentTitle ?? "",
+    skills: profile?.skills ?? "",
+    availableFrom:   profile?.availableFrom ?? "",
+    // yearsExperience: Number(profile?.yearsExperience) ?? 0,
+  }: null) as ProfileFormData 
 });
 
-const avatarValue = watch('avatar'); 
-const resumeValue = watch("resumeUrl");
-const hasAvatar = avatarValue && (avatarValue instanceof FileList ? avatarValue.length > 0 : !!avatarValue);
-const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.length > 0 : !!resumeValue);
+  const avatarValue = watch('avatar'); 
+  const resumeValue = watch("resumeUrl");
+  const hasAvatar = avatarValue && (avatarValue instanceof FileList ? avatarValue.length > 0 : !!avatarValue);
+  const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.length > 0 : !!resumeValue);
 
-  const CreateSubmet = async (formData: any) =>{
-    const response = await api.post(`/api/profiles/${userId}`, formData);
+  const UpdateSubmet = async (formData: any) =>{
+    const response = await api.patch(`/api/profiles/${userId}`, formData);
     const result = response.data;
-    console.log('Iam here in profile information')
-    console.log('Profile :', result.data)
     setProfile(result.data);
-    if (user?.role === "recruiter" || user?.role === "admin")
-      navigate("/Dashboard", { replace: true });
-    else
-      navigate("/Jobs", { replace: true });
+    Notification("Profile updated successfully", "success");
+    navigate(-1);
   }
 
   const onApplySubmit = async (data: any) => {
@@ -94,13 +104,12 @@ const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.
     formData.append("portfolioUrl", data.portfolioUrl);
     formData.append("currentCompany", data.currentCompany);
     formData.append("availableFrom", data.availableFrom);
-    // formData.append("yearsExperience", data.yearsExperience);
     if (data.avatar instanceof File)
       formData.append("avatar", data.avatar);
     if (data.resumeUrl instanceof File)
       formData.append("resume", data.resumeUrl);
     try {
-        await CreateSubmet(formData);
+        await UpdateSubmet(formData);
     } catch (error) {
         console.error("Submission failed:", error);
         Notification("Technical error occurred", "error");
@@ -108,6 +117,26 @@ const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.
       
     }
   };
+
+  useEffect(() => {
+    if (profile) {
+        const url = profile?.user?.avatarUrl;
+        console.log("url : ",url);
+        reset({
+        //   avatar:          profile?.user?.avatarUrl ?? "",
+          resumeUrl:       profile?.resumeUrl ?? "",
+          phone:           profile?.phone?.toString() ?? "",
+          linkedinUrl:     profile?.linkedinUrl ?? "",
+          portfolioUrl:    profile?.portfolioUrl ?? "",
+          currentCompany:  profile?.currentCompany ?? "",
+          currentTitle:    profile?.currentTitle ?? "",
+          skills:          profile?.skills ?? "",
+          availableFrom:   profile?.availableFrom ?? "",
+          // yearsExperience: Number(profile?.yearsExperience) ?? 0,
+        });
+    }
+  }, [profile]);
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -128,7 +157,7 @@ const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.
     >
       {/* Header with Dark Mode */}
       <header className="border-b border-gray-200 dark:border-gray-800 pb-4 w-full">
-        <h1 className="text-black dark:text-white text-2xl font-bold">Profile Setup</h1>
+        <h1 className="text-black dark:text-white text-2xl font-bold">Profile Update</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm">Manage your professional presence and job preferences.</p>
       </header>
 

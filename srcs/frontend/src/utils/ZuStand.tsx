@@ -99,13 +99,20 @@ export const useAuthStore = create<State & Action>()(
         })),
 
       setProfile: (profileData) =>
-        set((state) => ({
-          profile: profileData.data ?? profileData,
-          user: state.user 
-            ? { ...state.user, avatarUrl: profileData.avatarUrl,
-              phone: profileData.phone } 
-            : null,
-        })),
+        set((state) => {
+          const updatedProfile = profileData.data ?? profileData;
+          const newAvatar = updatedProfile.user?.avatarUrl || updatedProfile.avatarUrl;
+          return {
+            profile: updatedProfile,
+            user: state.user 
+              ? { 
+                  ...state.user, 
+                  avatarUrl: newAvatar ?? state.user.avatarUrl,
+                  phone: updatedProfile.phone ?? state.user.phone 
+                } 
+              : null,
+          };
+      }),
 
       clearAuth: () => set({ 
         user: null, 
