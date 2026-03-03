@@ -31,5 +31,3 @@ passport.deserializeUser(async (id, done) => {
 });
 
 export default  passport;
-// [sessarhi] should be checked
-// [sessarhi] may need to be refactored
