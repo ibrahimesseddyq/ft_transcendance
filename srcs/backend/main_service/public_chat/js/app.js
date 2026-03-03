@@ -267,122 +267,23 @@ const ChatApp = {
      * Initialize authentication from existing session
      */
     async initializeAuth() {
-        let token = null;
-        let userData = null;
-
-        // Listen for postMessage from parent window
-        const messagePromise = new Promise((resolve) => {
-            const messageHandler = (event) => {
-                // Security: verify origin in production
-                if (event.data && event.data.type === 'AUTH_TOKEN') {
-                    window.removeEventListener('message', messageHandler);
-                    resolve({
-                        token: event.data.token,
-                        user: event.data.user
-                    });
-                }
-            };
-            window.addEventListener('message', messageHandler);
-            
-            // Timeout after 2 seconds
-            setTimeout(() => {
-                window.removeEventListener('message', messageHandler);
-                resolve(null);
-            }, 2000);
-        });
-
-        // Try to get auth from postMessage first
-        const messageData = await messagePromise;
-        if (messageData && messageData.token) {
-            token = messageData.token;
-            userData = messageData.user;
-        }
-
-        // Fallback to sessionStorage/localStorage
-        if (!token) {
-            // Try sessionStorage first (set by parent)
-            token = sessionStorage.getItem('authToken');
-            const storedUser = sessionStorage.getItem('authUser');
-            if (storedUser) {
-                try {
-                    userData = JSON.parse(storedUser);
-                } catch (e) {
-                    console.warn('Failed to parse stored user data');
-                }
-            }
-
-            // Try Zustand persist storage from parent (auth-storage)
-            if (!token) {
-                try {
-                    const authStorage = localStorage.getItem('auth-storage');
-                    if (authStorage) {
-                        const parsed = JSON.parse(authStorage);
-                        token = parsed.state?.token;
-                        userData = parsed.state?.user;
-                    }
-                } catch (e) {
-                    console.warn('Failed to parse auth-storage:', e);
-                }
-            }
-        }
-
-        // If running in iframe, try parent storage
-        if (!token && window.parent !== window) {
-            try {
-                // Try parent sessionStorage
-                token = window.parent.sessionStorage?.getItem('authToken');
-                const parentUser = window.parent.sessionStorage?.getItem('authUser');
-                if (parentUser && !userData) {
-                    userData = JSON.parse(parentUser);
-                }
-
-                // Try parent Zustand storage
-                if (!token) {
-                    const authStorage = window.parent.localStorage?.getItem('auth-storage');
-                    if (authStorage) {
-                        const parsed = JSON.parse(authStorage);
-                        token = parsed.state?.token;
-                        userData = parsed.state?.user;
-                    }
-                }
-            } catch (e) {
-                console.warn('Cannot access parent storage (CORS):', e.message);
-            }
-        }
-        
-        if (!token) {
-            // Hide chat screen, show error
+        // Auth is cookie-based. The iframe runs on the same origin as the backend
+        // (localhost:3000), so the browser sends the accessToken cookie automatically.
+        // We just call the API directly — if the cookie is valid we get the user,
+        // otherwise we show the login screen.
+        try {
+            const response = await API.getCurrentUser();
+            const user = response?.data?.user || response?.user || response?.data;
+            if (!user) throw new Error('No user in response');
+            this.state.user = user;
+            await this.startChat();
+        } catch (error) {
+            console.error('Auth failed (no valid session cookie):', error);
             this.elements.chatScreen.classList.remove('active');
             this.elements.loginScreen.classList.add('active');
             this.showToast('Please login to the main application first', 'error');
             if (this.elements.loginForm) {
                 this.elements.loginForm.innerHTML = '<p style="text-align:center; padding:20px;">Please <a href="/" style="color: #3b82f6; text-decoration: underline;">login</a> to access chat.</p>';
-            }
-            return;
-        }
-        
-        // Set token for API requests
-        API.setToken(token);
-        
-        // Get current user info from backend if we don't have it from parent
-        try {
-            if (userData) {
-                // Use data from parent window
-                this.state.user = userData;
-                await this.startChat();
-            } else {
-                // Fetch from API
-                const response = await API.getCurrentUser();
-                this.state.user = response.data.user || response.user || response.data;
-                await this.startChat();
-            }
-        } catch (error) {
-            console.error('Failed to get user info:', error);
-            this.elements.chatScreen.classList.remove('active');
-            this.elements.loginScreen.classList.add('active');
-            this.showToast('Authentication failed. Please login again.', 'error');
-            if (this.elements.loginForm) {
-                this.elements.loginForm.innerHTML = '<p style="text-align:center; padding:20px;">Authentication failed. Please <a href="/" style="color: #3b82f6; text-decoration: underline;">login</a> again.</p>';
             }
         }
     },

@@ -52,7 +52,7 @@ const API = {
      * Get current user from session
      */
     async getCurrentUser() {
-        const response = await this.request('/api/auth/me', {
+        const response = await this.request('/api/users/me', {
             method: 'GET'
         });
         return response;

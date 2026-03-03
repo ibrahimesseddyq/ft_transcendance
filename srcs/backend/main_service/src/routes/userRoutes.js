@@ -9,13 +9,15 @@ import {
 
 const router =  express.Router();
 
-router.get('/',userController.listUsers)
+router
+  .get('/me',userController.checkAuth)
   .get('/:id', userController.getUserById)
+  .get('/',userController.listUsers)
   .post('/',ValidateRequest(createUserSchema),userController.createUser)
   .delete('/:id',userController.deleteUser)
   .patch('/:id', ValidateRequest(updateUserSchema),userController.updateUser)
   .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
   .get('/avatar/:id',userController.getAvatar)
   .delete('/avatar/:id',userController.deleteAvatar)
-
+  
 export default router;

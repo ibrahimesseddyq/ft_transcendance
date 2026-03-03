@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Navbar } from "@/components/Navigation";
 import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
+import { Sun, Moon } from 'lucide-react';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
@@ -9,11 +10,25 @@ export function Header() {
   const profile = useAuthStore((state) => state.profile);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const avatarUrl = `${BACKEND_URL}${profile?.user?.avatarUrl ?? user?.avatarUrl}`;
+  // const avatarUrl =  `${BACKEND_URL}${user?.avatarUrl}` ;
+  console.log("avatarUrl: ", avatarUrl)
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
+  const handleTheme = () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    
+    if (isDark) {
+      document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+    }
+  };
   return (
-    <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl
-      max-w-screen-2xl items-center px-4 md:px-8 bg-white/80 backdrop-blur-sm fixed md:sticky top-0 z-50">
+    <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl max-w-screen-2xl items-center px-4 md:px-8 
+      bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm fixed md:sticky top-0 z-50 
+      border-b md:border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       
       {/* Logo */}
       <Link to={redirectPath}
@@ -24,10 +39,10 @@ export function Header() {
           alt="RH Connect" 
           className="w-7 h-7 md:w-8 md:h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
         />
-        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden">
+        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white transition-colors">
           RH-<span className="text-[#00adef] font-bold">Connect</span>
         </h1>
-      </Link>  
+      </Link>
 
       {/* Navigation */}
       <div className="hidden lg:block">
@@ -35,22 +50,32 @@ export function Header() {
       </div>
 
       <div className="flex justify-end items-center gap-3 md:gap-5">
+        <button 
+          onClick={handleTheme}
+          className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-yellow-400 
+            hover:ring-2 ring-[#00adef] transition-all"
+        >
+          <Sun className="hidden dark:block w-5 h-5" />
+          <Moon className="block dark:hidden w-5 h-5" />
+        </button>
+
         <Notifications />
 
         <Link to={`/Profile/${user?.id}`}
           className="flex items-center gap-2 md:gap-3 group">
           <div className="text-right hidden lg:block">
-            <p className="text-sm font-bold text-black group-hover:text-[#00adef] transition-colors">
+            <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
               {user?.firstName}
             </p>
             <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
               @{user?.role}
             </p>
           </div>
-          
+
           {/* Avatar */}
           <div
-            className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 border-gray-800 group-hover:border-[#00adef] transition-all"
+            className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
+              border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
             style={{ 
               backgroundImage: `url("${ avatarUrl }")`
             }}

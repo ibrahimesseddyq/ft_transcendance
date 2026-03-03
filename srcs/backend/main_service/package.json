@@ -5,14 +5,15 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "nodemon server.js",
+    "start": "nodemon ",
+    "dev": "nodemon",
     "seed": "node prisma/seed.js",
     "test": ""
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.2.0",
     "argon2": "^0.44.0",
+    "axios": "^1.13.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

@@ -46,17 +46,17 @@ interface Profile {
 type State = {
   user: User | null;
   profile: Profile | null;
-  token: string | null;
   qrVerified: boolean;
   userId: string | null;
   firstLogin: boolean;
+  tmpToken: any;
 };
 
 
 type Action = {
   setUser: (user: User) => void;
-  setToken: (token: string) => void;
   setProfile: (profileData: any) => void;
+  setTmpToken: (setTmpToken: any) => void;
   clearAuth: () => void;
   updateAvatar: (url: string) => void;
   setUserId: (id: string) => void;
@@ -68,9 +68,9 @@ export const useAuthStore = create<State & Action>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
       profile: null,
       userId: null,
+      tmpToken: null,
       qrVerified: false,
       firstLogin: false,
 
@@ -79,13 +79,14 @@ export const useAuthStore = create<State & Action>()(
           firstLogin: status,
         })),
 
+      setTmpToken: (status) =>
+        set(()=>({
+          tmpToken: status,
+        })),
+
       setQrVerified: (status) =>
         set(() => ({
           qrVerified: status,
-      })),
-      setToken: (status) =>
-        set(() => ({
-          token: status,
       })),
 
       setUserId: (status) =>
@@ -99,7 +100,7 @@ export const useAuthStore = create<State & Action>()(
 
       setProfile: (profileData) =>
         set((state) => ({
-          profile: profileData,
+          profile: profileData.data ?? profileData,
           user: state.user 
             ? { ...state.user, avatarUrl: profileData.avatarUrl,
               phone: profileData.phone } 
@@ -108,11 +109,11 @@ export const useAuthStore = create<State & Action>()(
 
       clearAuth: () => set({ 
         user: null, 
-        token: null, 
         profile: null, 
         userId: null, 
         qrVerified: false,
-        firstLogin: false
+        firstLogin: false,
+        tmpToken: "",
       }),
 
       updateAvatar: (url) =>

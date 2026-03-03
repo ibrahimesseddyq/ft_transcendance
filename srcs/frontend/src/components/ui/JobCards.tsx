@@ -1,6 +1,7 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
+import api from '@/utils/Api';
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -12,20 +13,15 @@ interface props {
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
   const navigate = useNavigate();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
-        method: "DELETE",
-      });
-      if (response.ok){
-        setJobsArray(jobsArray.filter(job => job.id !== jobId));
-        Notification("Job Deleted", "success");
-      } 
+      await api.delete(`/api/jobs/${jobId}`);
+      setJobsArray(jobsArray.filter(job => job.id !== jobId));
+      Notification("Job Deleted", "success");
     } catch (error) {
       Notification("Error Deleting job", "error");
     }
@@ -40,105 +36,108 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
   };
   
   return (
-    <div className="flex-1 h-full w-full overflow-auto no-scrollbar p-6">
-      <div className="flex flex-wrap gap-6 justify-center ">
+    <div className="flex-1 h-full w-full overflow-auto no-scrollbar p-6 transition-colors duration-300">
+      <div className="flex flex-wrap gap-6 justify-center">
         {jobsArray.length > 0 ? (
           jobsArray.map((item: any) => (
             <div
               key={item.id}
               className="relative flex flex-col w-full md:w-[350px] 
-                bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
+                bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
             >
 
+              {/* Status Badge */}
               <div className="absolute top-3 right-3 flex items-center gap-2">
-                {/* closed or open or archived*/}
                 {item.status === "closed" ? (
                   <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
-                      text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                     CLOSED
                   </span>
                 ) : item.status === "archived" ? (
                   <span className="rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
-                      text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
                     ARCHIVED
                   </span>
                 ) : (
                   <span className="rounded-full border border-[#00adef]/50 bg-[#00adef]/10 text-[#00adef] 
-                    text-[10px] font-bold backdrop-blur-sm px-2 py-1">
+                    text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00adef] animate-pulse" />
                     OPEN
                   </span>
                 )}
               </div>
 
-              {/*Icon & Title */}
+              {/* Icon & Title */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 flex items-center justify-center">
+                <div className="w-12 h-12 flex items-center justify-center text-[#00adef]">
                    <ScreenShare className="w-10 h-10"/>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 truncate">{item.title}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white truncate">{item.title}</h2>
               </div>
 
-              <div className="flex items-center justify-between text-gray-700 text-sm font-medium mb-4">
+              {/* Meta Info Slots */}
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400 text-xs font-medium mb-4">
                 <div className="flex items-center gap-1">
-                  <Briefcase size={16} />
+                  <Briefcase size={14} />
                   <span className="truncate">{item.employmentType}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <MapPin size={16} />
+                  <MapPin size={14} />
                   <span className="truncate">{item.isRemote ? "Remote" : "On site"}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <BarChart3 size={16} />
+                  <BarChart3 size={14} />
                   <span className="truncate">{item.department}</span>
                 </div>
               </div>
 
-              <hr className="border-gray-100 mb-4" />
+              <hr className="border-gray-100 dark:border-slate-800 mb-4" />
 
               {/* Description */}
-              <div className="relative max-h-28 overflow-hidden text-[13px] text-gray-800">
+              <div className="relative max-h-24 overflow-hidden text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                 <p>{item.description}</p>
-                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-white to-transparent"></div>
-              </div>
-              {/* Requirements/Tags Section */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
-                  <span key={i} className="px-3 py-1 bg-[#D1E1FF] text-[#1E3A8A] 
-                    text-xs font-semibold rounded-full max-w-[68px] truncate">
-                    {tag.trim()}
-                  </span>
-                ))}
+                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-white dark:from-slate-900 to-transparent"></div>
               </div>
 
-              <hr className="border-gray-100 mb-6" />
+              {/* Skills Tags */}
+              {item.skills.length
+                ? <div className="flex flex-wrap gap-2 mb-6">
+                    {item.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
+                      <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
+                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                : null
+               }
+
+              <hr className="border-gray-100 dark:border-slate-800 mb-6" />
 
               {/* Footer Actions */}
               <div className="flex items-center justify-between mt-auto">
                 <button 
                   onClick={()=>{handleDetails(item)}}
-                  className="px-8 py-2.5 border-2 border-[#3B5998] text-[#3B5998] font-bold rounded-xl hover:bg-[#3B5998] hover:text-white transition-colors"
+                  className="px-6 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-sm font-bold rounded-xl hover:bg-[#3B5998] dark:hover:bg-blue-500 hover:text-white dark:hover:text-white transition-all active:scale-95"
                 >
                   Details
                 </button>
                 
-                <div className="flex items-center gap-3">
-                  {isAdminOrRecruiter
-                    ?
+                <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+                  {isAdminOrRecruiter && (
                       <>
-                        <button onClick={() => { setJobItem(item); setIsFormOpen(true); } } className="text-gray-900 hover:text-blue-500">
-                          <SquarePen size={20} />
+                        <button onClick={() => { setJobItem(item); setIsFormOpen(true); } } className="hover:text-[#00adef] transition-colors">
+                          <SquarePen size={18} />
                         </button>
-                        <button onClick={() => DeleteJob(item.id)} className="text-gray-900 hover:text-red-500">
-                          <Trash size={20} />
+                        <button onClick={() => DeleteJob(item.id)} className="hover:text-red-500 transition-colors">
+                          <Trash size={18} />
                         </button>
                       </> 
-                    : null}
-              
-                  <button className="text-gray-900 hover:text-green-500">
-                    <Bookmark size={20} />
+                  )}
+                  <button className="hover:text-yellow-500 transition-colors">
+                    <Bookmark size={18} />
                   </button>
                 </div>
               </div>

@@ -1,45 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/utils/ZuStand';
+import { useRef, useState } from 'react';
 
 export function Chat() {
     const [iframeLoaded, setIframeLoaded] = useState(false);
-    const user = useAuthStore((state) => state.user);
-    const token = useAuthStore((state) => state.token);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    useEffect(() => {
-        // Store token in sessionStorage for the chat iframe to access
-        if (token) {
-            sessionStorage.setItem('authToken', token);
-            if (user) {
-                sessionStorage.setItem('authUser', JSON.stringify(user));
-            }
-        }
-
-        const handleIframeLoad = () => {
-            setIframeLoaded(true);
-            // Send auth token to chat iframe via postMessage as backup
-            const iframe = document.getElementById('chat-iframe') as HTMLIFrameElement;
-            if (iframe?.contentWindow && token) {
-                iframe.contentWindow.postMessage(
-                    {
-                        type: 'AUTH_TOKEN',
-                        token: token,
-                        user: user
-                    },
-                    'http://localhost:3000' // Specify exact origin for security
-                );
-            }
-        };
-
-        const iframe = document.getElementById('chat-iframe');
-        if (iframe) {
-            iframe.addEventListener('load', handleIframeLoad);
-            return () => {
-                iframe.removeEventListener('load', handleIframeLoad);
-            };
-        }
-    }, [token, user]);
-
+    // The iframe loads from localhost:3000 (same origin as the backend).
+    // The browser automatically sends the accessToken httpOnly cookie,
+    // so no token passing is needed.
     const chatUrl = `http://localhost:3000/chat`;
 
     return (
@@ -54,11 +21,13 @@ export function Chat() {
                     </div>
                 )}
                 <iframe
+                    ref={iframeRef}
                     id="chat-iframe"
                     src={chatUrl}
                     className="w-full h-full border-0"
                     title="Chat"
                     allow="clipboard-write"
+                    onLoad={() => setIframeLoaded(true)}
                 />
             </div>
         </div>

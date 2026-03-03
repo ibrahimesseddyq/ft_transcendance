@@ -3,7 +3,6 @@ import passport from 'passport';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import session from 'express-session';
 import cokieParser from 'cookie-parser';
 import errorHandler from './middleware/ErrorHandler.js';
 import userRoutes from './routes/userRoutes.js';
@@ -19,20 +18,27 @@ import {HttpException} from './utils/httpExceptions.js';
 import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
+import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 const app =  express();
 
+console.log(process.env.FRONTEND_URL)
+console.log(env.FRONTEND_URL)
 app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    credentials: true 
-  }));
+  origin: [process.env.FRONTEND_URL, 'http://127.0.0.1:5173'],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true 
+}));
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "frame-ancestors": ["'self'", "http://localhost:5173"],
+      // Allow the frontend to embed /chat in an iframe
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
     },
   },
+  // Disable X-Frame-Options so CSP frame-ancestors takes precedence
+  frameguard: false,
 }));
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
@@ -41,55 +47,60 @@ app.use(cokieParser());
 app.use(morgan('combined'));
 
 //The cross-origin value tells the browser that it is safe to load this resource on a different port
-app.use('/uploads', (req, res, next) => {
+app.use('/uploads',
+  verifyToken, (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
 
-// Serve chat UI
-app.use('/chat', express.static(path.join(import.meta.dirname, '../public_chat')));
-
-app.use(session({
-    secret: env.SESSION_SECRET || 'dev-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: false
-    }}));
-// Initialize Passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 // routes 
-app.use('/api/auth', authRoutes); 
-app.use('/api/2fa', twoFARoutes); 
+app.use('/api/auth',
+  authRoutes);
+
+app.use('/api/2fa',
+  verifyToken,
+  twoFARoutes); 
 
 app.use('/api/users',
   verifyToken,
-  verifyRoles([UserRole.recruiter,UserRole.admin]),
   userRoutes);
 
-app.use('/api/jobs',  verifyToken,
-          verifyRoles([UserRole.recruiter,UserRole.admin]),
-          jobRoutes);
+app.use('/api/jobs',
+  verifyToken,
+  jobRoutes);
 
 app.use('/api/profiles/',
   verifyToken,
   profileRoutes);
 
+app.use('/api/applications',
+  verifyToken,
+  applicationRoutes)
 
-app.use('/api/applications',applicationRoutes)
+app.use('/api/jobPhases',
+  verifyToken
+,jobPhasesRoutes)
 
-// Chat routes (protected)
-app.use('/chat/conversations', verifyToken, conversationRoutes);
-app.use('/chat/messages', verifyToken, messageRoutes);
+app.use('/chat/conversations',
+  verifyToken,
+  conversationRoutes);
 
+app.use('/chat/messages',
+  verifyToken,
+  messageRoutes);
 
+// Serve chat UI (used by the frontend iframe)
+app.use('/chat', express.static(path.join(import.meta.dirname, '../public_chat')));
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(import.meta.dirname, '../public_chat/index.html'));
+});
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
 })
+
 app.use(errorHandler);
 
 export default app;

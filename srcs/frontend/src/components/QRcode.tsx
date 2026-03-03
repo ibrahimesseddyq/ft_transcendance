@@ -5,7 +5,7 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-import { Navigate } from 'react-router-dom';
+import api from '@/utils/Api';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -14,48 +14,37 @@ export function QRcode() {
     const [loading, setLoading] = useState(false);
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
-    const setUser = useAuthStore((state) => state.setUser);
-    const userId = useAuthStore((state) => state.userId);
-    const firstLogin = useAuthStore((state) => state.firstLogin);
-    const setQrVerified = useAuthStore((state) => state.setQrVerified);
-    const setProfile = useAuthStore((state) => state.setProfile);
-    const token = useAuthStore((state) => state.token);
-    const setToken = useAuthStore((state)=> state.setToken)
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-    // console.log("User id : ", userId);
+    const userId = useAuthStore(state => state.userId);
+    const tmpToken = useAuthStore((state) => state.tmpToken);
+    const user = useAuthStore(state => state.user);
+    const setProfile = useAuthStore(state => state.setProfile);
+    const setQrVerified = useAuthStore(state => state.setQrVerified);
+    const firstLogin = useAuthStore(state => state.firstLogin);
+    const setUser = useAuthStore(state => state.setUser);
 
     const fetchNewQr = async () => {
         if (!userId) 
             return;
         setLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/api/2fa/setup/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: userId }),
-            });
-            if (res.ok) {
-                const result = await res.json();
-                setQrLink(result.qrDataUrl);
-                setStep('QR_CODE');
-            }
+            const res = await api.post(`/api/2fa/setup/`, { id: userId });
+            const result = res.data;
+            setQrLink(result.qrDataUrl);
+            setStep('QR_CODE');
         } catch (error) {
-            console.error("Failed to fetch QR:", error);
+            console.log("Failed to fetch QR:", error);
         } finally {
             setLoading(false);
         }
     };
 
-        useEffect(() => {
-            if (firstLogin)
-                fetchNewQr();
-            else
-                setStep('VERIFY_OTP');
-        }, [userId]);
+
+    useEffect(() => {
+        if (firstLogin)
+            fetchNewQr();
+        else
+            setStep('VERIFY_OTP');
+    }, [userId]);
 
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -67,44 +56,51 @@ export function QRcode() {
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
-            : { tempToken: token, code: finalOtp };
-        
+            : { code: finalOtp , tempToken: tmpToken};
+
+        console.log("Temp token = ", tmpToken);
         try {
-            const res = await fetch(`${BACKEND_URL}/${route}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj),
-            });
-            if (res.ok) {
-                console.log("Verified Successfully!");
-                const newUser = await res.json();
-                if (newUser.data){
-                    // console.log("user data", newUser);
-                    setUser(newUser.data.user);
-                    setToken(newUser.data.accessToken);
-                    const check = await ProfileChecker({userId, token, setProfile});
-                    if (!check)
-                        navigate("/Createprofile", { replace: true });
-                    else
-                        navigate("/", { replace: true });
-                }
-                setQrVerified(true);
-            } else {
+            const res = await api.post(`/${route}`, obj);
+
+            if (!res) {
                 setQrVerified(false);
                 setOtpArray(new Array(6).fill(""));
                 alert("Invalid Code. Please try again.");
+                return;
             }
-        } catch (err) {
-            console.error("Verification error:", err);
+        
+            console.log("Verified Successfully!");
+            console.log("res :", res);
+            const { data } = res.data;
+        
+            if (data?.user) {
+                setUser(data.user);
+
+                const hasProfile = await ProfileChecker({ userId, setProfile });
+                console.log("hasProfile: ", hasProfile);
+                setQrVerified(true);
+                let userpath;
+                if (user?.role === 'recruiter' || user?.role === 'admin'){
+                    console.log("Admin or recruiter user")
+                    userpath = '/Dashboard';
+                }
+                else{
+                    console.log("normal user")
+                    userpath = '/Jobs';
+                }
+
+                const targetPath = hasProfile ? userpath : "/Createprofile";
+                navigate(targetPath, { replace: true });
+            }
+        } catch (error) {
+            console.error("Verification failed:", error);
+            alert("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }
     }
    
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (step === 'QR_CODE') {
             setStep('VERIFY_OTP');
@@ -120,29 +116,35 @@ export function QRcode() {
             await verify("verify-setup", "api/2fa/verify-setup/", finalOtp);
         else
             await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
+        setOtpArray(new Array(6).fill(""));
     };
 
+
     return (
-        <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard">
+        <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 
+            bg-white dark:bg-slate-900 rounded-2xl transition-colors duration-300">
             <div className="flex flex-col gap-4 md:gap-8 items-center max-w-sm">
-                
+                {/* Header Text */}
                 <div className="flex flex-col gap-1 items-center text-center">
-                    <h1 className="font-bold text-black text-lg md:text-xl">
+                    <h1 className="font-bold text-black dark:text-white text-lg md:text-xl">
                         {firstLogin && step === 'QR_CODE' ? "Scan QR Code" : "Verify Code"}
                     </h1>
-                    <p className="font-light text-black text-xs md:text-sm">
+                    <p className="font-light text-black dark:text-gray-400 text-xs md:text-sm">
                         {firstLogin && step === 'QR_CODE' 
                             ? "Scan this image with your Authenticator App to begin setup." 
                             : "Enter the 6-digit code from your app."}
                     </p>
                 </div>
 
+                {/* QR Code Section */}
                 {firstLogin && step === 'QR_CODE' ? (
-                    <div className='relative flex items-center justify-center p-2 border-2 border-dashed border-gray-200 rounded-lg'>
+                    <div className='relative flex items-center justify-center p-2 border-2 border-dashed 
+                        border-gray-200 dark:border-gray-700 rounded-lg bg-white'>
                         {qrLink ? (
                             <img src={qrLink} alt="2FA QR Code" className='h-40 w-40' />
                         ) : (
-                            <div className="h-40 w-40 flex items-center justify-center bg-gray-100 animate-pulse">
+                            <div className="h-40 w-40 flex items-center justify-center 
+                                bg-gray-100 dark:bg-slate-800 animate-pulse">
                                 <p className="text-xs text-gray-400">Generating...</p>
                             </div>
                         )}
@@ -155,7 +157,9 @@ export function QRcode() {
                     <button 
                         type="submit" 
                         disabled={loading}
-                        className="group flex gap-2 justify-center items-center w-full h-12 bg-[#00adef] hover:bg-[#008dbf] rounded-lg font-extrabold text-white transition-colors"
+                        className="group flex gap-2 justify-center items-center w-full h-12 
+                            bg-[#00adef] hover:bg-[#008dbf] rounded-lg font-extrabold 
+                            text-white transition-colors shadow-lg shadow-[#00adef]/20"
                     >
                         <span>{loading ? "Verifying..." : step === 'QR_CODE' ? "Next" : "Verify"}</span>
                         <ArrowRightToLine className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
@@ -166,26 +170,28 @@ export function QRcode() {
                             <button 
                                 type="button" 
                                 onClick={() => setStep('QR_CODE')}
-                                className="text-sm flex items-center gap-1 text-gray-500 hover:text-black"
+                                className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-400 
+                                    hover:text-black dark:hover:text-white transition-colors"
                             >
                                 <ChevronLeft className="w-4 h-4"/> Back to QR
                             </button>
                         )}
-                        <p className="font-light text-black text-sm">
-                            Need help?
+
+                        <p className="font-light text-black dark:text-gray-400 text-sm">
+                            Need help?{" "}
                             {firstLogin
                                 ?
-                                <span onClick={handleReset} className="font-bold underline cursor-pointer">
+                                <span onClick={handleReset} className="font-bold underline cursor-pointer text-black dark:text-white">
                                     Reset 2FA    
                                 </span> 
-                                : <span className="font-bold underline cursor-pointer">
+                                : <span className="font-bold underline cursor-pointer text-black dark:text-white">
                                     Contact support 
                                 </span> 
                             }
-                            
                         </p>
                     </div>
                 </form>
+                        
                 <div className='items-center'>
                     <Logout />
                 </div>
