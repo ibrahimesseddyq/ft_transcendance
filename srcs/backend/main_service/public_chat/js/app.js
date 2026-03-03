@@ -193,10 +193,11 @@ const ChatApp = {
         
         // Mobile back button
         if (this.elements.mobileBackBtn) {
-            this.elements.mobileBackBtn.addEventListener('click', () => {
+            this.elements.mobileBackBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 this.elements.chatLayout.classList.remove('chat-open');
                 if (this.elements.mainSidebar) {
-                    this.elements.mainSidebar.classList.remove('active');
+                    this.elements.mainSidebar.classList.add('active');
                 }
             });
         }
@@ -424,6 +425,11 @@ const ChatApp = {
             this.showToast('Failed to connect to chat server', 'error');
         }
         
+        // For candidates, load RH profile BEFORE conversations so state.rhUser is ready
+        if (user.role.toLowerCase() === 'candidate') {
+            await this.loadRHProfile();
+        }
+        
         // Load conversations
         await this.loadConversations();
     },
@@ -444,9 +450,7 @@ const ChatApp = {
             
             // Add candidate-view class to chat layout for mobile styling
             this.elements.chatLayout.classList.add('candidate-view');
-            
-            // Fetch and display RH info
-            this.loadRHProfile();
+            // loadRHProfile() is called separately with await in startChat()
         } else {
             // Show normal sidebar for RH/Admin
             this.elements.mainSidebar.classList.remove('rh-profile-sidebar');
@@ -486,6 +490,25 @@ const ChatApp = {
             
             this.elements.rhProfileName.textContent = `${rhUser.firstName} ${rhUser.lastName}`;
             this.elements.rhProfileEmail.textContent = rhUser.email || '';
+
+            // Populate mobile RH header (shown on small screens instead of sidebar)
+            if (this.elements.mobileRhName) {
+                this.elements.mobileRhName.textContent = `${rhUser.firstName} ${rhUser.lastName}`;
+            }
+            if (this.elements.mobileRhInitials) {
+                this.elements.mobileRhInitials.textContent = initials;
+            }
+            if (rhUser.avatarUrl && this.elements.mobileRhImage) {
+                const mobileAvatarUrl = rhUser.avatarUrl.startsWith('http')
+                    ? rhUser.avatarUrl
+                    : `${API.baseUrl}${rhUser.avatarUrl}`;
+                this.elements.mobileRhImage.src = mobileAvatarUrl;
+                this.elements.mobileRhImage.style.display = 'block';
+                if (this.elements.mobileRhInitials) this.elements.mobileRhInitials.style.display = 'none';
+            } else if (this.elements.mobileRhImage) {
+                this.elements.mobileRhImage.style.display = 'none';
+                if (this.elements.mobileRhInitials) this.elements.mobileRhInitials.style.display = 'flex';
+            }
             
             // Check actual online status
             const isRhOnline = this.state.onlineUsers.has(rhUser.id);
@@ -495,10 +518,26 @@ const ChatApp = {
                     onlineIndicator.classList.remove('offline');
                     onlineIndicator.classList.add('online');
                     this.elements.rhProfileStatus.textContent = 'Online';
+                    if (this.elements.mobileRhStatus) {
+                        this.elements.mobileRhStatus.textContent = 'Online';
+                        this.elements.mobileRhStatus.classList.add('online');
+                    }
+                    if (this.elements.mobileRhAvatar) {
+                        this.elements.mobileRhAvatar.classList.add('online');
+                        this.elements.mobileRhAvatar.classList.remove('offline');
+                    }
                 } else {
                     onlineIndicator.classList.remove('online');
                     onlineIndicator.classList.add('offline');
                     this.elements.rhProfileStatus.textContent = 'Offline';
+                    if (this.elements.mobileRhStatus) {
+                        this.elements.mobileRhStatus.textContent = 'Offline';
+                        this.elements.mobileRhStatus.classList.remove('online');
+                    }
+                    if (this.elements.mobileRhAvatar) {
+                        this.elements.mobileRhAvatar.classList.remove('online');
+                        this.elements.mobileRhAvatar.classList.add('offline');
+                    }
                 }
             }
 
@@ -506,6 +545,15 @@ const ChatApp = {
         } catch (error) {
             console.error('Failed to load RH profile:', error);
             this.elements.rhProfileName.textContent = 'Recruiter';
+            if (this.elements.mobileRhName) this.elements.mobileRhName.textContent = 'Recruiter';
+            if (this.elements.mobileRhStatus) {
+                this.elements.mobileRhStatus.textContent = 'Offline';
+                this.elements.mobileRhStatus.classList.remove('online');
+            }
+            if (this.elements.mobileRhAvatar) {
+                this.elements.mobileRhAvatar.classList.remove('online');
+                this.elements.mobileRhAvatar.classList.add('offline');
+            }
             this.showToast('Failed to load recruiter profile', 'error');
         }
     },
@@ -572,8 +620,44 @@ const ChatApp = {
                 
                 // Set up RH as the chat partner
                 this.elements.chatName.textContent = rhName;
-                this.elements.chatStatus.textContent = 'Online';
-                this.elements.chatAvatar.textContent = rhInitials;
+                // Set chat-avatar image or initials
+                const rhAvatarUrl = this.state.rhUser?.avatarUrl
+                    ? (this.state.rhUser.avatarUrl.startsWith('http') ? this.state.rhUser.avatarUrl : `${API.baseUrl}${this.state.rhUser.avatarUrl}`)
+                    : null;
+                if (rhAvatarUrl && this.elements.chatAvatarImage) {
+                    this.elements.chatAvatarImage.src = rhAvatarUrl;
+                    this.elements.chatAvatarImage.style.display = 'block';
+                    if (this.elements.chatAvatarInitials) this.elements.chatAvatarInitials.style.display = 'none';
+                } else {
+                    if (this.elements.chatAvatarImage) this.elements.chatAvatarImage.style.display = 'none';
+                    if (this.elements.chatAvatarInitials) {
+                        this.elements.chatAvatarInitials.textContent = rhInitials;
+                        this.elements.chatAvatarInitials.style.display = '';
+                    } else {
+                        this.elements.chatAvatar.textContent = rhInitials;
+                    }
+                }
+                // Status will be updated by onUserStatusChange once socket connects
+                const isRhOnlineNow = this.state.rhUser ? this.state.onlineUsers.has(this.state.rhUser.id) : false;
+                this.elements.chatStatus.textContent = isRhOnlineNow ? 'Online' : 'Offline';
+                this.elements.chatAvatar.classList.toggle('online', isRhOnlineNow);
+                this.elements.chatAvatar.classList.toggle('offline', !isRhOnlineNow);
+
+                // Also sync mobile RH header from state (state.rhUser is already loaded)
+                if (this.state.rhUser && this.elements.mobileRhName) {
+                    this.elements.mobileRhName.textContent = rhName;
+                }
+                if (this.state.rhUser && this.elements.mobileRhInitials) {
+                    this.elements.mobileRhInitials.textContent = rhInitials;
+                }
+                if (this.elements.mobileRhStatus) {
+                    this.elements.mobileRhStatus.textContent = isRhOnlineNow ? 'Online' : 'Offline';
+                    this.elements.mobileRhStatus.classList.toggle('online', isRhOnlineNow);
+                }
+                if (this.elements.mobileRhAvatar) {
+                    this.elements.mobileRhAvatar.classList.toggle('online', isRhOnlineNow);
+                    this.elements.mobileRhAvatar.classList.toggle('offline', !isRhOnlineNow);
+                }
                 
                 // Join the conversation room via socket
                 if (SocketService.socket) {
@@ -653,7 +737,7 @@ const ChatApp = {
             
             // Check if user is online
             const isOnline = this.state.onlineUsers.has(otherParticipant.id);
-            const onlineClass = isOnline ? 'online' : '';
+            const onlineClass = isOnline ? 'online' : 'offline';
             
             // Avatar HTML with image or initials
             const avatarHtml = avatarUrl 
@@ -737,17 +821,7 @@ const ChatApp = {
 
         this.state.currentConversation = conversation;
         
-        // Update UI
-        this.elements.chatEmptyState.classList.remove('active');
-        this.elements.chatActive.classList.add('active');
-        this.elements.chatLayout.classList.add('chat-open');
-        
-        // Close sidebar on mobile
-        if (window.innerWidth <= 768 && this.elements.mainSidebar) {
-            this.elements.mainSidebar.classList.remove('active');
-        }
-        
-        // Update header
+        // Update header FIRST (before making chat-active visible to avoid empty flash)
         const otherParticipant = this.getOtherParticipant(conversation);
         const isOnline = this.state.onlineUsers.has(otherParticipant.id);
         
@@ -759,13 +833,40 @@ const ChatApp = {
             ? (otherParticipant.firstName.charAt(0) + otherParticipant.lastName.charAt(0)).toUpperCase()
             : (participantName.charAt(0) || '?').toUpperCase();
         
-        this.elements.chatAvatar.textContent = participantInitials;
+        // Set avatar: image if available, otherwise initials
+        const avatarUrl = otherParticipant.avatarUrl
+            ? (otherParticipant.avatarUrl.startsWith('http') ? otherParticipant.avatarUrl : `${API.baseUrl}${otherParticipant.avatarUrl}`)
+            : null;
+        if (avatarUrl && this.elements.chatAvatarImage) {
+            this.elements.chatAvatarImage.src = avatarUrl;
+            this.elements.chatAvatarImage.style.display = 'block';
+            if (this.elements.chatAvatarInitials) this.elements.chatAvatarInitials.style.display = 'none';
+        } else {
+            if (this.elements.chatAvatarImage) this.elements.chatAvatarImage.style.display = 'none';
+            if (this.elements.chatAvatarInitials) {
+                this.elements.chatAvatarInitials.textContent = participantInitials;
+                this.elements.chatAvatarInitials.style.display = '';
+            } else {
+                this.elements.chatAvatar.textContent = participantInitials;
+            }
+        }
         this.elements.chatAvatar.classList.toggle('online', isOnline);
+        this.elements.chatAvatar.classList.toggle('offline', !isOnline);
         this.elements.chatName.textContent = participantName;
         this.elements.chatStatus.textContent = isOnline ? 'Online' : (otherParticipant.role || 'Offline');
         this.elements.chatStatus.classList.toggle('online', isOnline);
+
+        // NOW show the chat area
+        this.elements.chatEmptyState.classList.remove('active');
+        this.elements.chatActive.classList.add('active');
+        this.elements.chatLayout.classList.add('chat-open');
         
-        // Highlight active conversation
+        // Close sidebar on mobile
+        if (window.innerWidth <= 768 && this.elements.mainSidebar) {
+            this.elements.mainSidebar.classList.remove('active');
+        }
+        
+        // Highlight active conversation in list
         this.renderConversations();
         
         // Join the conversation room for real-time updates
@@ -958,12 +1059,12 @@ const ChatApp = {
             
             console.log('[Chat] Message sent successfully:', message);
             
-            // Add to local state
-            if (message) {
+            // Add to local state only if not already added by the socket event (onNewMessage)
+            if (message && !this.state.messages.find(m => m.id === message.id)) {
                 this.state.messages.push(message);
+                this.renderMessages();
+                this.scrollToBottom();
             }
-            this.renderMessages();
-            this.scrollToBottom();
             
             // Update conversation in list
             this.updateConversationPreview(conversationId, message);
@@ -1003,13 +1104,6 @@ const ChatApp = {
     // ============================================
     // SOCKET EVENT HANDLERS
     // ============================================
-
-    /**
-     * Handle socket connect
-     */
-    onSocketConnect() {
-        console.log('Connected to chat server');
-    },
 
     /**
      * Handle socket connection
@@ -1126,10 +1220,26 @@ const ChatApp = {
                     this.elements.rhOnlineIndicator.classList.remove('offline');
                     this.elements.rhOnlineIndicator.classList.add('online');
                     this.elements.rhProfileStatus.textContent = 'Online';
+                    if (this.elements.mobileRhStatus) {
+                        this.elements.mobileRhStatus.textContent = 'Online';
+                        this.elements.mobileRhStatus.classList.add('online');
+                    }
+                    if (this.elements.mobileRhAvatar) {
+                        this.elements.mobileRhAvatar.classList.add('online');
+                        this.elements.mobileRhAvatar.classList.remove('offline');
+                    }
                 } else {
                     this.elements.rhOnlineIndicator.classList.remove('online');
                     this.elements.rhOnlineIndicator.classList.add('offline');
                     this.elements.rhProfileStatus.textContent = 'Offline';
+                    if (this.elements.mobileRhStatus) {
+                        this.elements.mobileRhStatus.textContent = 'Offline';
+                        this.elements.mobileRhStatus.classList.remove('online');
+                    }
+                    if (this.elements.mobileRhAvatar) {
+                        this.elements.mobileRhAvatar.classList.remove('online');
+                        this.elements.mobileRhAvatar.classList.add('offline');
+                    }
                 }
             }
         }
@@ -1143,12 +1253,18 @@ const ChatApp = {
             const otherParticipant = this.getOtherParticipant(conv);
             if (otherParticipant.id === userId) {
                 this.elements.chatAvatar.classList.toggle('online', isOnline);
+                this.elements.chatAvatar.classList.toggle('offline', !isOnline);
                 this.elements.chatStatus.textContent = isOnline ? 'Online' : 'Offline';
                 this.elements.chatStatus.classList.toggle('online', isOnline);
                 
                 // Update mobile RH header if candidate view
                 if (isCandidate && this.elements.mobileRhStatus) {
                     this.elements.mobileRhStatus.textContent = isOnline ? 'Online' : 'Offline';
+                    this.elements.mobileRhStatus.classList.toggle('online', isOnline);
+                    if (this.elements.mobileRhAvatar) {
+                        this.elements.mobileRhAvatar.classList.toggle('online', isOnline);
+                        this.elements.mobileRhAvatar.classList.toggle('offline', !isOnline);
+                    }
                 }
             }
         }
@@ -1168,36 +1284,8 @@ const ChatApp = {
                 if (otherParticipant.id === userId) {
                     const avatar = item.querySelector('.avatar');
                     if (avatar) {
-                        if (isOnline) {
-                            avatar.classList.add('online');
-                        } else {
-                            avatar.classList.remove('online');
-                        }
-                    }
-                }
-            }
-        });
-    },
-
-    /**
-     * Update online status indicator in conversation list
-     */
-    updateConversationOnlineStatus(userId, isOnline) {
-        const conversationItems = this.elements.conversationsList?.querySelectorAll('.conversation-item');
-        if (!conversationItems) return;
-        
-        conversationItems.forEach(item => {
-            const conv = this.state.conversations.find(c => c.id === item.dataset.id);
-            if (conv) {
-                const otherParticipant = this.getOtherParticipant(conv);
-                if (otherParticipant.id === userId) {
-                    const avatar = item.querySelector('.avatar');
-                    if (avatar) {
-                        if (isOnline) {
-                            avatar.classList.add('online');
-                        } else {
-                            avatar.classList.remove('online');
-                        }
+                        avatar.classList.toggle('online', isOnline);
+                        avatar.classList.toggle('offline', !isOnline);
                     }
                 }
             }

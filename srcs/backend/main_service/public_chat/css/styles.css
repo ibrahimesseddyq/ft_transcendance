@@ -475,6 +475,16 @@ html, body {
     overflow: visible;
 }
 
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .avatar.small {
     width: 32px;
     height: 32px;
@@ -482,7 +492,8 @@ html, body {
     border-radius: var(--radius-sm);
 }
 
-.avatar.online::after {
+.avatar.online::after,
+.avatar.offline::after {
     content: '';
     position: absolute;
     bottom: 0px;
@@ -490,9 +501,16 @@ html, body {
     width: 12px;
     height: 12px;
     border-radius: var(--radius-full);
-    background: var(--success);
     border: 2px solid var(--surface);
     z-index: 1;
+}
+
+.avatar.online::after {
+    background: var(--success);
+}
+
+.avatar.offline::after {
+    background: #6b7280;
 }
 
 .user-details {
@@ -689,48 +707,6 @@ html, body {
     padding: 16px 20px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-}
-
-.mobile-rh-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f7c97e 0%, #f0a830 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #5a3e1b;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.mobile-rh-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.mobile-rh-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-rh-name {
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--text-primary);
-}
-
-.mobile-rh-status {
-    font-size: 12px;
-    color: var(--success);
 }
 
 .chat-header {
@@ -1219,18 +1195,28 @@ html, body {
     }
 
     /* Hide RH sidebar on mobile for candidates */
-    .sidebar.rh-profile-sidebar {
+    .chat-layout.candidate-view .sidebar.rh-profile-sidebar {
         display: none !important;
     }
 
-    /* Show mobile RH header for candidates */
-    .mobile-rh-header {
+    /* Show mobile RH header for candidates only */
+    .chat-layout.candidate-view .mobile-rh-header {
         display: flex !important;
     }
 
-    /* Hide regular chat header on mobile for candidates */
+    /* Hide regular chat header on mobile for candidates (use mobile-rh-header instead) */
     .chat-layout.candidate-view .chat-header {
         display: none !important;
+    }
+
+    /* Show chat header on mobile for RH/admin view */
+    .chat-layout:not(.candidate-view) .chat-header {
+        display: flex !important;
+    }
+
+    /* Show back button in chat header for RH on mobile */
+    .chat-layout:not(.candidate-view) .mobile-back-btn {
+        display: flex !important;
     }
 
     .sidebar {
@@ -1365,20 +1351,6 @@ html, body {
 
     .mobile-rh-header {
         padding: 12px 16px;
-    }
-
-    .mobile-rh-avatar {
-        width: 45px;
-        height: 45px;
-        font-size: 16px;
-    }
-
-    .mobile-rh-name {
-        font-size: 13px;
-    }
-
-    .mobile-rh-status {
-        font-size: 11px;
     }
 
     .messages-container {
