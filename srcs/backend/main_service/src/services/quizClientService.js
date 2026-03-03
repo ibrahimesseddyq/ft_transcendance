@@ -1,7 +1,7 @@
 import quizClient from "../utils/quizClient.js";
 
 export const getTestById = async (testId) => {
-    const response = await quizClient.get(/* need to set uRI*/);
+    const response = await quizClient.get(`/api/internal/tests/${testId}`);
     return response;
 }
 
