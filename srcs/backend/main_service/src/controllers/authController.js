@@ -148,7 +148,7 @@ export const googleCallBack = asyncHandler(async (req, res) => {
         role: req.user.role
     });
     const userId = req.user.id;
-    const firstLogin = !!req.user.firstLogin;
+    const firstLogin = req.user.firstLogin;
     console.log("firstLogin :", firstLogin);
     res.cookie('accessToken', tokens)
     .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);

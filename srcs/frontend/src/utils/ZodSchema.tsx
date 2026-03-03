@@ -1,8 +1,16 @@
 import { z } from "zod";
 
-const fileSchema = z
-  .file()
-  .max(10_000_000)
+const fileOrUrlSchema = (maxMb: number) => z.any()
+  .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+  .refine(
+    (v) => !v || typeof v === "string" || v instanceof File,
+    { message: "Must be a file" }
+  )
+  .refine(
+    (v) => !(v instanceof File) || v.size <= maxMb * 1024 * 1024,
+    { message: `File must be under ${maxMb}MB` }
+  )
+  .optional();
 
 
 export const RegisterSchema = z.object({
@@ -89,9 +97,7 @@ export const ApplyJobSchema = z.object({
   phoneNumber: z.number()
     .min(10, "Phone number must be at least 10 characters"),
 
-  cv: z
-    .any()
-    .pipe(fileSchema),
+  cv: fileOrUrlSchema(10),
 
   coverLetter: z.string()
     .min(50, "Cover letter should be at least 50 characters")
@@ -108,18 +114,9 @@ export const ApplyJobSchema = z.object({
 });
 
 export const CandidateProfileSchema = z.object({
-  userId: z
-    .string(),
 
-  avatar: z
-    .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema),
-
-  resume: z
-    .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema),
+  avatar:    fileOrUrlSchema(10),
+  resumeUrl: fileOrUrlSchema(10),
 
   phone: z
     .string()
@@ -137,28 +134,22 @@ export const CandidateProfileSchema = z.object({
   portfolioUrl: z.string()
     .optional(),
 
+  // yearsExperience: z.coerce.number() 
+  //   .int()
+  //   .min(0)
+  //   .optional()
+  //   .nullable(),
+
   currentCompany: z.string()
     .optional(),
 
   currentTitle: z.string()
     .min(1, "Current Job Title is required"),
 
-  yearsExperience: z
-    .string()
-    .transform((val) => val.replace(/\D/g, ""))
-    .pipe(
-      z.string()
-      .min(1, { message: 'Must be a valid mobile number' })
-      .max(2, { message: 'Must be a valid mobile number' })
-    ),
+  availableFrom: z.string().optional(),
 
   skills: z.string(),
 
-  preferredLocations: z.string()
-    .optional(),
-
-  salaryExpectation: z.string()
-    .optional(),
 });
 
 const chicesSchema =  z.object({
