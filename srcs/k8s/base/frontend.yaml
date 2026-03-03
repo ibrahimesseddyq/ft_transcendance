@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend:dev
+  name: frontend
   namespace: hirefy
 spec:
   replicas: 1
@@ -16,7 +16,7 @@ spec:
       containers:
         - name: frontend
           image: frontend:dev
-          image:PullPolicy: IfNotPresent
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 80

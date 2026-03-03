@@ -1,36 +1,36 @@
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
-import { Loading } from '@/components/Loading'
+import { Loading } from '@/components/Loading';
 
-export const OAuthCallback = () => {
+export function OAuthCallback() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const currentUserId = useAuthStore((state) => state.userId);
     const setUserId = useAuthStore((state) => state.setUserId);
-    const setToken = useAuthStore((state) => state.setToken);
-
+    const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
 
     useEffect(() => {
-        const processOAuth = async () => {
-            const token = searchParams.get('token');
-            const userId = searchParams.get('userId');
+        const userIdFromUrl = searchParams.get('userId');
+        const firstLoginFromUrl = searchParams.get('firstLogin') === 'true';
 
-            if (token && userId) {
-                try {
-                    setToken(token);
-                    setUserId(userId);
-                    navigate('/otp', { replace: true });
-                } catch (error) {
-                    navigate('/Login', { replace: true });
-                }
-            }
-        };
-        processOAuth();
-    }, []);
+        if (!userIdFromUrl) {
+            navigate('/Login', { replace: true });
+            return;
+        }
+        if (currentUserId !== userIdFromUrl) {
+            setUserId(userIdFromUrl);
+            setFirstLogin(firstLoginFromUrl);
+            navigate('/otp', { replace: true });
+        } else {
+            navigate('/otp', { replace: true });
+        }
+        
+    }, [currentUserId, searchParams, setUserId, setFirstLogin, navigate]);
 
-   return (
-        <div className="w-full h-screen flex items-center justify-center bg-[#F0F3FA]">
+    return (
+        <div className='h-screen w-screen flex items-center justify-center'>
             <Loading />
         </div>
     );
-};
+}

@@ -9,15 +9,15 @@ export function LoginPage() {
 
   const getTabClasses = (tabName: string) => {
     let baseClasses = "relative maincard duration-1000 transition-all cursor-pointer \
-              overflow-hidden rounded-2xl shadow-xl shadow-[#00adef]";
+        overflow-hidden rounded-2xl shadow-xl shadow-[#00adef]/20 border dark:border-gray-800 ";
     
     const isActive = activeCard === tabName;
 
     if (isActive) {
-    baseClasses += 'bg-black z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
-  } else {
-    baseClasses += 'bg-zinc-900 z-10 scale-95  h-[70px] w-full md:h-full md:w-[15%]';
-  }
+      baseClasses += 'bg-white dark:bg-black/30 z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
+    } else {
+      baseClasses += 'bg-gray-100 dark:bg-zinc-900 z-10 scale-95 h-[70px] w-full md:h-full md:w-[15%]';
+    }
     
     return baseClasses;
   };
@@ -41,7 +41,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-black text-sm font-bold uppercase">
+                text-gray-500 dark:bg-black/30 text-sm font-bold uppercase transition-colors">
                 SignIn
               </h1>
             )}
@@ -58,7 +58,7 @@ export function LoginPage() {
               </div>
             ) : (
               <h1 className="flex items-center justify-center h-full w-full 
-                text-black text-sm font-bold uppercase">
+                text-gray-500 dark:bg-black/30 text-sm font-bold uppercase transition-colors">
                 SignUp
               </h1>
             )}

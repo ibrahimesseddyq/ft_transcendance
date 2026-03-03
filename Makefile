@@ -22,6 +22,7 @@ clean: clear
 	$(PROD_COMPOSE) down --remove-orphans || true
 	docker system prune -f
 
+
 # ---------- Docker Compose (dev) ----------
 down-dev:
 	$(DEV_COMPOSE) down
@@ -31,31 +32,28 @@ clean-dev: clear
 
 # Main dev target
 dev: clean-dev down-dev
+	sudo npm install -g concurrently
 	# (cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev') &
 
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
 	
 	# (cd srcs/frontend && npm install && npm run dev ) 
-# 	(cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a &&  npx prisma db push && npm run dev ) 
-# 	(cd srcs/frontend && npm install && npm run dev ) 
-
+	concurrently \
+	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
+	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
+	  "cd srcs/frontend && npm install && npm run dev"
+	(cd srcs/backend/main_service && npm run seed ) 
 re: clean up
 
 # Kill local dev processes/ports only (NO docker compose here)
 clear:
-	@echo "Cleaning dev processes and ports..."
-	@# Kill only processes LISTENING on the ports (safer than pkill -f)
-	-@PIDS=$$(lsof -t -iTCP:3000 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	-@PIDS=$$(lsof -t -iTCP:3306 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	-@PIDS=$$(lsof -t -iTCP:3307 -sTCP:LISTEN 2>/dev/null); \
-	if [ -n "$$PIDS" ]; then kill -9 $$PIDS; fi
-	@echo "Done."
+	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
 
 # ---------- Kubernetes ----------
 kube-build:
+	echo $(ROOT)
 	@mkdir -p logs
 	@cd $(ROOT)srcs/backend/eureka  && ./gradlew clean bootJar
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
@@ -75,36 +73,36 @@ kube-load: kube-build
 	fi
 
 kube-deploy:
+	# 1. Namespace first
 	kubectl apply -f srcs/k8s/base/namespace.yaml
-# 	kubectl apply -f srcs/k8s/base/vault.yaml
+	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm repo update
-
-
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
-		-f srcs/k8s/base/vault-values.yaml 
-	
-
+		-f srcs/k8s/base/vault-values.yaml
+	# 3. Wait for Vault pod to be ready
 	kubectl wait --for=condition=ready pod \
-	 -l app.kubenetes.io/name=vault \
-	  -n hirefy --timeout=300s
-
-
+		-l app.kubernetes.io/name=vault \
+		-n hirefy --timeout=300s
+	# 4. Seed secrets into Vault
 	echo "Initializing Vault..."
-	POD=$$(kubectl get pod -n hirefy -l app.kubenetes.io/name=vault  -o jsonpath='{.items[0].metadata.name}')
-	kubectl cp init-vault.sh hirefy/$$POD:/tmp/init-vault.sh
-	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init-vault.sh
-
+	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
+	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
+	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
+	# 5. Service account (required before any Vault-injected pod)
+	kubectl apply -f srcs/k8s/base/serviceaccount.yaml
+	# 6. Database layer — wait for it to be ready before apps start
 	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
 	kubectl apply -f srcs/k8s/base/mariadb.yaml
 	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
-
+	# 7. Application services
 	kubectl apply -f srcs/k8s/base/main-service.yaml
 	kubectl apply -f srcs/k8s/base/quiz-service.yaml
 	kubectl apply -f srcs/k8s/base/ai-service.yaml
 	kubectl apply -f srcs/k8s/base/gateway.yaml
-	kubectl get pods -n hirefy
+	kubectl apply -f srcs/k8s/base/frontend.yaml
+	kubectl get pods -n hirefy 
 
 kube: kube-build kube-load kube-deploy kube-forward
 
@@ -123,11 +121,11 @@ kube-down:
 # ---------- Vault helpers ----------
 vault-init:
 	echo "=== Initializing Vault Secrets ==="
-	chmod +x init-vault.sh
+	chmod +x srcs/init_vault.sh
 	kubectl port-forward -n hirefy svc/vault 8200:8200 &
 	PF_PID=$$!
 	sleep 5
-	./init-vault.sh
+	./srcs/init_vault.sh
 	kill $$PF_PID || true
 
 vault-ui:

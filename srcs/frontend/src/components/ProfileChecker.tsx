@@ -1,25 +1,19 @@
 
+import api from '@/utils/Api';
+
 interface ProfileProps {
     userId: string | null;
-    token: string | null;
     setProfile: (profile: any) => void;
 }
 
-export async function ProfileChecker({ userId, token, setProfile }: ProfileProps) {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/profiles/${userId}`, {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${token}`}
-        });
-        const result = await res.json();
-        if (res.ok){
-            setProfile(result.data);
-            return true;
-        }
+        const res = await api.get(`/api/profiles/${userId}`);
+        console.log("profile checker :", res.data);
+        setProfile(res.data);
     } catch (error) {
-        console.error("Profile check error:", error);
+        console.log("No Profile Provided", error);
         return false;
     }
-    return false;
+    return true;
 }

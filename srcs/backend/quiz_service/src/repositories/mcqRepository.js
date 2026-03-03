@@ -1,15 +1,15 @@
-import { prisma} from "../config/prisma.js";
+import {prisma} from "../config/prisma.js";
 
 export const createMcq =  async (mcqData) => {
     return await prisma.mcq.create({
-        mcqData
+        data: mcqData
     })
 }
 
 export const updateMcq = async (mcqId, updateData) => {
     return await prisma.mcq.update({
         where: {id : mcqId},
-        updateData
+        data: updateData
     })
 }
 
@@ -27,8 +27,5 @@ export const deleteMcq = async (mcqId) => {
 
 export const getManyMcqs = async (skip = 0 , take = 10, filters = []) => {
     return await prisma.mcq.findMany({
-        skip,
-        take,
-        filters
     })
 }

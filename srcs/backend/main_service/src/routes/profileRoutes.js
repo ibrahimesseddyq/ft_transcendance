@@ -10,8 +10,10 @@ import express from 'express';
 const router = express.Router();
 
 // the validate request should be refactored based on req.body & req.files
-router.get('/:id', profileController.getProfile)
-    .post('/:id',uploadProfile.fields([
+router.get('/:id', 
+            profileController.getProfile)
+    .post('/:id',
+        uploadProfile.fields([
             {name : "avatar" , maxCount: 1},
             {name : "resume", maxCount: 1}
         ])

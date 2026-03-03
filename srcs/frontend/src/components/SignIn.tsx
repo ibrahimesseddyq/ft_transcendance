@@ -7,13 +7,14 @@ import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
+import api from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
-    const setToken = useAuthStore((state) => state.setToken);
+    const setTmpToken = useAuthStore((state) => state.setTmpToken);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -42,40 +43,38 @@ const Signin = () => {
         window.location.href = `${BACKEND_URL}/api/auth/google`;
     }
 
-    const LoginSubmit = async (data: any) => {
-      try {
-          const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
 
-        const result = await response.json();
-        if (!response.ok) 
-            throw new Error(result.message || "Login failed");
-        // console.log("result :", result);
-        const token = result?.tempToken;
-        const userId = result?.userId;
-        setFirstLogin(result?.firstLogin);
-        // console.log("userId :", userId, "token :", token);
-        if (token && userId) {
-            // console.log("Iam herererererere");
-            setUserId(userId);
-            setToken(token);
-            navigate("/otp", { replace: true });
-            reset();
+    const LoginSubmit = async (data: any) => {
+        try {
+            const response = await api.post('/api/auth/login', data);
+            const result = response.data;
+
+            const tmpToken = result?.tempToken;
+            const userId = result?.userId;
+
+            console.log ("first Login :", result?.firstLogin);
+            setFirstLogin(result?.firstLogin);
+
+            if (tmpToken && userId) {
+                console.log('login secsusfull');
+                setTmpToken(tmpToken);
+                setUserId(userId);
+                navigate("/otp", { replace: true });
+                reset();
+            }
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
+            Notification(errorMessage, "error");
         }
-    } catch (error: any) {
-        Notification(error.message || "Error Login", "error");
-    }
     };
 
 
     return (
         <div className="w-full h-full flex flex-col items-center gap-4 p-4 overflow-auto no-scrollbar">
-            <div className='border rounded-xl px-5 border-gray-800 bg-[#121b31]
+            {/* Sign In Header Badge */}
+            <div className='border rounded-xl px-5 border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#121b31]
                     whitespace-nowrap overflow-hidden mb-6'>
-                <h1 className='text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
+                <h1 className='text-black dark:text-white whitespace-nowrap overflow-hidden'>Sign In</h1>
             </div>
             
             <div className='h-auto w-full max-w-[350px] flex flex-col gap-4 overflow-hidden my-auto'>
@@ -83,34 +82,35 @@ const Signin = () => {
                     <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome Back!
                     </h2>
-                    <h1 className="text-md font-electrolize text-black whitespace-nowrap overflow-hidden">
+                    <h1 className="text-md font-electrolize text-black dark:text-white whitespace-nowrap overflow-hidden transition-colors">
                         We are happy to see you again.
                     </h1>
                 </div>
 
                 <div className="flex flex-col h-full w-[90%] items-center gap-2 place-content-center overflow-hidden">
-                    <form onSubmit={handleSubmit(LoginSubmit, (errors) => console.log("Validation Errors:", errors))}
-                        className='flex flex-col gap-2 w-full'>
+                    <form onSubmit={handleSubmit(LoginSubmit)} className='flex flex-col gap-2 w-full'>
                         
+                        {/* Email Input Container */}
                         <div className="flex justify-between items-center h-[50px] px-5
-                                w-full border border-gray-800 rounded-md focus-within:border-[#00adef] transition-colors">
+                                w-full border border-gray-300 dark:border-gray-800 rounded-md focus-within:border-[#00adef] transition-colors">
                             <input
                                 {...register("email", { required: true })}
                                 placeholder="Enter your Email"
-                                className="w-full h-full text-black whitespace-nowrap
+                                className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
                             <Mail className="h-5 w-5 text-gray-500 whitespace-nowrap overflow-hidden" />
                         </div>
                         {errors.email && <p className="pl-5 text-red-500 text-xs italic">{errors.email.message}</p>}
 
+                        {/* Password Input Container */}
                         <div className="flex justify-between items-center h-[50px] 
-                                w-full border border-gray-800 rounded-md px-5 focus-within:border-[#00adef] transition-colors">
+                                w-full border border-gray-300 dark:border-gray-800 rounded-md px-5 focus-within:border-[#00adef] transition-colors">
                             <input
                                 {...register("password", { required: true })}
                                 placeholder="Enter your Password"
                                 type={passtype}
-                                className="w-full h-full text-black whitespace-nowrap
+                                className="w-full h-full text-black dark:text-white whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
                             <Icon onClick={handleToggle}
@@ -126,16 +126,17 @@ const Signin = () => {
                         </button>
 
                         <button type="submit"
-                            className="h-[45px] w-full text-black font-bold whitespace-nowrap
+                            className="h-[45px] w-full text-white font-bold whitespace-nowrap
                                     mx-auto rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-colors overflow-hidden">
                             Log in
                         </button>
                     </form>
 
+                    {/* Google Login Button */}
                     <button onClick={GoogleSubmit}
                             className="h-[45px] w-full flex gap-5 rounded-lg border overflow-hidden
-                             border-gray-800 justify-center bg-transparent text-black 
-                            hover:bg-black hover:text-white transition-all items-center mt-2">
+                             border-gray-300 dark:border-gray-800 justify-center bg-transparent text-black dark:text-white
+                            hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all items-center mt-2">
                         <img className="h-6 w-6" 
                              src="/icons/google1.png"
                              alt="Google icon"/>

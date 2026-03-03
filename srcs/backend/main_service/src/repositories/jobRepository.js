@@ -9,7 +9,6 @@ export const findJobById = async (jobId) => {
 }
 
 export const createJob = async  (jobData) => {
-
     return await prisma.job.create({
         data : jobData 
     })

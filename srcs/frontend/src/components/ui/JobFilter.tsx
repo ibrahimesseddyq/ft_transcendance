@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
+import api from '@/utils/Api';
 
 interface JobsArrayProps {
   totalJobs: any,
@@ -10,7 +11,6 @@ interface JobsArrayProps {
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
   const [search, setSearch] = useState("");
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -37,15 +37,15 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = fetch(`${BACKEND_URL}/api/jobs?${params.toString()}`);
+      const fetchPromise = await api.get(`/api/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 
       const [response] = await Promise.all([fetchPromise, timerPromise]);
-      if (response.ok) {
-        const result = await response.json();
-        setJobsArray(result.data);
-      }
+
+      const result =  response.data;
+      console.log("all Jobs :", result.data);
+      setJobsArray(result.data);
     } catch (error) {
       console.error("Fetch Error:", error);
     }finally{
@@ -72,13 +72,9 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
   const normalizedValue = value.toLowerCase();
 
   setFilters(prev => {
-    // Access the current array for the specific key
     const currentValues = prev[key]; 
-    
-    // Check if the normalized value is already there
     const isAlreadySelected = currentValues.includes(normalizedValue);
-
-    // If it exists, remove otherwise, add
+  
     const updatedValues = isAlreadySelected
       ? currentValues.filter(v => v !== normalizedValue)
       : [...currentValues, normalizedValue];

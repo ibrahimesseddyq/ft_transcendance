@@ -25,7 +25,19 @@ const onlineUsers = new Map();
 // Socket.IO authentication middleware
 io.use(async (socket, next) => {
   try {
-    const token = socket.handshake.auth.token;
+    // Primary: read the httpOnly accessToken cookie (sent by the browser automatically)
+    let token = null;
+    const cookieHeader = socket.handshake.headers.cookie || '';
+    const match = cookieHeader.match(/(?:^|;\s*)accessToken=([^;]+)/);
+    if (match) {
+      token = decodeURIComponent(match[1]);
+    }
+
+    // Fallback: legacy clients passing token via socket.handshake.auth.token
+    if (!token) {
+      token = socket.handshake.auth?.token;
+    }
+
     if (!token) {
       return next(new Error('Authentication error'));
     }

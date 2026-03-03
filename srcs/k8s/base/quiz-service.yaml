@@ -20,25 +20,24 @@ spec:
           {{- with secret "secret/data/quiz-service/database" -}}
           export DATABASE_URL="{{ .Data.data.DATABASE_URL }}"
           {{- end }}
-      spec:
-        serviceAccountName: app-service-account
-        containers:
-          - name: quiz-service
-            image: quiz-service:dev
-            imagePullPolicy: IfNotPresent
-            ports:
-              - name: http
-                containerPort: 3001
-                protocol: TCP
-            command:
-              - /bin/sh
-              - -c
-              - |
-                # Source Vault secrets
-                source /vault/secrets/database
-                source /vault/secrets/config
-                # Start the application
-                npm run dev
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: quiz-service
+          image: quiz-service:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3001
+              protocol: TCP
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Source Vault secrets
+              . /vault/secrets/database
+              # Start the application
+              npm run dev
 ---
 apiVersion: v1
 kind: Service
