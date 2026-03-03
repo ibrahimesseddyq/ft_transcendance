@@ -18,7 +18,6 @@ import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
-import { EditProfile } from '@/components/EditProfile'
 
 export function Main() {
   localStorage.theme = 'dark';
@@ -85,8 +84,8 @@ export function Main() {
                 <Route path="/Jobdescription" element={<JobDescription />} />
                 <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
                 <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
+                <Route path="/Createprofile" element={<ProfileInformations />} />
               </Route>
 
               {/* ROOT REDIRECT */}
