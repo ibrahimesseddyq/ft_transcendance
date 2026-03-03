@@ -1,84 +1,84 @@
 import env from'../config/env.js';
 import * as authService from'../services/authService.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import * as jwtService from '../services/jwtService.js';
 
-const cookieOptions = {
+const accessTokenOptions = {
     httpOnly: true,
     maxAge:7 * 24 * 60 * 60 * 1000,
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production"
 }
+const refreshTokenOptions = {
+    httpOnly: true,
+    maxAge:7 * 24 * 60 * 60 * 1000,
+    sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
+    secure: env.NODE_ENV === "production",
+    path: '/api/auth/refresh'
+}
 
-export const login = async (req, res, next) => {
-    try {
+
+export const login = asyncHandler(async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
-
-        const {userId, accessToken, refreshToken, firstLogin, user} = result;
         if (result.require2FA)
         {
-            return res.status(200).json({
+            return res
+            .status(200).json({
                 message: "2FA required",
                 require2FA: true,
                 tempToken: result.tempToken,
-                userId: userId,
-                firstLogin: firstLogin
+                userId: result.userId,
+                firstLogin: result.firstLogin
             });
         }
-        // Normal flow
         res
-        .cookie('jwt', refreshToken ,cookieOptions)
+        .cookie('accessToken',result.accessToken,accessTokenOptions)
+        .cookie('refreshToken', result.refreshToken ,refreshTokenOptions)
         .status(200)
         .json({
                 success: true,
                 message: 'login successful',
                 data:{
-                    user,
-                    accessToken
+                    user: result.user,
                 }
             }
         );
-    }catch(error) {
-        next(error);
-    }
-}
-export const verify2FA = async (req, res, next) =>{
-    try 
-    {
-        const { tempToken, code } = req.body;
-        const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+        console.log('cookies set:', result.accessToken, result.refreshToken);
+})
 
-        res.cookie('jwt', refreshToken, cookieOptions)
-        .status(200)
-        .json(
-            {
-                message:'login successful',
-                data: {
-                    user,
-                    accessToken
-                }
+export const verify2FA = asyncHandler(async (req, res, next) =>{
+    console.log("body :", req.body);
+    const { tempToken, code } = req.body;
+    const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
+    console.log('accessToken:', accessToken);
+    console.log('refreshToken:', refreshToken);
+    res
+    .cookie('accessToken',accessToken,accessTokenOptions)
+    .cookie('refreshToken', refreshToken ,refreshTokenOptions)
+    .status(200)
+    .json(
+        {
+            message:'login successful',
+            data: {
+                user,
             }
-        );
-    }catch(error)
-    {
-        next(error);
-    }
-}
-export const register = async (req, res, next) => {
-    try {
-        const user = await authService.register(req.body)
-        res
-        .status(201)
-        .json({
-            message : 'If the email is valid, an account will be created.',
-        });
-    }catch(error) {
-        next(error)
-    }
-}
+        }
+    );
+})
 
-export const refresh =  async (req, res, next) => {
-    try {
-        const refreshToken = req.cookies.jwt;
+export const register = asyncHandler(async (req, res, next) => {
+    const user = await authService.register(req.body)
+    res
+    .status(201)
+    .json({
+        message : 'If the email is valid, an account will be created.',
+    });
+})
+
+
+export const refresh =  asyncHandler(async (req, res, next) => {
+        const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
             return res
             .status(401)
@@ -89,61 +89,49 @@ export const refresh =  async (req, res, next) => {
         const {user, accessToken} = await  authService.refresh(refreshToken);
         res
         .status(200)
+        .cookie('accessToken',accessToken,accessTokenOptions)
         .json({
             success: true,
             message: 'token refreshed successfully',
             data:{
                 user,
-                accessToken
             }
         });
-    }catch(error) {
-        next(error);
-    }
-}
+})
 
-export const logout =  async (req, res, next) => {
-    try {
-        const refreshToken = req.cookies.jwt;
-        if (!refreshToken)
-            return res.sendStatus(204);
-        await authService.logout(refreshToken);
-        res.clearCookie('jwt', cookieOptions).sendStatus(204);
-    }catch(error) {
-        res.clearCookie('jwt',cookieOptions).sendStatus(204);
-        next(error);
-    }
-}
+export const logout =  asyncHandler(async (req, res, next) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken)
+        return res.sendStatus(204);
+    await authService.logout(refreshToken);
+    res.clearCookie('accessToken', accessTokenOptions)
+    .clearCookie('refreshToken',refreshTokenOptions)
+    .sendStatus(204);
+})
 
-const getAuthStatus = (req, res) => {
-    if (req.isAuthenticated()) {
-        res.status(200).json({ loggedIn: true, user: req.user });
-    } else {
-        res.status(401).json({ loggedIn: false });
-    }
-};
+export const verifyEmail = asyncHandler(async (req, res, next) => {
+    const token = req.params.token;
+    await authService.verifyEmail(token);
+    res.redirect(`${env.FRONTEND_URL}`);
 
-export const verifyEmail = async (req, res, next) => {
-    try {
-        const token = req.params.token;
-        console.log("token = " , token)
-        await authService.verifyEmail(token);
-      res.redirect(`${env.FRONTEND_URL}`);
-    } catch (error) {
-        next(error);
-    }
-};
+})
 
-export const resendVerification = async (req, res, next) => {
-    try {
-        const email = req.body.email;
-        const message = await authService.resendVerification(email);
-        res.status(200).json({ message });
-    } catch (error) {
-        next(error);
-    }
-};  
+export const resendVerification = asyncHandler(async (req, res, next) => {
+    const email = req.body.email;
+    const message = await authService.resendVerification(email);
+    res.status(200).json({ message });
+}) 
 
-
-
-
+export const googleCallBack = asyncHandler(async (req, res) => {
+    const tokens = jwtService.generateAuthTokens({
+        id: req.user.id,
+        email: req.user.email,
+        role: req.user.role
+    });
+    const userId = req.user.id;
+    const firstLogin = !!req.user.firstLogin;
+    console.log("firstLogin :", firstLogin);
+    res.cookie('accessToken', tokens.accessToken, accessTokenOptions)
+    .cookie('refreshToken',tokens.refreshToken, refreshTokenOptions)
+    .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
+})

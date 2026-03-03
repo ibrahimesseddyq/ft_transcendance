@@ -1,28 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from '@/utils/ZuStand';
+import api from '@/utils/Api'
 
 const UserCard = (candidateId: any) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    const token = useAuthStore((state) => state.token);
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
-    // console.log("candidateId : ", candidateId);
 
     useEffect(()=>{
       const fetchUserContent = async () =>{
-        const res = await fetch(`${BACKEND_URL}/api/users/${candidateId}`, {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${token}`}
-        })
-        if (res.ok){
-          // console.log(res);
-          const data = await res.json();
-          // console.log(data.data);
+        try{
+          const res = await api.get(`/api/users/${candidateId}`);
+          
+          const data = res.data;
           if (data.data){
             setUser(data.data);
           }
+        }catch(err){
+          console.log(err);
         }
       }
       fetchUserContent();

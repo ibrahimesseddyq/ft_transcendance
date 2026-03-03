@@ -4,26 +4,23 @@ import * as fileService from './fileService.js';
 import * as userService from './userService.js';
 
 export const createProfile = async  (userId , profileData) => {
-    const profile = await profileRepository.getProfileById(userId);
-    if (profile)
-            throw new HttpException(400,"profile already exists");
     const createData =  {...profileData.body};
+    const uploadTasks = [];
+    const tasks = [];
     if (profileData.files?.avatar?.[0])
-    {
-        const {avatarUrl} = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
-        if (avatarUrl)
-            await userService.updateUser(userId, {avatarUrl})
-    }
+        uploadTasks.push(fileService.saveAvatar(userId, profileData.files.avatar[0]))     
     if (profileData.files?.resume?.[0])
-    {
-        const {resumeUrl} = await fileService.saveResume(userId, profileData.files.resume[0]);
-        createData.resumeUrl = resumeUrl;
-    }
-    
-    return await profileRepository.createProfile({
+        uploadTasks.push(fileService.saveResume(userId, profileData.files.resume[0]))
+    const [{avatarUrl},{resumeUrl}] = await Promise.all(uploadTasks)
+    tasks.push(profileRepository.createProfile({
         ...createData,
-        userId
-    })
+        userId,
+        resumeUrl
+    }))
+    if (avatarUrl)
+        tasks.push(userService.updateUser(userId, {avatarUrl}))
+    await Promise.all(tasks);
+    return tasks[0];
 }
 
 export const updateProfile = async (userId, profileData) => {
@@ -73,8 +70,10 @@ export const deleteResume = async (userId) => {
     const profile = await profileRepository.getProfileById(userId);
     if (!profile)
         throw new HttpException(404, "profile not found");
-    await fileService.deleteFile(profile.resumeUrl);
-    await profileRepository.updateProfile(userId, {resumeUrl : null});
+    await Promise.all([
+        profileRepository.updateProfile(userId, {resumeUrl : null}),
+        fileService.deleteFile(profile.resumeUrl)
+    ])
 }
 
 export const updateResume = async (userId, file) => {

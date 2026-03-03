@@ -37,8 +37,8 @@ export function OtpCode({ otp, setOtp }: OtpCodeProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (value: string, index: number) => {
-    if (value !== "" && !/^\d+$/.test(value)) return;
-
+    if (value !== "" && !/^\d+$/.test(value))
+      return;
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);

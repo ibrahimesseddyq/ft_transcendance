@@ -1,14 +1,16 @@
-import prisma from '../../generated/prisma/index.js';
+import { prisma } from "../config/prisma.js"
 
-export const createJobPhase = async(phaseData) => {
+export const createJobPhase = async (phaseData) => {
 	return await prisma.jobPhase.create({
-		data : phaseData
+		data : phaseData,
 	})
 }
 
 export const updateJobPhase = async (jobPhaseId, updateData) => {
 	return await prisma.jobPhase.update({
-		where : {id : jobPhaseId},
+		where : {
+			id : jobPhaseId
+		},
 		data: updateData
 	})
 }

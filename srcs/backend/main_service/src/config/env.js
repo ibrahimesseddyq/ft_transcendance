@@ -9,9 +9,7 @@ dotenv.config({
 });
 
 const vaultFiles = [
-  '/vault/secrets/.env.database ',
-  '/vault/secrets/.env.oauth ',
-  '/vault/secrets/.env.jw'];
+];
 
 vaultFiles.forEach(file => {
   if (fs.existsSync(file)) {
@@ -45,7 +43,8 @@ const envSchema = z.object({
   VERIFY_SECRET_EXPIRY:z.string(),
   FRONTEND_URL: z.string(),
   BACKEND_URL:z.string(),
-  APP_NAME:z.string().min(1).default("service")
+  APP_NAME:z.string().min(1).default("service"),
+  QUIZ_SERVICE_URL: z.string(),
 });
 
 const envVars = envSchema.safeParse(process.env);

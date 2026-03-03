@@ -1,4 +1,4 @@
-import {CustomError} from '../utils/httpExceptions';
+import {CustomError} from '../utils/httpExceptions.js';
 import {Prisma} from '../../generated/prisma/index.js';
 import handlePrismaError from '../utils/prismaErrorHandler.js'
 
@@ -34,6 +34,7 @@ const errorHandler = (err,req,res,next) => {
     if (handled) return;
 
     res.status(500).json({
+        success: false,
         errors : ['internal server error']
     })
 
