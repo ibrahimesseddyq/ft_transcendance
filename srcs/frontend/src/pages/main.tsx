@@ -18,6 +18,7 @@ import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
+import { EditProfile } from '@/components/EditProfile';
 
 export function Main() {
   localStorage.theme = 'dark';
@@ -25,7 +26,7 @@ export function Main() {
   const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback', '/QuizPage'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -39,7 +40,6 @@ export function Main() {
     return (
       <FullScreenWrapper>
         <Routes>
-          <Route path="/QuizPage" element={<QuizPage />} />
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
@@ -85,7 +85,7 @@ export function Main() {
                 <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
                 <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
-                <Route path="/Createprofile" element={<ProfileInformations />} />
+                <Route path="/EditProfile" element={<EditProfile />} />
               </Route>
 
               {/* ROOT REDIRECT */}
