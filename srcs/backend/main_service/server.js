@@ -19,6 +19,9 @@ const io = new Server(server, {
 // Make io accessible to routes/controllers
 app.set('io', io);
 
+// Track online users: Map<userId, Set<socketId>>
+const onlineUsers = new Map();
+
 // Socket.IO authentication middleware
 io.use(async (socket, next) => {
   try {
@@ -38,65 +41,79 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.userId} (${socket.userRole})`);
+  const userId = socket.userId;
+  console.log(`User connected: ${userId} (${socket.userRole})`);
 
   // Join user's personal room
-  const personalRoom = `user_${socket.userId}`;
+  const personalRoom = `user_${userId}`;
   socket.join(personalRoom);
-  console.log(`User ${socket.userId} joined personal room: ${personalRoom}`);
-  console.log(`Socket rooms:`, Array.from(socket.rooms));
-  
-  // Send a test event to verify personal room works
-  setTimeout(() => {
-    console.log(`Sending test event to ${personalRoom}`);
-    io.in(personalRoom).emit('message:new', {
-      message: { id: 'test', content: 'Test message', senderId: 'system' },
-      conversationId: 'test'
-    });
-    console.log(`Test event sent to ${personalRoom}`);
-  }, 2000);
-  
-  // Emit user online status
-  io.emit('user:online', { userId: socket.userId });
 
-  // Join conversation room
-  socket.on('join:conversation', async (conversationId) => {
+  // Track this socket for the user; broadcast online only on first connection
+  if (!onlineUsers.has(userId)) {
+    onlineUsers.set(userId, new Set());
+  }
+  const wasOffline = onlineUsers.get(userId).size === 0;
+  onlineUsers.get(userId).add(socket.id);
+
+  if (wasOffline) {
+    io.emit('user:online', { userId });
+    console.log(`User ${userId} is now ONLINE`);
+  }
+
+  // Return current online user IDs on request
+  socket.on('user:getOnlineUsers', (data, callback) => {
+    const onlineUserIds = Array.from(onlineUsers.keys()).filter(
+      (uid) => onlineUsers.get(uid)?.size > 0
+    );
+    if (typeof callback === 'function') {
+      callback({ success: true, data: onlineUserIds });
+    }
+  });
+
+  // Join conversation room — support both event names for compatibility
+  const joinConversationHandler = async (payload) => {
     try {
+      // payload may be a string (conversationId) or object { conversationId }
+      const conversationId = typeof payload === 'object' ? payload.conversationId : payload;
+      if (!conversationId) return;
+
       // Verify user is part of the conversation
       const participant = await prisma.conversationParticipant.findFirst({
         where: {
           conversationId,
-          userId: socket.userId
+          userId,
         }
       });
 
       if (participant) {
         socket.join(conversationId);
-        console.log(`User ${socket.userId} joined conversation ${conversationId}`);
-        console.log(`Socket rooms after join:`, Array.from(socket.rooms));
+        console.log(`User ${userId} joined conversation ${conversationId}`);
       }
     } catch (error) {
       console.error('Error joining conversation:', error);
     }
-  });
+  };
+
+  socket.on('join:conversation', joinConversationHandler);
+  socket.on('conversation:join', joinConversationHandler);
 
   // Leave conversation room
   socket.on('leave:conversation', (conversationId) => {
     socket.leave(conversationId);
-    console.log(`User ${socket.userId} left conversation ${conversationId}`);
+    console.log(`User ${userId} left conversation ${conversationId}`);
   });
 
   // Typing indicator
   socket.on('typing:start', (conversationId) => {
     socket.to(conversationId).emit('user:typing', {
-      userId: socket.userId,
+      userId,
       conversationId
     });
   });
 
   socket.on('typing:stop', (conversationId) => {
     socket.to(conversationId).emit('user:stopped-typing', {
-      userId: socket.userId,
+      userId,
       conversationId
     });
   });
@@ -125,7 +142,7 @@ io.on('connection', (socket) => {
       const { conversationId } = data;
       
       socket.to(conversationId).emit('message:read-by', {
-        userId: socket.userId,
+        userId,
         conversationId,
         readAt: new Date()
       });
@@ -134,10 +151,17 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Disconnect
+  // Disconnect — only broadcast offline when the user's last socket disconnects
   socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.userId}`);
-    io.emit('user:offline', { userId: socket.userId });
+    console.log(`Socket disconnected for user: ${userId}`);
+    if (onlineUsers.has(userId)) {
+      onlineUsers.get(userId).delete(socket.id);
+      if (onlineUsers.get(userId).size === 0) {
+        onlineUsers.delete(userId);
+        io.emit('user:offline', { userId });
+        console.log(`User ${userId} is now OFFLINE`);
+      }
+    }
   });
 });
 
