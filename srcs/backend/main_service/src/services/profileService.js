@@ -19,8 +19,9 @@ export const createProfile = async  (userId , profileData) => {
     }))
     if (avatarUrl)
         tasks.push(userService.updateUser(userId, {avatarUrl}))
-    await Promise.all(tasks);
-    return tasks[0];
+    const [profile, user] = await Promise.all(tasks);
+   profile.user.avatarUrl = avatarUrl;
+   return profile;
 }
 
 export const updateProfile = async (userId, profileData) => {
