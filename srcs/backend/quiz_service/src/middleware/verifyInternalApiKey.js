@@ -1,0 +1,13 @@
+import {HttpException} from '../utils/httpExceptions.js'
+import crypto from 'crypto';
+import env from '../config/env.js';
+
+export const verifyInternalApiKey = async (req, res, next) => {
+    let apiKey = req.headers["x-api-key"] || "";
+    const isEqual = apiKey.length === env.INTERNAL_API_KEY.length;
+    if(!apiKey || apiKey.length !== env.INTERNAL_API_KEY.length)
+        apiKey = env.INTERNAL_API_KEY;
+    if (crypto.timingSafeEqual(Buffer.from(env.INTERNAL_API_KEY), Buffer.from(apiKey)) && isEqual)
+        return next()
+    throw new HttpException(401, 'Unauthorized');
+}
