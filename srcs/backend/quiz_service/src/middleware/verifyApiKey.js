@@ -9,5 +9,5 @@ export const verifyApiKey = async (req, res, next) => {
         apiKey = env.QUIZ_PUBLIC_API_KEY;
     if (crypto.timingSafeEqual(Buffer.from(env.QUIZ_PUBLIC_API_KEY), Buffer.from(apiKey)) && isEqual)
         return next()
-    throw new HttpException(401, 'Unauthorized');
+    next( new HttpException(401, 'Unauthorized'));
 }

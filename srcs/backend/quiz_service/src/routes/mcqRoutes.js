@@ -203,9 +203,6 @@ router.get('/:id', mcqController.getMcqById)
     .post('/',
         validateRequest(createMcqSchema),
         mcqController.createMcq)
-    .put('/:id',
-        validateRequest(createMcqSchema),
-        mcqController.replaceMcq)
     .patch('/:id',
         validateRequest(updateMcqSchema),
         mcqController.updateMcq)

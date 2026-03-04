@@ -9,5 +9,5 @@ export const verifyInternalApiKey = async (req, res, next) => {
         apiKey = env.INTERNAL_API_KEY;
     if (crypto.timingSafeEqual(Buffer.from(env.INTERNAL_API_KEY), Buffer.from(apiKey)) && isEqual)
         return next()
-    throw new HttpException(401, 'Unauthorized');
+    next(new HttpException(401, 'Unauthorized'));
 }
