@@ -1,8 +1,16 @@
 import { z } from "zod";
 
-const fileSchema = z
-  .file()
-  .max(10_000_000)
+const fileOrUrlSchema = (maxMb: number) => z.any()
+  .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
+  .refine(
+    (v) => !v || typeof v === "string" || v instanceof File,
+    { message: "Must be a file" }
+  )
+  .refine(
+    (v) => !(v instanceof File) || v.size <= maxMb * 1024 * 1024,
+    { message: `File must be under ${maxMb}MB` }
+  )
+  .optional();
 
 
 export const RegisterSchema = z.object({
@@ -89,9 +97,7 @@ export const ApplyJobSchema = z.object({
   phoneNumber: z.number()
     .min(10, "Phone number must be at least 10 characters"),
 
-  cv: z
-    .any()
-    .pipe(fileSchema),
+  cv: fileOrUrlSchema(10),
 
   coverLetter: z.string()
     .min(50, "Cover letter should be at least 50 characters")
@@ -108,18 +114,9 @@ export const ApplyJobSchema = z.object({
 });
 
 export const CandidateProfileSchema = z.object({
-  userId: z
-    .string(),
 
-  avatar: z
-    .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema),
-
-  resume: z
-    .any()
-    .transform((v) => (v instanceof FileList ? v.item(0) ?? undefined : v))
-    .pipe(fileSchema),
+  avatar:    fileOrUrlSchema(10),
+  resumeUrl: fileOrUrlSchema(10),
 
   phone: z
     .string()
@@ -137,28 +134,22 @@ export const CandidateProfileSchema = z.object({
   portfolioUrl: z.string()
     .optional(),
 
+  // yearsExperience: z.coerce.number() 
+  //   .int()
+  //   .min(0)
+  //   .optional()
+  //   .nullable(),
+
   currentCompany: z.string()
     .optional(),
 
   currentTitle: z.string()
     .min(1, "Current Job Title is required"),
 
-  yearsExperience: z
-    .string()
-    .transform((val) => val.replace(/\D/g, ""))
-    .pipe(
-      z.string()
-      .min(1, { message: 'Must be a valid mobile number' })
-      .max(2, { message: 'Must be a valid mobile number' })
-    ),
+  availableFrom: z.string().optional(),
 
   skills: z.string(),
 
-  preferredLocations: z.string()
-    .optional(),
-
-  salaryExpectation: z.string()
-    .optional(),
 });
 
 const chicesSchema =  z.object({
@@ -167,19 +158,46 @@ const chicesSchema =  z.object({
       .boolean()
       .default(false)
 })
+
+// title: z.string()
+//         .min(3, "Title must be at least 3 characters")
+//         .max(255, " title should not be more than 255 char"),
+//     description: z.string().optional(),
+//     durationMinutes: z.number()
+//         .int()
+//         .positive(),
+//     passingScore: z.number()
+//         .int()
+//         .positive()
+//         .min(50, "passing score should not be less than 50")
+//         .max(100, "passing score should not be greater than 100")
+//         .default(60),
+//     category : z.string()
+//         .optional(),
+//     difficulty: z.nativeEnum(Difficulty),
+//     tags: z.array(z.string())
+//         .optional(),
+//     isPublished: z.boolean()
+//         .default(false),
 export const McqSchema =  z.object({
+    title: z.string()
+      .min(3, "Title must be at least 3 characters")
+      .max(255, " title should not be more than 255 char"),
+    durationMinutes: z.number()
+      .int()
+      .positive(),
     question: z
       .string()
       .min(1, "min Characters should be 10"),
     choices: z
       .array(chicesSchema)
       .length(4, "Must provide exactly 4 choices"),
-    points: z.coerce.number() 
+    passingScore: z.number()
       .int()
-      .min(1, "the minimum is 1")
-      .max(5, "the maximum is 5")
-      .positive("Points must be a positive integer")
-      .default(1),
+      .positive()
+      .min(50, "passing score should not be less than 50")
+      .max(100, "passing score should not be greater than 100")
+      .default(60),
     explanation: z
       .string()
       .optional(),

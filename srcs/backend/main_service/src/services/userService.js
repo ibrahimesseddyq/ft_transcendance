@@ -24,7 +24,8 @@ export const findUserOrCreate = async (profile) => {
         passwordHash,
         avatarUrl: profile.photos?.[0]?.value || null,
         role: 'candidate',
-        isVerified: true
+        isVerified: true,
+        firstLogin: true
     });
 }
 
