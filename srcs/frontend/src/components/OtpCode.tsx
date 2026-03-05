@@ -1,5 +1,5 @@
 
-import { useRef, KeyboardEvent } from 'react';
+import { useRef, KeyboardEvent, useEffect } from 'react';
 
 interface InputFieldProps {
     val: string;
@@ -36,6 +36,9 @@ interface OtpCodeProps {
 export function OtpCode({ otp, setOtp }: OtpCodeProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
   const handleChange = (value: string, index: number) => {
     if (value !== "" && !/^\d+$/.test(value))
       return;

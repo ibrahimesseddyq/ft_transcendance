@@ -1,11 +1,12 @@
 import CreateTest from '@/components/ui/CreateTest'
 import TestsList from '@/components/ui/TestsList'
+import {ToastContainer} from "react-toastify";
 
 export function QuizPage(){
     return (
         <div className="overflow-y-auto no-scrollbar items-center w-full h-screen 
             bg-white dark:bg-slate-950 rounded-xl transition-colors duration-300">
-        
+            <ToastContainer />
             <div className='grid grid-cols-4 h-full w-full lg:divide-x-2 divide-gray-200 dark:divide-gray-800 p-4 lg:p-0'>
                 <div className="col-span-4 lg:col-span-1 gap-4 bg-transparent lg:bg-[#f3f4f6] dark:lg:bg-slate-900/50
                     h-full w-full order-last lg:order-first p-4 transition-colors">
