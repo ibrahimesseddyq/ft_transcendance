@@ -119,7 +119,6 @@ export function QRcode() {
         setOtpArray(new Array(6).fill(""));
     };
 
-
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 
             bg-white dark:bg-slate-900 rounded-2xl transition-colors duration-300">
