@@ -105,7 +105,7 @@ model Profile {
   phone           String?   @db.VarChar(255)
   yearsExperience Int?
   skills          String?   @db.LongText
-  availableFrom   DateTime? @db.Date
+  availableFrom   String?   @db.VarChar(255)
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 

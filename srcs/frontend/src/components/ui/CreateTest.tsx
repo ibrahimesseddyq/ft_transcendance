@@ -4,6 +4,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CopyCheck, Check, Plus, Trash2, Sparkle, DiamondPlus } from 'lucide-react';
 import { useState } from 'react';
+import Notification from "@/utils/TostifyNotification";
+import api from '@/utils/Api';
 
 type MCQFormValues = z.infer<typeof McqSchema>;
 
@@ -29,10 +31,27 @@ const CreateTest = () => {
         resolver: zodResolver(McqSchema) as any,
     });
 
-   
+
     const TestSubmit = async (data: MCQFormValues) => {
-        // console.log("Final Form Data:", data);
+        console.log("Final Form Data:", data);
+        // type:  testData.type,
+        //    title: testData.title,
+        //    description: testData.description,
+        //    durationMinutes: testData.durationMinutes,
+        //    passingScore: testData.passingScore,
+        //    category: testData.category,
+        //    difficulty: testData.difficulty,
+        //    tags: testData.tags,
+        //    isPublished: false,
+        try{
+            await api.post(`/api/tests`, data);
+            Notification("Job updated successfully!", "success");
+        }catch(err){
+            console.log(err);
+        }
         reset();
+        setTags([]);
+        setChoices([]);
     };
 
     const handleAddTag = (newTag: string) => {
@@ -163,9 +182,9 @@ const CreateTest = () => {
                 <CardField 
                     title="Mark as point" 
                     tag="Points" 
-                    name="points" 
+                    name="passingScore" 
                     register={register} 
-                    error={errors.points?.message} 
+                    error={errors.passingScore?.message} 
                     placeholder="1" 
                     type="number"
                 />
