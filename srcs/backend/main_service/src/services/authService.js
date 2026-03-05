@@ -40,21 +40,21 @@ export const login = async (data) => {
       // throw new HttpException(400, "Wrong credentials");
     }
   
-    // if (user.twoFAEnabled )
-    // {
-    //     const tempToken = jwtService.generateTempToken({
-    //         id: user.id,
-    //         email: user.email,
-    //         purpose: '2fa-pending'
-    //     });
+    if (user.twoFAEnabled )
+    {
+        const tempToken = jwtService.generateTempToken({
+            id: user.id,
+            email: user.email,
+            purpose: '2fa-pending'
+        });
 
-    //     return {
-    //         require2FA: true,
-    //         tempToken,
-    //         firstLogin: user.firstLogin,
-    //         userId: user.id
-    //     };
-    // }
+        return {
+            require2FA: true,
+            tempToken,
+            firstLogin: user.firstLogin,
+            userId: user.id
+        };
+    }
 
     const tokens = jwtService.generateAuthTokens({
       id: user.id,
