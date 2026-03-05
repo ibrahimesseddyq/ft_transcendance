@@ -183,23 +183,6 @@ model Offer {
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }
 
-model Session {
-  id           String   @id @default(uuid()) @db.Char(36)
-  userId       String   @db.Char(36)
-  refreshToken String   @unique @db.VarChar(512)
-  ipAdress     String?  @db.VarChar(45)
-  userAgent    String?  @db.VarChar(255)
-  expiresAt    DateTime @db.Timestamp(0)
-  createdAt    DateTime @default(now()) @db.Timestamp(0)
-  lastUsed     DateTime @default(now()) @db.Timestamp(0)
-
-  user User? @relation(fields: [userId], references: [id])
-
-  @@index([refreshToken, expiresAt])
-  @@index([userId])
-  @@index([expiresAt])
-}
-
 model User {
   id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
   email                 String                 @unique @db.VarChar(255)
@@ -218,7 +201,6 @@ model User {
   jobs                  Job[]
   notifications         Notification[]
   isVerified            Boolean?               @default(false)
-  sessions              Session[]
   twoFAEnabled          Boolean                @default(true)
   firstLogin            Boolean                @default(true)
   twoFASecret           String?
