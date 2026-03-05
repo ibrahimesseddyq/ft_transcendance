@@ -60,26 +60,35 @@ export function Header() {
 
         <Notifications />
 
-        <Link to={`/Profile/${user?.id}`}
-          className="flex items-center gap-2 md:gap-3 group">
-          <div className="text-right hidden lg:block">
-            <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
-              {user?.firstName}
-            </p>
-            <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
-              @{user?.role}
-            </p>
-          </div>
+        {isAdminOrRecruiter ?
+            <div
+              className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
+                border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
+              style={{ 
+                backgroundImage: `url("/recruiter.jpg")`}}
+            /> 
+          :
+            <Link to={`/Profile/${user?.id}`}
+              className="flex items-center gap-2 md:gap-3 group">
+              <div className="text-right hidden lg:block">
+                <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
+                  {user?.firstName}
+                </p>
+                <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
+                  @{user?.role}
+                </p>
+              </div>
 
-          {/* Avatar */}
-          <div
-            className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
-              border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
-            style={{ 
-              backgroundImage: `url("${ avatarUrl }")`
-            }}
-          />
-        </Link>
+              <div
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
+                  border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
+                style={{ 
+                  backgroundImage: `url("${ avatarUrl }")`
+                }}
+              />
+          </Link>
+        }
+        
 
         {/* Mobile Menu */}
         <div className="lg:hidden">
