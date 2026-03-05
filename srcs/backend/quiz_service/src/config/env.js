@@ -2,9 +2,9 @@ import { z } from 'zod';
 import path from 'path';
 import dotenv from 'dotenv'
 import fs from 'fs'
-
+const envFile = process.NODE_ENV === 'production' ? '../../.env' : '../../.env.example';
 dotenv.config({
-  path: path.resolve(import.meta.dirname,"../../.env.dev"),
+  path: path.resolve(import.meta.dirname,envFile),
   override: true
 });
 
@@ -45,7 +45,9 @@ const envSchema = z.object({
   VERIFY_SECRET_EXPIRY:z.string(),
   FRONTEND_URL: z.string(),
   BACKEND_URL:z.string(),
-  APP_NAME:z.string().min(1).default("service")
+  APP_NAME:z.string().min(1).default("service"),
+  QUIZ_PUBLIC_API_KEY:z.string().min(32),
+  INTERNAL_API_KEY: z.string().min(32)
 });
 
 const envVars = envSchema.safeParse(process.env);
