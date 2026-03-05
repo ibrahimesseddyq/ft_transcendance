@@ -1,4 +1,4 @@
-import { ClipboardList, CloudUpload, LucideIcon, CalendarDays ,MapPin ,MapPinned, File, Send } from 'lucide-react';
+import { ClipboardList, CalendarDays, MapPin, MapPinned, File, Send, type LucideIcon } from 'lucide-react';
 import Notification from "@/utils/TostifyNotification"
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/utils/ZuStand';
