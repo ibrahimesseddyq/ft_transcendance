@@ -115,10 +115,14 @@ export function useChat() {
     };
   }, []);
 
-  // Setup socket listeners
+  // Stable socket listeners: connection + status events.
+  // These never re-register while the component is mounted so no status events are missed.
   useEffect(() => {
     const handleConnect = () => {
       setState((prev) => ({ ...prev, isConnected: true }));
+      // Re-request online users list on every (re)connect so state is
+      // always fresh without needing a page refresh.
+      chatSocket.requestOnlineUsers();
     };
 
     const handleDisconnect = () => {
@@ -128,71 +132,6 @@ export function useChat() {
     const handleError = (error: any) => {
       console.error('Socket error:', error);
       toast.error('Connection error. Retrying...');
-    };
-
-    const handleNewMessage = (data: { message: any; conversationId: string }) => {
-      const { message: raw, conversationId } = data;
-      const message = normalizeMessage(raw);
-
-      // Add to messages if this is the current conversation
-      setState((prev) => {
-        if (prev.currentConversation?.id === conversationId) {
-          // Check if message already exists
-          if (prev.messages.some((m) => m.id === message.id)) {
-            return prev;
-          }
-          return {
-            ...prev,
-            messages: [...prev.messages, message],
-          };
-        }
-        return prev;
-      });
-
-      // Update conversation's last message and unread count
-      setState((prev) => ({
-        ...prev,
-        conversations: prev.conversations.map((conv) => {
-          if (conv.id === conversationId) {
-            return {
-              ...conv,
-              lastMessage: message,
-              unreadCount:
-                prev.currentConversation?.id === conversationId
-                  ? conv.unreadCount
-                  : (conv.unreadCount || 0) + 1,
-            };
-          }
-          return conv;
-        }),
-      }));
-
-      // Mark as read if it's the current conversation
-      if (state.currentConversation?.id === conversationId) {
-        chatSocket.markAsRead(conversationId);
-      }
-    };
-
-    const handleTypingUpdate = (data: {
-      conversationId: string;
-      userId: string;
-      userName: string;
-      isTyping: boolean;
-    }) => {
-      if (data.conversationId === state.currentConversation?.id) {
-        setState((prev) => {
-          const newTypingUsers = new Map(prev.typingUsers);
-          if (data.isTyping) {
-            newTypingUsers.set(data.userId, {
-              userId: data.userId,
-              userName: data.userName,
-            });
-          } else {
-            newTypingUsers.delete(data.userId);
-          }
-          return { ...prev, typingUsers: newTypingUsers };
-        });
-      }
     };
 
     const handleUserOnline = (data: { userId: string }) => {
@@ -220,7 +159,6 @@ export function useChat() {
 
     const handleNewConversation = (data: { conversation: Conversation }) => {
       setState((prev) => {
-        // Check if conversation already exists
         if (prev.conversations.some((c) => c.id === data.conversation.id)) {
           return prev;
         }
@@ -234,8 +172,6 @@ export function useChat() {
     chatSocket.on('onConnect', handleConnect);
     chatSocket.on('onDisconnect', handleDisconnect);
     chatSocket.on('onError', handleError);
-    chatSocket.on('onNewMessage', handleNewMessage);
-    chatSocket.on('onTypingUpdate', handleTypingUpdate);
     chatSocket.on('onUserOnline', handleUserOnline);
     chatSocket.on('onUserOffline', handleUserOffline);
     chatSocket.on('onOnlineUsers', handleOnlineUsers);
@@ -245,12 +181,77 @@ export function useChat() {
       chatSocket.off('onConnect', handleConnect);
       chatSocket.off('onDisconnect', handleDisconnect);
       chatSocket.off('onError', handleError);
-      chatSocket.off('onNewMessage', handleNewMessage);
-      chatSocket.off('onTypingUpdate', handleTypingUpdate);
       chatSocket.off('onUserOnline', handleUserOnline);
       chatSocket.off('onUserOffline', handleUserOffline);
       chatSocket.off('onOnlineUsers', handleOnlineUsers);
       chatSocket.off('onNewConversation', handleNewConversation);
+    };
+  }, []); // intentionally stable — never re-registers
+
+  // Conversation-specific listeners: messages + typing.
+  // Re-registers when the open conversation changes.
+  useEffect(() => {
+    const handleNewMessage = (data: { message: any; conversationId: string }) => {
+      const { message: raw, conversationId } = data;
+      const message = normalizeMessage(raw);
+
+      setState((prev) => {
+        // Add to messages only if this is the current conversation
+        const updatedMessages =
+          prev.currentConversation?.id === conversationId &&
+          !prev.messages.some((m) => m.id === message.id)
+            ? [...prev.messages, message]
+            : prev.messages;
+
+        // Update last message + unread count in conversation list
+        const updatedConversations = prev.conversations.map((conv) => {
+          if (conv.id !== conversationId) return conv;
+          return {
+            ...conv,
+            lastMessage: message,
+            unreadCount:
+              prev.currentConversation?.id === conversationId
+                ? conv.unreadCount
+                : (conv.unreadCount || 0) + 1,
+          };
+        });
+
+        return { ...prev, messages: updatedMessages, conversations: updatedConversations };
+      });
+
+      // Mark as read if it's the active conversation
+      setState((prev) => {
+        if (prev.currentConversation?.id === conversationId) {
+          chatSocket.markAsRead(conversationId);
+        }
+        return prev;
+      });
+    };
+
+    const handleTypingUpdate = (data: {
+      conversationId: string;
+      userId: string;
+      userName: string;
+      isTyping: boolean;
+    }) => {
+      setState((prev) => {
+        if (data.conversationId !== prev.currentConversation?.id) return prev;
+        const newTypingUsers = new Map(prev.typingUsers);
+        if (data.isTyping) {
+          newTypingUsers.set(data.userId, { userId: data.userId, userName: data.userName });
+        } else {
+          newTypingUsers.delete(data.userId);
+        }
+        return { ...prev, typingUsers: newTypingUsers };
+      });
+    };
+
+    chatSocket.on('onNewMessage', handleNewMessage);
+    chatSocket.on('onTypingUpdate', handleTypingUpdate);
+
+    return () => {
+      chatSocket.off('onNewMessage', handleNewMessage);
+      chatSocket.off('onTypingUpdate', handleTypingUpdate);
     };
   }, [state.currentConversation?.id]);
 
@@ -296,6 +297,24 @@ export function useChat() {
       chatSocket.joinConversation(conversationId);
       chatSocket.markAsRead(conversationId);
       await chatApi.markConversationAsRead(conversationId);
+
+      // Refresh online status for all participants in this conversation
+      const conv = state.conversations.find((c) => c.id === conversationId);
+      if (conv?.participants) {
+        conv.participants.forEach(async (p: any) => {
+          const uid = p.userId ?? p.id;
+          if (!uid || uid === state.user?.id) return;
+          try {
+            const { isOnline } = await chatSocket.getUserStatus(uid);
+            setState((prev) => {
+              const updated = new Set(prev.onlineUsers);
+              if (isOnline) updated.add(uid);
+              else updated.delete(uid);
+              return { ...prev, onlineUsers: updated };
+            });
+          } catch {}
+        });
+      }
 
       setIsLoadingMessages(false);
     } catch (error: any) {
