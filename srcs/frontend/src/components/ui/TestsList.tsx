@@ -1,12 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import api from '@/utils/Api';
 import { CopyCheck, Ellipsis } from 'lucide-react';
 
 const TestsList = () =>{
-    const [tests] = useState([
-        {id:1, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdghhgdhgdfhjgghftdfghhfhjgghftdfghhg"},
-        {id:2, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdfghhgdhgdfhdfghhgdhgdfhjgghftdfghhg"},
-        {id:3, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgggghftdfghhgdhftdfghhgdhgdfhjgghftdfghhg"}
-    ]);
+
+    const [tests, setTests] = useState([]);
+    useEffect(()=>{
+      const fetchUserContent = async () =>{
+        try{
+          const res = await api.get(`/api/tests`);
+          const data = res.data;
+          if (data.data){
+            setTests(data.data);
+          }
+        }catch(err){
+          console.log(err);
+        }
+      }
+      fetchUserContent();
+    }, [tests]);
 
     const TestCard = ({test}: any)=>{
         return (
@@ -38,12 +50,20 @@ const TestsList = () =>{
     }
 
     return (
-        <div className='h-full w-full'>
-            {tests.map((item:any)=>(
-                <div key={item.id} className='w-full'>
-                    <TestCard test={item}/>
+        <div className='h-full w-full items-center'>
+            {tests 
+                ?
+                <div>
+                    {tests.map((item:any)=>(
+                        <div key={item.id} className='w-full'>
+                            <TestCard test={item}/>
+                        </div>
+                    ))}
                 </div>
-            ))}
+                :
+                <h1 className='text-black dark:text-white'>No Test Provided</h1>
+            }
+            
         </div>
     );
 }

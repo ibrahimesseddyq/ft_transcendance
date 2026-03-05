@@ -66,11 +66,12 @@ export function ProfileCover({ profile, user }: props) {
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-[#00adef]/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>
+          
         </div>
 
         {loggedUser?.id === user?.id && (
           <Link 
-            to="/profile/edit"
+            to="/EditProfile"
             className="w-full sm:w-auto px-4 py-2 text-center bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-700 
               dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           >
