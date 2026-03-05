@@ -25,6 +25,7 @@ export function Main() {
   const location = useLocation();
   const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
@@ -49,7 +50,7 @@ export function Main() {
     );
   }
 
- if (user && qrVerified && !hasProfile) {
+ if (user && !isAdminOrRecruiter && qrVerified && !hasProfile) {
     return (
       <FullScreenWrapper>
         <Routes>
