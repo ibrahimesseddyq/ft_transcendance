@@ -161,6 +161,15 @@ class ChatSocketService {
     this.socket?.emit('message:read', { conversationId });
   }
 
+  requestOnlineUsers(): void {
+    if (!this.socket) return;
+    this.socket.emit('user:getOnlineUsers', {}, (response: { success: boolean; data: string[] }) => {
+      if (response?.success && Array.isArray(response.data)) {
+        this.emit('onOnlineUsers', { userIds: response.data });
+      }
+    });
+  }
+
   getUserStatus(userId: string): Promise<{ isOnline: boolean }> {
     return new Promise((resolve, reject) => {
       if (!this.socket) {

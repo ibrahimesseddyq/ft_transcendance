@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Plus } from 'lucide-react';
 import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import {ToastContainer} from "react-toastify";
@@ -79,14 +80,12 @@ export function Jobs() {
       {isAdminOrRecruiter && (
         <button 
           onClick={() => {setJobItem(null); setIsFormOpen(true)}}
-          className="fixed bottom-10 right-10 z-50 bg-[#10B77F] hover:bg-[#0da371] dark:hover:bg-[#12cf91]
-            text-white dark:text-slate-900 font-extrabold py-3 px-6 rounded-2xl 
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-[#10B77F] hover:bg-[#0da371] dark:hover:bg-[#12cf91]
+            text-white dark:text-slate-900 font-extrabold rounded-full 
             shadow-lg shadow-[#10B77F]/30 dark:shadow-[#10B77F]/20 
-            transition-all duration-300 transform hover:scale-110 
-            flex items-center gap-2 border border-white/10 dark:border-none"
+            transition-all duration-300 flex items-center justify-center"
         >
-          <span className="text-2xl leading-none">+</span> 
-          <span className="tracking-tight">Post Job</span>
+          <Plus size={25} strokeWidth={3} />
         </button>
       )}
     </div>

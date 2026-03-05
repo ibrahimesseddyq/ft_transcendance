@@ -33,25 +33,27 @@ const CreateTest = () => {
 
 
     const TestSubmit = async (data: MCQFormValues) => {
-        console.log("Final Form Data:", data);
-        // type:  testData.type,
-        //    title: testData.title,
-        //    description: testData.description,
-        //    durationMinutes: testData.durationMinutes,
-        //    passingScore: testData.passingScore,
-        //    category: testData.category,
-        //    difficulty: testData.difficulty,
-        //    tags: testData.tags,
-        //    isPublished: false,
-        try{
-            await api.post(`/api/tests`, data);
-            Notification("Job updated successfully!", "success");
-        }catch(err){
-            console.log(err);
+        if (choices.length !== 4) {
+            Notification("Please add exactly 4 choices", "error");
+            return;
         }
-        reset();
-        setTags([]);
-        setChoices([]);
+
+        if (!choices.find(c => c.isCorrect)) {
+            Notification("Please mark one choice as the correct answer", "error");
+            return;
+        }
+
+        try {
+            await api.post(`/api/tests`, { ...data, choices, tags });
+            Notification("Test created successfully!", "success");
+
+            reset();
+            setTags([]);
+            setChoices([]);
+            setNextId(1);
+        } catch (err: any) {
+            Notification(err.response?.data?.message || "Error saving test", "error");
+        }
     };
 
     const handleAddTag = (newTag: string) => {
@@ -185,7 +187,7 @@ const CreateTest = () => {
                     name="passingScore" 
                     register={register} 
                     error={errors.passingScore?.message} 
-                    placeholder="1" 
+                    placeholder="50" 
                     type="number"
                 />
                 
@@ -264,8 +266,6 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
         <div className='flex items-center gap-2 py-2 px-4 rounded-lg bg-slate-100/50 
             dark:bg-slate-800/50 border border-gray-200 dark:border-gray-700'>
             <input
-                min={1}
-                max={5}
                 type={type} 
                 {...register(name, { valueAsNumber: type === "number" })} 
                 placeholder={placeholder}
