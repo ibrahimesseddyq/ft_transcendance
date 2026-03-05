@@ -126,10 +126,14 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
                 >
                   Details
                 </button>
-                
-                <div className="flex-1">
-                   <JobPhaseManager jobId={item.id} />
-                </div>
+
+                {isAdminOrRecruiter && (
+                  <>
+                    <div className="flex-1">
+                       <JobPhaseManager jobId={item.id} />
+                    </div>
+                  </>
+                )}
 
                 <div className="flex items-center gap-2 text-gray-500">
                   {isAdminOrRecruiter && (
@@ -142,6 +146,9 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
                       </button>
                     </>
                   )}
+                  <button className="hover:text-yellow-500 transition-colors">
+                    <Bookmark size={18} />
+                  </button>
                 </div>
               </div>
             </div>
@@ -155,3 +162,4 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
 };
 
 export default JobCards;
+      
