@@ -9,10 +9,15 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
-  const { userId, setUserId, clearAuth } = useAuthStore();
+  const { userId, setUserId, clearAuth, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(!userId);
   const location = useLocation();
 
+  console.log("AuthGuard userId :", userId);
+  if (!user) {
+    return <Navigate to="/Login" state={{ from: location }} replace />;
+  }
+  
   useEffect(() => {
     const verifySession = async () => {
       if (userId) {
@@ -31,6 +36,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
           clearAuth();
         }
       } catch (error) {
+        console.log('Session verification failed:', error);
         clearAuth();
       } finally {
         setIsLoading(false);

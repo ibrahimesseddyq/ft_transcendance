@@ -3,7 +3,7 @@ import passport from 'passport';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import cokieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/ErrorHandler.js';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -19,10 +19,8 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 const app =  express();
 
-console.log(process.env.FRONTEND_URL)
-console.log(env.FRONTEND_URL)
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, 'http://127.0.0.1:5173'],
+  origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
@@ -31,10 +29,9 @@ app.use(helmet());
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
-app.use(cokieParser());
+app.use(cookieParser());
 app.use(morgan('combined'));
 
-//The cross-origin value tells the browser that it is safe to load this resource on a different port
 app.use('/uploads',
   verifyToken, (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
