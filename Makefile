@@ -39,7 +39,7 @@ dev: clean-dev down-dev
 	$(DEV_COMPOSE) up -d
 	
 	# (cd srcs/frontend && npm install && npm run dev ) 
-	concurrently \
+	npx concurrently \
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
