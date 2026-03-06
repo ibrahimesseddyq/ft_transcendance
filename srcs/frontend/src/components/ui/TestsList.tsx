@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
 
@@ -9,7 +9,7 @@ const TestsList = () => {
 
     const fetchUserContent = async () => {
         try {
-            const res = await api.get(`/api/tests`);
+            const res = await mainApi.get(`/api/tests`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.log(err);
@@ -26,7 +26,7 @@ const TestsList = () => {
         if (!confirm("Are you sure you want to delete this test?")) return;
         
         try {
-            await api.delete(`/api/tests/${id}`);
+            await mainApi.delete(`/api/tests/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Test deleted successfully", "success");
         } catch (err) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, FlaskConical, CheckCircle2 } from 'lucide-react';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 
 interface JobPhase {
@@ -44,8 +44,8 @@ export function JobPhaseManager({ jobId }: Props) {
     setLoading(true);
     try {
       const [phasesRes, testsRes] = await Promise.all([
-        api.get(`/api/jobPhases/${jobId}/phase`),
-        api.get('/api/tests')
+        mainApi.get(`/api/jobPhases/${jobId}/phase`),
+        mainApi.get('/api/tests')
       ]);
       
       const pData = phasesRes.data?.data ?? phasesRes.data;
@@ -67,7 +67,7 @@ export function JobPhaseManager({ jobId }: Props) {
   const handleDelete = async (phaseId: string) => {
     if (!confirm('Remove this test phase?')) return;
     try {
-      await api.delete(`/api/jobPhases/${phaseId}`);
+      await mainApi.delete(`/api/jobPhases/${phaseId}`);
       setPhases(prev => prev.filter(p => p.id !== phaseId));
       Notification('Phase deleted', 'success');
     } catch {
@@ -93,7 +93,7 @@ export function JobPhaseManager({ jobId }: Props) {
         durationMinutes: form.durationMinutes ? Number(form.durationMinutes) : undefined,
         testId: form.testId,
       };
-      const res = await api.post('/api/jobPhases/', payload);
+      const res = await mainApi.post('/api/jobPhases/', payload);
       setPhases(prev => [...prev, (res.data?.data ?? res.data)]);
       setForm(defaultForm);
       setShowForm(false);

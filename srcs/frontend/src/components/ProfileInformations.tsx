@@ -9,7 +9,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -106,7 +106,7 @@ export function ProfileInformations() {
       if (data.avatar instanceof File) formData.append("avatar", data.avatar);
       if (data.resumeUrl instanceof File) formData.append("resume", data.resumeUrl);
 
-      const apiPromise = api.post(`/api/profiles/${userId}`, formData);
+      const apiPromise = mainApi.post(`/api/profiles/${userId}`, formData);
       
       const animations = [];
       if (data.avatar instanceof File) 
@@ -120,7 +120,7 @@ export function ProfileInformations() {
       Notification("Profile updated successfully!", "success");
 
       const targetPath = (user?.role === "recruiter" || user?.role === "admin") ? '/Dashboard' : '/Jobs';
-      setTimeout(() => navigate(targetPath), 800);
+      setTimeout(() => navigate(targetPath, { replace: true }), 800);
 
     } catch (error) {
       setAvatarProgress(0);

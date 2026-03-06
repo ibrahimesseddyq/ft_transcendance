@@ -7,7 +7,7 @@ import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -129,7 +129,7 @@ export function EditProfile() {
         animations.push(startProgressAnimation(setResumeProgress));
       }
 
-      const apiPromise = api.patch(`/api/profiles/${userId}`, formData);
+      const apiPromise = mainApi.patch(`/api/profiles/${userId}`, formData);
       const [response] = await Promise.all([apiPromise, ...animations]);
 
       setProfile(response.data.data);

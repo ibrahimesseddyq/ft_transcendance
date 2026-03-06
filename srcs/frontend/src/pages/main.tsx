@@ -69,8 +69,8 @@ export function Main() {
           <Header />
         </div>
 
-        <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
-          <main className="w-full ">
+        <div className="flex flex-1 w-full max-w-screen-2xl overflow-hidden">
+          <main className="w-full">
             <Routes>
               {/* STAFF ROUTES (Admin & Recruiter) */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>

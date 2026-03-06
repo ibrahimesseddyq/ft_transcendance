@@ -1,7 +1,7 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 import { JobPhaseManager } from "./JobPhaseManager";
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
@@ -20,7 +20,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      await api.delete(`/api/jobs/${jobId}`);
+      await mainApi.delete(`/api/jobs/${jobId}`);
       setJobsArray(jobsArray.filter(job => job.id !== jobId));
       Notification("Job Deleted", "success");
     } catch (error) {
