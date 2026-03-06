@@ -8,7 +8,7 @@ export const navigation = [
     { name: "Jobs", path: "/Jobs", icon: BriefcaseBusiness },
     { name: "Saved", path: "/Savedjobs", icon: Bookmark },
     { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
-    { name: "Contact", path: "/ContactUs", icon: MessageCircleMore },
+    { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "About", path: "/About", icon: BookOpenText },
 ];
 

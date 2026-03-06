@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDownFromLine, MessageSquarePlus } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
+import { chatApi } from '@/services/chatApi';
 
 interface props {
   profile: any;
@@ -13,6 +14,7 @@ export function ProfileCover({ profile, user }: props) {
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   const loggedUser = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
   const [profileUrl] = useState(window.location.href);
   const [copyState, setCopyState] = useState('');
   
@@ -25,9 +27,26 @@ export function ProfileCover({ profile, user }: props) {
     setTimeout(() => { setCopyState('') }, 2000);
   }
 
-  const handleStartChat = () => {
-    console.log(`Starting conversation with ${user?.firstName}`);
-    // navigate(`/messages?userId=${user?.id}`);
+  const handleStartChat = async () => {
+    if (!loggedUser || !isRecruiter) return;
+    try {
+      const conversations = await chatApi.getConversations();
+
+      const existing = conversations.find((conv: any) =>
+        conv.participants?.some((p: any) => p.id === user?.id)
+      );
+
+      if (existing) {
+        sessionStorage.setItem('chat_conversationId', existing.id);
+        navigate('/chat');
+      } else {
+        const newConversation = await chatApi.createConversation(user?.id);
+        sessionStorage.setItem('chat_conversationId', newConversation.id);
+        navigate('/chat');
+      }
+    } catch (error) {
+      console.error('Failed to open conversation:', error);
+    }
   }
 
   return (
@@ -87,6 +106,7 @@ export function ProfileCover({ profile, user }: props) {
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-[#00adef]/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>
+          
         </div>
 
         {isOwnProfile && (

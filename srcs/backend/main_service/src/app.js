@@ -10,6 +10,8 @@ import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import env from './config/env.js';
 import path from 'path';
 import {HttpException} from './utils/httpExceptions.js';
@@ -25,7 +27,17 @@ app.use(cors({
   credentials: true 
 }));
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      // Allow the frontend to embed /chat in an iframe
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    },
+  },
+  // Disable X-Frame-Options so CSP frame-ancestors takes precedence
+  frameguard: false,
+}));
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
@@ -66,6 +78,14 @@ app.use('/api/applications',
 app.use('/api/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
+
+app.use('/chat/conversations',
+  verifyToken,
+  conversationRoutes);
+
+app.use('/chat/messages',
+  verifyToken,
+  messageRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
