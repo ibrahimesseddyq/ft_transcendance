@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, FlaskConical, CheckCircle2 } from 'lucide-react';
-import { mainApi } from '@/utils/Api';
+import { mainApi, quizApi } from '@/utils/Api'
 import Notification from '@/utils/TostifyNotification';
 
 interface JobPhase {
@@ -45,7 +45,7 @@ export function JobPhaseManager({ jobId }: Props) {
     try {
       const [phasesRes, testsRes] = await Promise.all([
         mainApi.get(`/api/jobPhases/${jobId}/phase`),
-        mainApi.get('/api/tests')
+        quizApi.get('/api/tests')
       ]);
       
       const pData = phasesRes.data?.data ?? phasesRes.data;
