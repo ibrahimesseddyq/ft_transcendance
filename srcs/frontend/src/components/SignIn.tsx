@@ -8,7 +8,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from "./Loading";
 import Notification from "@/utils/TostifyNotification"
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
@@ -47,7 +47,7 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
         try {
-            const response = await api.post('/api/auth/login', data);
+            const response = await mainApi.post('/api/auth/login', data);
             const result = response.data;
 
             const tmpToken = result?.tempToken;

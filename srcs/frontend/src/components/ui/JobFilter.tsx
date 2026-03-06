@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from 'lucide-react';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 interface JobsArrayProps {
   totalJobs: any,
@@ -37,7 +37,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = await api.get(`/api/jobs?${params.toString()}`);
+      const fetchPromise = await mainApi.get(`/api/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 
@@ -93,8 +93,8 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
 
   return (
-    <div className="w-full md:w-64 h-full bg-[#1e1e1e] text-white p-5 rounded-2xl 
-      flex flex-col gap-6 sticky top-5">
+    <div className="hidden md:flex w-64 h-[calc(100vh-90px)] bg-[#1e1e1e] text-white p-5 
+      rounded-2xl flex-col gap-6 sticky top-20">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -128,7 +128,6 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       <div 
         className={`hidden md:flex md:flex-col gap-6 overflow-auto no-scrollbar`}>
 
-          {/* Job departments */}
           <FilterSection title="Job department">
             <Checkbox 
               label="Engineering" 
@@ -183,7 +182,6 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
             /> 
           </FilterSection>
 
-          {/* Remote Status */}
           <FilterSection title="Location Preference">
             <Checkbox 
               label="Remote" 
@@ -194,7 +192,6 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
           </FilterSection>
 
 
-          {/* Job Status */}
           <FilterSection title="Job status">
             <Checkbox 
               label="open" 
@@ -216,7 +213,6 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
               />
           </FilterSection>
 
-          {/* Job Skills */}
           <FilterSection title="Job Skills">
             {SKILLS.map((skill) => (
               <Checkbox 

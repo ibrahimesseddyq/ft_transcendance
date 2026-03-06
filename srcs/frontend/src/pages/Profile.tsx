@@ -6,7 +6,7 @@ import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import EducationCard from "@/components/ui/EducationCard"
 import { ToastContainer } from "react-toastify";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 export function Profile() {
   const params = useParams();
@@ -20,8 +20,8 @@ export function Profile() {
       try{
 
         const [res1, res2] = await Promise.all([
-          api.get(`/api/users/${id}`),
-          api.get(`/api/profiles/${id}`),
+          mainApi.get(`/api/users/${id}`),
+          mainApi.get(`/api/profiles/${id}`),
         ]);
 
         const userData = res1.data;
@@ -91,6 +91,7 @@ export function Profile() {
   return (
     <div className="flex flex-col gap-4 p-6 overflow-y-auto no-scrollbar items-center h-full w-full">
       <ToastContainer />
+      
       <div className='w-full mt-10'>
         <ProfileCover profile={profile} user={user}/>
       </div>
@@ -100,26 +101,17 @@ export function Profile() {
           border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           <UserInfoCard profile={profile} user={user}/>
         </div>
+
         <div className='col-span-1 lg:col-span-2 w-full p-2 bg-white dark:bg-slate-900 border
            border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           {profile && <SkillsCard profile={profile} />}
         </div>
       </div>
 
-      <div className='w-full grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <div className='col-span-1 lg:col-span-3 p-2 bg-white dark:bg-slate-900 border 
-          border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
-          <CareerCard />
-        </div>
-        <div className='col-span-1 lg:col-span-2 p-2 bg-white dark:bg-slate-900 border 
-          border-gray-200 dark:border-gray-800 rounded-lg h-full transition-colors'>
-          <EducationCard/>
-        </div>
-      </div>
-
       <div className='w-full items-center mb-10'>
         <Logout />
       </div>
+
     </div>
   );
 }
