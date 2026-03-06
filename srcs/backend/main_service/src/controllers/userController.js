@@ -1,12 +1,13 @@
 import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { getSafeUser } from '../utils/excludeSensitive.js';
 
 export const createUser = asyncHandler(async (req,res,next) => {
     const user = await userService.createUser(req.body);
     res.status(201).json({
         success: true,
         message: 'user created successfully',
-        data: user
+        data: getSafeUser(user)
     })
 })
 
@@ -14,7 +15,7 @@ export const getUserById = asyncHandler(async (req,res,next) => {
     const user = await userService.getUserById(req.params.id);
     res.status(200).json({
         success: true,
-        data : user
+        data : getSafeUser(user)
     })
 })
 
@@ -23,7 +24,7 @@ export const updateUser = asyncHandler(async (req,res,next) => {
     res.status(200).json({
         success:true,
         message:"user update successfully",
-        data:user
+        data: getSafeUser(user)
     })
 })
 
@@ -36,7 +37,7 @@ export const listUsers = asyncHandler(async (req,res,next) => {
     const result = await userService.listUsers({});
     res.status(200).json({
         success : true,
-        data :result
+        data : result.array.forEach(element => getSafeUser(element))
     })
 })
 
