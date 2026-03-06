@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react'
-import { mainApi } from '@/utils/Api';
+import { quizApi } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
 
-const TestsList = () => {
+
+interface McqsListProps {
+    refreshKey?: number;
+}
+
+const McqsList = ({ refreshKey }: McqsListProps) => {
     const [tests, setTests] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchUserContent = async () => {
         try {
-            const res = await mainApi.get(`/api/tests`);
+            const res = await quizApi.get(`/api/mcqs`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.log(err);
@@ -20,25 +25,25 @@ const TestsList = () => {
 
     useEffect(() => {
         fetchUserContent();
-    }, []);
+    }, [refreshKey]);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this test?")) return;
+        if (!confirm("Are you sure you want to delete this Mcq?")) return;
         
         try {
-            await mainApi.delete(`/api/tests/${id}`);
+            await quizApi.delete(`/api/mcqs/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
-            Notification("Test deleted successfully", "success");
+            Notification("Mcq deleted successfully", "success");
         } catch (err) {
             console.error(err);
-            Notification("Failed to delete test", "error");
+            Notification("Failed to delete Mcq", "error");
         }
     };
 
     if (loading) {
         return (
             <div className="flex justify-center items-center p-10">
-                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading tests...</p>
+                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading Mcqs...</p>
             </div>
         );
     }
@@ -64,4 +69,4 @@ const TestsList = () => {
     );
 }
 
-export default TestsList;
+export default McqsList;
