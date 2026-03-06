@@ -7,7 +7,7 @@ import { verifyInternalApiKey } from "./src/middleware/verifyInternalApiKey.js";
 import { apiRateLimiter } from "./src/middleware/rateLimiter.js";
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './src/config/swagger.js';
-import cookieParser from 'cookieParser';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
