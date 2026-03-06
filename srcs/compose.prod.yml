@@ -1,4 +1,13 @@
 services:
+  waf:
+    build: ./waf
+    container_name: waf
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway
+    networks:
+      - microservices
   main_service:
     build: ./backend/main_service
     container_name: main-service

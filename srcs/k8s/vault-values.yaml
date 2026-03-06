@@ -6,7 +6,7 @@ injector:
 server:
   dev:
     enabled: true
-    devRootToken: "root"
+    devRootToken: "root" # Put it in env var
   enabled: true
   replicas: 1
   
@@ -19,4 +19,4 @@ server:
     enabled: true
   
   extraEnvironmentVars:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    VAULT_ADDR: "http://127.0.0.1:8200" # put it in env var
