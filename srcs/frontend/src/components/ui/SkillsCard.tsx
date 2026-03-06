@@ -2,7 +2,7 @@
 interface props{
   profile: any;
 }
-const SkillsCard = ({profile}: any) =>{
+const SkillsCard = ({profile}: props) =>{
 
     return (
       <div className="flex-1 w-full md:w-auto p-2">

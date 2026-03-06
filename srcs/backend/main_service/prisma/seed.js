@@ -7,7 +7,7 @@ const adapter = new PrismaMariaDb(process.env.DATABASE_URL || 'mysql://root:root
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const plainPassword = 'Houssain123@@';
+  const plainPassword = 'Abdellatif123@@';
   const passwordHash = await argon2.hash(plainPassword);
 
   const recruiter = await prisma.user.upsert({
