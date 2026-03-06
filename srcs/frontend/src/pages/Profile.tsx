@@ -6,7 +6,7 @@ import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import EducationCard from "@/components/ui/EducationCard"
 import { ToastContainer } from "react-toastify";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 export function Profile() {
   const params = useParams();
@@ -20,8 +20,8 @@ export function Profile() {
       try{
 
         const [res1, res2] = await Promise.all([
-          api.get(`/api/users/${id}`),
-          api.get(`/api/profiles/${id}`),
+          mainApi.get(`/api/users/${id}`),
+          mainApi.get(`/api/profiles/${id}`),
         ]);
 
         const userData = res1.data;

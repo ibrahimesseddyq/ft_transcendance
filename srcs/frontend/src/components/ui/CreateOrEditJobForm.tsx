@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
@@ -63,7 +63,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
 
     if (jobItem){
       try {
-        const response = await api.patch(`/api/jobs/${jobItem.id}`, data);
+        const response = await mainApi.patch(`/api/jobs/${jobItem.id}`, data);
 
         const result = response.data;
         const savedJob = result.data;
@@ -78,7 +78,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await api.post(`/api/jobs`, data);
+        const response = await mainApi.post(`/api/jobs`, data);
 
         const result = await response.data;
         const savedJob = result.data;

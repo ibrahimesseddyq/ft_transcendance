@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 import { Loading } from '@/components/Loading';
 
 interface AuthGuardProps {
@@ -26,7 +26,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       }
 
       try {
-        const response = await api.get(`/api/users/${userId}/me`);
+        const response = await mainApi.get(`/api/users/${userId}/me`);
         const fetchedUserId = response.data.userId;
         console.log("response.data :", fetchedUserId);
 
