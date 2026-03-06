@@ -50,6 +50,7 @@ re: clean up
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
+	
 
 # ---------- Kubernetes ----------
 kube-build:
