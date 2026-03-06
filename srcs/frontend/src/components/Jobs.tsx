@@ -36,7 +36,8 @@ export function Jobs() {
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden 
-      p-4 md:p-0 transition-colors duration-300 ">
+      p-4 md:p-0 transition-colors duration-300 items-start">
+  
       <ToastContainer />
 
       {isFormOpen && (
