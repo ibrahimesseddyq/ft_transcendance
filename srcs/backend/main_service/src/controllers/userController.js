@@ -41,7 +41,7 @@ export const listUsers = asyncHandler(async (req,res,next) => {
 })
 
 export const deleteAvatar = asyncHandler(async (req, res, next) => {
-    await userService.detletAvatar(req.params.id);
+    await userService.deleteAvatar(req.params.id);
     res.status(204).end();
 })
 

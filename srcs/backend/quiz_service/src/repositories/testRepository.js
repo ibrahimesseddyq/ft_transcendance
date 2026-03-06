@@ -30,7 +30,7 @@ export const createTest = async (testData) => {
     })
 }
 
-export const updateData = async (testId, updateData) => {
+export const updateTest = async (testId, updateData) => {
     const { mcqIds, codeChallengeId, ...data } = updateData;
     return await prisma.test.update({
         where: {id : testId},
@@ -68,7 +68,7 @@ export const deleteTest = async (testId) => {
     })
 }
 
-export const gettests = async (skip = 0, take = 10, filters = {}) => {
+export const getTests = async (skip = 0, take = 10, filters = {}) => {
     // here filters and pagination my implemented
     return await prisma.test.findMany({
         where : {},

@@ -55,6 +55,7 @@ export const updateUser = async (userId, updateData) => {
 }
 
 export const deleteUser = async (userId) => {
+    
     await userRepository.deleteUser(userId);
 }
 
@@ -75,7 +76,7 @@ export const uploadAvatar = async (userId, file) => {
 }
 
 
-export const detletAvatar =  async (userId) => {
+export const deleteAvatar =  async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");
