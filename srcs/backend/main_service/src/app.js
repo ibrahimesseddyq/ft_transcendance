@@ -3,13 +3,15 @@ import passport from 'passport';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import cokieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/ErrorHandler.js';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import conversationRoutes from './routes/conversationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import env from './config/env.js';
 import path from 'path';
 import {HttpException} from './utils/httpExceptions.js';
@@ -19,22 +21,29 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 const app =  express();
 
-console.log(process.env.FRONTEND_URL)
-console.log(env.FRONTEND_URL)
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, 'http://127.0.0.1:5173'],
+  origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      // Allow the frontend to embed /chat in an iframe
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    },
+  },
+  // Disable X-Frame-Options so CSP frame-ancestors takes precedence
+  frameguard: false,
+}));
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
-app.use(cokieParser());
+app.use(cookieParser());
 app.use(morgan('combined'));
 
-//The cross-origin value tells the browser that it is safe to load this resource on a different port
 app.use('/uploads',
   verifyToken, (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
@@ -48,7 +57,6 @@ app.use('/api/auth',
   authRoutes);
 
 app.use('/api/2fa',
-  verifyToken,
   twoFARoutes); 
 
 app.use('/api/users',
@@ -70,6 +78,14 @@ app.use('/api/applications',
 app.use('/api/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
+
+app.use('/chat/conversations',
+  verifyToken,
+  conversationRoutes);
+
+app.use('/chat/messages',
+  verifyToken,
+  messageRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

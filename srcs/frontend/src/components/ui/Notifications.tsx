@@ -1,14 +1,12 @@
 import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
 import { useAuthStore } from '@/utils/ZuStand';
 
-const SOCKET_URL = "http://localhost:4000";
+const SOCKET_URL = "http://localhost:3000";
 
 export function Notifications() {
   const [isOpen, setIsOpen] = useState(false);
-  const userId = useAuthStore((state) => state.userId);
-  const [socket, setSocket] = useState<Socket | null>(null);
+
   const [notifications, setNotifications] = useState<any[]>([]);
 
   // useEffect(() => {

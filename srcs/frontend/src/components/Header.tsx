@@ -2,20 +2,36 @@ import { Link } from 'react-router-dom';
 import { Navbar } from "@/components/Navigation";
 import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
-import { Sun, Moon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { mainApi } from '@/utils/Api';
+import { Sun, Moon, LogOut } from 'lucide-react';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
-  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const profile = useAuthStore((state) => state.profile);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const navigate = useNavigate();
+
+  // All hooks above — no conditionals before this point
+
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const avatarUrl = `${BACKEND_URL}${profile?.user?.avatarUrl}`;
-  console.log("avatarUrl: ", avatarUrl);
+
+  // Fix: guard against undefined avatarUrl
+  const avatarUrl = profile?.user?.avatarUrl
+    ? `${BACKEND_URL}${profile.user.avatarUrl}`
+    : "/default-avatar.png"; // fallback avatar
+
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
+
+  const handleLogout = async () => {
+    await mainApi.post('/api/auth/logout');
+    clearAuth();
+    navigate('/Login', { replace: true });
+  };
 
   const handleTheme = () => {
     const isDark = document.documentElement.classList.contains("dark");
-    
     if (isDark) {
       document.documentElement.classList.remove("dark");
       localStorage.theme = "light";
@@ -24,6 +40,7 @@ export function Header() {
       localStorage.theme = "dark";
     }
   };
+
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl max-w-screen-2xl items-center px-4 md:px-8 
       bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm fixed md:sticky top-0 z-50 
@@ -49,6 +66,8 @@ export function Header() {
       </div>
 
       <div className="flex justify-end items-center gap-3 md:gap-5">
+        <Notifications />
+
         <button 
           onClick={handleTheme}
           className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-yellow-400 
@@ -58,32 +77,45 @@ export function Header() {
           <Moon className="block dark:hidden w-5 h-5" />
         </button>
 
-        <Notifications />
-
-        <Link to={`/Profile/${user?.id}`}
-          className="flex items-center gap-2 md:gap-3 group">
-          <div className="text-right hidden lg:block">
-            <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
-              {user?.firstName}
-            </p>
-            <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
-              @{user?.role}
-            </p>
-          </div>
-
-          {/* Avatar */}
+        {isAdminOrRecruiter ? (
           <div
             className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
-              border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
-            style={{ 
-              backgroundImage: `url("${ avatarUrl }")`
-            }}
+              border-gray-800 dark:border-slate-200 transition-all"
+            style={{ backgroundImage: `url("/recruiter.jpg")` }}
           />
-        </Link>
+        ) : (
+          <Link to={`/Profile/${user?.id}`} className="flex items-center gap-2 md:gap-3 group">
+            <div className="text-right hidden lg:block">
+              <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
+                {user?.firstName}
+              </p>
+              <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
+                @{user?.role}
+              </p>
+            </div>
+            <div
+              className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
+                border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
+              style={{ backgroundImage: `url("${avatarUrl}")` }}
+            />
+          </Link>
+        )}
+
+        {isAdminOrRecruiter && (
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center p-2 rounded-lg bg-red-50 dark:bg-red-900/20 
+              text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 group"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight">Logout</span>
+          </button>
+        )}
 
         {/* Mobile Menu */}
         <div className="lg:hidden">
-            <Navbar /> 
+          <Navbar />
         </div>
       </div>
     </header>

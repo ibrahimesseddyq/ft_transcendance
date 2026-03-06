@@ -1,5 +1,5 @@
 
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 interface ProfileProps {
     userId: string | null;
@@ -8,7 +8,7 @@ interface ProfileProps {
 
 export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
     try {
-        const res = await api.get(`/api/profiles/${userId}`);
+        const res = await mainApi.get(`/api/profiles/${userId}`);
         console.log("profile checker :", res.data);
         setProfile(res.data);
     } catch (error) {

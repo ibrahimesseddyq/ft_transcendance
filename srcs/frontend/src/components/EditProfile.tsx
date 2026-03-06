@@ -1,16 +1,24 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CloudUpload, SquarePen } from 'lucide-react';
+import { CloudUpload, SquarePen, Loader2 } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
-import { Logout } from '@/components/LogOut';
 import { useState, useEffect } from "react";
-import {useNavigate } from "react-router-dom";
-import api from '@/utils/Api';
+import { useNavigate } from "react-router-dom";
+import { mainApi } from '@/utils/Api';
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
+
+const InternalProgressBar = ({ progress }: { progress: number }) => (
+  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2 overflow-hidden">
+    <div 
+      className="bg-[#00adef] h-1.5 rounded-full transition-all duration-300 ease-out" 
+      style={{ width: `${progress}%` }}
+    />
+  </div>
+);
 
 interface FormFieldProps {
   label?: string;
@@ -25,22 +33,18 @@ interface FormFieldProps {
 
 const FormField = ({ label, name, register, maxLength, error, placeholder, type, optional }: FormFieldProps) => (
   <div className="flex flex-col lg:flex-row md:items-center gap-2 md:gap-6 group">
-    <label htmlFor={name} className="w-full md:w-40 text-sm font-medium text-gray-400 
-      group-focus-within:text-[#00adef] transition-colors">
+    <label htmlFor={name} className="w-full md:w-40 text-sm font-medium text-gray-400 group-focus-within:text-[#00adef] transition-colors">
       {label}
     </label>
     <div className="flex-1 relative">
-      {optional ? null : <h1 className="absolute top-0 right-1 text-red-600">*</h1> }
+      {!optional && <h1 className="absolute top-0 right-1 text-red-600">*</h1>}
       <input
         id={name}
         type={type}
         maxLength={maxLength}
         {...register(name, { valueAsNumber: type === "number" })}
         placeholder={placeholder}
-        className="h-11 w-full text-sm text-black dark:text-white outline-none px-3 
-          border-b border-gray-300 dark:border-gray-700 bg-transparent 
-          focus:border-[#00adef] dark:focus:border-[#00adef] transition-all 
-          placeholder:text-gray-400 dark:placeholder:text-gray-600"
+        className="h-11 w-full text-sm text-black dark:text-white outline-none px-3 border-b border-gray-300 dark:border-gray-700 bg-transparent focus:border-[#00adef] dark:focus:border-[#00adef] transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
       />
       {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
     </div>
@@ -49,51 +53,60 @@ const FormField = ({ label, name, register, maxLength, error, placeholder, type,
 
 export function EditProfile() {
   const userId = useAuthStore((state) => (state.user?.id));
-  const setProfile = useAuthStore((state)=> state.setProfile);
-  const profile = useAuthStore((state)=> state.profile);
-   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const [avatarPreview, setAvatarPreview] = 
-    useState(
-      profile?.user?.avatarUrl 
-      ? BACKEND_URL + profile.user.avatarUrl 
-      : "/icons/placeholder.jpg"
-    );
+  const setProfile = useAuthStore((state) => state.setProfile);
+  const profile = useAuthStore((state) => state.profile);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  
+  const [avatarPreview, setAvatarPreview] = useState(
+    profile?.user?.avatarUrl ? BACKEND_URL + profile.user.avatarUrl : "/icons/placeholder.jpg"
+  );
+  const [avatarProgress, setAvatarProgress] = useState(0);
+  const [resumeProgress, setResumeProgress] = useState(0);
+  
   const navigate = useNavigate();
-  const {
-  register,
-  handleSubmit,
-  watch,
-  setValue,
-  reset,
-  formState: { errors, isSubmitting }
-} = useForm<ProfileFormData>({
-  resolver: zodResolver(CandidateProfileSchema),
-  defaultValues: (profile ? {
-    avatar: profile?.user?.avatarUrl ?? "",
-    resumeUrl: profile?.resumeUrl ?? "",
-    phone: profile?.phone?.toString() ?? "",
-    linkedinUrl: profile?.linkedinUrl ?? "",
-    portfolioUrl: profile?.portfolioUrl ?? "",
-    currentCompany: profile?.currentCompany ?? "",
-    currentTitle: profile?.currentTitle ?? "",
-    skills: profile?.skills ?? "",
-    availableFrom:   profile?.availableFrom ?? "",
-    // yearsExperience: Number(profile?.yearsExperience) ?? 0,
-  }: null) as ProfileFormData 
-});
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors, isSubmitting } } = useForm<ProfileFormData>({
+    resolver: zodResolver(CandidateProfileSchema),
+  });
 
   const avatarValue = watch('avatar'); 
   const resumeValue = watch("resumeUrl");
   const hasAvatar = avatarValue && (avatarValue instanceof FileList ? avatarValue.length > 0 : !!avatarValue);
   const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.length > 0 : !!resumeValue);
 
-  const UpdateSubmet = async (formData: any) =>{
-    const response = await api.patch(`/api/profiles/${userId}`, formData);
-    const result = response.data;
-    setProfile(result.data);
-    Notification("Profile updated successfully", "success");
-    navigate(-1);
-  }
+  useEffect(() => {
+    if (profile) {
+      reset({
+        resumeUrl: profile?.resumeUrl ?? "",
+        phone: profile?.phone?.toString() ?? "",
+        linkedinUrl: profile?.linkedinUrl ?? "",
+        portfolioUrl: profile?.portfolioUrl ?? "",
+        currentCompany: profile?.currentCompany ?? "",
+        currentTitle: profile?.currentTitle ?? "",
+        skills: profile?.skills ?? "",
+        availableFrom: profile?.availableFrom ?? "",
+      });
+      if (profile?.user?.avatarUrl) {
+        setAvatarPreview(BACKEND_URL + profile.user.avatarUrl);
+      }
+    }
+  }, [profile, reset, BACKEND_URL]);
+
+  const startProgressAnimation = (setter: React.Dispatch<React.SetStateAction<number>>) => {
+    return new Promise<void>((resolve) => {
+      setter(10);
+      const interval = setInterval(() => {
+        setter((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            resolve();
+            return 100;
+          }
+          const increment = Math.floor(Math.random() * 15) + 5;
+          return Math.min(prev + increment, 100);
+        });
+      }, 150);
+    });
+  };
 
   const onApplySubmit = async (data: any) => {
     const formData = new FormData();
@@ -104,146 +117,131 @@ export function EditProfile() {
     formData.append("portfolioUrl", data.portfolioUrl);
     formData.append("currentCompany", data.currentCompany);
     formData.append("availableFrom", data.availableFrom);
-    if (data.avatar instanceof File)
-      formData.append("avatar", data.avatar);
-    if (data.resumeUrl instanceof File)
-      formData.append("resume", data.resumeUrl);
+
     try {
-        await UpdateSubmet(formData);
+      const animations = [];
+      if (data.avatar instanceof File) {
+        formData.append("avatar", data.avatar);
+        animations.push(startProgressAnimation(setAvatarProgress));
+      }
+      if (data.resumeUrl instanceof File) {
+        formData.append("resume", data.resumeUrl);
+        animations.push(startProgressAnimation(setResumeProgress));
+      }
+
+      const apiPromise = mainApi.patch(`/api/profiles/${userId}`, formData);
+      const [response] = await Promise.all([apiPromise, ...animations]);
+
+      setProfile(response.data.data);
+      Notification("Profile updated successfully", "success");
+      setTimeout(() => navigate(-1), 1000);
     } catch (error) {
-        console.error("Submission failed:", error);
-        Notification("Technical error occurred", "error");
-    }finally{
-      
+      console.error("Update failed:", error);
+      setAvatarProgress(0);
+      setResumeProgress(0);
+      Notification("Technical error occurred", "error");
     }
   };
-
-  useEffect(() => {
-    if (profile) {
-        const url = profile?.user?.avatarUrl;
-        console.log("url : ",url);
-        reset({
-        //   avatar:          profile?.user?.avatarUrl ?? "",
-          resumeUrl:       profile?.resumeUrl ?? "",
-          phone:           profile?.phone?.toString() ?? "",
-          linkedinUrl:     profile?.linkedinUrl ?? "",
-          portfolioUrl:    profile?.portfolioUrl ?? "",
-          currentCompany:  profile?.currentCompany ?? "",
-          currentTitle:    profile?.currentTitle ?? "",
-          skills:          profile?.skills ?? "",
-          availableFrom:   profile?.availableFrom ?? "",
-          // yearsExperience: Number(profile?.yearsExperience) ?? 0,
-        });
-    }
-  }, [profile]);
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const newUrl = URL.createObjectURL(file);
-      if (newUrl) {
-        setAvatarPreview(newUrl);
-        setValue("avatar", file, { shouldValidate: true });
-      }
+      setAvatarPreview(newUrl);
+      setValue("avatar", file, { shouldValidate: true });
     }
   };
 
-  
- return (
-    <form
-      onSubmit={handleSubmit(onApplySubmit)}
-      className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent items-center justify-center w-full mx-auto"
-    >
-      {/* Header with Dark Mode */}
+  return (
+    <form onSubmit={handleSubmit(onApplySubmit)} className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent w-full mx-auto">
       <header className="border-b border-gray-200 dark:border-gray-800 pb-4 w-full">
         <h1 className="text-black dark:text-white text-2xl font-bold">Profile Update</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Manage your professional presence and job preferences.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">Refine your professional presence.</p>
       </header>
 
       {/* Avatar Section */}
-      <div className={`relative h-32 w-32 rounded-full bg-gray-100 dark:bg-[#1e1e1e] 
-          bg-cover bg-center border-2 mx-auto my-5 transition-colors duration-200 ${
-                errors.avatar ? 'border-red-500' : hasAvatar 
-                ? 'border-green-500' 
-                : 'border-gray-300 dark:border-gray-700 hover:border-[#00adef]'}`}
-          style={{ backgroundImage: `url(${avatarPreview})`}}>
-        <input id="avatar" type='file' accept="image/*" {...register("avatar")} onChange={handleImageChange} className="hidden" />
-        <label htmlFor="avatar" className="text-center h-full w-full p-2">
-          <SquarePen
-            className="absolute top-0 right-2 h-5 w-5 text-black dark:text-white 
-              hover:text-[#00adef] bg-white dark:bg-gray-800 rounded-md cursor-pointer shadow-sm" />
+      <div className="relative mx-auto my-8 w-32 h-32">
+        <div 
+          className={`h-full w-full rounded-full bg-gray-100 dark:bg-[#1e1e1e] bg-cover bg-center border-2 transition-all duration-300 ${
+            errors.avatar ? 'border-red-500' : hasAvatar ? 'border-green-500' : 'border-gray-300 dark:border-gray-700 shadow-sm'
+          }`}
+          style={{ backgroundImage: `url(${avatarPreview})` }}
+        >
+          {isSubmitting && avatarProgress > 0 && (
+             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-full text-white text-xs font-bold backdrop-blur-[1px]">
+                {avatarProgress < 100 ? <Loader2 className="animate-spin h-5 w-5 mb-1 text-[#00adef]" /> : <span className="text-green-400 text-xl">✓</span>}
+                <span>{avatarProgress}%</span>
+             </div>
+          )}
+        </div>
+        <input id="avatar-upload" type='file' accept="image/*" className="hidden" onChange={handleImageChange} />
+        <label htmlFor="avatar-upload" className="absolute bottom-1 right-1 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:scale-110 transition-transform">
+          <SquarePen className="h-4 w-4" />
         </label>
       </div>
-      {errors.avatar && <p className="text-center mb-1 text-red-400 text-[10px] italic ">{errors.avatar.message as string}</p>}
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full">
-        {/* Professional Info */}
         <section className="flex flex-col gap-6">
           <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
-            <span className="w-1 h-6 bg-[#00adef] rounded-full" />
-            Professional Information
+            <span className="w-1 h-6 bg-[#00adef] rounded-full" /> Professional Information
           </h2>
           <div className="flex flex-col gap-5 pl-4">
-            <FormField label="LinkedIn URL" name="linkedinUrl" type="url" optional={false} register={register} error={errors.linkedinUrl?.message} placeholder="https://linkedin.com/in/..."/>
-            <FormField label="Portfolio URL" name="portfolioUrl" type="url" optional={true} register={register} error={errors.portfolioUrl?.message} placeholder="https://yourwork.com"/>
-            <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} placeholder="Company Name" />
-            <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} placeholder="Ex: Software Engineer" />
-            {/* <FormField label="Years of Experience" name="yearsExperience" type='number' maxLength={2} optional={true} register={register} error={errors.yearsExperience?.message} placeholder="5" /> */}
-            <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} placeholder="Ex: React, Node.js, TypeScript..." />
+            <FormField label="LinkedIn URL" name="linkedinUrl" type="url" optional={false} register={register} error={errors.linkedinUrl?.message} />
+            <FormField label="Portfolio URL" name="portfolioUrl" type="url" optional={true} register={register} error={errors.portfolioUrl?.message} />
+            <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} />
+            <FormField label="Current Job Title" name="currentTitle" optional={false} register={register} error={errors.currentTitle?.message} />
+            <FormField label="Skills" name="skills" optional={true} register={register} error={errors.skills?.message} />
           </div>
         </section>
 
-        {/* Job Preferences & Upload */}
         <section className="flex flex-col gap-6">
           <h2 className="text-[#00adef] text-lg font-semibold flex items-center gap-2">
-            <span className="w-1 h-6 bg-[#00adef] rounded-full" />
-            Job Preferences
+            <span className="w-1 h-6 bg-[#00adef] rounded-full" /> Contact & Resume
           </h2>
-          
           <div className="flex flex-col gap-5 pl-4 mb-2">
-            <FormField label="available From" name="availableFrom" type='date' optional={true} register={register} error={errors.availableFrom?.message} placeholder="Remote, New York, London" />
-            {/* <FormField label="Salary Expectation" name="salaryExpectation" optional={true} register={register} error={errors.salaryExpectation?.message} placeholder="e.g. $120k - $150k" /> */}
-            <FormField label="Number Phone" name="phone" optional={false} register={register} error={errors.phone?.message} placeholder="e.g. 0699999999" />
+            <FormField label="Available From" name="availableFrom" type='date' optional={true} register={register} error={errors.availableFrom?.message} />
+            <FormField label="Phone Number" name="phone" optional={false} register={register} error={errors.phone?.message} />
           </div>
 
-          {/* Resume Upload Zone with Dark Mode */}
-          <label 
-            className={`flex flex-col items-center justify-center w-full h-32 cursor-pointer
-              border-2 border-dashed rounded-lg bg-[#00adef]/5 dark:bg-[#00adef]/10 
-              focus-within:border-[#00adef] transition-colors duration-200 ${
-                errors.resumeUrl ? 'border-red-500' : hasResume 
-                ? 'border-green-500' 
-                : 'border-gray-300 dark:border-gray-700 hover:border-[#00adef]'}`}>
-            <div className="flex flex-col items-center justify-center py-4">
-              <CloudUpload className={`h-10 w-10 mb-2 ${errors.resumeUrl ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`} />
-              <div className="text-center">
-                <h1 className="text-sm font-semibold text-gray-600 dark:text-gray-300">Click to upload Resume</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-500">PDF under 5MB</p>
+          <div className="w-full">
+            <label className={`flex flex-col items-center justify-center w-full h-32 cursor-pointer border-2 border-dashed rounded-lg transition-all duration-200 ${
+              errors.resumeUrl ? 'border-red-500 bg-red-50/5' : hasResume ? 'border-green-500 bg-green-50/5' : 'border-gray-300 dark:border-gray-700 hover:border-[#00adef] bg-[#00adef]/5'
+            }`}>
+              <div className="flex flex-col items-center justify-center py-4 w-full px-6 text-center">
+                {isSubmitting && resumeProgress > 0 ? (
+                  <div className="w-full">
+                    <p className="text-xs font-bold text-[#00adef] mb-1">
+                      {resumeProgress < 100 ? `UPLOADING: ${resumeProgress}%` : "UPDATE COMPLETE ✓"}
+                    </p>
+                    <InternalProgressBar progress={resumeProgress} />
+                  </div>
+                ) : (
+                  <>
+                    <CloudUpload className={`h-10 w-10 mb-2 ${errors.resumeUrl ? 'text-red-500' : hasResume ? 'text-green-500' : 'text-gray-400'}`} />
+                    <h1 className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                      {hasResume ? "New Resume Selected" : "Replace Resume"}
+                    </h1>
+                    <p className="text-xs text-gray-500">PDF format preferred</p>
+                  </>
+                )}
               </div>
-            </div>
-            <input id="cv-upload" type="file" accept="application/pdf" {...register("resumeUrl")} hidden />
-          </label>
-          {errors.resumeUrl && <p className="mt-1 text-red-400 text-[10px] italic mx-auto">{errors.resumeUrl.message as string}</p>}
+              <input id="cv-upload" type="file" accept="application/pdf" {...register("resumeUrl")} hidden />
+            </label>
+          </div>
         </section>
       </div>
 
-      <footer className="flex-1 mt-8 flex gap-2 justify-end">
+      <footer className="flex mt-8 gap-2 justify-end">
         <button 
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full md:w-48 bg-[#00adef] hover:bg-[#0086b8] disabled:bg-gray-300 dark:disabled:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-all transform active:scale-95 shadow-lg shadow-[#00adef]/20"
+          type="submit" 
+          disabled={isSubmitting} 
+          className="w-full md:w-48 bg-[#00adef] hover:bg-[#0086b8] disabled:bg-gray-300 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
         >
-          {isSubmitting ? "Saving..." : "Save Profile"}
+          {isSubmitting ? <><Loader2 className="animate-spin h-4 w-4" /> Updating...</> : "Update Profile"}
         </button>
-        {profile 
-          ? <button onClick={() => navigate(-1)} 
-              className="font-semibold py-3 px-6 text-black hover:text-red-500 
-                dark:text-white dark:hover:text-red-500">
-              Cancel
-            </button>
-          : <Logout />
-        }
+        <button type="button" onClick={() => navigate(-1)} className="font-semibold py-3 px-6 text-black dark:text-white hover:text-red-500 transition-colors">
+          Cancel
+        </button>
       </footer>
     </form>
   );
