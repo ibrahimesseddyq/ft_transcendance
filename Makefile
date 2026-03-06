@@ -33,17 +33,18 @@ clean-dev: clear
 # Main dev target
 dev: clean-dev down-dev
 	sudo npm install -g concurrently
-	# (cd srcs/backend/gateway && ./gradlew bootRun --args='--spring.profiles.active=dev') &
-
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
-	
-	# (cd srcs/frontend && npm install && npm run dev ) 
+	@echo "Waiting for databases..."
+	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
+	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
+	  echo "Waiting for DBs..."; sleep 2; \
+	done
+	@echo "Databases ready!"
 	concurrently \
-	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
+	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run seed && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
-	(cd srcs/backend/main_service && npm run seed ) 
 re: clean up
 
 # Kill local dev processes/ports only (NO docker compose here)
