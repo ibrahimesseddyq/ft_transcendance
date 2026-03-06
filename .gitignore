@@ -1,29 +1,64 @@
-# Logs
-logs
-*.log
+# ── Environment & secrets ──────────────────────────────────────
 .env
+.env.dev
+.env.prod
+.env.local
+.env.staging
+**/.env
+**/.env.dev
+**/.env.prod
+**/.env.local
+**/.env copy
+# keep .env.example files (safe to push as templates)
+!**/.env.example
+
+# ── Dependencies ────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ── Build / generated output ────────────────────────────────────
+dist/
+dist-ssr/
+build/
+.next/
+out/
+generated/
+
+# ── Java / Gradle (eureka, gateway) ─────────────────────────────
+.gradle/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ── Logs ────────────────────────────────────────────────────────
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-generated
-.env.dev
-.env.prod
-node_modules
-dist
-dist-ssr
+
+# ── User uploads (runtime data, not code) ───────────────────────
+srcs/backend/main_service/uploads/
+
+# ── Archives & temp files ────────────────────────────────────────
+*.zip
+*.tar.gz
 *.local
-uploads
-# Editor directories and files
+
+# ── OS & editor ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ── Personal notes ───────────────────────────────────────────────
 notesAndTodos.txt
-.gitignore

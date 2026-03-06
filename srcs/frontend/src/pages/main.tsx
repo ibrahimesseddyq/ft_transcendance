@@ -16,6 +16,7 @@ import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
+import { Chat } from '@/components/Chat'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
@@ -79,6 +80,9 @@ export function Main() {
                 <Route path="/QuizPage" element={<QuizPage />} />
               </Route>
 
+
+
+
               {/* CANDIDATE ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
@@ -86,6 +90,7 @@ export function Main() {
                 <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
                 <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
+                <Route path="/chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
               </Route>
 
