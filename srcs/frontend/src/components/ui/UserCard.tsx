@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from '@/utils/Api'
+import { mainApi } from '@/utils/Api'
 
 const UserCard = (candidateId: any) => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -11,7 +11,7 @@ const UserCard = (candidateId: any) => {
     useEffect(()=>{
       const fetchUserContent = async () =>{
         try{
-          const res = await api.get(`/api/users/${candidateId}`);
+          const res = await mainApi.get(`/api/users/${candidateId}`);
           
           const data = res.data;
           if (data.data){

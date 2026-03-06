@@ -35,7 +35,8 @@ export function Jobs() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden p-5 md:p-0 transition-colors duration-300">
+    <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden 
+      p-4 md:p-0 transition-colors duration-300 ">
       <ToastContainer />
 
       {isFormOpen && (

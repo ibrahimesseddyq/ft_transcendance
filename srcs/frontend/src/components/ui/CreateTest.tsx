@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CopyCheck, Check, Plus, Trash2, Sparkle, DiamondPlus } from 'lucide-react';
 import { useState } from 'react';
 import Notification from "@/utils/TostifyNotification";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 type MCQFormValues = z.infer<typeof McqSchema>;
 
@@ -44,7 +44,7 @@ const CreateTest = () => {
         }
 
         try {
-            await api.post(`/api/tests`, { ...data, choices, tags });
+            await mainApi.post(`/api/tests`, { ...data, choices, tags });
             Notification("Test created successfully!", "success");
 
             reset();

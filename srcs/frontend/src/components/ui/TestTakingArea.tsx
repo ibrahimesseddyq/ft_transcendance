@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 import { Timer, ChevronRight, Diamond, Loader2, AlertCircle } from 'lucide-react';
 
 const TestTakingArea = ({ testData, candidateId, phaseId, onComplete }: any) => {
@@ -33,7 +33,7 @@ const TestTakingArea = ({ testData, candidateId, phaseId, onComplete }: any) => 
         };
 
         try {
-            const response = await api.post(`/api/test`, payload);
+            const response = await mainApi.post(`/api/test`, payload);
 
             const result = response.data;
             console.log("Success:", result);
