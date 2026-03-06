@@ -5,7 +5,7 @@ export const createTest = async (testData) => {
 }
 
 export const updateTest =  async (testId, updateData) => {
-    return  await testRepository.updateData(testId,updateData);  
+    return  await testRepository.updateTest(testId,updateData);  
 }
 
 export const getTestById = async (testId) => {
@@ -16,7 +16,7 @@ export const deleteTest = async (testId) => {
     return await testRepository.deleteTest(testId);
 }
 
-export const gettests = async (searchFilters) => {
+export const getTests = async (searchFilters) => {
     const {skip, take,...filters} =  searchFilters;
-    return await testRepository.gettests(skip, take, filters);
+    return await testRepository.getTests(skip, take, filters);
 }
