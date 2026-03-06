@@ -91,12 +91,6 @@ app.use('/chat/messages',
   verifyToken,
   messageRoutes);
 
-// Serve chat UI (used by the frontend iframe)
-app.use('/chat', express.static(path.join(import.meta.dirname, '../public_chat')));
-app.get('/chat', (req, res) => {
-  res.sendFile(path.join(import.meta.dirname, '../public_chat/index.html'));
-});
-
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
 })
