@@ -1,7 +1,8 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
+import { JobPhaseManager } from "./JobPhaseManager";
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
 interface props {
@@ -19,7 +20,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      await api.delete(`/api/jobs/${jobId}`);
+      await mainApi.delete(`/api/jobs/${jobId}`);
       setJobsArray(jobsArray.filter(job => job.id !== jobId));
       Notification("Job Deleted", "success");
     } catch (error) {
@@ -77,6 +78,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white truncate">{item.title}</h2>
               </div>
 
+
               {/* Meta Info Slots */}
               <div className="flex items-center justify-between text-gray-600 dark:text-gray-400 text-xs font-medium mb-4">
                 <div className="flex items-center gap-1">
@@ -117,24 +119,32 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
               <hr className="border-gray-100 dark:border-slate-800 mb-6" />
 
               {/* Footer Actions */}
-              <div className="flex items-center justify-between mt-auto">
+              <div className="flex items-center justify-between mt-auto gap-2">
                 <button 
-                  onClick={()=>{handleDetails(item)}}
-                  className="px-6 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-sm font-bold rounded-xl hover:bg-[#3B5998] dark:hover:bg-blue-500 hover:text-white dark:hover:text-white transition-all active:scale-95"
+                  onClick={() => handleDetails(item)}
+                  className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold rounded-xl hover:bg-[#3B5998] hover:text-white transition-all active:scale-95 whitespace-nowrap"
                 >
                   Details
                 </button>
-                
-                <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+
+                {isAdminOrRecruiter && (
+                  <>
+                    <div className="flex-1">
+                       <JobPhaseManager jobId={item.id} />
+                    </div>
+                  </>
+                )}
+
+                <div className="flex items-center gap-2 text-gray-500">
                   {isAdminOrRecruiter && (
-                      <>
-                        <button onClick={() => { setJobItem(item); setIsFormOpen(true); } } className="hover:text-[#00adef] transition-colors">
-                          <SquarePen size={18} />
-                        </button>
-                        <button onClick={() => DeleteJob(item.id)} className="hover:text-red-500 transition-colors">
-                          <Trash size={18} />
-                        </button>
-                      </> 
+                    <>
+                      <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="hover:text-[#00adef]">
+                        <SquarePen size={16} />
+                      </button>
+                      <button onClick={() => DeleteJob(item.id)} className="hover:text-red-500">
+                        <Trash size={16} />
+                      </button>
+                    </>
                   )}
                   <button className="hover:text-yellow-500 transition-colors">
                     <Bookmark size={18} />
@@ -152,3 +162,4 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
 };
 
 export default JobCards;
+      

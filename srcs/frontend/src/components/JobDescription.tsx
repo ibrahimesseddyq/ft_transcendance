@@ -1,9 +1,9 @@
-import { ClipboardList, CloudUpload, LucideIcon, CalendarDays ,MapPin ,MapPinned, File, Send } from 'lucide-react';
+import { ClipboardList, CalendarDays, MapPin, MapPinned, File, Send, type LucideIcon } from 'lucide-react';
 import Notification from "@/utils/TostifyNotification"
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/utils/ZuStand';
 import {ToastContainer} from "react-toastify";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 export function JobDescription(){
   const location = useLocation();
@@ -22,7 +22,7 @@ export function JobDescription(){
 
   const ApplySubmit = async (item: any) => {
     try {
-      await api.post(`/api/applications`, item);
+      await mainApi.post(`/api/applications`, item);
       Notification("Job Applyed successfully!", "success");
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {

@@ -8,7 +8,7 @@ export const navigation = [
     { name: "Jobs", path: "/Jobs", icon: BriefcaseBusiness },
     { name: "Saved", path: "/Savedjobs", icon: Bookmark },
     { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
-    { name: "Contact", path: "/ContactUs", icon: MessageCircleMore },
+    { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "About", path: "/About", icon: BookOpenText },
 ];
 
@@ -19,7 +19,7 @@ export function Navbar() {
 
     return (
         <div className="flex h-16 items-center justify-between w-full sm:w-fit px-4 relative">
-            {/* Mobile Menu Trigger */}
+            {/* Mobile Menu */}
             <button 
                 onClick={() => setIsOpen(true)}
                 className='flex sm:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors'
@@ -29,7 +29,7 @@ export function Navbar() {
 
             {/* Mobile Navigation */}
             {isOpen && (
-                <div className="fixed inset-0 z-[100] sm:hidden backdrop-blur-md">
+                <div className="fixed inset-0 z-[100] md:hidden backdrop-blur-md">
                     <div onClick={() => setIsOpen(false)} 
                         className="fixed inset-0 bg-black/50 backdrop-blur-sm"  />
                     <nav className="fixed top-0 left-0 bottom-0 w-64 h-screen 
@@ -62,7 +62,7 @@ export function Navbar() {
             )}
 
             {/* Desktop Navigation */}
-            <nav className="hidden sm:flex justify-center items-center gap-1">
+            <nav className="hidden md:flex justify-center items-center gap-1">
                 {navigation.map((item) => {
                     const Icon = item.icon;
                     const isCurrent = location.pathname === item.path;
@@ -83,7 +83,7 @@ export function Navbar() {
                                 }
                             `}>
                                 <Icon className={`h-5 w-5 ${isCurrent ? 'animate-pulse' : ''}`} />
-                                <span className='hidden lg:block text-xs font-bold tracking-wide uppercase'>
+                                <span className='hidden xl:block text-xs font-bold tracking-wide uppercase'>
                                     {item.name}
                                 </span>
                             </div>

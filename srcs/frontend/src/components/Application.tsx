@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ApplicationContent from '@/components/ui/ApplicationContent';
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 export function Application(){
     const params = useParams();
@@ -11,7 +11,7 @@ export function Application(){
     useEffect(() => {
         const fetchUser = async () => {
             try{
-                const res = await api.get(`/api/jobs/${jobId}/applications`);
+                const res = await mainApi.get(`/api/jobs/${jobId}/applications`);
                 const jobApplications = res.data;
                 setApplications(jobApplications.data);
             }catch(err){
