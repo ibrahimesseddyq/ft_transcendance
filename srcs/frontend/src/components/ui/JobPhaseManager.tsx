@@ -106,13 +106,13 @@ export function JobPhaseManager({ jobId }: Props) {
   };
 
   return (
-    <div className="mt-3 border-t border-gray-100 dark:border-slate-800 pt-3">
+    <div className="border-gray-100 dark:border-slate-800">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-between w-full text-xs font-semibold 
+        className="flex gap-2 items-center justify-between text-xs font-semibold 
           text-gray-500 dark:text-gray-400 hover:text-[#10B77F] transition-colors"
       >
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1">
           <FlaskConical size={13} className="text-[#10B77F]" />
           Assigned Tests
           {phases.length > 0 && (
@@ -160,21 +160,18 @@ export function JobPhaseManager({ jobId }: Props) {
                         const selectedTest = availableTests.find(t => t.id === e.target.value);
                         setForm(f => ({ ...f, testId: e.target.value, name: selectedTest?.title || f.name }));
                     }}
-                    className="h-8 w-full text-xs px-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 outline-none focus:border-[#10B77F]"
+                    className="h-8 w-full text-xs px-2 rounded-lg text-black dark:text-white border border-gray-200 
+                      dark:border-slate-700 bg-white dark:bg-slate-900 outline-none focus:border-[#10B77F]"
                   >
-                    <option value="">-- Select a Test from QuizPage --</option>
+                    <option value="">-- Select a Test --</option>
                     {availableTests.map(test => (
                       <option key={test.id} value={test.id}>{test.title}</option>
                     ))}
                   </select>
 
-                  <input required value={form.name}
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="Phase Display Name *"
-                    className="h-8 w-full text-xs px-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 outline-none focus:border-[#10B77F]"
-                  />
 
-                  <div className="flex gap-2 mt-1">
+
+                  <div className="flex gap-2">
                     <button type="submit" disabled={submitting} className="flex-1 h-8 text-xs font-bold rounded-lg bg-[#10B77F] text-white hover:bg-[#0da371] disabled:opacity-50 transition-colors">
                       {submitting ? 'Saving...' : 'Assign Test'}
                     </button>
