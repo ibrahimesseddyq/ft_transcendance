@@ -5,7 +5,6 @@ import * as quizClientService from './quizClientService.js'
 export const createJobPhase = async (jobPhaseData) => {
 
 	const response = await quizClientService.getTestById(jobPhaseData.testId);
-	console.log(response)
 	if (!response.data.success)
 		throw new HttpException(400, 'test not found');
 
