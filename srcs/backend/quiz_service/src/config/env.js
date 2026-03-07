@@ -2,7 +2,7 @@ import { z } from 'zod';
 import path from 'path';
 import dotenv from 'dotenv'
 import fs from 'fs'
-const envFile = process.NODE_ENV === 'production' ? '../../.env' : '../../.env.example';
+const envFile = process.env.NODE_ENV === 'production' ? '../../.env' : '../../.env.example';
 dotenv.config({
   path: path.resolve(import.meta.dirname,envFile),
   override: true
