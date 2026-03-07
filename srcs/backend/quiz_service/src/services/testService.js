@@ -18,5 +18,6 @@ export const deleteTest = async (testId) => {
 
 export const getTests = async (searchFilters) => {
     const {skip, take,...filters} =  searchFilters;
+    
     return await testRepository.getTests(skip, take, filters);
 }

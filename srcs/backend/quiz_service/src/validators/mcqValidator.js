@@ -4,12 +4,13 @@ import {Difficulty} from '../../generated/prisma/client.js'
 const CHOICE_IDS = ["A", "B", "C", "D"];
 
 const choicesSchema =  z.object({
+    id : z.enum(CHOICE_IDS),
     text: z.string().min(1, "Choice text cannot be empty"),
     isCorrect: z.boolean()
 })
 
 const mcqSchema =  z.object({
-    question: z.string().min(),
+    question: z.string().min(1, 'question should not be empty'),
     choices: z.array(choicesSchema)
         .length(4, "Must provide exactly 4 choices")
         .refine(choices => {

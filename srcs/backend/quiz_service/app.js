@@ -8,6 +8,7 @@ import { apiRateLimiter } from "./src/middleware/rateLimiter.js";
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './src/config/swagger.js';
 import cookieParser from 'cookie-parser';
+import errorHandler from "./src/middleware/ErrorHandler.js";
 
 const app = express();
 
@@ -33,5 +34,7 @@ app.get("/health", (req, res) => {
 app.get("/info", (req, res) => {
   res.json({ app: process.env.APP_NAME || "service" });
 });
+
+app.use(errorHandler)
 
 export default app

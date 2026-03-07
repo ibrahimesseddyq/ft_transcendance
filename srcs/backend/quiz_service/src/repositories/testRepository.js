@@ -72,8 +72,8 @@ export const getTests = async (skip = 0, take = 10, filters = {}) => {
     // here filters and pagination my implemented
     return await prisma.test.findMany({
         where : {},
-        skip,
-        take,
+        skip : Number(skip),
+        take: Number(take),
         include: {
             mcqs: true,
             codeChallenges: true
