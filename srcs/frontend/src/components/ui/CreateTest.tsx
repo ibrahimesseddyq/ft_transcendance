@@ -1,8 +1,7 @@
-// src/components/ui/CreateTest.tsx
 import { useState, useEffect } from 'react';
 import { quizApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
-import { Plus, Trash2, FlaskConical, DiamondPlus } from 'lucide-react';
+import { FlaskConical, DiamondPlus } from 'lucide-react';
 
 interface Mcq {
     id: string;
@@ -17,7 +16,7 @@ interface CreateTestProps {
 
 const CreateTest = ({ onSuccess }: CreateTestProps) => {
     const [availableMcqs, setAvailableMcqs] = useState<Mcq[]>([]);
-    const [selectedMcqIds, setSelectedMcqIds] = useState<string[]>([]);
+    const [selectedMcqIds, setSelectedMcqIds] = useState<string[]>([]); 
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
         title: '',
@@ -25,7 +24,8 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
         durationMinutes: 30,
         passingScore: 70,
         category: '',
-        difficulty: 'MEDIUM',
+        difficulty: 'EASY',
+        tags: [],
     });
 
     useEffect(() => {
@@ -43,24 +43,38 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (selectedMcqIds.length === 0) {
             Notification('Please select at least one MCQ', 'error');
             return;
         }
+
         try {
             await quizApi.post('/api/tests', {
                 ...form,
                 type: 'QUIZ',
                 durationMinutes: Number(form.durationMinutes),
                 passingScore: Number(form.passingScore),
-                mcqs: selectedMcqIds,
+                mcqIds: selectedMcqIds, 
             });
+
             Notification('Test created successfully!', 'success');
-            setForm({ title: '', description: '', durationMinutes: 30, passingScore: 70, category: '', difficulty: 'MEDIUM' });
+            
+            // Reset form
+            setForm({ 
+                title: '', 
+                description: '', 
+                durationMinutes: 30, 
+                passingScore: 70, 
+                category: '', 
+                difficulty: 'EASY', 
+                tags: [] 
+            });
             setSelectedMcqIds([]);
             onSuccess?.();
         } catch (err: any) {
-            Notification(err.response?.data?.message || 'Error creating test', 'error');
+            const msg = err.response?.data?.message || 'Error creating test';
+            Notification(Array.isArray(msg) ? msg.join(', ') : msg, 'error');
         }
     };
 
@@ -75,8 +89,10 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
                     <FlaskConical className='text-[#00adef]' />
                     <h1 className='text-lg font-semibold text-black dark:text-white'>Create Test</h1>
                 </div>
-                <select value={form.difficulty} onChange={e => setForm(f => ({ ...f, difficulty: e.target.value }))}
-                    className="py-2 px-4 bg-slate-300/20 dark:bg-slate-700/30 text-black dark:text-white w-fit rounded-lg outline-none">
+                <select 
+                    value={form.difficulty} 
+                    onChange={e => setForm(f => ({ ...f, difficulty: e.target.value }))}
+                    className="py-2 px-4 bg-slate-300/20 dark:bg-slate-700/30 text-black dark:text-white w-fit rounded-lg outline-none cursor-pointer">
                     <option value="EASY">EASY</option>
                     <option value="MEDIUM">MEDIUM</option>
                     <option value="HARD">HARD</option>
@@ -85,34 +101,45 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
 
             {/* Basic fields */}
             <div className='flex flex-col gap-4 pt-5'>
-                {[
-                    { label: 'Title', key: 'title', type: 'text', placeholder: 'e.g. JavaScript Fundamentals' },
-                    { label: 'Category', key: 'category', type: 'text', placeholder: 'e.g. JavaScript' },
-                    { label: 'Description', key: 'description', type: 'textarea', placeholder: 'Describe this test...' },
-                ].map(field => (
-                    <div key={field.key} className='flex flex-col gap-2'>
-                        <label className='text-black dark:text-white font-medium capitalize'>{field.label}</label>
-                        {field.type === 'textarea' ? (
-                            <textarea value={(form as any)[field.key]}
-                                onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-                                placeholder={field.placeholder}
-                                className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
-                                    border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none min-h-[80px] focus:border-[#00adef]"
-                            />
-                        ) : (
-                            <input type='text' value={(form as any)[field.key]}
-                                onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-                                placeholder={field.placeholder} required={field.key === 'title'}
-                                className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
-                                    border border-gray-200 dark:border-gray-700 rounded-lg p-2 outline-none focus:border-[#00adef]"
-                            />
-                        )}
-                    </div>
-                ))}
+                <div className='flex flex-col gap-2'>
+                    <label className='text-black dark:text-white font-medium'>Title</label>
+                    <input 
+                        type='text' 
+                        value={form.title}
+                        onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                        placeholder='e.g. JavaScript Fundamentals' 
+                        required
+                        className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
+                            border border-gray-200 dark:border-gray-700 rounded-lg p-2 outline-none focus:border-[#00adef]"
+                    />
+                </div>
+
+                <div className='flex flex-col gap-2'>
+                    <label className='text-black dark:text-white font-medium'>Category</label>
+                    <input 
+                        type='text' 
+                        value={form.category}
+                        onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                        placeholder='e.g. Web Development'
+                        className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
+                            border border-gray-200 dark:border-gray-700 rounded-lg p-2 outline-none focus:border-[#00adef]"
+                    />
+                </div>
+
+                <div className='flex flex-col gap-2'>
+                    <label className='text-black dark:text-white font-medium'>Description</label>
+                    <textarea 
+                        value={form.description}
+                        onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                        placeholder='Describe this test...'
+                        className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
+                            border border-gray-200 dark:border-gray-700 rounded-lg p-3 outline-none min-h-[80px] focus:border-[#00adef]"
+                    />
+                </div>
 
                 <div className='flex gap-4'>
                     <div className='flex flex-col gap-2 flex-1'>
-                        <label className='text-black dark:text-white font-medium'>Duration (minutes)</label>
+                        <label className='text-black dark:text-white font-medium'>Duration (mins)</label>
                         <input type='number' value={form.durationMinutes}
                             onChange={e => setForm(f => ({ ...f, durationMinutes: Number(e.target.value) }))}
                             className="bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 

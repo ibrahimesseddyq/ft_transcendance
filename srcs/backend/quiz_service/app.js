@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api/docs.json', (req, res) => res.json(swaggerSpec));
 
-app.use('/api/internal/tests',verifyInternalApiKey,internalRoutes)
+app.use('/api/internal/tests',internalRoutes)
 app.use('/api/mcqs',apiRateLimiter, mcqsRoutes);
 app.use('/api/tests',apiRateLimiter, testsRoutes);
 
