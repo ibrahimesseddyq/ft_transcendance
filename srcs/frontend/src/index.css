@@ -4,9 +4,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
+html, body {
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+}
+
 @layer base {
   * {
-    @apply transition-colors duration-300 ease-in-out;
+    @apply transition-colors duration-500 ease-in-out;
   }
 }
 @layer utilities {
@@ -85,13 +90,4 @@
             background-color: #0086b8;
         }
     }
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
 }
