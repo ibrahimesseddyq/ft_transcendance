@@ -3,20 +3,21 @@ import { quizApi } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
 
-interface TestsListProps {
+
+interface McqsListProps {
     refreshKey?: number;
 }
 
-const TestsList = ({ refreshKey }: TestsListProps) => {
+const McqsList = ({ refreshKey }: McqsListProps) => {
     const [tests, setTests] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchUserContent = async () => {
         try {
-            const res = await quizApi.get(`/api/tests`);
+            const res = await quizApi.get(`/api/mcqs`);
             setTests(res.data?.data || []);
         } catch (err) {
-            console.error("Error fetching tests:", err);
+            console.log(err);
         } finally {
             setLoading(false);
         }
@@ -27,22 +28,22 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
     }, [refreshKey]);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this Test?")) return;
+        if (!confirm("Are you sure you want to delete this Mcq?")) return;
         
         try {
-            await quizApi.delete(`/api/tests/${id}`);
+            await quizApi.delete(`/api/mcqs/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
-            Notification("Test deleted successfully", "success");
+            Notification("Mcq deleted successfully", "success");
         } catch (err) {
             console.error(err);
-            Notification("Failed to delete Test", "error");
+            Notification("Failed to delete Mcq", "error");
         }
     };
 
     if (loading) {
         return (
             <div className="flex justify-center items-center p-10">
-                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading Tests...</p>
+                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading Mcqs...</p>
             </div>
         );
     }
@@ -68,4 +69,4 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
     );
 }
 
-export default TestsList;
+export default McqsList;
