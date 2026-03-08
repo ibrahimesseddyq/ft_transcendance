@@ -1,6 +1,7 @@
 import CreateMcq from '@/components/ui/CreateMcq'
 import CreateTest from '@/components/ui/CreateTest'
 import McqsList from '@/components/ui/McqsList'
+import TestsList from '@/components/ui/TestsList'
 import { useState } from 'react'
 import { ToastContainer } from "react-toastify";
 
@@ -10,7 +11,7 @@ export function QuizPage() {
     const triggerRefresh = () => setRefreshKey(k => k + 1);
 
     return (
-        <div className="overflow-y-auto no-scrollbar items-center w-full h-screen 
+        <div className="overflow-y-auto no-scrollbar items-center w-full h-[calc(100vh-80px)]
             bg-white dark:bg-slate-950 rounded-xl transition-colors duration-300">
             <ToastContainer />
             <div className='grid grid-cols-4 h-full w-full lg:divide-x-2 divide-gray-200 dark:divide-gray-800 p-4 lg:p-0'>
@@ -18,10 +19,22 @@ export function QuizPage() {
                 {/* Sidebar */}
                 <div className="col-span-4 lg:col-span-1 gap-4 bg-transparent lg:bg-[#f3f4f6] dark:lg:bg-slate-900/50
                     h-full w-full order-last lg:order-first p-4 transition-colors">
+                    
+                    {/* Header */}
                     <div className="mb-4 px-2">
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">Recent MCQs</h3>
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+                            {activeTab === 'mcq' ? 'Recent MCQs' : 'Recent Tests'}
+                        </h3>
                     </div>
-                    <McqsList refreshKey={refreshKey} />
+
+                    {/* List */}
+                    <div className="overflow-y-auto max-h-[calc(100vh-100px)] custom-scrollbar">
+                        {activeTab === 'mcq' ? (
+                            <McqsList refreshKey={refreshKey} />
+                        ) : (
+                            <TestsList refreshKey={refreshKey} />
+                        )}
+                    </div>
                 </div>
 
                 {/* Main Panel */}
@@ -29,7 +42,6 @@ export function QuizPage() {
                     justify-center order-first lg:order-last bg-transparent">
                     <div className='items-stretch flex flex-col gap-4 h-full w-full p-4 lg:p-8 overflow-y-auto custom-scrollbar'>
                         
-                        {/* Tab Switcher */}
                         <div className='flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl w-fit'>
                             <button onClick={() => setActiveTab('mcq')}
                                 className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all

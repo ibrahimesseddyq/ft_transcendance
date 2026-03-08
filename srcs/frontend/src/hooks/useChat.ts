@@ -4,9 +4,7 @@ import { chatSocket } from '../services/chatSocket';
 import { Conversation, Message, ChatState } from '../types/chat';
 import { toast } from 'react-toastify';
 
-// Normalize a raw backend message to the frontend Message shape.
-// The backend may return messageType 'image'|'video' and file info
-// nested inside attachments[]. Map everything to the flat Message type.
+
 function normalizeMessage(raw: any): Message {
   const att = raw.attachments?.[0];
   return {
