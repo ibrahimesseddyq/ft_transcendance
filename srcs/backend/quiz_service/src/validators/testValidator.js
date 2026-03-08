@@ -4,7 +4,7 @@ import {TestType, Difficulty} from '../../generated/prisma/client.js';
 const baseTestSchema = z.object({
     title: z.string()
         .min(3, "Title must be at least 3 characters")
-        .max(255, " title should not be more than 255 char"),
+        .max(255, " title should not be more than 255 characters"),
     description: z.string().optional(),
     durationMinutes: z.number()
         .int()
@@ -24,7 +24,7 @@ const baseTestSchema = z.object({
         .default(false),
 })
 
-export const createTestschema = z.discriminatedUnion("type",[
+export const createTestSchema = z.discriminatedUnion("type",[
     baseTestSchema.extend({
         type : z.literal(TestType.QUIZ),
         mcqIds : z.array(z.string().uuid("Invalid MCQ ID format"))
@@ -35,18 +35,23 @@ export const createTestschema = z.discriminatedUnion("type",[
         codeId: z.string().uuid("Code test requires a valid Code Challenge ID")
     }).strict()
 ])
+const updateBaseTestSchema = baseTestSchema.partial();
 
-export const updateTestschema = z.discriminatedUnion("type",[
-    baseTestSchema.partial().extend({
-        type : z.literal(TestType.QUIZ),
-        mcqIds : z.array(z.string().uuid("Invalid MCQ ID format"))
+const updateQuizTestSchema = updateBaseTestSchema.extend({
+    type : z.literal(TestType.QUIZ).optional(),
+    mcqIds : z.array(z.string().uuid("Invalid MCQ ID format"))
         .min(1, "A QUIZ must contain at least one MCQ")
         .optional()
-    }).strict(),
-    baseTestSchema.partial().extend({
-        type: z.literal(TestType.CODE),
-        codeChallengeId: z.string()
+}).strict();
+
+const updateCodeTestSchema = updateBaseTestSchema.extend({
+    type: z.literal(TestType.CODE).optional(),
+    codeChallengeId: z.string()
         .uuid("Code test requires a valid Code Challenge ID")
         .optional()
-    }).strict()
-])
+}).strict();
+
+export const updateTestschema = z.union([
+    updateQuizTestSchema,
+    updateCodeTestSchema
+]);
