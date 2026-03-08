@@ -6,14 +6,14 @@ ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 DEV_COMPOSE  := docker compose -f srcs/compose.yml
 PROD_COMPOSE := docker compose -f srcs/compose.yml -f srcs/compose.prod.yml
 
-build:
-	# cd srcs/backend/gateway && ./gradlew clean bootJar
-	true
-
 # ---------- Docker Compose (prod) ----------
 up: build
 	$(PROD_COMPOSE) build --no-cache
 	$(PROD_COMPOSE) up
+build:
+	cd srcs/backend/gateway && ./gradlew clean bootJar
+	true
+
 
 down:
 	$(PROD_COMPOSE) down

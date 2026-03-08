@@ -21,6 +21,16 @@ const app =  express();
 
 console.log(process.env.FRONTEND_URL)
 console.log(env.FRONTEND_URL)
+app.use(morgan('combined'));
+app.use((req, res, next) => {
+  console.log("Incoming Request:");
+  console.log("Method:", req.method);
+  console.log("URL:", req.originalUrl);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("--------------");
+  next();
+});
 app.use(cors({
   origin: [process.env.FRONTEND_URL, 'http://127.0.0.1:5173'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
@@ -32,7 +42,6 @@ app.use(helmet());
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cokieParser());
-app.use(morgan('combined'));
 
 //The cross-origin value tells the browser that it is safe to load this resource on a different port
 app.use('/uploads', (req, res, next) => {
