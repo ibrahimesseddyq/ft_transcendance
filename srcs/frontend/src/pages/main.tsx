@@ -22,7 +22,6 @@ import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
 
 export function Main() {
-  localStorage.theme = 'dark';
   const location = useLocation();
   const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { useAuthStore } from '@/utils/ZuStand';
 
 interface FailedRequest {
     resolve: (value?: any) => void;
@@ -17,6 +18,8 @@ const attachInterceptors = (instance: AxiosInstance) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
+
+        config.headers['x-internal-api-key'] = import.meta.env.VITE_INTERNAL_API_KEY;
         return config;
     });
 
@@ -49,6 +52,8 @@ const attachInterceptors = (instance: AxiosInstance) => {
                     return instance(originalRequest);
                 } catch (refreshError) {
                     failedQueue.forEach(prom => prom.reject(refreshError));
+                    useAuthStore.getState().clearAuth(); 
+                    
                     failedQueue = [];
                     if (!window.location.pathname.includes('/login')) {
                         window.location.href = '/login';
@@ -63,6 +68,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
     );
 };
 
+// ... remaining code (exports and calls) ...
 
 export const mainApi = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -73,6 +79,7 @@ export const chatApi = axios.create({
     baseURL: import.meta.env.VITE_CHAT_SERVICE_URL, 
     withCredentials: true,
 });
+
 export const quizApi = axios.create({
     baseURL: import.meta.env.VITE_QUIZ_SERVICE_URL, 
     withCredentials: true,
@@ -81,3 +88,4 @@ export const quizApi = axios.create({
 
 attachInterceptors(mainApi);
 attachInterceptors(chatApi);
+attachInterceptors(quizApi);
