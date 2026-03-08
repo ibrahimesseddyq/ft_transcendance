@@ -36,24 +36,25 @@ export function Jobs() {
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden 
-      p-4 md:p-0 transition-colors duration-300 ">
+      p-4 md:p-0 transition-colors duration-300 items-start">
+  
       <ToastContainer />
 
       {isFormOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-black/20 dark:bg-black/40 p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center 
+          backdrop-blur-md bg-black/20 dark:bg-black/40 overflow-y-auto custom-scrollbar">
           
-          <div className="relative bg-white dark:bg-gray-900 border border-gray-200 
-            dark:border-gray-800 p-6 rounded-xl w-full max-w-lg shadow-2xl transition-all">
+          
             
             <button 
               onClick={() => setIsFormOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 dark:text-gray-500 
-                hover:text-gray-900 dark:hover:text-white transition-colors">
+              className="absolute top-6 right-6 text-2xl text-gray-600 dark:text-gray-500 
+                hover:text-red-400 dark:hover:text-red-400 transition-colors">
               ✕
             </button>
 
             <JobForm jobItem={jobItem} setIsFormOpen={setIsFormOpen} setJobsArray={setJobsArray}/>
-          </div>
+         
         </div>
       )}
 
@@ -66,7 +67,7 @@ export function Jobs() {
 
       {/* Content Area */}
       {isLoading ? (
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 mx-auto">
           <Loading />
         </div>
       ) : (

@@ -2,7 +2,7 @@ import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
 
 export const getUserById = async (userId) => {
-    let user = await prisma.user.findUnique({
+    return await prisma.user.findUnique({
         where: { id: userId },
         select: {
             profile: true,  
