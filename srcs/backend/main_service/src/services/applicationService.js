@@ -13,21 +13,23 @@ export const submitApplication = async (data) => {
 	return await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
 			select: {
+				id: true,
 				applicationPhases: true
 			}
 		});
-		await Promise.all(
-			job.jobPhases.map(phase => {
+		const applicationPhases = await Promise.all(
+			job.jobPhases.map(phase => 
 				tx.applicationPhase.create({
 					data : {
 					applicationId: application.id,
-					phaseId: phase.id,}
+					phaseId: phase.id
+				}
 				})
-			})
+			)
 		)
 		await tx.application.update({
 			where : {id : application.id},
-			data : {currentPhaseId : application.applicationPhases[0].id}
+			data : {currentPhaseId : applicationPhases[0].id}
 		})
 		return application;
 	})
