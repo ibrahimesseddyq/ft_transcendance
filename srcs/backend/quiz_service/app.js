@@ -8,6 +8,8 @@ import { apiRateLimiter } from "./src/middleware/rateLimiter.js";
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import { swaggerSpec } from './src/config/swagger.js';
+import cookieParser from 'cookie-parser';
+import errorHandler from "./src/middleware/ErrorHandler.js";
 
 const app = express();
 app.use(cors({
@@ -16,6 +18,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -36,5 +39,7 @@ app.get("/health", (req, res) => {
 app.get("/info", (req, res) => {
   res.json({ app: process.env.APP_NAME || "service" });
 });
+
+app.use(errorHandler)
 
 export default app
