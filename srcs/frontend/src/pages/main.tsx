@@ -20,6 +20,7 @@ import { Chat } from '@/components/Chat'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
+import { ApplicationDetails } from '@/components/ApplicationDetails'
 
 export function Main() {
   const location = useLocation();
@@ -76,6 +77,8 @@ export function Main() {
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
                 <Route path="/Dashboard" element={<Dashboard />} />
                 <Route path="/AppAllCards" element={<AppAllCards />} />
+                <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
+                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/QuizPage" element={<QuizPage />} />
               </Route>
 
@@ -83,12 +86,15 @@ export function Main() {
 
 
               {/* CANDIDATE ROUTES */}
+              <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
+                <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
+              </Route>
+
+              {/* SHARED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
                 <Route path="/Jobdescription" element={<JobDescription />} />
-                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
               </Route>
