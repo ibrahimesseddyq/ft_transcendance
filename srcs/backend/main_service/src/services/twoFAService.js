@@ -28,7 +28,6 @@ import * as  jwtService from './jwtService.js';
 
     async verifySetup(userId, token)
     {
-        console.log("user id :", userId, "token :", token);
         const user = await this.userRepo.getUserById(userId);
         if (!user?.twoFATempSecret)
             throw new HttpException(400, "No Setup in Progress");
