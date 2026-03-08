@@ -70,7 +70,9 @@ export function ProfileInformations() {
     resolver: zodResolver(CandidateProfileSchema)
   });
 
+  const avatarValue = watch("avatar");
   const resumeValue = watch("resumeUrl");
+  const hasAvatar = avatarValue && (avatarValue instanceof FileList ? avatarValue.length > 0 : !!avatarValue);
   const hasResume = resumeValue && (resumeValue instanceof FileList ? resumeValue.length > 0 : !!resumeValue);
 
   useEffect(() => {
@@ -149,8 +151,8 @@ export function ProfileInformations() {
       <div className="relative group mx-auto my-8 w-32 h-32">
         <div 
           className={`h-full w-full rounded-full bg-gray-100 dark:bg-[#1e1e1e] bg-cover bg-center border-2 transition-all duration-300 ${
-            errors.avatar ? 'border-red-500' : 'border-gray-300 dark:border-gray-700 shadow-sm'
-          }`}
+              errors.avatar ? 'border-red-500 bg-red-50/5' : hasAvatar ? 'border-green-500 bg-green-50/5' : 'border-gray-300 dark:border-gray-700 hover:border-[#00adef] bg-[#00adef]/5'
+            }`}
           style={{ backgroundImage: `url("${avatarPreview ?? '/icons/placeholder.jpg'}")`}}
         >
           {isSubmitting && avatarProgress > 0 && (
