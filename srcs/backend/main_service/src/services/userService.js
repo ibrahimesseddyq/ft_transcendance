@@ -42,7 +42,7 @@ export const getUserByEmail = async (email) => {
 }
 
 export const updateUser = async (userId, updateData) => {
-    return await userRepository.updateUser(userId,filteredData);
+    return await userRepository.updateUser(userId,updateData);
 }
 
 export const deleteUser = async (userId) => {
