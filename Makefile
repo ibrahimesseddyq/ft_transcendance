@@ -51,6 +51,8 @@ re: clean up
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 3306/tcp 2>/dev/null; true
+	sudo systemctl stop mariadb 2>/dev/null; true
 	
 
 # ---------- Kubernetes ----------
