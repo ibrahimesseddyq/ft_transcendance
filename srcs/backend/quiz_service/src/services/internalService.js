@@ -9,11 +9,11 @@ export const evaluateQuiz = async (test, answers) => {
     mcqs.forEach(mcq => {
         maxPossibleScore += mcq.points;
         const userAnswer = answers.find(answer => answer.questionId === mcq.id);
-        const correctIds = mcq.choices.filtter(c => c.isCorrect)
+        const correctIds = mcq.choices.filter(c => c.isCorrect)
             .map(c => c.id);
         const  isCorrect = userAnswer &&
         userAnswer.selectedIds.length === correctIds.length &&
-        userAnswer.selectedIds.everya(id => correctIds.includes(id));
+        userAnswer.selectedIds.every(id => correctIds.includes(id));
         const earnedPoints = isCorrect ? mcq.points : 0;
         totalScore += earnedPoints;
         result.push({
@@ -46,8 +46,8 @@ export const getTestForEvalution = async (testId) => {
     const test = testService.getTestById(testId);
     if (!test)
         throw new HttpException(404, 'test not found');
-    if (!test.isPublished)
-        throw new HttpException(401, 'unauthorized evaluation');
+    // if (!test.isPublished)
+    //     throw new HttpException(401, 'unauthorized evaluation');
     return test;
 }
 

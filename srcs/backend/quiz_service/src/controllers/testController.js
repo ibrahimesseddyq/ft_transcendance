@@ -35,7 +35,7 @@ export const deleteTest = asyncHandler( async (req, res, next) => {
 })
 
 export const getTests = asyncHandler(async (req, res, next) => {
-    const result = await testSevice.gettests(req.query);
+    const result = await testSevice.getTests(req.query);
     res.status(200)
     .json({
         success: true,

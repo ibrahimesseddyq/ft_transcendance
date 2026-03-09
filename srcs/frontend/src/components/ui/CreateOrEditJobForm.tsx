@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
@@ -63,7 +63,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
 
     if (jobItem){
       try {
-        const response = await api.patch(`/api/jobs/${jobItem.id}`, data);
+        const response = await mainApi.patch(`/api/jobs/${jobItem.id}`, data);
 
         const result = response.data;
         const savedJob = result.data;
@@ -78,7 +78,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await api.post(`/api/jobs`, data);
+        const response = await mainApi.post(`/api/jobs`, data);
 
         const result = await response.data;
         const savedJob = result.data;
@@ -102,14 +102,16 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
     outline-none focus:border-[#10B77F] transition-colors rounded-md px-3";
 
   return (
-    <div className="h-full w-full flex flex-col items-center transition-colors duration-300">
+    <div className="h-full w-full flex flex-col items-center transition-colors duration-300 p-4">
       {/* Header Badge */}
       <div className='border rounded-xl px-5 py-2 border-gray-200 dark:border-[#1e2e52] bg-white dark:bg-[#121b31] mb-6 shadow-sm'>
         <h1 className='text-black dark:text-white text-lg font-bold'>Post New Job</h1>
       </div>
 
       {/* Form Container */}
-      <div className='h-auto w-full max-w-[500px] bg-white dark:bg-[#121b31]/50 p-6 rounded-2xl border border-gray-200 dark:border-[#1e2e52] max-h-[85vh] overflow-y-auto custom-scrollbar shadow-2xl'>
+      <div className='h-auto w-full bg-white dark:bg-[#121b31]/50 p-6 
+        rounded-2xl border border-gray-200 dark:border-[#1e2e52] 
+         overflow-y-auto custom-scrollbar shadow-2xl'>
         <form onSubmit={handleSubmit(JobSubmit)} className='flex flex-col gap-4 w-full'>
           
           {/* Title & Department */}

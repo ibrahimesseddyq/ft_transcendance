@@ -16,17 +16,19 @@ import { ProtectedRoute } from '@/utils/ProtectedRoute'
 import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
+import { Chat } from '@/components/Chat'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
-import { EditProfile } from '@/components/EditProfile'
+import { EditProfile } from '@/components/EditProfile';
+import { ApplicationDetails } from '@/components/ApplicationDetails'
 
 export function Main() {
-  localStorage.theme = 'dark';
   const location = useLocation();
   const { user, profile, qrVerified } = useAuthStore();
   const hasProfile = !!profile;
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback', '/QuizPage'];
+  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -40,7 +42,6 @@ export function Main() {
     return (
       <FullScreenWrapper>
         <Routes>
-          <Route path="/QuizPage" element={<QuizPage />} />
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
@@ -50,7 +51,7 @@ export function Main() {
     );
   }
 
- if (user && qrVerified && !hasProfile) {
+ if (user && !isAdminOrRecruiter && qrVerified && !hasProfile) {
     return (
       <FullScreenWrapper>
         <Routes>
@@ -69,24 +70,33 @@ export function Main() {
           <Header />
         </div>
 
-        <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
-          <main className="w-full ">
+        <div className="flex flex-1 w-full max-w-screen-2xl overflow-hidden">
+          <main className="w-full">
             <Routes>
               {/* STAFF ROUTES (Admin & Recruiter) */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
                 <Route path="/Dashboard" element={<Dashboard />} />
                 <Route path="/AppAllCards" element={<AppAllCards />} />
+                <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
+                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/QuizPage" element={<QuizPage />} />
               </Route>
 
+
+
+
               {/* CANDIDATE ROUTES */}
+              <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
+                <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
+              </Route>
+
+              {/* SHARED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
                 <Route path="/Jobdescription" element={<JobDescription />} />
-                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
-                <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/EditProfile" element={<EditProfile />} />
               </Route>
 
               {/* ROOT REDIRECT */}

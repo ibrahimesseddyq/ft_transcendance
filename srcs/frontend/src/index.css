@@ -4,6 +4,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
+html, body {
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+}
+
+@layer base {
+  * {
+    @apply transition-colors duration-500 ease-in-out;
+  }
+}
 @layer utilities {
     body{
         --font-sans: "Calibri", "Arial", sans-serif;

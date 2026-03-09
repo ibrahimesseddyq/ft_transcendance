@@ -1,72 +1,91 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/utils/ZuStand';
 
-const api = axios.create({
+interface FailedRequest {
+    resolve: (value?: any) => void;
+    reject: (reason?: any) => void;
+}
+
+interface CustomConfig extends InternalAxiosRequestConfig {
+    _retry?: boolean;
+}
+
+let isRefreshing = false;
+let failedQueue: FailedRequest[] = [];
+
+const attachInterceptors = (instance: AxiosInstance) => {
+    instance.interceptors.request.use((config) => {
+        if (!(config.data instanceof FormData)) {
+            config.headers['Content-Type'] = 'application/json';
+        }
+
+        config.headers['x-internal-api-key'] = import.meta.env.VITE_INTERNAL_API_KEY;
+        return config;
+    });
+
+    instance.interceptors.response.use(
+        (response) => response,
+        async (error: AxiosError) => {
+            const originalRequest = error.config as CustomConfig;
+
+            if (error.response?.status === 401 && !originalRequest._retry) {
+                if (isRefreshing) {
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
+                    })
+                        .then(() => instance(originalRequest))
+                        .catch((err) => Promise.reject(err));
+                }
+
+                originalRequest._retry = true;
+                isRefreshing = true;
+
+                try {
+                    await axios.post(
+                        `${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh`,
+                        {},
+                        { withCredentials: true }
+                    );
+                    
+                    failedQueue.forEach(prom => prom.resolve());
+                    failedQueue = [];
+                    return instance(originalRequest);
+                } catch (refreshError) {
+                    failedQueue.forEach(prom => prom.reject(refreshError));
+                    useAuthStore.getState().clearAuth(); 
+                    
+                    failedQueue = [];
+                    if (!window.location.pathname.includes('/login')) {
+                        window.location.href = '/login';
+                    }
+                    return Promise.reject(refreshError);
+                } finally {
+                    isRefreshing = false;
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+};
+
+// ... remaining code (exports and calls) ...
+
+export const mainApi = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
     withCredentials: true,
 });
 
-let isRefreshing = false;
-let failedQueue: { resolve: (value?: any) => void; reject: (reason?: any) => void }[] = [];
-
-const processQueue = (error: any) => {
-    failedQueue.forEach(({ resolve, reject }) =>
-        error ? reject(error) : resolve()
-    );
-    failedQueue = [];
-};
-
-api.interceptors.request.use((config) => {
-    if (!(config.data instanceof FormData)) {
-        config.headers['Content-Type'] = 'application/json';
-    }
-    return config;
+export const chatApi = axios.create({
+    baseURL: import.meta.env.VITE_CHAT_SERVICE_URL, 
+    withCredentials: true,
 });
 
-api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-        if (originalRequest.url?.includes('/api/auth/refresh')) {
-            const clearAuth = useAuthStore.getState().clearAuth;
-            clearAuth();
-            window.location.href = '/Login';
-            return Promise.reject(error);
-        }
+export const quizApi = axios.create({
+    baseURL: import.meta.env.VITE_QUIZ_SERVICE_URL, 
+    withCredentials: true,
+});
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            if (isRefreshing) {
-                return new Promise((resolve, reject) => {
-                    failedQueue.push({ resolve, reject });
-                })
-                .then(() => api(originalRequest))
-                .catch((err) => Promise.reject(err));
-            }
 
-            originalRequest._retry = true;
-            isRefreshing = true;
-
-            try {
-                await axios.post(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh`,
-                    {},
-                    { withCredentials: true }
-                );
-                processQueue(null);
-                return api(originalRequest);
-            } catch (refreshError) {
-                processQueue(refreshError);
-                const clearAuth = useAuthStore.getState().clearAuth;
-                clearAuth();
-                window.location.href = '/Login';
-                return Promise.reject(refreshError);
-            } finally {
-                isRefreshing = false;
-            }
-        }
-
-        return Promise.reject(error);
-    }
-);
-
-export default api;
+attachInterceptors(mainApi);
+attachInterceptors(chatApi);
+attachInterceptors(quizApi);
