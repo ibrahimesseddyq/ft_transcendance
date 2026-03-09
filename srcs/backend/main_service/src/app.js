@@ -19,6 +19,7 @@ import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 const app =  express();
 
 app.use(cors({
@@ -78,6 +79,10 @@ app.use('/api/applications',
 app.use('/api/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
+
+app.use('/api/notifications',
+  verifyToken,
+  notificationRoutes)
 
 app.use('/chat/conversations',
   verifyToken,
