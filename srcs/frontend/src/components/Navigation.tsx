@@ -10,11 +10,13 @@ export const navigation = [
     { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
     { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "Quiz", path: "/QuizPage", icon: GitPullRequestCreateArrow },
+    { name: "Applications", path: "/Applications", icon: GitPullRequestCreateArrow },
 ];
 
 export function Navbar() {
     const location = useLocation();
     const user = useAuthStore((state) => state.user);
+    const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -48,7 +50,8 @@ export function Navbar() {
                                 to={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-4 p-3 rounded-xl font-bold transition-all
-                                    ${user?.role === "candidate" && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                    ${!isAdminOrRecruiter && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                    ${isAdminOrRecruiter && item.name === 'Applications' ? 'hidden' : ''}
                                     ${location.pathname.startsWith(item.path) 
                                         ? 'bg-[#00adef] text-white' 
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
@@ -71,7 +74,8 @@ export function Navbar() {
                             key={item.name}
                             to={item.path}
                             className={`group flex items-center transition-all duration-200
-                                ${user?.role === "candidate" && item.name === 'Dashboard' ? 'hidden' : ''}`}
+                                ${!isAdminOrRecruiter && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                ${isAdminOrRecruiter && item.name === 'Applications' ? 'hidden' : ''}`}
                         >
                             <div className={`
                                 flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300

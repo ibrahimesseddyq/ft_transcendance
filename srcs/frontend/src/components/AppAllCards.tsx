@@ -60,7 +60,7 @@ export function AppAllCards() {
                 className="animate-in fade-in slide-in-from-bottom-5 duration-500"
                 style={{ animationDelay: `${index * 40}ms` }}
               >
-                <UserCard candidateId={item.candidateId}/>
+                <UserCard candidateId={item.candidateId} applicationId={item.id}/>
               </div>
             ))}
           </div>
