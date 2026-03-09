@@ -49,6 +49,14 @@ export const deleteUser = async (userId) => {
     await userRepository.deleteUser(userId);
 }
 
+export const getUserApplications = async (userId) => {
+    return await userRepository.getUserApplications(userId);
+}
+
+export const getUserJobs = async (userId) => {
+    return await  userRepository.getUserJobs(userId);
+}
+
 export const getUsers = async (filters) => {
     return await userRepository.getUsers(filters);
 }
