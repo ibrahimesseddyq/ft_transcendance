@@ -7,16 +7,17 @@ export function UserApplications() {
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const user = useAuthStore((state) => state.user);
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     useEffect(()=>{
       const fetchUserContent = async () =>{
         try{
             setIsLoading(true);
-            const res = await mainApi.get(`/api/users/${user?.id}/applications`);
+            const res = await mainApi.get(`${env_main_api}/users/${user?.id}/applications`);
 
             const data = res.data;
             if (data.data){
-              setApplications(data.data);
+              setApplications(data.data.applications || []);
             }
         } catch(err){
             console.log(err);
@@ -36,11 +37,11 @@ export function UserApplications() {
                 <p className="text-slate-500 mt-10">Loading applications...</p>
             ) : (
                 <>
-                    {applications.map((item:any)=>{
-                        <div className='flex flex-wrap gap-4'>
-                            <AppCard app={item}/>
-                        </div>
-                    })}
+                {applications?.map((app) => (
+                    <div className='flex flex-wrap gap-4'>
+                        <AppCard app={app}/>
+                    </div>
+                ))}
                 </>
             )}
             

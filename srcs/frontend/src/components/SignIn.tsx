@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
-import { Loading } from "./Loading";
 import Notification from "@/utils/TostifyNotification"
 import { mainApi } from '@/utils/Api';
 
@@ -15,9 +14,10 @@ const Signin = () => {
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
-    const setTmpToken = useAuthStore((state) => state.setTmpToken);
+    // const setTmpToken = useAuthStore((state) => state.setTmpToken);
     const setUserId = useAuthStore((state) => state.setUserId);
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     const {
         register,
@@ -41,26 +41,25 @@ const Signin = () => {
     
     
     const GoogleSubmit = () => {
-        window.location.href = `${BACKEND_URL}/api/auth/google`;
+        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
     }
 
 
     const LoginSubmit = async (data: any) => {
         try {
-            const response = await mainApi.post('/api/auth/login', data);
+            const response = await mainApi.post(`${env_main_api}/auth/login`, data);
             const result = response.data;
 
-            const tmpToken = result?.tempToken;
+            // const tmpToken = result?.tempToken;
             const userId = result?.userId;
 
             console.log ("first Login :", result?.firstLogin);
-            console.log ("tmpToken :", tmpToken);
             console.log ("userId :", userId);
             setFirstLogin(result?.firstLogin);
 
-            if (tmpToken && userId) {
+            if (userId) {
                 console.log('login secsusfull');
-                setTmpToken(tmpToken);
+                // setTmpToken(tmpToken);
                 setUserId(userId);
                 reset();
                 navigate("/otp", { replace: true });

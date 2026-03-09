@@ -11,6 +11,7 @@ export function JobDescription(){
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
   const user = useAuthStore((state) => state.user);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
@@ -22,7 +23,7 @@ export function JobDescription(){
 
   const ApplySubmit = async (item: any) => {
     try {
-      await mainApi.post(`/api/applications`, item);
+      await mainApi.post(`${env_main_api}/applications`, item);
       Notification("Job Applyed successfully!", "success");
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {

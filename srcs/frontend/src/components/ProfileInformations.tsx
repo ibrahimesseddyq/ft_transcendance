@@ -58,7 +58,8 @@ export function ProfileInformations() {
   const setProfile = useAuthStore((state) => state.setProfile);
   const profile = useAuthStore((state) => state.profile);
   const user = useAuthStore((state) => state.user);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const initialAvatar = user?.avatarUrl ? `${BACKEND_URL}${user.avatarUrl}` : '/icons/placeholder.jpg';
   const [avatarPreview, setAvatarPreview] = useState(initialAvatar);
@@ -108,7 +109,7 @@ export function ProfileInformations() {
       if (data.avatar instanceof File) formData.append("avatar", data.avatar);
       if (data.resumeUrl instanceof File) formData.append("resume", data.resumeUrl);
 
-      const apiPromise = mainApi.post(`/api/profiles/${userId}`, formData);
+      const apiPromise = mainApi.post(`${env_main_api}/profiles/${userId}`, formData);
       
       const animations = [];
       if (data.avatar instanceof File) 
