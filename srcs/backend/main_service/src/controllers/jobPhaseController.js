@@ -2,6 +2,7 @@ import * as jobPhaseService from '../services/jobPhaseService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const createJobPhase = asyncHandler( async (req, res, next) => {
+	console.log("Iam in Job phase");
 	const jobPhase = await jobPhaseService.createJobPhase(req.body);
 	res.status(201)
 	.json({
