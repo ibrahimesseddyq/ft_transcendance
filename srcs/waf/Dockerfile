@@ -13,5 +13,5 @@ RUN npm run build
 FROM owasp/modsecurity-crs:nginx
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
+COPY nginx.conf /etc/nginx/templates/conf.d/default.conf.template
 USER nginx
