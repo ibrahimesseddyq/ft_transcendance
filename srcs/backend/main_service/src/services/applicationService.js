@@ -4,6 +4,7 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
 import {prisma} from '../config/prisma.js'; 
+import { includes } from 'zod';
 
 
 export const submitApplication = async (data) => {
@@ -12,8 +13,7 @@ export const submitApplication = async (data) => {
 		throw new HttpException(400, 'cannot apply to this job');
 	return await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
-			select: {
-				id: true,
+			include: {
 				applicationPhases: true
 			}
 		});

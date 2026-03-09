@@ -48,7 +48,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
         }
 
         try {
-            await quizApi.post(`/api/mcqs`, { ...data, choices, tags });
+            await quizApi.post(`api/quiz/mcqs`, { ...data, choices, tags });
             Notification("Mcq created successfully!", "success");
 
             reset();

@@ -74,7 +74,7 @@ export function Navbar() {
                             key={item.name}
                             to={item.path}
                             className={`group flex items-center transition-all duration-200
-                                ${!isAdminOrRecruiter && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                ${!isAdminOrRecruiter && (item.name === 'Dashboard' || item.name === 'Quiz') ? 'hidden' : ''}
                                 ${isAdminOrRecruiter && item.name === 'Applications' ? 'hidden' : ''}`}
                         >
                             <div className={`

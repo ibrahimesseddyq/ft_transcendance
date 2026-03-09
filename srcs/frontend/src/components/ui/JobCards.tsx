@@ -17,11 +17,12 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      await mainApi.delete(`/api/jobs/${jobId}`);
+      await mainApi.delete(`${env_main_api}/jobs/${jobId}`);
       setJobsArray(jobsArray.filter(job => job.id !== jobId));
       Notification("Job Deleted", "success");
     } catch (error) {
@@ -31,7 +32,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
 
   const handleGetPhases = async (jobId: string) => {
     try {
-      const res = await mainApi.post('/api/applications', { jobId });
+      const res = await mainApi.post(`${env_main_api}/applications`, { jobId });
       const application = res.data?.data || res.data;
       
       const appId = application?.id;

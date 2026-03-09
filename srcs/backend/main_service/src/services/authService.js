@@ -47,7 +47,7 @@ export const login = async (data) => {
             email: user.email,
             purpose: '2fa-pending'
         });
-
+        console.log(tempToken);
         return {
             require2FA: true,
             tempToken,
@@ -99,7 +99,7 @@ export const  register = async (data) => {
         from: env.USER_EMAIL,
         to: user.email,
         subject: "Email Verification",
-        text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/auth/verify-email/${verificationToken}`
+        text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/main/auth/verify-email/${verificationToken}`
     });
     return {};
 }
@@ -156,7 +156,7 @@ export const resendVerification = async (email) => {
         throw new HttpException(400,"email already verified");
     const verificationToken = await jwtService.generateVerificationToken(user.id, email);
     const subject = "verification email";
-    const message = `${env.FRONTEND_URL}/api/auth/verify-email/${verificationToken}`;
+    const message = `${env.FRONTEND_URL}/api/main/auth/verify-email/${verificationToken}`;
     await sendMail({
         from : env.USER_EMAIL,
         to : user.email,
