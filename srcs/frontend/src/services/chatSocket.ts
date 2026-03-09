@@ -90,6 +90,10 @@ class ChatSocketService {
     });
 
     // Notification events
+    this.socket.on('notification:new', (data: any) => {
+      this.emit('onNotificationNew', data);
+    });
+
     this.socket.on('notification:message', (data: any) => {
       this.emit('onNotification', data);
     });
