@@ -23,7 +23,7 @@ spec:
               protocol: TCP
           env:
             - name: VITE_API_URL # to check
-              value: "http://gateway:8081"
+              value: "http://gateway:8081" #put it in env token
 ---
 apiVersion: v1
 kind: Service
