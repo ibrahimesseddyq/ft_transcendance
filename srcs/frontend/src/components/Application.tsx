@@ -7,12 +7,13 @@ export function Application() {
     const { jobId } = useParams(); 
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     useEffect(() => {
         const fetchApplications = async () => {
             try {
                 setIsLoading(true);
-                const res = await mainApi.get(`/api/jobs/${jobId}/applications`);
+                const res = await mainApi.get(`${env_main_api}/jobs/${jobId}/applications`);
                 setApplications(res.data.data || []);
             } catch (err) {
                 console.error("Failed to fetch applications:", err);

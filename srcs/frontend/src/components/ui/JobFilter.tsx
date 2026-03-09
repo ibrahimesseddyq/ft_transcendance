@@ -10,6 +10,7 @@ interface JobsArrayProps {
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     department: [] as string[],
@@ -37,7 +38,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = await mainApi.get(`/api/jobs?${params.toString()}`);
+      const fetchPromise = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
   
       const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
 

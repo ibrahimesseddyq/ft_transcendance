@@ -11,17 +11,18 @@ interface McqsListProps {
 const McqsList = ({ refreshKey }: McqsListProps) => {
     const [tests, setTests] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
     const fetchUserContent = async () => {
         try {
-            const res = await quizApi.get(`/api/mcqs`);
+            const res = await quizApi.get(`${env_quiz_api}/mcqs`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.log(err);
         } finally {
             setLoading(false);
         }
-    };
+    };env_quiz_api
 
     useEffect(() => {
         fetchUserContent();
@@ -31,7 +32,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
         if (!confirm("Are you sure you want to delete this Mcq?")) return;
         
         try {
-            await quizApi.delete(`/api/mcqs/${id}`);
+            await quizApi.delete(`${env_quiz_api}/mcqs/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Mcq deleted successfully", "success");
         } catch (err) {

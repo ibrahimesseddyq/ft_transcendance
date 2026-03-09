@@ -10,10 +10,11 @@ interface TestsListProps {
 const TestsList = ({ refreshKey }: TestsListProps) => {
     const [tests, setTests] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
     const fetchUserContent = async () => {
         try {
-            const res = await quizApi.get(`/api/tests`);
+            const res = await quizApi.get(`${env_quiz_api}/tests`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.error("Error fetching tests:", err);
@@ -30,7 +31,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
         if (!confirm("Are you sure you want to delete this Test?")) return;
         
         try {
-            await quizApi.delete(`/api/tests/${id}`);
+            await quizApi.delete(`${env_quiz_api}/tests/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Test deleted successfully", "success");
         } catch (err) {
