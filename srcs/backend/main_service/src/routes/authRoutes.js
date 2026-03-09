@@ -30,7 +30,6 @@ router.post('/login',
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),
-        authController.googleCallBack
-);
+        authController.googleCallBack);
 
 export default router;
