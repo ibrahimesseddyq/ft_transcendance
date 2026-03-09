@@ -12,12 +12,17 @@ const router =  express.Router();
 router
   .get('/me',userController.checkAuth)
   .get('/:id', userController.getUserById)
-  .get('/',userController.listUsers)
-  .post('/',ValidateRequest(createUserSchema),userController.createUser)
-  .delete('/:id',userController.deleteUser)
-  .patch('/:id', ValidateRequest(updateUserSchema),userController.updateUser)
-  .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
+  .get('/:id/jobs',userController.getUserJobs)
+  .get('/:id/applications', userController.getUserApplications)
   .get('/avatar/:id',userController.getAvatar)
+  .get('/',userController.listUsers)
+
+  .post('/',ValidateRequest(createUserSchema),userController.createUser)
+  .post('/avatar/:id',upload.single('avatar'),userController.uploadAvatar)
+  .patch('/:id', ValidateRequest(updateUserSchema),userController.updateUser)
+  
+  .delete('/:id',userController.deleteUser)
   .delete('/avatar/:id',userController.deleteAvatar)
+
   
 export default router;
