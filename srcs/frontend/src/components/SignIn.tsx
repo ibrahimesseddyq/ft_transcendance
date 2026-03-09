@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
+import { Loading } from "./Loading";
 import Notification from "@/utils/TostifyNotification"
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
@@ -46,28 +47,29 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
         try {
-            const response = await api.post('/api/auth/login', data);
+            const response = await mainApi.post('/api/auth/login', data);
             const result = response.data;
 
             const tmpToken = result?.tempToken;
             const userId = result?.userId;
 
             console.log ("first Login :", result?.firstLogin);
+            console.log ("tmpToken :", tmpToken);
+            console.log ("userId :", userId);
             setFirstLogin(result?.firstLogin);
 
             if (tmpToken && userId) {
                 console.log('login secsusfull');
                 setTmpToken(tmpToken);
                 setUserId(userId);
-                navigate("/otp", { replace: true });
                 reset();
+                navigate("/otp", { replace: true });
             }
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message || "Login failed";
             Notification(errorMessage, "error");
-        }
+        } 
     };
-
 
     return (
         <div className="w-full h-full flex flex-col items-center gap-4 p-4 overflow-auto no-scrollbar">

@@ -5,7 +5,7 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -27,7 +27,7 @@ export function QRcode() {
             return;
         setLoading(true);
         try {
-            const res = await api.post(`/api/2fa/setup/`, { id: userId });
+            const res = await mainApi.post(`/api/2fa/setup/`, { id: userId });
             const result = res.data;
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
@@ -60,7 +60,7 @@ export function QRcode() {
 
         console.log("Temp token = ", tmpToken);
         try {
-            const res = await api.post(`/${route}`, obj);
+            const res = await mainApi.post(`/${route}`, obj);
 
             if (!res) {
                 setQrVerified(false);
@@ -75,22 +75,16 @@ export function QRcode() {
         
             if (data?.user) {
                 setUser(data.user);
-
-                const hasProfile = await ProfileChecker({ userId, setProfile });
-                console.log("hasProfile: ", hasProfile);
                 setQrVerified(true);
-                let userpath;
-                if (user?.role === 'recruiter' || user?.role === 'admin'){
-                    console.log("Admin or recruiter user")
-                    userpath = '/Dashboard';
+                const currentUser = data.user; 
+                if (currentUser.role === 'recruiter' || currentUser.role === 'admin') {
+                    navigate('/Dashboard', { replace: true });
+                }else{
+                    const hasProfile = await ProfileChecker({ userId, setProfile });
+                    console.log("hasProfile: ", hasProfile);
+                    const targetPath = hasProfile ? '/Jobs' : "/Createprofile";
+                    navigate(targetPath, { replace: true });
                 }
-                else{
-                    console.log("normal user")
-                    userpath = '/Jobs';
-                }
-
-                const targetPath = hasProfile ? userpath : "/Createprofile";
-                navigate(targetPath, { replace: true });
             }
         } catch (error) {
             console.error("Verification failed:", error);
@@ -118,7 +112,6 @@ export function QRcode() {
             await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
         setOtpArray(new Array(6).fill(""));
     };
-
 
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 

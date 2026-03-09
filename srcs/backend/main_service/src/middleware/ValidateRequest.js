@@ -6,6 +6,7 @@ const validateRequest = (schema) => {
         try {
 
             req.body = schema.parse(req.body);
+            console.log("Body is ", req.body);
         }catch (error) {
             if(error instanceof ZodError) {
                 const errorMessages = error.issues.map((issue) => 

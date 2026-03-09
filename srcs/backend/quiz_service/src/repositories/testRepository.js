@@ -15,7 +15,7 @@ export const createTest = async (testData) => {
            isPublished: false,
            ...(testData.type === TestType.QUIZ &&
            {mcqs : {
-            connect : mcqsIds.map(id => ({id}))
+            connect : testData.mcqIds.map(id => ({id}))
            }}),
            ...(testData.type === TestType.CODE && {
                 codeChallenges : {
@@ -30,7 +30,7 @@ export const createTest = async (testData) => {
     })
 }
 
-export const updateData = async (testId, updateData) => {
+export const updateTest = async (testId, updateData) => {
     const { mcqIds, codeChallengeId, ...data } = updateData;
     return await prisma.test.update({
         where: {id : testId},
@@ -38,11 +38,11 @@ export const updateData = async (testId, updateData) => {
             ...data,
             ...(mcqIds && {
                 mcqs :{
-                    set : mcqIds.map(id => ({id}))
+                    set : updateData.mcqIds.map(id => ({id}))
                 }
             }),
             ...(codeChallengeId && {
-                set : [{id : codeChallengeId}]
+                set : [{id : updateData.codeChallengeId}]
             })
         },
         include : {
@@ -68,12 +68,12 @@ export const deleteTest = async (testId) => {
     })
 }
 
-export const gettests = async (skip = 0, take = 10, filters = {}) => {
+export const getTests = async (skip = 0, take = 10, filters = {}) => {
     // here filters and pagination my implemented
     return await prisma.test.findMany({
         where : {},
-        skip,
-        take,
+        skip : Number(skip),
+        take: Number(take),
         include: {
             mcqs: true,
             codeChallenges: true
