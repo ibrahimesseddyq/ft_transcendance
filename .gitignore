@@ -25,6 +25,9 @@ build/
 out/
 generated/
 
+tls.crt
+tls.key
+
 # ── Java / Gradle (eureka, gateway) ─────────────────────────────
 .gradle/
 *.class
