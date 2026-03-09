@@ -3,47 +3,52 @@ import { useState, useEffect } from 'react';
 import ApplicationContent from '@/components/ui/ApplicationContent';
 import { mainApi } from '@/utils/Api';
 
-export function Application(){
-    const params = useParams();
-    const jobId = params.jobId;
+export function Application() {
+    const { jobId } = useParams(); 
     const [applications, setApplications] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try{
+        const fetchApplications = async () => {
+            try {
+                setIsLoading(true);
                 const res = await mainApi.get(`/api/jobs/${jobId}/applications`);
-                const jobApplications = res.data;
-                setApplications(jobApplications.data);
-            }catch(err){
-                console.log(err);
+                setApplications(res.data.data || []);
+            } catch (err) {
+                console.error("Failed to fetch applications:", err);
+            } finally {
+                setIsLoading(false);
             }
         };
     
-        fetchUser();
+        if (jobId) fetchApplications();
     }, [jobId]);
 
-    // const filteredApplications = (status: string) => {
+    console.log(applications);
+    const filteredApplications = (targetStatus: string) => {
+        if (!applications) return [];
+        
+        return applications.filter((app: any) => {
+            const currentStatus = app.status?.toLowerCase() || "";
+            return currentStatus === targetStatus.toLowerCase();
+        });
+    };
 
-    //   const data = applications || [];
-    //   const lowerSearch = searchTerm.toLowerCase();
-    //   return data.filter((item: any) => {
-    //     const firstName = item.user?.firstName?.toLowerCase() ?? "";
-    //     const role = item.user?.role?.toLowerCase() ?? "";
-    //     return firstName.includes(lowerSearch) || role.includes(lowerSearch);
-    //   });
-    // };
-
-  return (
-      <div className="w-full h-full p-4 flex flex-col gap-4 items-center
-            transition-all overflow-y-auto custom-scrollba">
-        {/* {applications?.data}sssssssss */}
-        {/* <h1>{applications?.data}</h1> */}
-        <ApplicationContent Title={"Pending"} applications={applications}/>
-        {/* <ApplicationContent Title={"Reviewed"} Users={filteredApplications("Reviewed")}/>
-        <ApplicationContent Title={"Test Task"} Users={filteredApplications("Test Task")}/>
-        <ApplicationContent Title={"Iterview"} Users={filteredApplications("Iterview")}/>
-        <ApplicationContent Title={"Hired"} Users={filteredApplications ("Hired")}/> */}
+    return (
+        <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
             
-      </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-  );
-};
+            {isLoading ? (
+                <p className="text-slate-500 mt-10">Loading applications...</p>
+            ) : (
+                <>
+                    <ApplicationContent Title="Pending" applications={filteredApplications("Pending")} />
+                    <ApplicationContent Title="Reviewed" applications={filteredApplications("Reviewed")} />
+                    <ApplicationContent Title="Test Task" applications={filteredApplications("Test Task")} />
+                    <ApplicationContent Title="Interview" applications={filteredApplications("Interview")} />
+                    <ApplicationContent Title="Hired" applications={filteredApplications("Hired")} />
+                </>
+            )}
+            
+        </div>
+    );
+}

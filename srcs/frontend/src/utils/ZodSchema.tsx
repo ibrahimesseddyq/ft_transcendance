@@ -159,45 +159,31 @@ const chicesSchema =  z.object({
       .default(false)
 })
 
-// title: z.string()
-//         .min(3, "Title must be at least 3 characters")
-//         .max(255, " title should not be more than 255 char"),
-//     description: z.string().optional(),
-//     durationMinutes: z.number()
-//         .int()
-//         .positive(),
-//     passingScore: z.number()
-//         .int()
-//         .positive()
-//         .min(50, "passing score should not be less than 50")
-//         .max(100, "passing score should not be greater than 100")
-//         .default(60),
-//     category : z.string()
-//         .optional(),
-//     difficulty: z.nativeEnum(Difficulty),
-//     tags: z.array(z.string())
-//         .optional(),
-//     isPublished: z.boolean()
-//         .default(false),
+// id       String @id @default(uuid()) @db.Char(36)
+//   question String @db.Text
+
+//   choices Json
+
+//   points      Int     @default(1)
+//   explanation String? @db.Text
+
+//   // Library metadata
+//   category   String?     @db.VarChar(100) // "JavaScript", "React", "Algorithms"
+//   difficulty Difficulty?
+//   tags       Json? // ["closure", "scope", "functions"]
 export const McqSchema =  z.object({
-    title: z.string()
-      .min(3, "Title must be at least 3 characters")
-      .max(255, " title should not be more than 255 char"),
-    durationMinutes: z.number()
-      .int()
-      .positive(),
     question: z
       .string()
       .min(1, "min Characters should be 10"),
-    choices: z
-      .array(chicesSchema)
-      .length(4, "Must provide exactly 4 choices"),
-    passingScore: z.number()
+    points: z.number()
       .int()
       .positive()
       .min(50, "passing score should not be less than 50")
       .max(100, "passing score should not be greater than 100")
       .default(60),
+    choices: z
+      .array(chicesSchema)
+      .length(4, "Must provide exactly 4 choices"),
     explanation: z
       .string()
       .optional(),
@@ -209,8 +195,5 @@ export const McqSchema =  z.object({
       .default('EASY'),
     tags:  z
       .array(z.string())
-      .optional(),
-    isPublished: z
-      .boolean()
       .optional(),
 })

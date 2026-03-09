@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Logout } from '@/components/LogOut';
 import { useParams } from 'react-router-dom'
-import CareerCard from "@/components/ui/CareerCard"
 import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
-import EducationCard from "@/components/ui/EducationCard"
 import { ToastContainer } from "react-toastify";
 import { mainApi } from '@/utils/Api';
 

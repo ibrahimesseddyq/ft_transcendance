@@ -30,6 +30,7 @@ export const findUserOrCreate = async (profile) => {
 }
 
 export const getUserById = async (userId) => {
+    console.log('UserId : ', userId);
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
@@ -41,11 +42,19 @@ export const getUserByEmail = async (email) => {
 }
 
 export const updateUser = async (userId, updateData) => {
-    return await userRepository.updateUser(userId,filteredData);
+    return await userRepository.updateUser(userId,updateData);
 }
 
 export const deleteUser = async (userId) => {
     await userRepository.deleteUser(userId);
+}
+
+export const getUserApplications = async (userId) => {
+    return await userRepository.getUserApplications(userId);
+}
+
+export const getUserJobs = async (userId) => {
+    return await  userRepository.getUserJobs(userId);
 }
 
 export const getUsers = async (filters) => {

@@ -2,33 +2,21 @@ import { Link } from 'react-router-dom';
 import { Navbar } from "@/components/Navigation";
 import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
-import { useNavigate } from 'react-router-dom';
-import { mainApi } from '@/utils/Api';
-import { Sun, Moon, LogOut } from 'lucide-react';
+import { Logout } from '@/components/LogOut';
+import { Sun, Moon } from 'lucide-react';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
   const profile = useAuthStore((state) => state.profile);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
-  const navigate = useNavigate();
-
-  // All hooks above — no conditionals before this point
 
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  // Fix: guard against undefined avatarUrl
   const avatarUrl = profile?.user?.avatarUrl
     ? `${BACKEND_URL}${profile.user.avatarUrl}`
-    : "/default-avatar.png"; // fallback avatar
+    : "/default-avatar.png";
 
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
-
-  const handleLogout = async () => {
-    await mainApi.post('/api/auth/logout');
-    clearAuth();
-    navigate('/Login', { replace: true });
-  };
 
   const handleTheme = () => {
     const isDark = document.documentElement.classList.contains("dark");
@@ -40,6 +28,8 @@ export function Header() {
       localStorage.theme = "dark";
     }
   };
+
+  const LogoutClassName = 'hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight';
 
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl max-w-screen-2xl items-center px-4 md:px-8 
@@ -61,7 +51,7 @@ export function Header() {
       </Link>
 
       {/* Navigation */}
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         <Navbar />
       </div>
 
@@ -102,19 +92,11 @@ export function Header() {
         )}
 
         {isAdminOrRecruiter && (
-          <button 
-            onClick={handleLogout}
-            className="flex items-center justify-center p-2 rounded-lg bg-red-50 dark:bg-red-900/20 
-              text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 group"
-            title="Logout"
-          >
-            <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight">Logout</span>
-          </button>
+          <Logout className={LogoutClassName} />
         )}
 
         {/* Mobile Menu */}
-        <div className="lg:hidden">
+        <div className="flex md:hidden">
           <Navbar />
         </div>
       </div>

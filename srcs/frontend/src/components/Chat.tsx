@@ -5,6 +5,7 @@ import { RHProfileSidebar } from './chat/RHProfileSidebar';
 import { ChatHeader } from './chat/ChatHeader';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
+import {ToastContainer} from "react-toastify";
 import './chat/chat.css';
 
 export function Chat() {
@@ -111,6 +112,7 @@ export function Chat() {
       style={{ height: 'calc(100vh - 120px)' }}
       onClick={handleLayoutClick}
     >
+      <ToastContainer/>
       {/* ── Sidebar ───────────────────────────────────── */}
       <aside className={sidebarClasses}>
         {isCandidate ? (
