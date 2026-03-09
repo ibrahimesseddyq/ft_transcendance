@@ -1,0 +1,91 @@
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: hirefy
+spec:
+  defaultCertificate:
+    secretName: hirefy-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: redirect-https
+  namespace: hirefy
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+--- 
+
+apiVersion: traefik.io/v1alpha1 
+kind: IngressRoute
+metadata:
+  name: waf-ingress-http
+  namespace: hirefy
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      middleware:
+        - name: redirect-https
+      services:
+        - name: waf
+          port: 8080
+  tls:
+    secretName: hirefy-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: waf-ingress-https
+  namespace: hirefy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: waf
+          port: 8080
+  tls:
+    secretName: hirefy-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adminer-ingress-http
+  namespace: hirefy
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/adminer`)
+      kind: Rule
+      middleware:
+        - name: redirect-https
+      services:
+        - name: adminer
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adminer-ingress-https
+  namespace: hirefy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: PathPrefix(`/adminer`)
+      kind: Rule
+      services:
+        - name: adminer
+          port: 80
+  tls:
+    secretName: hirefy-tls
