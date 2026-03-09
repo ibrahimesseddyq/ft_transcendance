@@ -21,6 +21,7 @@ import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
 import { ApplicationDetails } from '@/components/ApplicationDetails'
+import { UserApplications } from '@/components/UserApplications';
 
 export function Main() {
   const location = useLocation();
@@ -88,6 +89,7 @@ export function Main() {
               {/* CANDIDATE ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
                 <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
+                <Route path="/Applications" element={<UserApplications/>} />
               </Route>
 
               {/* SHARED ROUTES */}
