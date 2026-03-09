@@ -21,6 +21,18 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 const app =  express();
 
+console.log(process.env.FRONTEND_URL)
+console.log(env.FRONTEND_URL)
+app.use(morgan('combined'));
+app.use((req, res, next) => {
+  console.log("Incoming Request:");
+  console.log("Method:", req.method);
+  console.log("URL:", req.originalUrl);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("--------------");
+  next();
+});
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
@@ -41,8 +53,7 @@ app.use(helmet({
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
-app.use(cookieParser());
-app.use(morgan('combined'));
+app.use(cokieParser());
 
 app.use('/uploads',
   verifyToken, (req, res, next) => {
