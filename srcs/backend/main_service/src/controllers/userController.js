@@ -1,12 +1,13 @@
 import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { getSafeUser } from '../utils/excludeSensitive.js';
 
 export const createUser = asyncHandler(async (req,res,next) => {
     const user = await userService.createUser(req.body);
     res.status(201).json({
         success: true,
         message: 'user created successfully',
-        data: user
+        data: getSafeUser(user)
     })
 })
 
@@ -14,7 +15,7 @@ export const getUserById = asyncHandler(async (req,res,next) => {
     const user = await userService.getUserById(req.params.id);
     res.status(200).json({
         success: true,
-        data : user
+        data : getSafeUser(user)
     })
 })
 
@@ -23,7 +24,7 @@ export const updateUser = asyncHandler(async (req,res,next) => {
     res.status(200).json({
         success:true,
         message:"user update successfully",
-        data:user
+        data: getSafeUser(user)
     })
 })
 
@@ -36,12 +37,12 @@ export const listUsers = asyncHandler(async (req,res,next) => {
     const result = await userService.listUsers({});
     res.status(200).json({
         success : true,
-        data :result
+        data : result.array.forEach(element => getSafeUser(element))
     })
 })
 
 export const deleteAvatar = asyncHandler(async (req, res, next) => {
-    await userService.detletAvatar(req.params.id);
+    await userService.deleteAvatar(req.params.id);
     res.status(204).end();
 })
 
@@ -65,9 +66,8 @@ export const getAvatar = asyncHandler(async (req, res, next) => {
 })
 
 export const checkAuth = asyncHandler(async (req,res,next) => {
-    
-    res.status(200)
-    .json({
+    res.status(200).json({
         success: true,
-    })
+        data: { user: req.user }
+    });
 })

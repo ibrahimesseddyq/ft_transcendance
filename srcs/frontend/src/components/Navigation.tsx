@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { House, Menu, BriefcaseBusiness, Bookmark, BotMessageSquare, MessageCircleMore, BookOpenText, X } from 'lucide-react';
+import { House, Menu, BriefcaseBusiness, Bookmark, BotMessageSquare, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
 import { useAuthStore } from '@/utils/ZuStand';
 
 export const navigation = [
@@ -8,8 +8,8 @@ export const navigation = [
     { name: "Jobs", path: "/Jobs", icon: BriefcaseBusiness },
     { name: "Saved", path: "/Savedjobs", icon: Bookmark },
     { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
-    { name: "Contact", path: "/ContactUs", icon: MessageCircleMore },
-    { name: "About", path: "/About", icon: BookOpenText },
+    { name: "Contact", path: "/chat", icon: MessageCircleMore },
+    { name: "Quiz", path: "/QuizPage", icon: GitPullRequestCreateArrow },
 ];
 
 export function Navbar() {
@@ -19,17 +19,17 @@ export function Navbar() {
 
     return (
         <div className="flex h-16 items-center justify-between w-full sm:w-fit px-4 relative">
-            {/* Mobile Menu Trigger */}
+            {/* Mobile Menu */}
             <button 
                 onClick={() => setIsOpen(true)}
-                className='flex sm:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors'
+                className='flex md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors'
             >
                 <Menu className='h-6 w-6 text-black dark:text-white' />
             </button>
 
             {/* Mobile Navigation */}
             {isOpen && (
-                <div className="fixed inset-0 z-[100] sm:hidden backdrop-blur-md">
+                <div className="fixed inset-0 z-[100] md:hidden flex backdrop-blur-md">
                     <div onClick={() => setIsOpen(false)} 
                         className="fixed inset-0 bg-black/50 backdrop-blur-sm"  />
                     <nav className="fixed top-0 left-0 bottom-0 w-64 h-screen 
@@ -48,7 +48,7 @@ export function Navbar() {
                                 to={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-4 p-3 rounded-xl font-bold transition-all
-                                    ${user?.role === "candidate" && item.name === 'Dashboard' ? 'hidden' : ''}
+                                    ${user?.role === "candidate" && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
                                     ${location.pathname.startsWith(item.path) 
                                         ? 'bg-[#00adef] text-white' 
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
@@ -62,7 +62,7 @@ export function Navbar() {
             )}
 
             {/* Desktop Navigation */}
-            <nav className="hidden sm:flex justify-center items-center gap-1">
+            <nav className="hidden md:flex justify-center items-center gap-1">
                 {navigation.map((item) => {
                     const Icon = item.icon;
                     const isCurrent = location.pathname === item.path;
@@ -75,7 +75,6 @@ export function Navbar() {
                         >
                             <div className={`
                                 flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300
-                                /* Text color flips between black and white based on theme */
                                 text-black dark:text-white 
                                 ${isCurrent 
                                     ? 'bg-[#45a8c9] text-white shadow-sm' 
@@ -83,7 +82,7 @@ export function Navbar() {
                                 }
                             `}>
                                 <Icon className={`h-5 w-5 ${isCurrent ? 'animate-pulse' : ''}`} />
-                                <span className='hidden lg:block text-xs font-bold tracking-wide uppercase'>
+                                <span className='hidden xl:block text-xs font-bold tracking-wide uppercase'>
                                     {item.name}
                                 </span>
                             </div>

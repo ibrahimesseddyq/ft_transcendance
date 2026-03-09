@@ -24,11 +24,13 @@ export const findUserOrCreate = async (profile) => {
         passwordHash,
         avatarUrl: profile.photos?.[0]?.value || null,
         role: 'candidate',
-        isVerified: true
+        isVerified: true,
+        firstLogin: true
     });
 }
 
 export const getUserById = async (userId) => {
+    console.log('UserId : ', userId);
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');
@@ -40,17 +42,7 @@ export const getUserByEmail = async (email) => {
 }
 
 export const updateUser = async (userId, updateData) => {
-    await getUserById(userId);
-    const allowedFields = ['twoFAEnabled', 'twoFASecret','twoFATempSecret', 'firstName', 'lastName', 'phone', 'avatarUrl','refreshToken', "isVerified", "firstLogin"];
-    const filteredData = {};
-    
-    allowedFields.forEach(field => {
-        if (updateData[field] !== undefined)
-            filteredData[field] = updateData[field];
-    })
-    if(Object.keys(filteredData).length === 0)
-        throw new HttpException(400,'No valid fields to update');
-    return await userRepository.updateUser(userId,filteredData);
+    return await userRepository.updateUser(userId,updateData);
 }
 
 export const deleteUser = async (userId) => {
@@ -74,7 +66,7 @@ export const uploadAvatar = async (userId, file) => {
 }
 
 
-export const detletAvatar =  async (userId) => {
+export const deleteAvatar =  async (userId) => {
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, "user not found");

@@ -1,49 +1,69 @@
-import { useState } from 'react'
-import { CopyCheck, Ellipsis } from 'lucide-react';
+import { useState, useEffect } from 'react'
+import { quizApi } from '@/utils/Api';
+import TestCard from '@/components/ui/TestCard';
+import Notification from "@/utils/TostifyNotification";
 
-const TestsList = () =>{
-    const [tests] = useState([
-        {id:1, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdghhgdhgdfhjgghftdfghhfhjgghftdfghhg"},
-        {id:2, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgghftdfghhgdhgdfhdfghhgdhgdfhjgghftdfghhg"},
-        {id:3, title:"dhgdfhjgghftdfghhg", description:"dhgdfhjgggghftdfghhgdhftdfghhgdhgdfhjgghftdfghhg"}
-    ]);
+interface TestsListProps {
+    refreshKey?: number;
+}
 
-    const TestCard = ({test}: any)=>{
+const TestsList = ({ refreshKey }: TestsListProps) => {
+    const [tests, setTests] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchUserContent = async () => {
+        try {
+            const res = await quizApi.get(`/api/tests`);
+            setTests(res.data?.data || []);
+        } catch (err) {
+            console.error("Error fetching tests:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserContent();
+    }, [refreshKey]);
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this Test?")) return;
+        
+        try {
+            await quizApi.delete(`/api/tests/${id}`);
+            setTests(prev => prev.filter(test => test.id !== id));
+            Notification("Test deleted successfully", "success");
+        } catch (err) {
+            console.error(err);
+            Notification("Failed to delete Test", "error");
+        }
+    };
+
+    if (loading) {
         return (
-            <div className="bg-white/50 dark:bg-slate-900/50 flex flex-col gap-2 min-h-20 border border-gray-200 dark:border-gray-800 px-4 py-3 rounded-lg mt-3 shadow-sm hover:shadow-md transition-all duration-300">
-                <div className='flex gap-3 items-center'>
-                    {/* Index Badge */}
-                    <div className='h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-sm font-bold text-gray-700 dark:text-gray-200'>
-                        {test.id}
-                    </div>
-                    {/* Title */}
-                    <h1 className="text-black dark:text-white font-medium truncate flex-1">
-                        {test.title}
-                    </h1>
-                </div>
-
-                <div className='flex gap-2 justify-between items-center mt-1'>
-                    <div className='flex gap-2 items-center'>
-                        <CopyCheck className='text-[#00adef] w-5 h-5'/>
-                        <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
-                            Multiple choice
-                        </h1>
-                    </div>
-                    <button className='p-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors'>
-                        <Ellipsis className='w-5 h-5 text-gray-400 dark:text-gray-500'/>
-                    </button>
-                </div>
+            <div className="flex justify-center items-center p-10">
+                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading Tests...</p>
             </div>
         );
     }
 
     return (
-        <div className='h-full w-full'>
-            {tests.map((item:any)=>(
-                <div key={item.id} className='w-full'>
-                    <TestCard test={item}/>
+        <div className='h-full w-full overflow-y-auto no-scrollbar'>
+            {tests.length > 0 ? (
+                <div className="flex flex-col">
+                    {tests.map((item: any) => (
+                        <TestCard 
+                            key={item.id} 
+                            test={item} 
+                            onDelete={handleDelete}
+                        />
+                    ))}
                 </div>
-            ))}
+            ) : (
+                <div className="text-center p-10 border-2 border-dashed rounded-xl border-gray-200 dark:border-gray-800">
+                    <p className='text-gray-400 text-sm'>No Tests Available</p>
+                </div>
+            )}
         </div>
     );
 }

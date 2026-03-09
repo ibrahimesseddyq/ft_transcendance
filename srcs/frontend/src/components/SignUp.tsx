@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
-import api from '@/utils/Api';
+import { mainApi } from '@/utils/Api';
 
 
 const Signup = () => {
@@ -23,7 +23,7 @@ const Signup = () => {
 
     const SignUpSubmit = async (data: any) => {
         try {
-            await api.post('/api/auth/register', data);
+            await mainApi.post('/api/auth/register', data);
             console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
             window.location.href = '/';

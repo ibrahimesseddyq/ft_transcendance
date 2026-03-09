@@ -40,25 +40,6 @@ export const verifyPermissions = (permission) => {
     }
 }
 
-export const optionalAuth = async (req, res, next) => {
-    try {
-        const {authorization} = req.headers;
-        if (authorization) {
-            const [type, token] = authorization.split(' ');
-            if (type === "Bearer") {
-                const decoded = jwtService.verifyAccessToken(token);
-                req.user = {
-                    id : decoded.id,
-                    email : decoded.email,
-                    role: decoded.role
-                }
-            }
-        }
-        next();
-    } catch (error) {
-        next();
-    }
-}
 
 export const verifyOwnership = (req, res, next) => {
     if (!req.user)

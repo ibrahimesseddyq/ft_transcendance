@@ -1,0 +1,20 @@
+{
+  "name": "Hirefy App",
+  "short_name": "Hirefy",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0f14",
+  "theme_color": "#5b8fff",
+  "icons": [
+    {
+      "src": "android/192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "android/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
