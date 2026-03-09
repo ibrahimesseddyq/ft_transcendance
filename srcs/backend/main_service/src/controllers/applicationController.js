@@ -29,7 +29,16 @@ export const withdrawApplication = asyncHandler( async (req, res, next) => {
 
 export const rejectApplication = asyncHandler( async (req, res, next) => {
     const id = req.params?.id;
-    await applicationService.rejectApplication(id);
+    const io = req.app.get('io');
+    await applicationService.rejectApplication(id, io);
+    res.status(204)
+    .end();
+})
+
+export const acceptApplication = asyncHandler( async (req, res, next) => {
+    const id = req.params?.id;
+    const io = req.app.get('io');
+    await applicationService.acceptApplication(id, io);
     res.status(204)
     .end();
 })

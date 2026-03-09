@@ -18,10 +18,12 @@ router.get('/:id',
     .patch('/:id/withdraw',
             // verifyToken,
             applicationController.withdrawApplication)
-    .patch('/:id/reject', 
+    .patch('/:id/reject',
             // verifyToken,
             applicationController.rejectApplication)
-    .patch('/:id/advance', 
+    .patch('/:id/accept',
+            applicationController.acceptApplication)
+    .patch('/:id/advance',
             // verifyToken,
             applicationController.advance)
 
