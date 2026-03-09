@@ -111,7 +111,7 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/frontend.yaml
 	kubectl get pods -n hirefy 
 
-kube: kube-build kube-load kube-deploy kube-forward
+kube: kube-build kube-load kube-deploy 
 
 kube-forward:
 	kubectl port-forward -n hirefy svc/gateway 8081:8081 &
