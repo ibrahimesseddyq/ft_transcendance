@@ -35,12 +35,12 @@ dev: clean-dev down-dev
 	sudo npm install -g concurrently
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
-	@echo "Waiting for databases..."
-	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
-	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
-	  echo "Waiting for DBs..."; sleep 2; \
-	done
-	@echo "Databases ready!"
+# 	@echo "Waiting for databases..."
+# 	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
+# 	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
+# 	  echo "Waiting for DBs..."; sleep 2; \
+# 	done
+# 	@echo "Databases ready!"
 	npx concurrently \
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run seed && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
@@ -51,6 +51,9 @@ re: clean up
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 3306/tcp 2>/dev/null; true
+	sudo systemctl stop mariadb 2>/dev/null; true
+	
 
 # ---------- Kubernetes ----------
 kube-build:
@@ -60,6 +63,7 @@ kube-build:
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
 
 	docker build -t eureka:dev      $(ROOT)srcs/backend/eureka
+	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service
@@ -70,7 +74,7 @@ kube-load: kube-build
 	CONTEXT=$$(kubectl config current-context)
 	if echo $$CONTEXT | grep -q "k3d"; then
 		CLUSTER=$$(echo $$CONTEXT | sed 's/k3d-//')
-		k3d image import  eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev -c $$CLUSTER
+		k3d image import  eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev  waf:dev -c $$CLUSTER
 	fi
 
 kube-deploy:
@@ -102,10 +106,15 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/quiz-service.yaml
 	kubectl apply -f srcs/k8s/ai-service.yaml
 	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/waf.yaml
+	kubectl apply -f srcs/k8s/tls-secret.yaml
+	kubectl apply -f srcs/k8s/ingress.yaml
+	kubectl apply -f srcs/k8s/adminer.yaml
+
 	kubectl apply -f srcs/k8s/frontend.yaml
 	kubectl get pods -n hirefy 
 
-kube: kube-build kube-load kube-deploy kube-forward
+kube: kube-build kube-load kube-deploy 
 
 kube-forward:
 	kubectl port-forward -n hirefy svc/gateway 8081:8081 &

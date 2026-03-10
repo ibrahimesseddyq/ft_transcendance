@@ -7,16 +7,17 @@ interface props{
   applicationId: string,
 }
 const UserCard = ({ candidateId, applicationId }: props) => {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     console.log(candidateId)
     useEffect(()=>{
       const fetchUserContent = async () =>{
         try{
-          const res = await mainApi.get(`/api/users/${candidateId}`);
+          const res = await mainApi.get(`${env_main_api}/users/${candidateId}`);
           
           const data = res.data;
           if (data.data){

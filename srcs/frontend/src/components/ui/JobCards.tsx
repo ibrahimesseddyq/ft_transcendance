@@ -17,52 +17,16 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      await mainApi.delete(`/api/jobs/${jobId}`);
+      await mainApi.delete(`${env_main_api}/jobs/${jobId}`);
       setJobsArray(jobsArray.filter(job => job.id !== jobId));
       Notification("Job Deleted", "success");
     } catch (error) {
       Notification("Error Deleting job", "error");
-    }
-  };
-
-  const handleGetPhases = async (jobId: string) => {
-    try {
-      const res = await mainApi.post('/api/applications', { jobId });
-      const application = res.data?.data || res.data;
-      
-      const appId = application?.id;
-      const phases = application?.job?.jobPhases || [];
-      const completedPhases = application?.completedPhases || []; 
-
-      if (!appId || phases.length === 0) {
-        Notification("This job has no assessment phases assigned yet.", "info");
-        return;
-      }
-
-      const sortedPhases = [...phases].sort((a, b) => a.orderIndex - b.orderIndex);
-      const nextPhase = sortedPhases.find(
-        (phase) => !completedPhases.some((cp: any) => cp.phaseId === phase.id)
-      );
-
-      if (!nextPhase) {
-        Notification("You have completed all phases for this application!", "success");
-        return;
-      }
-
-      if (nextPhase.phaseType === 'test' && nextPhase.testId) {
-        console.log(`Navigating to Test: ${nextPhase.name}`);
-        navigate(`/CandidateQuiz/${appId}/${nextPhase.testId}`);
-      } else {
-        Notification(`Next Step: ${nextPhase.name}. Please wait for HR contact.`, "info");
-      }
-
-    } catch (error: any) {
-      const msg = error.response?.data?.message || "Failed to start or resume assessment";
-      Notification(msg, "error");
     }
   };
 
@@ -166,14 +130,6 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
                   Details
                 </button>
 
-               {!isAdminOrRecruiter && (
-                  <button 
-                    onClick={() => handleGetPhases(item.id)}
-                    className="px-4 py-2 bg-[#00adef] text-white text-xs font-bold rounded-xl hover:bg-[#00adef]/80 transition-all active:scale-95 whitespace-nowrap"
-                  >
-                    Take Assessment
-                  </button>
-                )}
                 {isAdminOrRecruiter && (
                   <>
                     <div className="flex-1">

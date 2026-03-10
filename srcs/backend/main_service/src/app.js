@@ -19,6 +19,8 @@ import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
+import  quizRoutes from './routes/quizRoutes.js'
+
 const app =  express();
 
 console.log(process.env.FRONTEND_URL)
@@ -44,7 +46,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence
@@ -53,10 +55,10 @@ app.use(helmet({
 // app.use(bodyParser(express.json));
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
-app.use(cokieParser());
+app.use(cookieParser());
 
 app.use('/uploads',
-  verifyToken, (req, res, next) => {
+  (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
@@ -89,6 +91,10 @@ app.use('/api/main/applications',
 app.use('/api/main/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
+
+app.use('/api/main/quizzes',
+  verifyToken
+,quizRoutes)
 
 app.use('/api/main/chat/conversations',
   verifyToken,
