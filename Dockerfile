@@ -1,12 +1,19 @@
 FROM debian:bookworm-slim
 
 RUN apt update && apt install -y \
-							vim \
-							python3 \
-							python3-requests \
-							python3-uvicorn \
-							python3-fastapi
+	vim \
+	python3 \
+	python3-venv \
+	pip
 
-COPY main.py main.py
+RUN python3 -m venv vflow
 
-ENTRYPOINT ["python3", "main.py"]
+COPY requirements.txt requirements.txt
+
+COPY app/ app/
+
+RUN vflow/bin/pip install -r requirements.txt
+
+WORKDIR /app
+
+ENTRYPOINT ["uvicorn", "main:app"]
