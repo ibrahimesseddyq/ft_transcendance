@@ -1,3 +1,10 @@
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: hirefy
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -136,4 +143,4 @@ spec:
       port: 443
       targetPort: 443
       nodePort: 30443
-## --------------
+
