@@ -11,11 +11,13 @@ export function CandidateQuizPage() {
     const [phases, setPhases] = useState<any[]>([]);
     const [currentTest, setCurrentTest] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
     const loadAssessmentData = async () => {
         try {
             setIsLoading(true);
-            const appRes = await mainApi.get(`/api/applications/${applicationId}`);
+            const appRes = await mainApi.get(`${env_main_api}/applications/${applicationId}`);
             const application = appRes.data.data;
             const allPhases = application.job.jobPhases.sort((a: any, b: any) => a.orderIndex - b.orderIndex);
             setPhases(allPhases);
@@ -28,7 +30,7 @@ export function CandidateQuizPage() {
                 return;
             }
             if (currentPhase.phaseType === 'test' && currentPhase.testId) {
-                const testRes = await quizApi.get(`/api/tests/${currentPhase.testId}`);
+                const testRes = await quizApi.get(`${env_quiz_api}/tests/${currentPhase.testId}`);
                 setCurrentTest({
                     ...testRes.data,
                     phaseId: currentPhase.id,
@@ -53,7 +55,7 @@ export function CandidateQuizPage() {
 
     const handleTestComplete = async (score: number) => {
         try {
-            const res = await mainApi.post(`/api/applications/${applicationId}/submit-test`, {
+            const res = await mainApi.post(`/api/main/applications/${applicationId}/submit-test`, {
                 score: score,
                 phaseId: currentTest.phaseId
             });
