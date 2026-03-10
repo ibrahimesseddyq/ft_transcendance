@@ -96,13 +96,15 @@ metadata:
   name: traefik
   namespace: hirefy
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: traefik
   ports:
     - name: web
       port: 80
       targetPort: 80
+      nodePort: 30080
     - name: websecure
       port: 443
       targetPort: 443
+      nodePort: 30443
