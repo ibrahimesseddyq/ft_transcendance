@@ -1,4 +1,3 @@
-// import { useState, useEffect } from 'react';
 import { OAuthCallback }from '@/components/OAuthCallback';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
@@ -20,6 +19,9 @@ import { Chat } from '@/components/Chat'
 import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
+import { ApplicationDetails } from '@/components/ApplicationDetails'
+import { UserApplications } from '@/components/UserApplications';
+import { UserPhase } from '@/components/UserPhase'
 
 export function Main() {
   const location = useLocation();
@@ -69,13 +71,14 @@ export function Main() {
           <Header />
         </div>
 
-        <div className="flex flex-1 w-full max-w-screen-2xl mx-auto overflow-hidden">
+        <div className="flex flex-1 w-full max-w-screen-2xl  overflow-hidden mx-auto">
           <main className="w-full">
             <Routes>
               {/* STAFF ROUTES (Admin & Recruiter) */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
                 <Route path="/Dashboard" element={<Dashboard />} />
                 <Route path="/AppAllCards" element={<AppAllCards />} />
+                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/QuizPage" element={<QuizPage />} />
               </Route>
 
@@ -83,14 +86,20 @@ export function Main() {
 
 
               {/* CANDIDATE ROUTES */}
+              <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
+                <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
+                <Route path="/Applications" element={<UserApplications/>} />
+                <Route path="/UserPhase/:phaseId" element={<UserPhase/>} />
+              </Route>
+
+              {/* SHARED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
                 <Route path="/Jobdescription" element={<JobDescription />} />
-                <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/CandidateQuiz" element={<CandidateQuizPage/>} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
+                <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
               </Route>
 
               {/* ROOT REDIRECT */}
