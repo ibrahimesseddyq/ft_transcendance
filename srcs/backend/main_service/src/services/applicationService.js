@@ -4,7 +4,6 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
 import {prisma} from '../config/prisma.js'; 
-import { includes } from 'zod';
 
 
 export const submitApplication = async (data) => {
@@ -92,5 +91,5 @@ export const getCurrentPhase = async (applicationId) => {
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
-	return application.applicationPhases.find( phase => phase.id ===  application.currentPhaseId);
+	return await applicationPhaseservice.getApplicaticationPhaseById(application.currentPhaseId);
 }

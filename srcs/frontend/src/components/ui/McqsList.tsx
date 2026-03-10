@@ -22,7 +22,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
         } finally {
             setLoading(false);
         }
-    };env_quiz_api
+    };
 
     useEffect(() => {
         fetchUserContent();

@@ -14,7 +14,6 @@ const Signin = () => {
     const [Icon, setIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
-    // const setTmpToken = useAuthStore((state) => state.setTmpToken);
     const setUserId = useAuthStore((state) => state.setUserId);
     const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
@@ -49,8 +48,6 @@ const Signin = () => {
         try {
             const response = await mainApi.post(`${env_main_api}/auth/login`, data);
             const result = response.data;
-
-            // const tmpToken = result?.tempToken;
             const userId = result?.userId;
 
             console.log ("first Login :", result?.firstLogin);
@@ -58,8 +55,6 @@ const Signin = () => {
             setFirstLogin(result?.firstLogin);
 
             if (userId) {
-                console.log('login secsusfull');
-                // setTmpToken(tmpToken);
                 setUserId(userId);
                 reset();
                 navigate("/otp", { replace: true });
