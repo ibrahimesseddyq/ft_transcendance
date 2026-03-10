@@ -6,7 +6,10 @@ import { mainApi } from '@/utils/Api'
 export function UserPhase(){
     const { phaseId } = useParams(); 
     const navigate = useNavigate();
-    const [userPhase, setUserPhase] = useState([]);
+    const [testId, setTestId] = useState("");
+    const [testData, steTestData] = useState([]);
+    const [candidateId, setCondidateId] = useState("");
+    const [currentphaseId, setCurrentphaseId] = useState("");
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     useEffect(() => {
@@ -15,18 +18,11 @@ export function UserPhase(){
             // setIsLoading(true);
             const res = await mainApi.get(`${env_main_api}/applications/${phaseId}/phase`);
             console.log("userPhase = ", res.data);
-            setUserPhase(res.data);
-            // const appData = appRes.data.data || appRes.data;
-    
-            // if (appData?.candidateId) {
-            //   try {
-            //     const userRes = await mainApi.get(`${env_main_api}/users/${appData.candidateId}`);
-            //     appData.candidate = userRes.data.data || userRes.data;
-            //   } catch (userErr) {
-            //     console.error("Failed to fetch candidate details:", userErr);
-            //   }
-            // }
-            // setDetails(appData);
+            if(res.data && res.data.jobPhase){
+                setTestId(res.data.jobPhase.testId);
+                setCondidateId();
+                setCurrentphaseId();
+            }
     
           } catch (err) {
             console.error("Failed to fetch fetch phase:", err);
@@ -34,12 +30,33 @@ export function UserPhase(){
             // setIsLoading(false);
           }
         };
+        const fetchTest = async () => {
+          try {
+            // setIsLoading(true);
+            const res = await mainApi.get(`${env_main_api}/applications/tests/${testId}/start`);
+            if(res.data){
+                steTestData(res.data);
+            }
     
-        if (phaseId) fetchPhase();
-      }, [phaseId]);
+          } catch (err) {
+            console.error("Failed to fetch fetch phase:", err);
+          } finally {
+            // setIsLoading(false);
+          }
+        };
+        if (phaseId) 
+            fetchPhase();
+        if (testId)
+            fetchTest();
+    }, [phaseId]);
+
     return (
         <div>
-            
+            {/**
+             * testData, candidateId, phaseId 
+             */}
+            {/* <TestTakingArea testData={testData} phaseId={} testId={testId}/> */}
+             <TestTakingArea testId={testId}/>
         </div>
     );
 }
