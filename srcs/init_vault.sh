@@ -80,16 +80,16 @@ vault write auth/kubernetes/role/quiz_service_db \
 
 echo "Storing secrets in vault..."
 vault kv put secret/main_service_db/config \
-  MYSQL_ROOT_PASSWORD="change-me" \
-  MYSQL_DATABASE="hirefy" \
-  MYSQL_USER="hirefy" \
-  MYSQL_PASSWORD="change-me-too"
+  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_DATABASE="hirefy" \
+  MARIADB_USER="hirefy" \
+  MARIADB_PASSWORD="change-me-too"
 
 vault kv put secret/quiz_service_db/config \
-  MYSQL_ROOT_PASSWORD="change-me" \
-  MYSQL_DATABASE="hirefy" \
-  MYSQL_USER="hirefy" \
-  MYSQL_PASSWORD="change-me-too"
+  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_DATABASE="hirefy" \
+  MARIADB_USER="hirefy" \
+  MARIADB_PASSWORD="change-me-too"
 
 vault kv put secret/quiz-service/database \
   DATABASE_URL="mysql://hirefy:change-me-too@quiz_service_db:3306/hirefy"
