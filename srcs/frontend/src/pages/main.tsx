@@ -1,4 +1,3 @@
-// import { useState, useEffect } from 'react';
 import { OAuthCallback }from '@/components/OAuthCallback';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {useLocation } from 'react-router-dom';
@@ -22,6 +21,7 @@ import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
 import { ApplicationDetails } from '@/components/ApplicationDetails'
 import { UserApplications } from '@/components/UserApplications';
+import { UserPhase } from '@/components/UserPhase'
 
 export function Main() {
   const location = useLocation();
@@ -78,7 +78,6 @@ export function Main() {
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
                 <Route path="/Dashboard" element={<Dashboard />} />
                 <Route path="/AppAllCards" element={<AppAllCards />} />
-                <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
                 <Route path="/Application/:jobId" element={<Application />} />
                 <Route path="/QuizPage" element={<QuizPage />} />
               </Route>
@@ -90,6 +89,7 @@ export function Main() {
               <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
                 <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
                 <Route path="/Applications" element={<UserApplications/>} />
+                <Route path="/UserPhase/:phaseId" element={<UserPhase/>} />
               </Route>
 
               {/* SHARED ROUTES */}
@@ -99,6 +99,7 @@ export function Main() {
                 <Route path="/Profile/:postId" element={<Profile />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
+                <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
               </Route>
 
               {/* ROOT REDIRECT */}

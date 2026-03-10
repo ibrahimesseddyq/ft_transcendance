@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import AppCard from './ui/AppCard';
+import AppCard from '@/components/ui/AppCard';
 import { mainApi } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand';
+import { ToastContainer } from "react-toastify";
 
 export function UserApplications() {
     const [applications, setApplications] = useState([]);
@@ -28,18 +29,18 @@ export function UserApplications() {
       fetchUserContent();
     }, [user?.id]);
 
-    console.log(applications);
+    console.log('apps :', applications);
 
     return (
         <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
-            
+            <ToastContainer />
             {isLoading ? (
                 <p className="text-slate-500 mt-10">Loading applications...</p>
             ) : (
                 <>
-                {applications?.map((app) => (
-                    <div className='flex flex-wrap gap-4'>
-                        <AppCard app={app}/>
+                {applications?.map((app: any, index:number) => (
+                    <div className='flex gap-4 w-full max-w-[800px]' >
+                        <AppCard key={index} app={app}/>
                     </div>
                 ))}
                 </>

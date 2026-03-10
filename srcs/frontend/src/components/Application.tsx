@@ -27,8 +27,8 @@ export function Application() {
 
     console.log(applications);
     const filteredApplications = (targetStatus: string) => {
-        if (!applications) return [];
-        
+        if (!applications)
+            return [];
         return applications.filter((app: any) => {
             const currentStatus = app.status?.toLowerCase() || "";
             return currentStatus === targetStatus.toLowerCase();
@@ -42,11 +42,11 @@ export function Application() {
                 <p className="text-slate-500 mt-10">Loading applications...</p>
             ) : (
                 <>
-                    <ApplicationContent Title="Pending" applications={filteredApplications("Pending")} />
-                    <ApplicationContent Title="Reviewed" applications={filteredApplications("Reviewed")} />
-                    <ApplicationContent Title="Test Task" applications={filteredApplications("Test Task")} />
-                    <ApplicationContent Title="Interview" applications={filteredApplications("Interview")} />
-                    <ApplicationContent Title="Hired" applications={filteredApplications("Hired")} />
+                    <ApplicationContent Title="Pending" applications={filteredApplications("pending")} />
+                    <ApplicationContent Title="InProgress" applications={filteredApplications("inProgress")} />
+                    <ApplicationContent Title="Accepted" applications={filteredApplications("accepted")} />
+                    <ApplicationContent Title="Rejected" applications={filteredApplications("rejected")} />
+                    <ApplicationContent Title="Withdrawn" applications={filteredApplications("withdrawn")} />
                 </>
             )}
             
