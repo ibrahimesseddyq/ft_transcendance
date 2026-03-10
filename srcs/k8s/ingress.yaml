@@ -1,3 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: hirefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:v2.10
+          args:
+            - "--api.insecure=true"       # optional dashboard
+            - "--providers.kubernetescrd"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+---
 apiVersion: traefik.io/v1alpha1
 kind: TLSStore
 metadata:
