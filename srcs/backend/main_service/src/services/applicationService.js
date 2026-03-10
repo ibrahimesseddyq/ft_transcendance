@@ -12,8 +12,7 @@ export const submitApplication = async (data) => {
 		throw new HttpException(400, 'cannot apply to this job');
 	return await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
-			select: {
-				id: true,
+			include: {
 				applicationPhases: true
 			}
 		});
@@ -92,5 +91,5 @@ export const getCurrentPhase = async (applicationId) => {
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
-	return application.applicationPhases.find( phase => phase.id ===  application.currentPhaseId);
+	return await applicationPhaseservice.getApplicaticationPhaseById(application.currentPhaseId);
 }

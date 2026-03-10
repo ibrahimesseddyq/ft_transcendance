@@ -1,3 +1,4 @@
+import { success } from 'zod';
 import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { getSafeUser } from '../utils/excludeSensitive.js';
@@ -23,8 +24,24 @@ export const updateUser = asyncHandler(async (req,res,next) => {
     const user = await userService.updateUser(req.params.id,req.body);
     res.status(200).json({
         success:true,
-        message:"user update successfully",
         data: getSafeUser(user)
+    })
+})
+export const getUserApplications = asyncHandler(async (req,res,next) => {
+    const applications = await userService.getUserApplications(req.params.id);
+    res.status(200)
+    .json({
+        success : true,
+        data : applications,
+    })
+})
+
+export const getUserJobs = asyncHandler(async (req,res,next) => {
+    const jobs = await userService.getUserJobs(req.params.id);
+    res.status(200)
+    .json({
+        success: true,
+        data: jobs
     })
 })
 

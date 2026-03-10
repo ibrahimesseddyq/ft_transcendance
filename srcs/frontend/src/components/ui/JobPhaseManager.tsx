@@ -39,13 +39,15 @@ export function JobPhaseManager({ jobId }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(defaultForm);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+  const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const [phasesRes, testsRes] = await Promise.all([
-        mainApi.get(`/api/jobPhases/${jobId}/phase`),
-        quizApi.get('/api/tests')
+        mainApi.get(`${env_main_api}/jobPhases/${jobId}/phase`),
+        quizApi.get(`${env_quiz_api}/tests`)
       ]);
       
       const pData = phasesRes.data?.data ?? phasesRes.data;
@@ -54,7 +56,7 @@ export function JobPhaseManager({ jobId }: Props) {
       setPhases(Array.isArray(pData) ? pData : []);
       setAvailableTests(Array.isArray(tData) ? tData : []);
     } catch {
-      Notification('Failed to load data', 'error');
+      console.log('Failed to load data');
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export function JobPhaseManager({ jobId }: Props) {
   const handleDelete = async (phaseId: string) => {
     if (!confirm('Remove this test phase?')) return;
     try {
-      await mainApi.delete(`/api/jobPhases/${phaseId}`);
+      await mainApi.delete(`${env_main_api}/jobPhases/${phaseId}`);
       setPhases(prev => prev.filter(p => p.id !== phaseId));
       Notification('Phase deleted', 'success');
     } catch {
@@ -93,7 +95,7 @@ export function JobPhaseManager({ jobId }: Props) {
         durationMinutes: form.durationMinutes ? Number(form.durationMinutes) : undefined,
         testId: form.testId,
       };
-      const res = await mainApi.post('/api/jobPhases/', payload);
+      const res = await mainApi.post(`${env_main_api}/jobPhases/`, payload);
       setPhases(prev => [...prev, (res.data?.data ?? res.data)]);
       setForm(defaultForm);
       setShowForm(false);
