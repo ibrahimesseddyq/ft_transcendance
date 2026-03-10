@@ -128,6 +128,7 @@ export function ChatSidebar({
             return (
               <div
                 key={conversation.id}
+                className="conv-item"
                 onClick={() => onSelectConversation(conversation.id)}
                 style={{
                   display: 'flex',
@@ -148,8 +149,9 @@ export function ChatSidebar({
                 }}
               >
                 {/* Avatar */}
-                <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div className="conv-avatar-wrap" style={{ position: 'relative', flexShrink: 0 }}>
                   <div
+                    className="conv-avatar"
                     style={{
                       width: 44,
                       height: 44,
@@ -188,7 +190,7 @@ export function ChatSidebar({
                 </div>
 
                 {/* Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="conv-info" style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                     {name}
                   </div>

@@ -11,6 +11,7 @@ export function JobDescription(){
   const jobItem = location.state?.job || [];
   const SKILLS = jobItem.skills?.split(',');
   const user = useAuthStore((state) => state.user);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
@@ -22,7 +23,7 @@ export function JobDescription(){
 
   const ApplySubmit = async (item: any) => {
     try {
-      await mainApi.post(`/api/applications`, item);
+      await mainApi.post(`${env_main_api}/applications`, item);
       Notification("Job Applyed successfully!", "success");
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {
@@ -109,7 +110,7 @@ export function JobDescription(){
               <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
               Description
             </h2>
-            <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed">
+            <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed break-words">
               {jobItem.description}
             </p>
           </section>
@@ -120,17 +121,17 @@ export function JobDescription(){
               <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
               Requirements
             </h2>
-            <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed">
+            <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed break-words">
               {jobItem.requirements}
             </p>
           </section>
 
           {/* Skills Badges */}
-          {SKILLS.length > 1
+          {SKILLS.length > 0
             ? <div className="flex flex-wrap gap-2">
                 {SKILLS?.map((item: string, index: number) => (
-                  <span key={index} className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 
-                    text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700">
+                  <span key={index} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
+                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
                     {item.trim()}
                   </span>
                 ))}

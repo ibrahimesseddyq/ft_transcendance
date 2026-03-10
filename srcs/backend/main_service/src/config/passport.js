@@ -3,9 +3,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import * as  userService from '../services/userService.js';
 
-// const GoogleStrategy = oauth2.Strategy;
-
-const callbackURL = `http://${env.HOST}:${env.PORT}${env. CALLBACK_URL}`;
+const callbackURL = `http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`;
 
 passport.use(new GoogleStrategy({
         clientID: env.GOOGLE_CLIENT_ID,
@@ -20,14 +18,5 @@ passport.use(new GoogleStrategy({
         }
     })
 );
-
-passport.serializeUser((user, done) =>  {
-    done(null, user.id)
-});
-    
-passport.deserializeUser(async (id, done) => {
-    const user = await userService.getUserById(id);
-    done(null, user);
-});
 
 export default  passport;
