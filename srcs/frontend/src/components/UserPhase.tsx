@@ -20,8 +20,8 @@ export function UserPhase(){
             console.log("userPhase = ", res.data);
             if(res.data && res.data.jobPhase){
                 setTestId(res.data.jobPhase.testId);
-                setCondidateId();
-                setCurrentphaseId();
+                // setCondidateId();
+                setCurrentphaseId(res.data.jobPhase.id);
             }
     
           } catch (err) {
@@ -33,7 +33,7 @@ export function UserPhase(){
         const fetchTest = async () => {
           try {
             // setIsLoading(true);
-            const res = await mainApi.get(`${env_main_api}/applications/tests/${testId}/start`);
+            const res = await mainApi.get(`${env_main_api}/quizzes/tests/${testId}/start`);
             if(res.data){
                 steTestData(res.data);
             }
