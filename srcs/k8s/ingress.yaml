@@ -137,22 +137,3 @@ spec:
       targetPort: 443
       nodePort: 30443
 ## --------------
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: traefik
-  namespace: hirefy
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: traefik-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: traefik
-    namespace: hirefy
