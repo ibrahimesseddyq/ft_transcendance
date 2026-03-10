@@ -35,12 +35,12 @@ dev: clean-dev down-dev
 	sudo npm install -g concurrently
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
-	@echo "Waiting for databases..."
-	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
-	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
-	  echo "Waiting for DBs..."; sleep 2; \
-	done
-	@echo "Databases ready!"
+# 	@echo "Waiting for databases..."
+# 	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
+# 	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
+# 	  echo "Waiting for DBs..."; sleep 2; \
+# 	done
+# 	@echo "Databases ready!"
 	npx concurrently \
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run seed && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
@@ -51,6 +51,9 @@ re: clean up
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
+	sudo fuser -k -HUP 3306/tcp 2>/dev/null; true
+	sudo systemctl stop mariadb 2>/dev/null; true
+	
 
 # ---------- Kubernetes ----------
 kube-build:
