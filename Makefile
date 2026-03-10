@@ -98,9 +98,15 @@ kube-deploy:
 	# 5. Service account (required before any Vault-injected pod)
 	kubectl apply -f srcs/k8s/serviceaccount.yaml
 	# 6. Database layer — wait for it to be ready before apps start
-	kubectl apply -f srcs/k8s/mariadb-pvc.yaml
-	kubectl apply -f srcs/k8s/mariadb.yaml
-	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
+	kubectl apply -f srcs/k8s/main_service_db_pvc.yaml
+	kubectl apply -f srcs/k8s/quiz_service_db_pvc.yaml
+
+	kubectl apply -f srcs/k8s/main_service_db.yaml
+	kubectl apply -f srcs/k8s/quiz_service_db.yaml
+
+	kubectl wait --for=condition=ready pod -l app=main_service_db -n hirefy --timeout=300s
+	kubectl wait --for=condition=ready pod -l app=quiz_service_db -n hirefy --timeout=300s
+
 	# 7. Application services
 	kubectl apply -f srcs/k8s/main-service.yaml
 	kubectl apply -f srcs/k8s/quiz-service.yaml
