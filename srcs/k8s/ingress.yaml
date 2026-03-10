@@ -135,3 +135,38 @@ spec:
       port: 443
       targetPort: 443
       nodePort: 30443
+## --------------
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: traefik-role
+rules:
+  - apiGroups: [""] # core API group
+    resources: ["services", "endpoints", "pods", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["extensions", "networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["traefik.containo.us", "traefik.io"]
+    resources: ["middlewares", "ingressroutes", "ingressroutetcps", "ingressrouteudps", "traefikservices", "tlsoptions", "tlsstores", "serverstransports"]
+    verbs: ["get", "list", "watch"]
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: hirefy
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: traefik-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-role
+subjects:
+  - kind: ServiceAccount
+    name: traefik
+    namespace: hirefy
