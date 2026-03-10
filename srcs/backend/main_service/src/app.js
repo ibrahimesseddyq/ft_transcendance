@@ -46,7 +46,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence
@@ -58,7 +58,7 @@ app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cookieParser());
 
 app.use('/uploads',
-  verifyToken, (req, res, next) => {
+  (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));

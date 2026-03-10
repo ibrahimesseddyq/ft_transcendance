@@ -13,7 +13,7 @@ router.post('/login',
     .post('/register',
         validateRequest(registerUserSchema),
         authController.register)
-    .post('/refresh',
+    .get('/refresh',
         authController.refresh)
     .post('/logout',
         authController.logout)
