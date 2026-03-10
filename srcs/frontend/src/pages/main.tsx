@@ -26,8 +26,8 @@ import { UserPhase } from '@/components/UserPhase'
 export function Main() {
   const location = useLocation();
   const { user, profile, qrVerified } = useAuthStore();
-  const hasProfile = !!profile;
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
+  const hasProfile = !!profile;
   
   const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
