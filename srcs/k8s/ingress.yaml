@@ -89,3 +89,20 @@ spec:
           port: 80
   tls:
     secretName: hirefy-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+  namespace: hirefy
+spec:
+  type: LoadBalancer
+  selector:
+    app: traefik
+  ports:
+    - name: web
+      port: 80
+      targetPort: 80
+    - name: websecure
+      port: 443
+      targetPort: 443
