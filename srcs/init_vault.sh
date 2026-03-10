@@ -36,8 +36,12 @@ vault policy write quiz-service - << 'EOF'
 path "secret/data/quiz-service/*" { capabilities = [ "read", "list" ] }
 EOF
 
-vault policy write mariadb - << 'EOF'
-path "secret/data/mariadb/*" { capabilities = [ "read", "list" ] }
+vault policy write main_service_db - << 'EOF'
+path "secret/data/main_service_db/*" { capabilities = [ "read", "list" ] }
+EOF
+
+vault policy write quiz_service_db - << 'EOF'
+path "secret/data/quiz_service_db/*" { capabilities = [ "read", "list" ] }
 EOF
 
 vault policy write ai-service - << 'EOF'
@@ -62,21 +66,33 @@ vault write auth/kubernetes/role/ai-service \
     policies=ai-service \
     ttl=24h
 
-vault write auth/kubernetes/role/mariadb \
+vault write auth/kubernetes/role/main_service_db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=mariadb \
+    policies=main_service_db \
+    ttl=24h
+
+vault write auth/kubernetes/role/quiz_service_db \
+    bound_service_account_names=app-service-account \
+    bound_service_account_namespaces=hirefy \
+    policies=quiz_service_db \
     ttl=24h
 
 echo "Storing secrets in vault..."
-vault kv put secret/mariadb/config \
-  MYSQL_ROOT_PASSWORD="change-me" \
-  MYSQL_DATABASE="hirefy" \
-  MYSQL_USER="hirefy" \
-  MYSQL_PASSWORD="change-me-too"
+vault kv put secret/main_service_db/config \
+  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_DATABASE="hirefy" \
+  MARIADB_USER="hirefy" \
+  MARIADB_PASSWORD="change-me-too"
+
+vault kv put secret/quiz_service_db/config \
+  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_DATABASE="hirefy" \
+  MARIADB_USER="hirefy" \
+  MARIADB_PASSWORD="change-me-too"
 
 vault kv put secret/quiz-service/database \
-  DATABASE_URL="mysql://hirefy:change-me-too@mariadb:3306/hirefy"
+  DATABASE_URL="mysql://hirefy:change-me-too@quiz_service_db:3306/hirefy"
 
 vault kv put secret/main-service/oauth \
   GOOGLE_CLIENT_ID="your-id" \
@@ -84,7 +100,7 @@ vault kv put secret/main-service/oauth \
   GOOGLE_CALLBACK_URL="your-url"
 
 vault kv put secret/main-service/database \
-  DATABASE_URL="mysql://hirefy:change-me-too@mariadb:3306/hirefy"
+  DATABASE_URL="mysql://hirefy:change-me-too@main_service_db:3306/hirefy"
 echo "Storing AI service secrets..."
 
 vault kv put secret/ai-service/config \
