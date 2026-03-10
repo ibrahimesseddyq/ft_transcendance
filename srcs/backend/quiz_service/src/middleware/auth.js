@@ -1,6 +1,5 @@
 import {HttpException} from '../utils/httpExceptions.js';
 import * as jwtService from '../services/jwtService.js';
-import { getPermissionsByRole } from '../config/permissions.js';
 
 export const verifyToken = async (req, res, next) => {
     try {
@@ -25,17 +24,6 @@ export const verifyRoles =  (...allowedRoles) => {
             throw new HttpException(403, "Forbidden");
         if(!allowedRoles.includes(req.user.role))
             throw new HttpException(403,"Forbidden");
-        next();
-    }
-}
-
-export const verifyPermissions = (permission) => {
-    return (req, res, next) => {
-        if(!req.user || !req.user.role)
-            next(new HttpException(403,"Forbidden"));
-        const userPermissions = getPermissionsByRole(req.user.role);
-        if (!userPermissions || !userPermissions.includes(permission))
-            next(new HttpException(403, `You are forbidden to ${permission}`));
         next();
     }
 }

@@ -3,9 +3,9 @@ import express from 'express'
 
 const router = express.Router()
 
-router.get('/api/quiz/tests/:testId/start',
+router.get('/tests/:testId/start',
     quizController.startTest)
-    .post('/api/quiz/tests/:testId/submit',
+    .post('/tests/:testId/submit',
     quizController.submitTest);
 
 export default router;

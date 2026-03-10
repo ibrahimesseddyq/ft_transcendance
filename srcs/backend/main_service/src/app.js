@@ -19,7 +19,7 @@ import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
-import notificationRoutes from './routes/notificationRoutes.js'
+import quizRoutes from './routes/quizRoutes.js';
 const app =  express();
 
 console.log(process.env.FRONTEND_URL)
@@ -91,11 +91,15 @@ app.use('/api/main/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
 
-app.use('/api/main/chat/conversations',
+app.use('/api/main/quizzes',
+  verifyToken
+,quizRoutes)
+
+app.use('/api/main/conversations',
   verifyToken,
   conversationRoutes);
 
-app.use('/api/main/chat/messages',
+app.use('/api/main/messages',
   verifyToken,
   messageRoutes);
 
