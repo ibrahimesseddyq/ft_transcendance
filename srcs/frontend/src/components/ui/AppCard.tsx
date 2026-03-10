@@ -8,6 +8,7 @@ interface props{
 }
 const AppCard = ({app}:props) => {
     const navigate = useNavigate();
+    console.log('app : ', app);
 
   const handleSeeApplication = () => {
     //   navigate(`/Profile/${candidateId}`, { 

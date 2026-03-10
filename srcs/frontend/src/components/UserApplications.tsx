@@ -9,40 +9,44 @@ export function UserApplications() {
     const user = useAuthStore((state) => state.user);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
-    useEffect(()=>{
-      const fetchUserContent = async () =>{
-        try{
-            setIsLoading(true);
-            const res = await mainApi.get(`${env_main_api}/users/${user?.id}/applications`);
-
-            const data = res.data;
-            if (data.data){
-              setApplications(data.data.applications || []);
+    useEffect(() => {
+        const fetchUserContent = async () => {
+            if (!user?.id) {
+                setIsLoading(false);
+                return; 
             }
-        } catch(err){
-            console.log(err);
-        } finally{
-            setIsLoading(false);
-        }
-      }
-      fetchUserContent();
-    }, [user?.id]);
 
-    console.log(applications);
+            try {
+                setIsLoading(true);
+                const res = await mainApi.get(`${env_main_api}/users/${user.id}/applications`);
+                
+                if (res.data?.data) {
+                    setApplications(res.data.data.applications || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch applications:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserContent();
+    }, [user?.id, env_main_api]);
 
     return (
-        <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
+        <div className="w-full h-full p-4 flex flex-col items-center transition-all overflow-y-auto custom-scrollbar">
             
             {isLoading ? (
                 <p className="text-slate-500 mt-10">Loading applications...</p>
+            ) : applications.length > 0 ? (
+                <div className='flex flex-wrap gap-4 justify-center w-full'>
+                    {applications.map((app) => (
+        
+                        <AppCard app={app} />
+                    ))}
+                </div>
             ) : (
-                <>
-                {applications?.map((app) => (
-                    <div className='flex flex-wrap gap-4'>
-                        <AppCard app={app}/>
-                    </div>
-                ))}
-                </>
+                <p className="text-slate-500 mt-10">No applications found.</p>
             )}
             
         </div>
