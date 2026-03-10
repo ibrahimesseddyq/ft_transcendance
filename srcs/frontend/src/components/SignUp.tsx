@@ -7,7 +7,8 @@ import { mainApi } from '@/utils/Api';
 
 
 const Signup = () => {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
     const {
         register,
         handleSubmit,
@@ -18,12 +19,12 @@ const Signup = () => {
     });
 
     const GoogleSubmit = async () => {
-        window.location.href = `${BACKEND_URL}/api/auth/google`;
+        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {
         try {
-            await mainApi.post('/api/auth/register', data);
+            await mainApi.post(`${env_main_api}/auth/register`, data);
             console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
             window.location.href = '/';

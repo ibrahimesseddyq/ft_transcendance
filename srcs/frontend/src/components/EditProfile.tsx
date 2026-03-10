@@ -55,7 +55,8 @@ export function EditProfile() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state) => state.setProfile);
   const profile = useAuthStore((state) => state.profile);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const [avatarPreview, setAvatarPreview] = useState(
     profile?.user?.avatarUrl ? BACKEND_URL + profile.user.avatarUrl : "/icons/placeholder.jpg"
@@ -129,7 +130,7 @@ export function EditProfile() {
         animations.push(startProgressAnimation(setResumeProgress));
       }
 
-      const apiPromise = mainApi.patch(`/api/profiles/${userId}`, formData);
+      const apiPromise = mainApi.patch(`${env_main_api}/profiles/${userId}`, formData);
       const [response] = await Promise.all([apiPromise, ...animations]);
 
       setProfile(response.data.data);

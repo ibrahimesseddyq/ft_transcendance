@@ -13,7 +13,7 @@ router.post('/login',
     .post('/register',
         validateRequest(registerUserSchema),
         authController.register)
-    .post('/refresh',
+    .get('/refresh',
         authController.refresh)
     .post('/logout',
         authController.logout)
@@ -30,7 +30,6 @@ router.post('/login',
             failureRedirect: `${env.FRONTEND_URL}/Login`,
             session: false 
         }),
-        authController.googleCallBack
-);
+        authController.googleCallBack);
 
 export default router;
