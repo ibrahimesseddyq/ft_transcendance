@@ -13,14 +13,16 @@ interface props {
 }
 
 const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
+  console.log("jobsArray : ", jobsArray);
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const DeleteJob = async (jobId: string | number) => {
     if (!confirm("Are you sure you want to delete this job?")) 
       return;
     try {
-      await mainApi.delete(`/api/jobs/${jobId}`);
+      await mainApi.delete(`${env_main_api}/jobs/${jobId}`);
       setJobsArray(jobsArray.filter(job => job.id !== jobId));
       Notification("Job Deleted", "success");
     } catch (error) {
@@ -122,7 +124,8 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
               <div className="flex items-center justify-between mt-auto gap-2">
                 <button 
                   onClick={() => handleDetails(item)}
-                  className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold rounded-xl hover:bg-[#3B5998] hover:text-white transition-all active:scale-95 whitespace-nowrap"
+                  className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
+                    rounded-xl hover:bg-[#3B5998] hover:text-white transition-all active:scale-95 whitespace-nowrap"
                 >
                   Details
                 </button>

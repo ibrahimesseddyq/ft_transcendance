@@ -6,14 +6,14 @@ ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 DEV_COMPOSE  := docker compose -f srcs/compose.yml
 PROD_COMPOSE := docker compose -f srcs/compose.yml -f srcs/compose.prod.yml
 
-build:
-	# cd srcs/backend/gateway && ./gradlew clean bootJar
-	true
-
 # ---------- Docker Compose (prod) ----------
 up: build
 	$(PROD_COMPOSE) build --no-cache
 	$(PROD_COMPOSE) up
+build:
+	cd srcs/backend/gateway && ./gradlew clean bootJar
+	true
+
 
 down:
 	$(PROD_COMPOSE) down
@@ -35,15 +35,15 @@ dev: clean-dev down-dev
 	sudo npm install -g concurrently
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
-	@echo "Waiting for databases..."
-	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
-	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
-	  echo "Waiting for DBs..."; sleep 2; \
-	done
-	@echo "Databases ready!"
-	concurrently \
-	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run seed && npm run dev" \
-	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
+# 	@echo "Waiting for databases..."
+# 	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
+# 	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
+# 	  echo "Waiting for DBs..."; sleep 2; \
+# 	done
+# 	@echo "Databases ready!"
+	npx concurrently \
+	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run seed && npm run dev" \
+	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
 re: clean up
 
@@ -78,13 +78,13 @@ kube-load: kube-build
 
 kube-deploy:
 	# 1. Namespace first
-	kubectl apply -f srcs/k8s/base/namespace.yaml
+	kubectl apply -f srcs/k8s/namespace.yaml
 	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm repo update
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
-		-f srcs/k8s/base/vault-values.yaml
+		-f srcs/k8s/vault-values.yaml
 	# 3. Wait for Vault pod to be ready
 	kubectl wait --for=condition=ready pod \
 		-l app.kubernetes.io/name=vault \
@@ -95,17 +95,17 @@ kube-deploy:
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
 	# 5. Service account (required before any Vault-injected pod)
-	kubectl apply -f srcs/k8s/base/serviceaccount.yaml
+	kubectl apply -f srcs/k8s/serviceaccount.yaml
 	# 6. Database layer — wait for it to be ready before apps start
-	kubectl apply -f srcs/k8s/base/mariadb-pvc.yaml
-	kubectl apply -f srcs/k8s/base/mariadb.yaml
+	kubectl apply -f srcs/k8s/mariadb-pvc.yaml
+	kubectl apply -f srcs/k8s/mariadb.yaml
 	kubectl wait --for=condition=ready pod -l app=mariadb -n hirefy --timeout=300s
 	# 7. Application services
-	kubectl apply -f srcs/k8s/base/main-service.yaml
-	kubectl apply -f srcs/k8s/base/quiz-service.yaml
-	kubectl apply -f srcs/k8s/base/ai-service.yaml
-	kubectl apply -f srcs/k8s/base/gateway.yaml
-	kubectl apply -f srcs/k8s/base/frontend.yaml
+	kubectl apply -f srcs/k8s/main-service.yaml
+	kubectl apply -f srcs/k8s/quiz-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/frontend.yaml
 	kubectl get pods -n hirefy 
 
 kube: kube-build kube-load kube-deploy kube-forward

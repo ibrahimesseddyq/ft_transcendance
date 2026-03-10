@@ -12,6 +12,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { userId, setUserId, clearAuth, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(!userId);
   const location = useLocation();
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   console.log("AuthGuard userId :", userId);
   if (!user) {
@@ -26,7 +27,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       }
 
       try {
-        const response = await mainApi.get(`/api/users/${userId}/me`);
+        const response = await mainApi.get(`${env_main_api}/users/${userId}/me`);
         const fetchedUserId = response.data.userId;
         console.log("response.data :", fetchedUserId);
 

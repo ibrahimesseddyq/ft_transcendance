@@ -48,7 +48,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
         }
 
         try {
-            await quizApi.post(`/api/mcqs`, { ...data, choices, tags });
+            await quizApi.post(`api/quiz/mcqs`, { ...data, choices, tags });
             Notification("Mcq created successfully!", "success");
 
             reset();
@@ -254,7 +254,7 @@ const DisplayChoice = ({ Item, onDelete }: any) => (
             'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600'}`}>
             {Item.isCorrect && <Check className='text-white w-4 h-4' />}
         </div>
-        <div className='min-h-11 flex-1 bg-slate-50 dark:bg-slate-800/30 text-black dark:text-gray-200 
+        <div className='min-h-11 flex-1 bg-slate-50 dark:bg-slate-800/30 text-black dark:text-gray-200 truncate
             p-3 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center text-sm'>
             {Item.text}
         </div>

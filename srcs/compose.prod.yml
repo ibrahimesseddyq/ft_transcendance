@@ -1,4 +1,19 @@
 services:
+  waf:
+    # image: owasp/modsecurity-crs:nginx
+    build:
+      context: .
+      dockerfile: ./waf/Dockerfile
+    container_name: waf
+    user: root # TO REMOVE!!!!!!!!!!!!!!!!!!
+    ports:
+      - "8080:8080"
+    depends_on:
+      - gateway
+    environment:
+      - BACKEND=http://gateway:8081
+    networks:
+      - microservices
   main_service:
     build: ./backend/main_service
     container_name: main-service
@@ -38,5 +53,7 @@ services:
     container_name: api-gateway
     ports:
       - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - microservices
