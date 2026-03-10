@@ -11,6 +11,7 @@ export function Profile() {
   const id = params.postId;
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
  
   useEffect(() => {
@@ -18,8 +19,8 @@ export function Profile() {
       try{
 
         const [res1, res2] = await Promise.all([
-          mainApi.get(`/api/users/${id}`),
-          mainApi.get(`/api/profiles/${id}`),
+          mainApi.get(`${env_main_api}/users/${id}`),
+          mainApi.get(`${env_main_api}/profiles/${id}`),
         ]);
 
         const userData = res1.data;

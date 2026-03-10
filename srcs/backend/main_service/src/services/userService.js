@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import {HttpException} from '../utils/httpExceptions.js';
 import crypto from 'crypto';
 import * as fileService from './fileService.js';
-
+import {getSafeUser} from '../utils/excludeSensitive.js'
 export const createUser = async (userData) => {
     const {password, ...data} = userData;
     const passwordHash = await argon2.hash(password);

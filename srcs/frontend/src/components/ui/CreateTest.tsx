@@ -18,6 +18,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
     const [availableMcqs, setAvailableMcqs] = useState<Mcq[]>([]);
     const [selectedMcqIds, setSelectedMcqIds] = useState<string[]>([]); 
     const [loading, setLoading] = useState(true);
+    const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
     const [form, setForm] = useState({
         title: '',
         description: '',
@@ -29,7 +30,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
     });
 
     useEffect(() => {
-        quizApi.get('/api/mcqs')
+        quizApi.get(`${env_quiz_api}/mcqs`)
             .then(res => setAvailableMcqs(res.data?.data || []))
             .catch(() => Notification('Failed to load MCQs', 'error'))
             .finally(() => setLoading(false));
@@ -50,7 +51,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
         }
 
         try {
-            await quizApi.post('/api/tests', {
+            await quizApi.post(`${env_quiz_api}/tests`, {
                 ...form,
                 type: 'QUIZ',
                 durationMinutes: Number(form.durationMinutes),

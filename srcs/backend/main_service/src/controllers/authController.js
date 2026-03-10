@@ -14,7 +14,13 @@ const refreshTokenOptions = {
     maxAge:7 * 24 * 60 * 60 * 1000,
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production",
-    path: '/api/auth/refresh'
+    path: '/api/main/auth/refresh'
+}
+const tempTokenOptions = {
+    httpOnly: true,
+    maxAge:7 * 24 * 60 * 60 * 1000,
+    sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
+    secure: env.NODE_ENV === "production",
 }
 
 
@@ -24,10 +30,10 @@ export const login = asyncHandler(async (req, res, next) => {
         if (result.require2FA)
         {
             return res
+            .cookie('tempToken', result.tempToken, tempTokenOptions)
             .status(200).json({
                 message: "2FA required",
                 require2FA: true,
-                tempToken: result.tempToken,
                 userId: result.userId,
                 firstLogin: result.firstLogin
             });
@@ -48,8 +54,12 @@ export const login = asyncHandler(async (req, res, next) => {
 })
 
 export const verify2FA = asyncHandler(async (req, res, next) =>{
-    console.log("body :", req.body);
-    const { tempToken, code } = req.body;
+    console.log("body :", req.cookies);
+    const tempToken = req.cookies.tempToken;
+
+    const {code} = req.body;
+    console.log('code ', code, 'tempToken ', tempToken)
+
     const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
     console.log('accessToken:', accessToken);
     console.log('refreshToken:', refreshToken);
@@ -128,10 +138,15 @@ export const googleCallBack = asyncHandler(async (req, res) => {
         email: req.user.email,
         role: req.user.role
     });
+    const tempToken = jwtService.generateTempToken({
+        id: req.user.id,
+        email: req.user.email,
+        purpose: '2fa-pending'
+    })
     const userId = req.user.id;
     const firstLogin = req.user.firstLogin;
-    console.log("firstLogin :", firstLogin);
     res.cookie('accessToken', tokens.accessToken, accessTokenOptions)
     .cookie('refreshToken',tokens.refreshToken, refreshTokenOptions)
+    .cookie('tempToken',tempToken, tempTokenOptions)
     .redirect(`${env.FRONTEND_URL}/auth/callback?userId=${userId}&firstLogin=${firstLogin}`);
 })
