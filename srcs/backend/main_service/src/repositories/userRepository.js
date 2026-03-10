@@ -1,5 +1,6 @@
 import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
+import { application } from 'express';
 
 export const getUserById = async (userId) => {
     return await prisma.user.findUnique({
@@ -35,6 +36,26 @@ export const deleteUser = async  (userId) => {
     return await prisma.user.delete({
         where : {id : userId}
     })
+}
+
+export const getUserApplications = async (userId) => {
+    return await prisma.user.findUnique({
+        where: {id : userId},
+        include: {
+            applications: true,
+        }
+
+    }) 
+}
+
+export const getUserJobs = async (userId) => {
+    return await prisma.user.findUnique({
+        where: {id : userId},
+        include: {
+            jobs: true,
+        }
+
+    }) 
 }
 
 export const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
