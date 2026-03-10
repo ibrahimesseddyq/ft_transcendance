@@ -66,7 +66,7 @@ export function useChat() {
               ...prev,
               conversations: [conversation],
               currentConversation: conversation,
-              messages: rawMessages.map(normalizeMessage),
+              messages: rawMessages.map(normalizeMessage).reverse(),
             }));
 
             // Join room only after state is settled
@@ -90,7 +90,7 @@ export function useChat() {
               setState((prev) => ({
                 ...prev,
                 currentConversation: saved,
-                messages: rawMessages.map(normalizeMessage),
+                messages: rawMessages.map(normalizeMessage).reverse(),
               }));
               chatSocket.joinConversation(savedId);
               chatSocket.markAsRead(savedId);

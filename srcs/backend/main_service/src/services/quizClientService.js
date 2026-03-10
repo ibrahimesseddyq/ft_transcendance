@@ -7,7 +7,7 @@ export const getTestById = async (testId) => {
 
 export const evaluateTest = async (testId, answers) => {
    const respose = await quizClient.post(
-    '',
+    `/api/quiz/internal/tests/${testId}/evaluate`,
     {answers : answers}
    )
    return  respose.data;
