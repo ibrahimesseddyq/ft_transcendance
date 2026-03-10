@@ -62,7 +62,6 @@ kube-build:
 	@cd $(ROOT)srcs/backend/eureka  && ./gradlew clean bootJar
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
 
-	docker build -t eureka:dev      $(ROOT)srcs/backend/eureka
 	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service
