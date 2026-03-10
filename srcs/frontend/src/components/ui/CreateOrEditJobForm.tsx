@@ -60,10 +60,11 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
   });
 
   const JobSubmit = async (data: JobFormData) => {
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     if (jobItem){
       try {
-        const response = await mainApi.patch(`/api/jobs/${jobItem.id}`, data);
+        const response = await mainApi.patch(`${env_main_api}/jobs/${jobItem.id}`, data);
 
         const result = response.data;
         const savedJob = result.data;
@@ -78,7 +79,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await mainApi.post(`/api/jobs`, data);
+        const response = await mainApi.post(`${env_main_api}/jobs`, data);
 
         const result = await response.data;
         const savedJob = result.data;

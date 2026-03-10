@@ -11,6 +11,7 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
     const questions = testData?.questions || [];
     const currentQuestion = questions[currentStep];
     const totalSteps = questions.length;
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     const handleSelect = (choiceText: string) => {
         setError(null);
@@ -33,7 +34,7 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
         };
 
         try {
-            const response = await mainApi.post(`/api/test`, payload);
+            const response = await mainApi.post(`${env_main_api}/test`, payload);
 
             const result = response.data;
             console.log("Success:", result);
