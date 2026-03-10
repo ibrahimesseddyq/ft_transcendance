@@ -9,6 +9,8 @@ export const startTest = async (data) => {
     if (!applicationPhase)
         throw new HttpException(404, 'application phase does not exists');
     const application =  await applicationService.getApplicaticationById(applicationPhase.applicationId);
+    if (application.status !== 'in_progress')
+        throw new HttpException(400, 'application is not in progress');
     if (application.candidateId != userId)
         throw new HttpException(403, 'you are not a cadidate for this application');
     if (applicationPhase.status != 'pending' && applicationPhase.status != 'in_progress')
