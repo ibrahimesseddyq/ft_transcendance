@@ -22,7 +22,8 @@ export const verifyRoles =  (...allowedRoles) => {
     {
         if(!req.user || !req.user.role)
             throw new HttpException(403, "Forbidden");
-        if(!allowedRoles.includes(req.user.role))
+        const roles = allowedRoles.flat()
+        if(!roles.includes(req.user.role))
             throw new HttpException(403,"Forbidden");
         next();
     }
