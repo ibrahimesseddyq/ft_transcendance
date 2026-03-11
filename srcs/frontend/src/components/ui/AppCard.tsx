@@ -11,13 +11,10 @@ interface props{
 const AppCard = ({app}:props) => {
     const navigate = useNavigate();
     const [job, setJob] = useState([]);
-    const [applicationId, setApplicationId] = useState([]);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
-  console.log("app : ", app);
     const fetchJob = async () =>{
       try{
-        console.log("rrrrrr");
         const res = await mainApi.get(`${env_main_api}/jobs/${app?.jobId}`)
         setJob(res.data.data);
       } catch (err){
