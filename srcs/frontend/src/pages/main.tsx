@@ -89,7 +89,7 @@ export function Main() {
               <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
                 <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
                 <Route path="/Applications" element={<UserApplications/>} />
-                <Route path="/UserPhase/:phaseId" element={<UserPhase/>} />
+                <Route path="/UserPhase/:appId" element={<UserPhase/>} />
               </Route>
 
               {/* SHARED ROUTES */}

@@ -67,7 +67,7 @@ export function Jobs() {
 
       {/* Content Area */}
       {isLoading ? (
-        <div className="flex-1 mx-auto">
+        <div className="flex-1 mx-auto my-auto">
           <Loading />
         </div>
       ) : (
