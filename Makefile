@@ -54,7 +54,8 @@ clear:
 	sudo fuser -k -HUP 3306/tcp 2>/dev/null; true
 	sudo systemctl stop mariadb 2>/dev/null; true
 	
-
+# cluster-create:
+# 	k3d cluster create hirefy -p "80:80@loadbalancer" -p 443:443@loadbalancer"
 # ---------- Kubernetes ----------
 kube-build:
 	echo $(ROOT)
