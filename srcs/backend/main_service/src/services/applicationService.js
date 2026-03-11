@@ -9,6 +9,7 @@ import { createNotification } from './notificationService.js';
 
 export const submitApplication = async (data) => {
 	const job = await jobService.getJobById(data.jobId);
+ console.log(job.status , 'jobphase ' , job.jobPhases);
 	if (!job || !job.jobPhases || job.jobPhases.length === 0 || job.status != 'open')
 		throw new HttpException(400, 'cannot apply to this job');
 	return await prisma.$transaction( async (tx) => {
