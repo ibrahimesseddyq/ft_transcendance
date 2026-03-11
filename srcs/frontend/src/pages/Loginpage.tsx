@@ -23,12 +23,12 @@ export function LoginPage() {
   };
 
   return (
-    <div className="w-full h-full md:max-w-[1500px] mx-auto flex flex-col 
-      md:flex-row gap-8 p-4 overflow-y-auto custom-scrollbar">
+    <div className="w-full  md:max-w-[1500px] mx-auto my-auto flex flex-col 
+      md:flex-row gap-8 p-4 overflow-y-auto custom-scrollbar items-center justify-center">
 
       <ToastContainer />
       <div className="order-first md:order-last w-full max-w-[450px] md:w-[450px] h-full mx-auto">
-        <div className="w-full h-full flex flex-col md:flex-row gap-2 items-center">
+        <div className="w-full h-full max-h-[1200px] flex flex-col md:flex-row gap-2 items-center justify-center">
           
           {/* Sign In Card */}
           <div 
