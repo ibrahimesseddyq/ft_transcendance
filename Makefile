@@ -105,9 +105,11 @@ kube-deploy:
 		-n hirefy --timeout=300s
 	# 4. Seed secrets into Vault
 	echo "Initializing Vault..."
+
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
+	
 	# 5. Service account (required before any Vault-injected pod)
 	kubectl apply -f srcs/k8s/serviceaccount.yaml
 	# 6. Database layer — wait for it to be ready before apps start
