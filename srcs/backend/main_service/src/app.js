@@ -5,6 +5,11 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/ErrorHandler.js';
+import path from 'path';
+import env from './config/env.js';
+import {HttpException} from './utils/httpExceptions.js';
+import {verifyToken} from './middleware/auth.js';
+
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
@@ -12,17 +17,13 @@ import applicationRoutes from './routes/applicationRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import conversationRoutes from './routes/conversationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
-import env from './config/env.js';
-import path from 'path';
-import {HttpException} from './utils/httpExceptions.js';
-import {verifyToken,verifyRoles} from './middleware/auth.js';
-import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
+import  quizRoutes from './routes/quizRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js';
+
 const app =  express();
 
-console.log(process.env.FRONTEND_URL)
-console.log(env.FRONTEND_URL)
 app.use(morgan('combined'));
 app.use((req, res, next) => {
   console.log("Incoming Request:");
@@ -44,7 +45,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL || 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence
@@ -56,7 +57,8 @@ app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cookieParser());
 
 app.use('/uploads',
-  verifyToken, (req, res, next) => {
+  verifyToken,
+  (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
 }, express.static(path.join(import.meta.dirname, '../uploads')));
@@ -89,6 +91,14 @@ app.use('/api/main/applications',
 app.use('/api/main/jobPhases',
   verifyToken
 ,jobPhasesRoutes)
+
+app.use('/api/main/quizzes',
+  verifyToken
+,quizRoutes)
+
+app.use('/api/main/dashboard',
+  // verifyToken,
+  dashboardRoutes);
 
 app.use('/api/main/chat/conversations',
   verifyToken,

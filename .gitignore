@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ── Environment & secrets ──────────────────────────────────────
 .env
 .env.dev
@@ -65,3 +66,6 @@ Thumbs.db
 
 # ── Personal notes ───────────────────────────────────────────────
 notesAndTodos.txt
+=======
+
+>>>>>>> e37e38388320c42a5db1d21396e04a566b4ca0db
