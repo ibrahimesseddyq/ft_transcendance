@@ -8,17 +8,18 @@ export function ApplicationDetails() {
   
   const [details, setDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   useEffect(() => {
     const fetchDetailsAndUser = async () => {
       try {
         setIsLoading(true);
-        const appRes = await mainApi.get(`/api/applications/${id}`);
+        const appRes = await mainApi.get(`${env_main_api}/applications/${id}`);
         const appData = appRes.data.data || appRes.data;
 
         if (appData?.candidateId) {
           try {
-            const userRes = await mainApi.get(`/api/users/${appData.candidateId}`);
+            const userRes = await mainApi.get(`${env_main_api}/users/${appData.candidateId}`);
             appData.candidate = userRes.data.data || userRes.data;
           } catch (userErr) {
             console.error("Failed to fetch candidate details:", userErr);
@@ -39,9 +40,9 @@ export function ApplicationDetails() {
 
   const handleAdvancePhase = async () => {
     try {
-      await mainApi.patch(`/api/applications/${id}/advance`);
+      await mainApi.patch(`${env_main_api}/applications/${id}/advance`);
       alert("Candidate advanced to the next phase!");
-      const res = await mainApi.get(`/api/applications/${id}`);
+      const res = await mainApi.get(`${env_main_api}/applications/${id}`);
       setDetails(res.data.data || res.data);
     } catch (error) {
       alert(error);
@@ -51,7 +52,7 @@ export function ApplicationDetails() {
   const handleRejectCandidate = async () => {
     if (!window.confirm("Are you sure you want to reject this candidate?")) return;
     try {
-      await mainApi.patch(`/api/applications/${id}/reject`);
+      await mainApi.patch(`${env_main_api}/applications/${id}/reject`);
       alert("Candidate has been rejected.");
       navigate(-1);
     } catch (error) {
