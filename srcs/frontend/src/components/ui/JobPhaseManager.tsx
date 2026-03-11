@@ -4,7 +4,8 @@ import { mainApi, quizApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 
 interface JobPhase {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   phaseType: 'test';
   description?: string;
@@ -15,7 +16,8 @@ interface JobPhase {
 }
 
 interface AvailableTest {
-  id: string;
+  id?: string;
+  _id?: string;
   title: string;
 }
 
@@ -32,7 +34,6 @@ const defaultForm = {
   isRequired: true,
 };
 
-// Evaluated once outside the component to prevent unnecessary re-renders
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
@@ -69,13 +70,19 @@ export function JobPhaseManager({ jobId }: Props) {
     if (open) fetchData();
   }, [open]);
 
-  const handleDelete = async (phaseId: string) => {
-    if (!confirm('Remove this test phase?')) return;
+  const handleDelete = async (phaseId: string | undefined) => {
+    if (!phaseId)
+      return Notification('Invalid phase ID', 'error');
+    if (!confirm('Remove this test phase?')) 
+      return;
+
+    setPhases(prev => prev.filter(p => p.id !== phaseId && p._id !== phaseId));
+    
     try {
       await mainApi.delete(`${env_main_api}/jobPhases/${phaseId}`);
-      setPhases(prev => prev.filter(p => p.id !== phaseId));
       Notification('Phase deleted', 'success');
     } catch {
+      fetchData(); 
       Notification('Failed to delete phase', 'error');
     }
   };
@@ -93,12 +100,13 @@ export function JobPhaseManager({ jobId }: Props) {
         name: form.name.trim(),
         phaseType: 'test',
         description: form.description.trim() || undefined,
-        orderIndex: phases.length + 1, // Will always be 1 logically, based on our 1-test rule
+        orderIndex: phases.length + 1,
         isRequired: form.isRequired,
         durationMinutes: form.durationMinutes ? Number(form.durationMinutes) : undefined,
         testId: form.testId,
       };
       const res = await mainApi.post(`${env_main_api}/jobPhases/`, payload);
+      
       setPhases(prev => [...prev, (res.data?.data ?? res.data)]);
       setForm(defaultForm);
       setShowForm(false);
@@ -137,30 +145,34 @@ export function JobPhaseManager({ jobId }: Props) {
             </div>
           ) : (
             <>
-              {/* Render the assigned test if it exists */}
               {phases.length > 0 && (
                 <ul className="flex flex-col gap-1.5 mb-1">
-                  {phases.map((phase) => (
-                    <li key={phase.id} className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 group">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <CheckCircle2 size={12} className="text-[#10B77F] shrink-0" />
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{phase.name}</p>
-                          <p className="text-[10px] text-gray-400 italic">Linked to Quiz ID: {phase.testId?.slice(0, 8)}...</p>
+                  {phases.map((phase) => {
+                    const uniqueId = phase.id || phase._id;
+                    return (
+                      <li key={uniqueId} className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 group">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <CheckCircle2 size={12} className="text-[#10B77F] shrink-0" />
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{phase.name}</p>
+                            <p className="text-[10px] text-gray-400 italic">Linked to Quiz ID: {phase.testId?.slice(0, 8)}...</p>
+                          </div>
                         </div>
-                      </div>
-                      <button 
-                        onClick={() => handleDelete(phase.id)} 
-                        className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    </li>
-                  ))}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(uniqueId);
+                          }} 
+                          className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
 
-              {/* Only show the empty state, form, or add button if NO test is assigned */}
               {phases.length === 0 && (
                 <>
                   {!showForm && (
@@ -174,16 +186,19 @@ export function JobPhaseManager({ jobId }: Props) {
                         required 
                         value={form.testId}
                         onChange={e => {
-                            const selectedTest = availableTests.find(t => t.id === e.target.value);
+                            const selectedTest = availableTests.find(t => (t.id || t._id) === e.target.value);
                             setForm(f => ({ ...f, testId: e.target.value, name: selectedTest?.title || f.name }));
                         }}
                         className="h-8 w-full text-xs px-2 rounded-lg text-black dark:text-white border border-gray-200 
                           dark:border-slate-700 bg-white dark:bg-slate-900 outline-none focus:border-[#10B77F]"
                       >
                         <option value="">-- Select a Test --</option>
-                        {availableTests.map(test => (
-                          <option key={test.id} value={test.id}>{test.title}</option>
-                        ))}
+                        {availableTests.map(test => {
+                          const testUniqueId = test.id || test._id;
+                          return (
+                            <option key={testUniqueId} value={testUniqueId}>{test.title}</option>
+                          )
+                        })}
                       </select>
 
                       <div className="flex gap-2">
