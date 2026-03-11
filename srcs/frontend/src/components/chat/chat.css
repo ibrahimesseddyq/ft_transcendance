@@ -52,6 +52,11 @@
     box-sizing: border-box;
 }
 
+/* ---------- chat input area ---------- */
+.chat-input-area {
+    padding: 16px 40px;
+}
+
 /* ---------- chat main ---------- */
 .chat-main {
     flex: 1;
@@ -128,6 +133,11 @@
     border-radius: 6px;
 }
 
+/* ---------- mobile top bar (hamburger + title, non-candidate) ---------- */
+.mobile-topbar {
+    display: none;
+}
+
 /* ---------- mobile menu toggle (hamburger) ---------- */
 .mobile-menu-toggle {
     display: none;
@@ -184,22 +194,42 @@
     }
 
     /* Hamburger toggle — shown on mobile except when a chat is open */
-    .mobile-menu-toggle {
-        display: block;
-        position: absolute;
-        top: 16px;
-        left: 16px;
-        z-index: 101;
+    .mobile-topbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
         background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 8px;
-        cursor: pointer;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-bottom: 1px solid #e2e8f0;
+        flex-shrink: 0;
+        z-index: 101;
     }
 
-    .chat-layout.chat-open .mobile-menu-toggle {
+    .mobile-topbar-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .chat-layout.chat-open .mobile-topbar {
         display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        color: #1e293b;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-toggle:hover {
+        background: #f1f5f9;
     }
 
     /* normal sidebar inner content goes fluid */
@@ -207,6 +237,25 @@
         width: 100%;
         max-width: 100%;
         min-width: unset;
+    }
+
+    /* Conversation items — tighter on mobile */
+    .conv-item {
+        gap: 10px !important;
+        padding: 10px 6px !important;
+    }
+
+    /* Avatar scales down on small screens */
+    .conv-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 13px !important;
+    }
+
+    /* Keep info text from breaking layout */
+    .conv-info {
+        min-width: 0;
+        overflow: hidden;
     }
 
     /* Messages container padding reduction */
@@ -246,6 +295,11 @@
         width: 200px;
         min-width: 200px;
     }
+    .conv-avatar {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 14px !important;
+    }
 }
 
 /* ============================================================
@@ -271,6 +325,16 @@ html.dark .chat-header-name {
 html.dark .chat-input-area {
     background: #1e293b !important;
     border-top-color: #334155 !important;
+}
+html.dark .mobile-topbar {
+    background: #1e293b !important;
+    border-bottom-color: #334155 !important;
+}
+html.dark .mobile-topbar-title {
+    color: #f1f5f9 !important;
+}
+html.dark .mobile-menu-toggle {
+    color: #f1f5f9 !important;
 }
 html.dark .input-wrapper {
     background: #0f172a !important;

@@ -1,19 +1,22 @@
 import axios, { AxiosInstance } from 'axios';
 import { Conversation, Message, User } from '../types/chat';
 
+const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+
 class ChatAPI {
   private readonly api: AxiosInstance;
   private readonly baseUrl: string;
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    this.baseUrl = import.meta.env.VITE_MAIN_SERVICE_URL;
+    
     
     this.api = axios.create({
       baseURL: this.baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true, // Important: send httpOnly cookies
+      withCredentials: true,
     });
 
     // Response interceptor for error handling
@@ -30,17 +33,17 @@ class ChatAPI {
   }
 
   async getCurrentUser(): Promise<User> {
-    const { data } = await this.api.get('/api/users/me');
+    const { data } = await this.api.get(`${env_main_api}/users/me`);
     return data.data?.user || data.user || data.data || data;
   }
 
   async getConversations(): Promise<Conversation[]> {
-    const { data } = await this.api.get('/chat/conversations');
+    const { data } = await this.api.get(`${env_main_api}/chat/conversations`);
     return Array.isArray(data) ? data : data.data || [];
   }
 
   async getConversation(conversationId: string): Promise<Conversation> {
-    const { data } = await this.api.get(`/chat/conversations/${conversationId}`);
+    const { data } = await this.api.get(`${env_main_api}/chat/conversations/${conversationId}`);
     return data.data || data;
   }
 
@@ -49,7 +52,7 @@ class ChatAPI {
     limit: number = 50,
     before?: string
   ): Promise<Message[]> {
-    let url = `/chat/messages/conversation/${conversationId}?limit=${limit}`;
+    let url = `${env_main_api}/chat/messages/conversation/${conversationId}?limit=${limit}`;
     if (before) {
       url += `&before=${before}`;
     }
@@ -63,7 +66,7 @@ class ChatAPI {
     messageType: 'text' | 'file' = 'text'
   ): Promise<Message> {
     const { data } = await this.api.post(
-      `/chat/messages/conversation/${conversationId}`,
+      `${env_main_api}/chat/messages/conversation/${conversationId}`,
       { content, messageType }
     );
     return data.data || data;
@@ -74,7 +77,7 @@ class ChatAPI {
     formData.append('file', file);
     formData.append('conversationId', conversationId);
 
-    const { data } = await this.api.post('/chat/messages/upload', formData, {
+    const { data } = await this.api.post(`${env_main_api}/chat/messages/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -84,22 +87,22 @@ class ChatAPI {
   }
 
   async getRecruiter(): Promise<User> {
-    const { data } = await this.api.get('/chat/conversations/rh-profile');
+    const { data } = await this.api.get(`${env_main_api}/chat/conversations/rh-profile`);
     return data.data || data;
   }
 
   async createConversation(participantId?: string): Promise<Conversation> {
     const body = participantId ? { participantId } : {};
-    const { data } = await this.api.post('/chat/conversations', body);
+    const { data } = await this.api.post(`${env_main_api}/chat/conversations`, body);
     return data.data || data;
   }
 
   async markConversationAsRead(conversationId: string): Promise<void> {
-    await this.api.patch(`/chat/conversations/${conversationId}/read`);
+    await this.api.patch(`${env_main_api}/chat/conversations/${conversationId}/read`);
   }
 
   async editMessage(messageId: string, content: string): Promise<Message> {
-    const { data } = await this.api.patch(`/chat/messages/${messageId}`, {
+    const { data } = await this.api.patch(`${env_main_api}/chat/messages/${messageId}`, {
       content,
     });
     return data.data || data;
