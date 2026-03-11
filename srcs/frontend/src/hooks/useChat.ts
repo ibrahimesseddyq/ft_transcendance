@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { chatApi } from '../services/chatApi';
 import { chatSocket } from '../services/chatSocket';
 import { Conversation, Message, ChatState } from '../types/chat';
@@ -33,6 +34,7 @@ export function useChat() {
   const [recruiter, setRecruiter] = useState<any>(null);
   const [isLoadingRecruiter, setIsLoadingRecruiter] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasConnectedOnce = useRef(false);
 
   // Initialize chat
   useEffect(() => {
@@ -117,6 +119,7 @@ export function useChat() {
   // These never re-register while the component is mounted so no status events are missed.
   useEffect(() => {
     const handleConnect = () => {
+      hasConnectedOnce.current = true;
       setState((prev) => ({ ...prev, isConnected: true }));
       // Re-request online users list on every (re)connect so state is
       // always fresh without needing a page refresh.
@@ -418,6 +421,7 @@ export function useChat() {
     onlineUsers: state.onlineUsers,
     typingUsers: state.typingUsers,
     isConnected: state.isConnected,
+    hasConnectedOnce: hasConnectedOnce.current,
     isLoading,
     isLoadingMessages,
     recruiter,

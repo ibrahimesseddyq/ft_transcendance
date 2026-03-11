@@ -1,5 +1,6 @@
 import { Bell } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
 import { chatSocket } from '@/services/chatSocket';
 import { mainApi } from '@/utils/Api';
@@ -19,6 +20,7 @@ const TYPE_COLORS: Record<string, string> = {
   accepted: 'text-green-400',
   rejected: 'text-red-400',
   newMessage: 'text-blue-400',
+  applicationReceived: 'text-yellow-400',
 };
 
 export function Notifications() {
@@ -26,6 +28,7 @@ export function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const user = useAuthStore((state) => state.user);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -35,9 +38,9 @@ export function Notifications() {
 
     chatSocket.connect();
 
-    mainApi.get('/api/notifications')
+    mainApi.get('/api/main/notifications')
       .then((res) => {
-        if (res.data?.data) setNotifications(res.data.data);
+        if (res.data?.data) setNotifications(res.data.data.filter((n: Notification) => !n.isRead));
       })
       .catch(() => {});
 
@@ -45,10 +48,20 @@ export function Notifications() {
       setNotifications((prev) => [notification, ...prev]);
     };
 
+    const handleCleared = ({ conversationId }: { conversationId: string }) => {
+      setNotifications((prev) =>
+        prev.filter(
+          (n) => !(n.type === 'newMessage' && n.referenceType === 'conversation' && n.referenceId === conversationId)
+        )
+      );
+    };
+
     chatSocket.on('onNotificationNew', handleNew);
+    chatSocket.on('onNotificationCleared', handleCleared);
 
     return () => {
       chatSocket.off('onNotificationNew', handleNew);
+      chatSocket.off('onNotificationCleared', handleCleared);
     };
   }, [user]);
 
@@ -65,17 +78,15 @@ export function Notifications() {
 
   const markAsRead = async (id: string) => {
     try {
-      await mainApi.patch(`/api/notifications/${id}/read`);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-      );
+      await mainApi.patch(`/api/main/notifications/${id}/read`);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch {}
   };
 
   const markAllAsRead = async () => {
     try {
-      await mainApi.patch('/api/notifications/read-all');
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      await mainApi.patch('/api/main/notifications/read-all');
+      setNotifications([]);
     } catch {}
   };
 
@@ -128,7 +139,14 @@ export function Notifications() {
               notifications.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => !item.isRead && markAsRead(item.id)}
+                  onClick={() => {
+                    if (!item.isRead) markAsRead(item.id);
+                    if (item.type === 'newMessage' && item.referenceId) {
+                      sessionStorage.setItem('chat_conversationId', item.referenceId);
+                      setIsOpen(false);
+                      navigate('/chat');
+                    }
+                  }}
                   className={`flex flex-col gap-1 p-3 cursor-pointer border-b border-gray-800 last:border-0 transition-colors
                     ${item.isRead ? 'hover:bg-[#2A2B35]' : 'bg-[#252730] hover:bg-[#2A2B35]'}`}
                 >
