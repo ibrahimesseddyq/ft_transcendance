@@ -1,4 +1,5 @@
 FROM alpine:3.22
+RUN apk update && apk upgrade 
 
 RUN apk add mariadb mariadb-client && mkdir -p /run/mysqld /var/lib/mysql/ && \
         chown -R mysql:mysql /run/mysqld/ /var/lib/mysql 
