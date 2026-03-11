@@ -12,7 +12,8 @@ export const getApplicaticationById =  asyncHandler(async (req, res, next) => {
 })
 
 export const submitApplication = asyncHandler( async (req, res, next) => {
-    const application = await applicationService.submitApplication(req.body);
+    const io = req.app.get('io');
+    const application = await applicationService.submitApplication(req.body, io);
     res.status(201)
     .json({
         success: true,
