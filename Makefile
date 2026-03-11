@@ -89,7 +89,7 @@ kube-deploy:
 		--create-namespace \
 		--set ports.web.nodePort=30080 \
 		--set ports.websecure.nodePort=30443 \
-		--set service.type=nodePort \
+		--set service.type=NodePort \
 		--set providers.kubernetesIngress.enabled=true \
 		--set ingressClass.enabled=true \
 		--set ingressClass.isDefaultClass=true \
