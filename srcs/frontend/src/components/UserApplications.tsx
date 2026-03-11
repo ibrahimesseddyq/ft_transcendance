@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import AppCard from './ui/AppCard';
+import AppCard from '@/components/ui/AppCard';
 import { mainApi } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand';
+import { ToastContainer } from "react-toastify";
 
 export function UserApplications() {
     const [applications, setApplications] = useState([]);
@@ -32,10 +33,12 @@ export function UserApplications() {
 
         fetchUserContent();
     }, [user?.id, env_main_api]);
+            
+    console.log('apps :', applications);
 
     return (
-        <div className="w-full h-full p-4 flex flex-col items-center transition-all overflow-y-auto custom-scrollbar">
-            
+        <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
+            <ToastContainer />
             {isLoading ? (
                 <p className="text-slate-500 mt-10">Loading applications...</p>
             ) : applications.length > 0 ? (
@@ -46,7 +49,13 @@ export function UserApplications() {
                     ))}
                 </div>
             ) : (
-                <p className="text-slate-500 mt-10">No applications found.</p>
+                <>
+                {applications?.map((app: any, id:number) => (
+                    <div className='flex gap-4 w-full max-w-[800px]' >
+                        <AppCard key={id} app={app}/>
+                    </div>
+                ))}
+                </>
             )}
             
         </div>
