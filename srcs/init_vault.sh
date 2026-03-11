@@ -84,8 +84,8 @@ vault kv put secret/main_service_db/config \
   MARIADB_DATABASE="hirefy" \
   MARIADB_USER="hirefy" \
   MARIADB_PASSWORD="change-me-too"
-
-vault kv put secret/quiz_service_db/config \
+## change those to env!!!!!!!!!!!!!
+vault kv put secret/quiz_service_db/config \ 
   MARIADB_ROOT_PASSWORD="change-me" \
   MARIADB_DATABASE="hirefy" \
   MARIADB_USER="hirefy" \
