@@ -1,146 +1,41 @@
-
-apiVersion: v1
-kind: ServiceAccount
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: traefik
+  name: waf-ingress
   namespace: hirefy
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: traefik
-  namespace: hirefy
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: traefik
-  template:
-    metadata:
-      labels:
-        app: traefik
-    spec:
-      serviceAccountName: traefik
-      containers:
-        - name: traefik
-          image: traefik:v2.10
-          args:
-            - "--api.insecure=true"       # optional dashboard
-            - "--providers.kubernetescrd"
-            - "--entrypoints.web.address=:80"
-            - "--entrypoints.websecure.address=:443"
-          ports:
-            - containerPort: 80
-            - containerPort: 443
----
-apiVersion: traefik.io/v1alpha1
-kind: TLSStore
-metadata:
-  name: default
-  namespace: hirefy
-spec:
-  defaultCertificate:
+  tls:
     secretName: hirefy-tls
-
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-
-metadata:
-  name: redirect-https
-  namespace: hirefy
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
+  rules:
+    - http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: waf
+              port:
+                number: 8080
 --- 
-
-apiVersion: traefik.io/v1alpha1 
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: waf-ingress-http
+  name: adminer-ingress
   namespace: hirefy
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
-  entryPoints:
-    - web
-  routes:
-    - match: PathPrefix(`/`)
-      kind: Rule
-      middlewares:
-        - name: redirect-https
-      services:
-        - name: waf
-          port: 8080
   tls:
-    secretName: hirefy-tls
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: waf-ingress-https
-  namespace: hirefy
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: PathPrefix(`/`)
-      kind: Rule
-      services:
-        - name: waf
-          port: 8080
-  tls:
-    secretName: hirefy-tls
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: adminer-ingress-http
-  namespace: hirefy
-spec:
-  entryPoints:
-    - web
-  routes:
-    - match: PathPrefix(`/adminer`)
-      kind: Rule
-      middlewares:
-        - name: redirect-https
-      services:
-        - name: adminer
-          port: 80
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: adminer-ingress-https
-  namespace: hirefy
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: PathPrefix(`/adminer`)
-      kind: Rule
-      services:
-        - name: adminer
-          port: 80
-  tls:
-    secretName: hirefy-tls
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik
-  namespace: hirefy
-spec:
-  type: NodePort
-  selector:
-    app: traefik
-  ports:
-    - name: web
-      port: 80
-      targetPort: 80
-      nodePort: 30080
-    - name: websecure
-      port: 443
-      targetPort: 443
-      nodePort: 30443
-
+    - secretName: hirefy-tls
+  rules:
+    - http:
+      paths:
+        - path: /adminer
+          pathType: Prefix
+          backend:
+            service:
+              name: adminer
+              port:
+                number: 80
