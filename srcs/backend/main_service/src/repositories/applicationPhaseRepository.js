@@ -18,7 +18,8 @@ export const getApplicationPhaseById = async (applicationPhaseId) => {
     return await prisma.applicationPhase.findUnique({
         where : {id : applicationPhaseId},
         include : {
-           jobPhase : true 
+           jobPhase : true,
+           application: true
         }
     })
 }

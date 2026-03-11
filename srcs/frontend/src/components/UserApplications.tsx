@@ -10,25 +10,30 @@ export function UserApplications() {
     const user = useAuthStore((state) => state.user);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
-    useEffect(()=>{
-      const fetchUserContent = async () =>{
-        try{
-            setIsLoading(true);
-            const res = await mainApi.get(`${env_main_api}/users/${user?.id}/applications`);
-
-            const data = res.data;
-            if (data.data){
-              setApplications(data.data.applications || []);
+    useEffect(() => {
+        const fetchUserContent = async () => {
+            if (!user?.id) {
+                setIsLoading(false);
+                return; 
             }
-        } catch(err){
-            console.log(err);
-        } finally{
-            setIsLoading(false);
-        }
-      }
-      fetchUserContent();
-    }, [user?.id]);
 
+            try {
+                setIsLoading(true);
+                const res = await mainApi.get(`${env_main_api}/users/${user.id}/applications`);
+                
+                if (res.data?.data) {
+                    setApplications(res.data.data.applications || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch applications:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserContent();
+    }, [user?.id, env_main_api]);
+            
     console.log('apps :', applications);
 
     return (
@@ -36,11 +41,18 @@ export function UserApplications() {
             <ToastContainer />
             {isLoading ? (
                 <p className="text-slate-500 mt-10">Loading applications...</p>
+            ) : applications.length > 0 ? (
+                <div className='flex flex-wrap gap-4 justify-center w-full'>
+                    {applications.map((app) => (
+        
+                        <AppCard app={app} />
+                    ))}
+                </div>
             ) : (
                 <>
-                {applications?.map((app: any, index:number) => (
+                {applications?.map((app: any, id:number) => (
                     <div className='flex gap-4 w-full max-w-[800px]' >
-                        <AppCard key={index} app={app}/>
+                        <AppCard key={id} app={app}/>
                     </div>
                 ))}
                 </>
