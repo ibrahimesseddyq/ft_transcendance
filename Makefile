@@ -84,16 +84,6 @@ kube-deploy:
 	helm repo add traefik  https://helm.traefik.io/traefik
 	helm repo update
 
-	helm install traefik traefik/traefik \
-		--namespace hirefy \
-		--create-namespace \
-		--set ports.web.nodePort=30080 \
-		--set ports.websecure.nodePort=30443 \
-		--set service.type=NodePort \
-		--set providers.kubernetesIngress.enabled=true \
-		--set ingressClass.enabled=true \
-		--set ingressClass.isDefaultClass=true \
-
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
 		-f srcs/k8s/vault-values.yaml
