@@ -54,7 +54,8 @@ clear:
 	sudo fuser -k -HUP 3306/tcp 2>/dev/null; true
 	sudo systemctl stop mariadb 2>/dev/null; true
 	
-
+cluster-create:
+	k3d cluster create hirefy -p "80:80@loadbalancer" -p 443:443@loadbalancer"
 # ---------- Kubernetes ----------
 kube-build:
 	echo $(ROOT)
@@ -81,19 +82,24 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/namespace.yaml
 	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
+	helm repo add traefik  https://helm.traefik.io/traefik
 	helm repo update
+
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
 		-f srcs/k8s/vault-values.yaml
+		
 	# 3. Wait for Vault pod to be ready
 	kubectl wait --for=condition=ready pod \
 		-l app.kubernetes.io/name=vault \
 		-n hirefy --timeout=300s
 	# 4. Seed secrets into Vault
 	echo "Initializing Vault..."
+
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
+	
 	# 5. Service account (required before any Vault-injected pod)
 	kubectl apply -f srcs/k8s/serviceaccount.yaml
 	# 6. Database layer — wait for it to be ready before apps start
