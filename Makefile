@@ -81,10 +81,24 @@ kube-deploy:
 	kubectl apply -f srcs/k8s/namespace.yaml
 	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
+	helm repo add traefik  https://helm.traefik.io/traefik
 	helm repo update
+
+	helm install traefik traefik/traefik \
+		--namespace hirefy \
+		--create-namespace \
+		--set ports.web.nodePort=30080 \
+		--set ports.websecure.nodePort=30443 \
+		--set service.type=nodePort \
+		--set providers.kubernetesIngress.enabled=true \
+		--set ingressClass.enabled=true \
+		--set ingressClass.isDefaultClass=true \
+		--set ports.web.redirectTo.port=websecure 
+
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
 		-f srcs/k8s/vault-values.yaml
+		
 	# 3. Wait for Vault pod to be ready
 	kubectl wait --for=condition=ready pod \
 		-l app.kubernetes.io/name=vault \
