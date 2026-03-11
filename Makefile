@@ -93,7 +93,6 @@ kube-deploy:
 		--set providers.kubernetesIngress.enabled=true \
 		--set ingressClass.enabled=true \
 		--set ingressClass.isDefaultClass=true \
-		--set ports.web.redirectTo.port=websecure 
 
 	helm upgrade --install vault hashicorp/vault \
 		-n hirefy --create-namespace \
