@@ -19,7 +19,7 @@ interface InputFieldProps {
   placeholder: string;
   type?: string;
 }
-const inputClass = "h-11 w-full text-sm text-surface-main outline-none px-3 \
+const inputClass = "h-11 w-full text-sm dark:text-surface-main dark:text-white outline-none px-3 \
     border border-[#405673] rounded-md bg-transparent focus:border-accent transition-colors oveflow-auto custom-scrollbar";
 
 const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) => {
