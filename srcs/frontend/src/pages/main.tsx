@@ -34,7 +34,7 @@ export function Main() {
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
     <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] 
-      dark:bg-[#0f172a] md:h-screen md:overflow-hidden pt-4 px-4 transition-colors duration-300">
+      dark:bg-[#0f172a] md:h-screen md:overflow-hidden pt-4 px-4 ">
       {children}
     </main>
   );
@@ -65,7 +65,7 @@ export function Main() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a] 
+      <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a]  
         md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
         <div className="h-20 w-full sticky top-2 z-50">
           <Header />

@@ -24,14 +24,15 @@ export function ApplicationDetails() {
           try {
             const userRes = await mainApi.get(`${env_main_api}/users/${appData.candidateId}`);
             appData.candidate = userRes.data.data || userRes.data;
+            console.log("appData => ", appData);
           } catch (userErr) {
-            console.error("Failed to fetch candidate details:", userErr);
+            console.log("Failed to fetch candidate details:", userErr);
           }
         }
         setDetails(appData);
 
       } catch (err) {
-        console.error("Failed to fetch application details:", err);
+        console.log("Failed to fetch application details:", err);
       } finally {
         setIsLoading(false);
       }

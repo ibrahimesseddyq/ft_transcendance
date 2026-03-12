@@ -36,7 +36,7 @@ export function Jobs() {
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-5 overflow-hidden 
-      p-4 md:p-0 transition-colors duration-300 items-start">
+      p-4 md:p-0  duration-300 items-start">
   
       <ToastContainer />
 
@@ -49,7 +49,7 @@ export function Jobs() {
             <button 
               onClick={() => setIsFormOpen(false)}
               className="absolute top-6 right-6 text-2xl text-gray-600 dark:text-gray-500 
-                hover:text-red-400 dark:hover:text-red-400 transition-colors">
+                hover:text-red-400 dark:hover:text-red-400 ">
               ✕
             </button>
 

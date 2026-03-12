@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { mainApi } from '@/utils/Api';
 import { Timer, ChevronRight, Diamond, Loader2, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -8,6 +9,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [timeLeft, setTimeLeft] = useState(900);
+    const navigate = useNavigate();
 
     const questions = testData?.mcqs || [];
     const currentQuestion = questions[currentStep];
@@ -62,13 +64,13 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
             console.log("This my payload : ", payload);
             const response = await mainApi.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
             console.log("Success:", response.data);
-            // TODO: Add success redirect 
+            navigate('/Applications', { replace: true });
         } catch (err: any) {
             console.error("Submit Error:", err);
             setError("Submission failed. Please check your connection.");
             setIsSubmitting(false);
         }
-    }, [phaseId, candidateId, selectedAnswers, questions, env_main_api, testData.id]);
+    }, [testData?.id, phaseId, candidateId, selectedAnswers, questions, env_main_api]);
 
     useEffect(() => {
         if (timeLeft <= 0 || isSubmitting) return;

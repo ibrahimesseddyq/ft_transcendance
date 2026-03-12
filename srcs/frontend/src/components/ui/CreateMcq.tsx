@@ -103,16 +103,24 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
     return (
         <form 
             onSubmit={handleSubmit(TestSubmit)}
-            className='flex flex-col gap-4 divide-y-2 divide-gray-200 dark:divide-gray-800 p-5 border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden bg-white dark:bg-slate-900 transition-colors duration-300'
+            className='flex flex-col gap-4 divide-y-2 divide-gray-200 dark:divide-gray-800 p-5 
+                border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden bg-white 
+                dark:bg-slate-900 transition-colors duration-300'
         >
             <div className='flex justify-between'>
-                <div className='py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 dark:bg-slate-700/30 w-fit rounded-lg'>
-                    <CopyCheck className='text-black dark:text-white' />
-                    <h1 className='text-sm lg:text-lg font-semibold text-black dark:text-white'>Multiple Choice</h1>
+                <div className='py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 
+                    dark:bg-slate-700/30 w-fit rounded-lg transition-colors duration-300'>
+                    <CopyCheck className='text-black dark:text-white transition-colors duration-300' />
+                    <h1 className='text-sm lg:text-lg font-semibold text-black 
+                        dark:text-white transition-colors duration-300'>
+                        Multiple Choice
+                    </h1>
                 </div>
                 
-                <select {...register("difficulty")} className="py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 
-                    dark:bg-slate-700/30 text-black dark:text-white w-fit rounded-lg outline-none border-none">
+                <select {...register("difficulty")} 
+                    className="py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 
+                    dark:bg-slate-700/30 text-black dark:text-white w-fit rounded-lg 
+                    outline-none border-none transition-colors duration-300">
                     <option value="EASY" className="dark:bg-slate-800">EASY</option>
                     <option value="MEDIUM" className="dark:bg-slate-800">MEDIUM</option>
                     <option value="HARD" className="dark:bg-slate-800">HARD</option>
@@ -128,8 +136,8 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                 <div key={field.name} className='flex flex-col gap-2 pt-5'>
                     <label className='flex gap-1 items-center'>
                         <div className='h-6 w-6 bg-black dark:bg-[#00adef] text-center text-white 
-                            rounded-md flex items-center justify-center text-xs'>?</div>
-                        <h1 className='text-black dark:text-white font-medium capitalize'>
+                            rounded-md flex items-center justify-center text-xs transition-colors duration-300'>?</div>
+                        <h1 className='text-black dark:text-white font-medium capitalize transition-colors duration-300'>
                             {field.label} 
                             <span className='text-red-500'>*</span>
                         </h1>
@@ -139,14 +147,15 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                             {...register(field.name as any)}
                             placeholder={`Enter ${field.label}`}
                             className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
-                                border border-gray-200 dark:border-gray-700 rounded-lg p-4 outline-none min-h-[100px] focus:border-[#00adef]"
+                                border border-gray-200 dark:border-gray-700 rounded-lg p-4 
+                                outline-none min-h-[100px] focus:border-[#00adef] transition-colors duration-300"
                         />
                     ) : (
                         <input 
                             type='text'
                             {...register(field.name as any)}
                             placeholder={`Enter ${field.label}`}
-                            className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white 
+                            className="w-full bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white transition-colors duration-300
                                 border border-gray-200 dark:border-gray-700 rounded-lg p-2 outline-none focus:border-[#00adef]"
                         />
                     )}
@@ -156,7 +165,10 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
 
             {/* Choices */}
             <div className='flex flex-col gap-2 pt-5'>
-                <h1 className='text-black dark:text-white font-medium'>Choices <span className='text-red-500'>* (Need 4)</span></h1>
+                <h1 className='text-black dark:text-white font-medium transition-colors duration-300'>
+                    Choices 
+                    <span className='text-red-500'>* (Need 4)</span>
+                </h1>
                 <div className='flex flex-col gap-4 items-center w-full'>
                     <AddChoice onAdd={handleAddTest} setInputError={setInputError} />
                     {inputError && <p className='text-red-500 text-sm w-full'>{inputError}</p>}
@@ -170,14 +182,14 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
 
             {/* Tags */}
             <div className='flex flex-col gap-2 pt-5'>
-                <h1 className='text-black dark:text-white font-semibold'>Tags</h1>
+                <h1 className='text-black dark:text-white font-semibold transition-colors duration-300'>Tags</h1>
                 <SingleTagInput tags={tags} onAddTag={handleAddTag} />
                 <div className='flex flex-wrap gap-2 mt-3'>
                     {tags.map((tag, index) => (
                         <div key={index} className='flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 
-                            rounded-md border border-slate-200 dark:border-slate-700'>
-                            <span className='text-sm font-medium text-black dark:text-gray-300'>#{tag}</span>
-                            <button type="button" onClick={() => removeTag(tag)} className='text-slate-500 hover:text-red-500 transition-colors'>
+                            rounded-md border border-slate-200 dark:border-slate-700 transition-colors duration-300'>
+                            <span className='text-sm font-medium text-black dark:text-gray-300 transition-colors duration-300'>#{tag}</span>
+                            <button type="button" onClick={() => removeTag(tag)} className='text-slate-500 hover:text-red-500 transition-colors duration-300'>
                                 <Trash2 size={14} />
                             </button>
                         </div>
@@ -199,8 +211,8 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                 
                 <button
                     type='submit'
-                    className="group flex rounded-xl text-white text-lg h-12 items-center bg-[#00adef] 
-                        hover:bg-[#008dbf] px-8 py-2 shadow-lg shadow-[#00adef]/20 transition-all active:scale-95"
+                    className="group flex rounded-xl text-white text-lg h-12 items-center bg-[#00adef] transition-colors duration-300
+                        hover:bg-[#008dbf] px-8 py-2 shadow-lg shadow-[#00adef]/20 active:scale-95"
                 >
                     <div className="flex items-center gap-3">
                         <DiamondPlus className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" /> 
@@ -229,7 +241,7 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
                 value={text} 
                 onChange={(e) => { setText(e.target.value); setInputError(""); }} 
                 placeholder='Add choice here...'
-                className='flex-1 h-12 bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white p-3 
+                className='flex-1 h-12 bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white p-3 transition-colors duration-300
                     border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:border-[#00adef]'
             />
             <button 
@@ -237,7 +249,7 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
                 onClick={() => { if(text){ onAdd(text, checkBox); setText(""); setCheckBox(false); }}} 
                 className='h-12 px-4 flex gap-2 items-center bg-white dark:bg-slate-900 border-2 border-dashed 
                     border-gray-300 dark:border-gray-700 rounded-lg text-black dark:text-white 
-                    hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors'
+                    hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors duration-300'
             >
                 <Plus size={18} className="text-[#00adef]"/>
                 <span className="font-bold text-sm">ADD</span>
@@ -248,19 +260,19 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
 
 const DisplayChoice = ({ Item, onDelete }: any) => (
     <div className='flex gap-2 items-center w-full animate-in slide-in-from-left-2 duration-300'>
-        <div className={`h-6 w-6 flex items-center justify-center rounded-md border 
+        <div className={`h-6 w-6 flex items-center justify-center rounded-md border transition-colors duration-300
             ${Item.isCorrect ? 
             'bg-[#00adef] border-[#00adef]' : 
             'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600'}`}>
             {Item.isCorrect && <Check className='text-white w-4 h-4' />}
         </div>
         <div className='min-h-11 flex-1 bg-slate-50 dark:bg-slate-800/30 text-black dark:text-gray-200 truncate
-            p-3 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center text-sm'>
+            p-3 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center text-sm transition-colors duration-300'>
             {Item.text}
         </div>
         <button type="button" onClick={() => onDelete(Item.id)} 
             className='p-2.5 text-gray-400 hover:text-red-500 bg-slate-100 
-                dark:bg-slate-800 rounded-lg transition-colors'>
+                dark:bg-slate-800 rounded-lg transition-colors duration-300'>
             <Trash2 size={18} />
         </button>
     </div>
@@ -270,12 +282,12 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
     <div className='flex flex-col gap-2'>
         <h1 className="font-semibold text-black dark:text-white">{title}</h1>
         <div className='flex items-center gap-2 py-2 px-4 rounded-lg bg-slate-100/50 
-            dark:bg-slate-800/50 border border-gray-200 dark:border-gray-700'>
+            dark:bg-slate-800/50 border border-gray-200 dark:border-gray-700 transition-colors duration-300'>
             <input
                 type={type} 
                 {...register(name, { valueAsNumber: type === "number" })} 
                 placeholder={placeholder}
-                className='bg-transparent outline-none w-16 text-black dark:text-white font-bold'
+                className='bg-transparent outline-none w-16 text-black dark:text-white font-bold transition-colors duration-300'
             />
             <div className='flex gap-2 border-l border-gray-300 dark:border-gray-600 pl-2 items-center'>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{tag}</p>
