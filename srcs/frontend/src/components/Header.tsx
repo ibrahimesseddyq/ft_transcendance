@@ -19,14 +19,8 @@ export function Header() {
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
   const handleTheme = () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.theme = "light";
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.theme = "dark";
-    }
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.theme = isDark ? "dark" : "light";
   };
 
   const LogoutClassName = 'hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight';
@@ -45,7 +39,8 @@ export function Header() {
           alt="RH Connect" 
           className="w-7 h-7 md:w-8 md:h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
         />
-        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white transition-colors">
+        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white 
+          transition-colors duration-300">
           RH-<span className="text-[#00adef] font-bold">Connect</span>
         </h1>
       </Link>

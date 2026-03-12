@@ -2,6 +2,7 @@ import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
 import { mainApi } from '@/utils/Api';
+import Pagination from '@/components/ui/Pagination'
 import { JobPhaseManager } from "./JobPhaseManager";
 import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
 
@@ -39,7 +40,7 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
   };
   
   return (
-    <div className="flex-1 h-full w-full overflow-auto no-scrollbar p-6 transition-colors duration-300">
+    <div className="relative flex-1 h-full w-full overflow-auto no-scrollbar p-6 transition-colors duration-300">
       <div className="flex flex-wrap gap-6 justify-center">
         {jobsArray.length > 0 ? (
           jobsArray.map((item: any) => (
@@ -159,6 +160,9 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
         ) : (
           <div className="text-center w-full py-10 text-gray-400">No jobs found.</div>
         )}
+      </div>
+      <div className="absolute right-0 bottom-0">
+        <Pagination />
       </div>
     </div>
   );
