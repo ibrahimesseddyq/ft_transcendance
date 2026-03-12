@@ -40,8 +40,8 @@ export function Dashboard() {
             <div 
               key={item.id} 
               className="w-full p-4 m-auto flex flex-col justify-between flex-1 overflow-hidden 
-                         bg-white dark:bg-slate-800 
-                         text-black dark:text-white 
+                         bg-surface-main dark:bg-slate-800 
+                         text-black dark:text-surface-main 
                          border border-gray-200 dark:border-slate-700 
                          hover:border-[#1194b1] dark:hover:border-[#1194b1] 
                          rounded-xl transition-colors duration-200"
@@ -58,7 +58,7 @@ export function Dashboard() {
 
   return (
     <div className="w-full h-full p-2 flex flex-col gap-4 overflow-y-auto custom-scrollbar 
-                    bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+                    bg-gray-50 dark:bg-secondary-darkbg transition-colors duration-300">
       
       <ToastContainer />
 
@@ -68,21 +68,21 @@ export function Dashboard() {
 
       {/* Chart Sections */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="h-[500px] w-full items-center bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700">
+        <div className="h-[500px] w-full items-center bg-surface-main dark:bg-slate-800 rounded-xl border dark:border-slate-700">
           <OverviewStatistics /> 
         </div>
-        <div className="h-[500px] w-full items-center bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700">
+        <div className="h-[500px] w-full items-center bg-surface-main dark:bg-slate-800 rounded-xl border dark:border-slate-700">
           <ActiveJobStatus />
         </div>
       </div>
 
       {/* Activity Sections */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="h-[500px] w-full rounded-xl bg-white dark:bg-slate-800 border dark:border-slate-700 ">
+        <div className="h-[500px] w-full rounded-xl bg-surface-main dark:bg-slate-800 border dark:border-slate-700 ">
           <RecentActivity />
         </div>
         
-        <div className="h-[500px] w-full rounded-xl bg-white dark:bg-slate-800 border dark:border-slate-700">
+        <div className="h-[500px] w-full rounded-xl bg-surface-main dark:bg-slate-800 border dark:border-slate-700">
           <SourceOfHire />
         </div>
       </div>

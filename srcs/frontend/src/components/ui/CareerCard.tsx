@@ -21,7 +21,7 @@ const CareerCard = () =>{
           <div className="space-y-4">
             {career.map((job) => (
               <div key={job.id} className="p-4 bg-[#1C263B] rounded-2xl border border-gray-700">
-                <p className="text-white font-semibold">{job.company}</p>
+                <p className="text-surface-main font-semibold">{job.company}</p>
                 <p className="text-gray-400 text-sm">{job.location}</p>
                 <p className="text-[#5F88B8] text-xs mt-2">{job.start} - {job.end}</p>
               </div>

@@ -88,7 +88,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     }, [isSubmitting, handleSubmit, timeLeft]);
 
     if (!currentQuestion) {
-        return <div className="text-black dark:text-white p-10 text-center">No questions available.</div>;
+        return <div className="text-black dark:text-surface-main p-10 text-center">No questions available.</div>;
     }
 
     return (
@@ -101,7 +101,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                     </div>
                     <div className='h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden'>
                         <div 
-                            className='h-full bg-[#00adef] transition-all duration-500' 
+                            className='h-full bg-primary transition-all duration-500' 
                             style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
                         />
                     </div>
@@ -109,7 +109,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                 
                 <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
                     isTimeRunningOut 
-                        ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 animate-pulse' 
+                        ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-danger-hover border-red-200 dark:border-red-900/50 animate-pulse' 
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                 }`}>
                     <Timer size={18} />
@@ -120,7 +120,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
             <hr className='border-slate-100 dark:border-slate-800' />
 
             {error && (
-                <div className='flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-lg text-sm'>
+                <div className='flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-danger-hover rounded-lg text-sm'>
                     <AlertCircle size={16} />
                     {error}
                 </div>
@@ -128,11 +128,11 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
 
             <div className='py-4'>
                 <div className='flex gap-3 items-center mb-6'>
-                    <span className='bg-black dark:bg-white text-white dark:text-black px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase'>MCQ</span>
+                    <span className='bg-black dark:bg-surface-main text-surface-main dark:text-black px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase'>MCQ</span>
                     <span className='text-slate-400 dark:text-slate-500 text-sm font-medium'>Target: {testData.title}</span>
                 </div>
 
-                <h2 className='text-2xl font-bold text-slate-800 dark:text-white mb-8 leading-snug'>
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-surface-main mb-8 leading-snug'>
                     {currentQuestion.question}
                 </h2>
 
@@ -147,17 +147,17 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                                 disabled={isSubmitting}
                                 className={`group flex items-center justify-between p-5 rounded-xl border-2 transition-all text-left
                                     ${isSelected 
-                                        ? 'border-[#00adef] bg-blue-50/50 dark:bg-blue-950/20' 
-                                        : 'border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 bg-white dark:bg-slate-800/50'}`}
+                                        ? 'border-primary bg-blue-50/50 dark:bg-blue-950/20' 
+                                        : 'border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 bg-surface-main dark:bg-slate-800/50'}`}
                             >
-                                <span className={`font-semibold ${isSelected ? 'text-[#00adef]' : 'text-slate-700 dark:text-slate-200'}`}>
+                                <span className={`font-semibold ${isSelected ? 'text-primary' : 'text-slate-700 dark:text-slate-200'}`}>
                                     {choice.text}
                                 </span>
                                 <div className={`h-6 w-6 rounded-full border-2 transition-all flex items-center justify-center
                                     ${isSelected 
-                                        ? 'border-[#00adef] bg-[#00adef]' 
+                                        ? 'border-primary bg-primary' 
                                         : 'border-slate-200 dark:border-slate-600 group-hover:border-slate-300 dark:group-hover:border-slate-500'}`}>
-                                    {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                                    {isSelected && <div className="w-2 h-2 bg-surface-main rounded-full" />}
                                 </div>
                             </button>
                         );
@@ -174,7 +174,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                 <button 
                     disabled={!selectedAnswers[currentStep] || isSubmitting}
                     onClick={handleNext}
-                    className="flex items-center gap-3 bg-black dark:bg-white text-white dark:text-black 
+                    className="flex items-center gap-3 bg-black dark:bg-surface-main text-surface-main dark:text-black 
                         px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all 
                         disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 
                         disabled:cursor-not-allowed"

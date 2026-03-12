@@ -15,7 +15,6 @@ const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: JobsArrayProps) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
   const limit = 6;
   const [filters, setFilters] = useState({
     department: [] as string[],
@@ -43,7 +42,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      params.append("page", String(page));
+      params.append("page", String(currentPage));
       params.append("limit", String(limit));
 
       const response = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
@@ -51,7 +50,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
       const result =  response.data;
       console.log("all Jobs :", result.data);
       setJobsArray(result.data);
-      setTotalPages(result.data);
+      setTotalPages(result.data.totalPages);
     } catch (error) {
       console.error("Fetch Error:", error);
     }finally{
@@ -103,7 +102,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
 
 
   return (
-    <div className="flex flex-col w-full md:w-64 h-fit md:max-h-[calc(100vh-90px)] bg-[#1e1e1e] text-white p-5 
+    <div className="flex flex-col w-full md:w-64 h-fit md:max-h-[calc(100vh-90px)] bg-[#1e1e1e] text-surface-main p-5 
       rounded-2xl gap-6 sticky ">
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -114,7 +113,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
 
         <button 
           onClick={() => {setSearch(""); setFilters({department: [],employmentType: [], status: [], skills: [], isRemote: null})}}
-          className="bg-[#ff3b3b] hover:bg-red-600 text-[10px] px-3 py-1.5 rounded-md font-bold transition"
+          className="bg-danger hover:bg-red-600 text-[10px] px-3 py-1.5 rounded-md font-bold transition"
         >
           Clear all
         </button>
@@ -252,11 +251,11 @@ const FilterSection = ({ title, children }: { title: string; children: React.Rea
 const Checkbox = ({ label, count, checked, onChange }: any) => (
   <label className="flex items-center cursor-pointer group">
     <div className={`w-4 h-4 rounded border flex items-center justify-center transition 
-        ${checked ? 'bg-[#00adef] border-[#00adef]' : 'border-gray-600 bg-transparent'}`}>
-      {checked && <div className="w-1.5 h-1.5 bg-white rounded-sm" />}
+        ${checked ? 'bg-primary border-primary' : 'border-gray-600 bg-transparent'}`}>
+      {checked && <div className="w-1.5 h-1.5 bg-surface-main rounded-sm" />}
     </div>
-    <span className={`ml-3 text-xs font-medium transition ${checked ? 'text-[#00adef]' : 'text-gray-400'}`}>
-      {label} <span className="text-[#00adef] ml-0.5">({count})</span>
+    <span className={`ml-3 text-xs font-medium transition ${checked ? 'text-primary' : 'text-gray-400'}`}>
+      {label} <span className="text-primary ml-0.5">({count})</span>
     </span>
     <input type="checkbox" className="hidden" checked={checked} onChange={onChange} />
   </label>

@@ -49,7 +49,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
             <div
               key={item.id}
               className="relative flex flex-col w-full md:w-[350px] 
-                bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+                bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
             >
 
               {/* Status Badge */}
@@ -67,9 +67,9 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
                     ARCHIVED
                   </span>
                 ) : (
-                  <span className="rounded-full border border-[#00adef]/50 bg-[#00adef]/10 text-[#00adef] 
+                  <span className="rounded-full border border-primary/50 bg-primary/10 text-primary 
                     text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00adef] animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     OPEN
                   </span>
                 )}
@@ -77,10 +77,10 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
 
               {/* Icon & Title */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 flex items-center justify-center text-[#00adef]">
+                <div className="w-12 h-12 flex items-center justify-center text-primary">
                    <ScreenShare className="w-10 h-10"/>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white truncate">{item.title}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-surface-main truncate">{item.title}</h2>
               </div>
 
 
@@ -105,7 +105,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
               {/* Description */}
               <div className="relative max-h-24 overflow-hidden text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                 <p>{item.description}</p>
-                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-white dark:from-slate-900 to-transparent"></div>
+                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-surface-main dark:from-secondary-darkbg to-transparent"></div>
               </div>
 
               {/* Skills Tags */}
@@ -128,7 +128,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
                 <button 
                   onClick={() => handleDetails(item)}
                   className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
-                    rounded-xl hover:bg-[#3B5998] hover:text-white transition-all active:scale-95 whitespace-nowrap"
+                    rounded-xl hover:bg-[#3B5998] hover:text-surface-main transition-all active:scale-95 whitespace-nowrap"
                 >
                   Details
                 </button>
@@ -144,7 +144,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
                 <div className="flex items-center gap-2 text-gray-500">
                   {isAdminOrRecruiter && (
                     <>
-                      <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="hover:text-[#00adef]">
+                      <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="hover:text-primary">
                         <SquarePen size={16} />
                       </button>
                       <button onClick={() => DeleteJob(item.id)} className="hover:text-red-500">
@@ -170,7 +170,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
           <button
             disabled={currentPage <= 1}
             onClick={() => setCurrentPage(currentPage - 1)}
-            className="px-5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
+            className="px-5 py-2 rounded-xl bg-surface-main dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
                        text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
             Previous
@@ -178,7 +178,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
 
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Page</span>
-            <span className="px-3 py-1 bg-[#00adef] text-white rounded-md text-sm font-bold">
+            <span className="px-3 py-1 bg-primary text-surface-main rounded-md text-sm font-bold">
               {currentPage}
             </span>
             <span className="text-sm text-gray-500">of {totalPages}</span>
@@ -187,7 +187,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
           <button
             disabled={currentPage >= totalPages}
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="px-5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
+            className="px-5 py-2 rounded-xl bg-surface-main dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
                        text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
             Next
