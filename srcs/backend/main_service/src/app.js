@@ -19,8 +19,8 @@ import {verifyToken,verifyRoles} from './middleware/auth.js';
 import {UserRole} from '../generated/prisma/index.js';
 import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
-import  quizRoutes from './routes/quizRoutes.js'
-
+import quizRoutes from './routes/quizRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 const app =  express();
 
 console.log(process.env.FRONTEND_URL)
@@ -96,13 +96,17 @@ app.use('/api/main/quizzes',
   verifyToken
 ,quizRoutes)
 
-app.use('/api/main/chat/conversations',
+app.use('/api/main/conversations',
   verifyToken,
   conversationRoutes);
 
-app.use('/api/main/chat/messages',
+app.use('/api/main/messages',
   verifyToken,
   messageRoutes);
+
+app.use('/api/main/notifications',
+  verifyToken,
+  notificationRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
