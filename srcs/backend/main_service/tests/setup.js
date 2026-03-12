@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-vi.mock('../src/config/prisma.js', () => ({
+vi.mock('../config/prisma.js', () => ({
     prisma : {
     user: {
       create: vi.fn(),

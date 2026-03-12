@@ -1,0 +1,11 @@
+transformers
+torch
+faster-whisper
+requests
+uvicorn
+fastapi
+tensorflow
+keras
+numpy
+opencv-python
+python-multipart
