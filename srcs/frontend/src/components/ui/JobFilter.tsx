@@ -43,11 +43,12 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
         new Promise(resolve => setTimeout(resolve, 800))
       ]);
 
-      const result = response.data.data; 
+      const result = response.data; 
 
       if (result) {
+        console.log("result : ", result);
         setJobsArray(result.data || []);
-        setTotalPages(result.totalPages || 1);
+        setTotalPages(result.meta?.totalPages || 1);
       }
     } catch (error) {
       console.error("Fetch Error:", error);

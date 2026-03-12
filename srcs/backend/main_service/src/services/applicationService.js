@@ -74,7 +74,7 @@ export const advance = async (applicationId) => {
 	const nextPhase = phases[currentIndex + 1];
 	const [newPhase, newApplication] = await Promise.all([
 		applicationPhaseservice.updateApplicationPhase(nextPhase.id, {
-			status:"in_progress"
+			status:"inProgress"
 		}),
 		applicationRepository.updateApplication(applicationId,{
 			currentPhaseId: nextPhase.id

@@ -1,6 +1,6 @@
 import OverviewChart from "@/components/ui/OverviewChart"
 
-export function OverviewStatistics() { 
+export function OverviewStatistics({ data }: { data: any }) { 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden ">
         <header className="flex items-center justify-between p-5 border-b border-gray-50 dark:border-slate-800">
@@ -12,7 +12,8 @@ export function OverviewStatistics() {
           </button>
         </header>
         <div className="p-5 flex-1">
-            <OverviewChart />
+            {/* Pass the backend data to your chart */}
+            <OverviewChart data={data} />
         </div>
     </div>
   );

@@ -9,19 +9,19 @@ export const startTest = async (data) => {
     if (!applicationPhase)
         throw new HttpException(404, 'application phase does not exists');
     const application =  await applicationService.getApplicaticationById(applicationPhase.applicationId);
-    if (application.status !== 'in_progress' && application.status !== 'pending' )
+    if (application.status !== 'inProgress')
         throw new HttpException(400, 'application is not in progress');
     if (application.candidateId != userId)
         throw new HttpException(403, 'you are not a cadidate for this application');
-    if (applicationPhase.status != 'pending' && applicationPhase.status != 'in_progress')
+    if (applicationPhase.status != 'pending' && applicationPhase.status != 'inProgress')
         throw new HttpException(404, 'this test phase not available');
     if (applicationPhase.jobPhase.testId != testId)
         throw new HttpException(400,'This test is not assigned to this phase');
     const test = await quizSevice.getTestById(testId);
     if (applicationPhase.status === 'pending')
         await applicationPhaseService.updateApplicationPhase(applicationPhase.id,{
-                status: 'in_progress',
-                startedAt: new Date()
+                status: 'inProgress',
+                startedAt: Date.now()
             })
     return {
         test: test,
@@ -40,7 +40,7 @@ export const submitTest = async (data) => {
     console.log("applicationPhase.application?.candidateId = ", applicationPhase.application?.candidateId);
     if (applicationPhase.application?.candidateId != userId)
         throw new HttpException(403, 'not your application');
-    if (applicationPhase.status != 'in_progress')
+    if (applicationPhase.status != 'inProgress')
         throw new HttpException(400,'Test not started or already completed');
     const deadLine = applicationPhase.startedAt + applicationPhase.jobPhase * 60 * 1000;
     if ( Date.now() > new Date(deadLine).getTime())
