@@ -152,12 +152,28 @@ io.on('connection', (socket) => {
   socket.on('message:read', async (data) => {
     try {
       const { conversationId } = data;
-      
+
+      // Broadcast read status to other participants in the conversation
       socket.to(conversationId).emit('message:read-by', {
         userId,
         conversationId,
         readAt: new Date()
       });
+
+      // Auto-mark any unread newMessage notifications for this conversation as read
+      await prisma.notification.updateMany({
+        where: {
+          userId,
+          type: 'newMessage',
+          referenceType: 'conversation',
+          referenceId: conversationId,
+          isRead: false
+        },
+        data: { isRead: true }
+      });
+
+      // Tell the user's bell to clear the badge for this conversation
+      io.in(`user_${userId}`).emit('notification:cleared', { conversationId });
     } catch (error) {
       console.error('Error broadcasting read status:', error);
     }

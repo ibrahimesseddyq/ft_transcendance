@@ -11,7 +11,7 @@ export const getTestForEvalution =  asyncHandler(async (req, res, next) => {
 })
 
 export const evaluateTest = asyncHandler(async (req, res, next) => {
-    const result =  await internalService.evaluateTest(req.body.testId, req.body.answers);
+    const result =  await internalService.evaluateTest(req.params.testId, req.body.answers);
     res.status(200)
     .json({
         success: true,

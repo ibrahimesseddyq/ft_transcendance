@@ -10,10 +10,11 @@ interface LogoutProps {
 export function Logout({ className }: LogoutProps) {
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const navigate = useNavigate();
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   const handleLogout = async () => {
     console.log("Iam in logout");
-    await mainApi.post('/api/auth/logout');
+    await mainApi.post(`${env_main_api}/auth/logout`);
     clearAuth();
     navigate('/Login', { replace: true });
   };

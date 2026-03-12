@@ -66,10 +66,10 @@ export function ChatInput({
   const canSend = !disabled && (!!message.trim() || !!selectedFile);
 
   return (
-    <div className="chat-input-area" style={{ padding: '16px 40px', background: '#F0F3FA', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+    <div className="chat-input-area" style={{ background: '#F0F3FA', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
       {/* File preview */}
       {selectedFile && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, padding: '6px 12px', background: '#e0f2fe', borderRadius: 6, fontSize: 13, color: '#1e293b', width: 576, boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, padding: '6px 12px', background: '#e0f2fe', borderRadius: 6, fontSize: 13, color: '#1e293b', width: '100%', maxWidth: 576, boxSizing: 'border-box' }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00adef" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
           </svg>
@@ -88,7 +88,7 @@ export function ChatInput({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ width: 576 }}>
+      <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 576 }}>
         {/* Hidden file input */}
         <input
           ref={fileInputRef}
