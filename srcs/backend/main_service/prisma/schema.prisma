@@ -294,6 +294,7 @@ enum NotificationType {
   rejected
   offerSent
   offerResponse
+  newMessage
 }
 
 enum UserRole {

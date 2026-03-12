@@ -17,6 +17,7 @@ export function Chat() {
     onlineUsers,
     typingUsers,
     isConnected,
+    hasConnectedOnce,
     isLoading,
     isLoadingMessages,
     recruiter,
@@ -203,7 +204,7 @@ export function Chat() {
           />
         </div>
 
-        {!isConnected && (
+        {hasConnectedOnce && !isConnected && (
           <div style={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#f59e0b', color: 'white', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 200 }}>
             Reconnecting...
           </div>

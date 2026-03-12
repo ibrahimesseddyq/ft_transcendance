@@ -31,6 +31,8 @@ export function Jobs() {
   const [jobItem, setJobItem] = useState<Job | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
@@ -59,23 +61,41 @@ export function Jobs() {
       )}
 
       {/* Sidebar Filter Component */}
+      {/* <JobFilter
+        totalJobs={jobsArray}
+        setJobsArray={setJobsArray}
+        setIsLoading={setIsLoading}
+      /> */}
+
       <JobFilter
         totalJobs={jobsArray}
         setJobsArray={setJobsArray}
         setIsLoading={setIsLoading}
+        setTotalPages={setTotalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
 
       {/* Content Area */}
       {isLoading ? (
-        <div className="flex-1 mx-auto">
+        <div className="flex-1 mx-auto my-auto">
           <Loading />
         </div>
       ) : (
+        // <JobCards 
+        //   jobsArray={jobsArray}
+        //   setJobsArray={setJobsArray}
+        //   setJobItem={setJobItem}
+        //   setIsFormOpen={setIsFormOpen}
+        // />
         <JobCards 
           jobsArray={jobsArray}
           setJobsArray={setJobsArray}
           setJobItem={setJobItem}
           setIsFormOpen={setIsFormOpen}
+          currentPage={currentPage}
+          totalPages={totalPages} 
+          setCurrentPage={setCurrentPage}
         />
       )}
 
