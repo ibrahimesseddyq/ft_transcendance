@@ -18,24 +18,3 @@ spec:
                 name: waf
                 port:
                   number: 8080
---- 
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: adminer-ingress
-  namespace: hirefy
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  tls:
-    - secretName: hirefy-tls
-  rules:
-    - http:
-        paths:
-          - path: /adminer
-            pathType: Prefix
-            backend:
-              service:
-                name: adminer
-                port:
-                  number: 80
