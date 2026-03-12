@@ -75,9 +75,9 @@ export function CandidateQuizPage() {
 
     if (isLoading) {
         return (
-            <div className="h-screen w-full flex items-center justify-center bg-[#f8fafc] dark:bg-slate-950">
+            <div className="h-screen w-full flex items-center justify-center bg-surface-child dark:bg-slate-950">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-[#00adef] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                     <p className="text-slate-500 dark:text-slate-400 animate-pulse">Preparing your assessment...</p>
                 </div>
             </div>
@@ -85,13 +85,13 @@ export function CandidateQuizPage() {
     }
 
     return (
-        <div className="overflow-y-auto no-scrollbar w-full h-screen bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-300">
+        <div className="overflow-y-auto no-scrollbar w-full h-screen bg-surface-child dark:bg-slate-950 transition-colors duration-300">
             <div className='grid grid-cols-4 h-full w-full lg:divide-x-2 divide-gray-200 dark:divide-slate-800'>
                 
-                <div className="col-span-4 lg:col-span-1 bg-[#e9e9e9] dark:bg-slate-900 h-full p-6 transition-colors duration-300">
+                <div className="col-span-4 lg:col-span-1 bg-[#e9e9e9] dark:bg-secondary-darkbg h-full p-6 transition-colors duration-300">
                     <div className="mb-8">
                         <h2 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Recruitment Journey</h2>
-                        <h1 className="text-xl font-bold text-black dark:text-white">Job Phases</h1>
+                        <h1 className="text-xl font-bold text-black dark:text-surface-main">Job Phases</h1>
                     </div>
                     
                     <div className="flex flex-col gap-3">
@@ -107,7 +107,7 @@ export function CandidateQuizPage() {
                 </div>
                 
                 {/* Main Area */}
-                <div className="col-span-4 lg:col-span-3 h-full p-4 lg:p-10 flex flex-col items-center bg-[#f8fafc] dark:bg-slate-950 transition-colors duration-300">
+                <div className="col-span-4 lg:col-span-3 h-full p-4 lg:p-10 flex flex-col items-center bg-surface-child dark:bg-slate-950 transition-colors duration-300">
                     <div className='max-w-4xl w-full'>
                         {currentTest ? (
                             <TestTakingArea 
@@ -130,14 +130,14 @@ const QuizSidebarItem = ({ phase, isSelected, number }: any) => {
     return (
         <div className={`p-4 rounded-xl border-2 transition-all flex items-center gap-4 
                 ${isSelected 
-                    ? 'bg-white dark:bg-slate-800 border-[#00adef] shadow-md scale-105' 
+                    ? 'bg-surface-main dark:bg-slate-800 border-primary shadow-md scale-105' 
                     : 'bg-transparent border-transparent opacity-60'}`}>
             <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm
-                ${isSelected ? 'bg-[#00adef] text-white' : 'bg-slate-300 dark:bg-slate-700 text-slate-500'}`}>
+                ${isSelected ? 'bg-primary text-surface-main' : 'bg-slate-300 dark:bg-slate-700 text-slate-500'}`}>
                 {number}
             </div>
             <div>
-                <h3 className="font-semibold text-sm text-black dark:text-white">
+                <h3 className="font-semibold text-sm text-black dark:text-surface-main">
                     {phase.name}
                 </h3>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase">

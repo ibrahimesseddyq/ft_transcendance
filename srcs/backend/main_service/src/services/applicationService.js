@@ -3,22 +3,24 @@ import * as applicationPhaseservice from './applicationPhaseService.js';
 import {HttpException} from '../utils/httpExceptions.js';
 import * as jobService from './jobService.js';
 import * as jobPhaseService from './jobPhaseService.js';
-import {prisma} from '../config/prisma.js'; 
+import {prisma} from '../config/prisma.js';
+import { createNotification } from './notificationService.js';
 
 
-export const submitApplication = async (data) => {
+export const submitApplication = async (data, io) => {
 	const job = await jobService.getJobById(data.jobId);
  console.log(job.status , 'jobphase ' , job.jobPhases);
 	if (!job || !job.jobPhases || job.jobPhases.length === 0 || job.status != 'open')
 		throw new HttpException(400, 'cannot apply to this job');
-	return await prisma.$transaction( async (tx) => {
+	const application = await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
 			include: {
-				applicationPhases: true
+				applicationPhases: true,
+				candidate: { select: { firstName: true, lastName: true } }
 			}
 		});
 		const applicationPhases = await Promise.all(
-			job.jobPhases.map(phase => 
+			job.jobPhases.map(phase =>
 				tx.applicationPhase.create({
 					data : {
 					applicationId: application.id,
@@ -33,6 +35,20 @@ export const submitApplication = async (data) => {
 		})
 		return application;
 	})
+
+	if (job.userId && io) {
+		const candidateName = `${application.candidate.firstName} ${application.candidate.lastName}`.trim();
+		await createNotification(io, {
+			userId: job.userId,
+			type: 'applicationReceived',
+			title: 'New application received',
+			message: `${candidateName} applied for "${job.title}".`,
+			referenceType: 'application',
+			referenceId: application.id
+		});
+	}
+
+	return application;
 }
 
 export const getApplicaticationById = async (applicationId) => {
@@ -67,11 +83,43 @@ export const advance = async (applicationId) => {
 	return newPhase;
 }
 
-export const rejectApplication =  async (applicationId) => {
-	const application = await applicationRepository.updateApplication(applicationId,{
-		status:'rejected'
-	})
-	return application;
+export const rejectApplication = async (applicationId, io) => {
+	const app = await prisma.application.findUnique({
+		where: { id: applicationId },
+		include: { job: { select: { title: true } } }
+	});
+	const updated = await applicationRepository.updateApplication(applicationId, { status: 'rejected' });
+	if (app && io) {
+		await createNotification(io, {
+			userId: app.candidateId,
+			type: 'rejected',
+			title: 'Application rejected',
+			message: `Your application for "${app.job.title}" has been rejected.`,
+			referenceType: 'application',
+			referenceId: applicationId
+		});
+	}
+	return updated;
+}
+
+export const acceptApplication = async (applicationId, io) => {
+	const app = await prisma.application.findUnique({
+		where: { id: applicationId },
+		include: { job: { select: { title: true } } }
+	});
+	if (!app) throw new HttpException(404, 'application not found');
+	const updated = await applicationRepository.updateApplication(applicationId, { status: 'accepted' });
+	if (io) {
+		await createNotification(io, {
+			userId: app.candidateId,
+			type: 'accepted',
+			title: 'Application accepted',
+			message: `Congratulations! Your application for "${app.job.title}" has been accepted.`,
+			referenceType: 'application',
+			referenceId: applicationId
+		});
+	}
+	return updated;
 }
 
 export const withdrawApplication = async (applicationId) => {

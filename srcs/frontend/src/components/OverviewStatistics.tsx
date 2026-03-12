@@ -7,7 +7,7 @@ export function OverviewStatistics() {
           <h3 className="text-lg font-bold text-gray-800 dark:text-slate-100">
             Applications Overview
           </h3>
-          <button className="text-xs text-[#1194b1] dark:text-[#00adef] font-semibold hover:underline">
+          <button className="text-xs text-[#1194b1] dark:text-primary font-semibold hover:underline">
             View Report
           </button>
         </header>
