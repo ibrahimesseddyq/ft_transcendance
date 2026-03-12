@@ -15,4 +15,5 @@ FROM owasp/modsecurity-crs:nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
 COPY waf/modsecurity.conf /etc/modsecurity.d/modsecurity.conf
+RUN chown -R nginx:nginx /etc/modsecurity.d
 USER nginx
