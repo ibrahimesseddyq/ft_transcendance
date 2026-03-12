@@ -51,7 +51,7 @@ export function Jobs() {
             <button 
               onClick={() => setIsFormOpen(false)}
               className="absolute top-6 right-6 text-2xl text-gray-600 dark:text-gray-500 
-                hover:text-red-400 dark:hover:text-red-400 transition-colors">
+                hover:text-danger-hover dark:hover:text-danger-hover transition-colors">
               ✕
             </button>
 
@@ -102,9 +102,9 @@ export function Jobs() {
       {isAdminOrRecruiter && (
         <button 
           onClick={() => {setJobItem(null); setIsFormOpen(true)}}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-[#10B77F] hover:bg-[#0da371] dark:hover:bg-[#12cf91]
-            text-white dark:text-slate-900 font-extrabold rounded-full 
-            shadow-lg shadow-[#10B77F]/30 dark:shadow-[#10B77F]/20 
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-accent hover:bg-[#0da371] dark:hover:bg-[#12cf91]
+            text-surface-main dark:text-secondary-darkbg font-extrabold rounded-full 
+            shadow-lg shadow-accent/30 dark:shadow-accent/20 
             transition-all duration-300 flex items-center justify-center"
         >
           <Plus size={25} strokeWidth={3} />

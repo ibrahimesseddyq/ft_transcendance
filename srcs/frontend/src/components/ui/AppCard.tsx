@@ -79,15 +79,15 @@ const AppCard = ({app}:props) => {
               <button onClick={handleSeeDetails}
                 className='text-center font-medium font-sans w-full md:w-52 h-10
                 rounded-xl border border-[#25aeca] dark:border-[#5bc8f5] 
-                text-[#25aeca] dark:text-[#5bc8f5] hover:bg-[#25aeca] hover:text-white 
-                dark:hover:bg-[#5bc8f5] dark:hover:text-slate-900 transition-colors p-2'>
+                text-[#25aeca] dark:text-[#5bc8f5] hover:bg-[#25aeca] hover:text-surface-main 
+                dark:hover:bg-[#5bc8f5] dark:hover:text-secondary-darkbg transition-colors p-2'>
                 Details
               </button>
 
               <button onClick={handleSeePhases}
                 className='text-center font-medium font-sans w-full md:w-52 h-10
-                rounded-xl bg-[#25aeca] dark:bg-[#00adef] text-white
-                hover:bg-[#25aeca]/80 dark:hover:bg-[#00adef]/80 transition-colors p-2'>
+                rounded-xl bg-[#25aeca] dark:bg-primary text-surface-main
+                hover:bg-[#25aeca]/80 dark:hover:bg-primary/80 transition-colors p-2'>
                 Phases
               </button>
             </div>

@@ -65,7 +65,7 @@ export function UserPhase() {
     }
 
     return (
-  <div className='bg-white dark:bg-slate-900 p-8 rounded-2xl border items-center
+  <div className='bg-surface-main dark:bg-secondary-darkbg p-8 rounded-2xl border items-center
       border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300'>
 
     {startTest ? (
@@ -77,7 +77,7 @@ export function UserPhase() {
     ) : (
       <button
         onClick={handleStartTest}
-        className='flex items-center gap-3 bg-black dark:bg-white text-white dark:text-black
+        className='flex items-center gap-3 bg-black dark:bg-surface-main text-surface-main dark:text-black
         px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all
         disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600
         disabled:cursor-not-allowed'

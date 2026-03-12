@@ -12,7 +12,7 @@ export function ActiveJobStatus() {
     return (
       <div className="flex flex-col w-full h-full overflow-hidden">
         <header className="flex items-center justify-between h-full w-full max-h-16 sticky top-0 z-20 border-b border-gray-50 dark:border-slate-800">
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white ml-5 m-3">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-surface-main ml-5 m-3">
             Active Job Status
           </h3>
         </header>
@@ -28,16 +28,16 @@ export function ActiveJobStatus() {
                 <div className="flex gap-3 items-center">
                   <div className="relative">
                     <div 
-                      className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-800 bg-cover bg-center border-2 border-white dark:border-slate-900 shadow-sm"
+                      className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-800 bg-cover bg-center border-2 border-surface-main dark:border-secondary-darkbg shadow-sm"
                       style={{ backgroundImage: "url('../src/assets/icons/profile.png')" }}
                     />
-                    <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-slate-900 xl:hidden ${
+                    <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface-main dark:border-secondary-darkbg xl:hidden ${
                       item.status === "Online" ? "bg-green-400" : "bg-gray-500"
                     }`} />
                   </div>
 
                   <div className="flex flex-col">
-                    <span className="text-xs xl:text-sm text-black dark:text-white font-bold">
+                    <span className="text-xs xl:text-sm text-black dark:text-surface-main font-bold">
                       {item.firstName} {item.lastName}
                     </span>
                     <span className="text-[11px] xl:text-xs font-medium text-gray-500 dark:text-gray-400">
