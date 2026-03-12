@@ -48,28 +48,36 @@ const AppCard = ({app}:props) => {
 
             <div className="mt-6 flex flex-col gap-5 w-full">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/30 dark:text-blue-300 dark:ring-blue-500/30">
+                <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium 
+                  text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/30 dark:text-blue-300 
+                  dark:ring-blue-500/30 transition-colors duration-300">
                   {(job as any)?.department}
                 </span>
-                <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-sm font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-purple-900/30 dark:text-purple-300 dark:ring-purple-500/30">
+                <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-sm 
+                  font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-purple-900/30 
+                  dark:text-purple-300 dark:ring-purple-500/30 transition-colors duration-300">
                   {(job as any)?.employmentType}
                 </span>
 
-                <span className="inline-flex items-center px-2.5 py-1 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <span className="inline-flex items-center px-2.5 py-1 text-sm 
+                  font-medium text-slate-600 dark:text-slate-300 transition-colors duration-300">
                   <div className="flex gap-1">
                     <MapPinHouse className="text-gray-400 w-4 h-4"/> {(job as any)?.location}
                   </div>
                 </span>
-                <span className="inline-flex items-center px-2.5 py-1 text-sm font-medium text-green-700 dark:text-green-400">
+                <span className="inline-flex items-center px-2.5 py-1 text-sm 
+                  font-medium text-green-700 dark:text-green-400 transition-colors duration-300">
                   💰 ${(job as any)?.salaryMin} - ${(job as any)?.salaryMax}
                 </span>
               </div>
 
-              <div className="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+              <div className="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/50 
+                border border-slate-100 dark:border-slate-700 transition-colors duration-300">
                 <h3 className="mb-2 text-sm font-bold text-[#445a84] dark:text-slate-200">
                   Job Description
                 </h3>
-                <p className="text-sm font-normal leading-relaxed text-slate-600 dark:text-slate-400 break-words">
+                <p className="text-sm font-normal leading-relaxed text-slate-600 
+                  dark:text-slate-400 break-words transition-colors duration-300">
                   {(job as any)?.description}
                 </p>
               </div>
@@ -80,14 +88,14 @@ const AppCard = ({app}:props) => {
                 className='text-center font-medium font-sans w-full md:w-52 h-10
                 rounded-xl border border-[#25aeca] dark:border-[#5bc8f5] 
                 text-[#25aeca] dark:text-[#5bc8f5] hover:bg-[#25aeca] hover:text-white 
-                dark:hover:bg-[#5bc8f5] dark:hover:text-slate-900 transition-colors p-2'>
+                dark:hover:bg-[#5bc8f5] dark:hover:text-slate-900 p-2 transition-colors duration-300'>
                 Details
               </button>
 
               <button onClick={handleSeePhases}
                 className='text-center font-medium font-sans w-full md:w-52 h-10
                 rounded-xl bg-[#25aeca] dark:bg-[#00adef] text-white
-                hover:bg-[#25aeca]/80 dark:hover:bg-[#00adef]/80 transition-colors p-2'>
+                hover:bg-[#25aeca]/80 dark:hover:bg-[#00adef]/80 p-2 transition-colors duration-300'>
                 Phases
               </button>
             </div>
