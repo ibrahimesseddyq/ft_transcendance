@@ -1,3 +1,4 @@
+import { includes } from 'zod';
 import {prisma} from '../config/prisma.js';
 
 export const createApplicationPhase = async (data) => {
@@ -15,6 +16,10 @@ export const   updateApplicationPhase = async (applicationPhaseId, data) => {
 
 export const getApplicationPhaseById = async (applicationPhaseId) => {
     return await prisma.applicationPhase.findUnique({
-        where : {id : applicationPhaseId}
+        where : {id : applicationPhaseId},
+        include : {
+           jobPhase : true,
+           application: true
+        }
     })
 }

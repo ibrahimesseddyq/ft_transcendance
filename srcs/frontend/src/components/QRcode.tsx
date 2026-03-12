@@ -15,19 +15,19 @@ export function QRcode() {
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
     const userId = useAuthStore(state => state.userId);
-    const tmpToken = useAuthStore((state) => state.tmpToken);
-    const user = useAuthStore(state => state.user);
+    // const tmpToken = useAuthStore((state) => state.tmpToken);
     const setProfile = useAuthStore(state => state.setProfile);
     const setQrVerified = useAuthStore(state => state.setQrVerified);
     const firstLogin = useAuthStore(state => state.firstLogin);
     const setUser = useAuthStore(state => state.setUser);
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     const fetchNewQr = async () => {
         if (!userId) 
             return;
         setLoading(true);
         try {
-            const res = await mainApi.post(`/api/2fa/setup/`, { id: userId });
+            const res = await mainApi.post(`${env_main_api}/2fa/setup/`, { id: userId });
             const result = res.data;
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
@@ -56,9 +56,8 @@ export function QRcode() {
     const verify = async (method:string, route:string, finalOtp:string) =>{
         const obj = method === "verify-setup" 
             ? { code: finalOtp, id: userId }
-            : { code: finalOtp , tempToken: tmpToken};
+            : { code: finalOtp };
 
-        console.log("Temp token = ", tmpToken);
         try {
             const res = await mainApi.post(`/${route}`, obj);
 
@@ -107,9 +106,9 @@ export function QRcode() {
         }
         setLoading(true);
         if (firstLogin)
-            await verify("verify-setup", "api/2fa/verify-setup/", finalOtp);
+            await verify("verify-setup", "api/main/2fa/verify-setup/", finalOtp);
         else
-            await verify("verify-2fa", "api/auth/verify-2fa/", finalOtp);
+            await verify("verify-2fa", "api/main/auth/verify-2fa/", finalOtp);
         setOtpArray(new Array(6).fill(""));
     };
 

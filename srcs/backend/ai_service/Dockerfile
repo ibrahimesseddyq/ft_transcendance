@@ -1,3 +1,5 @@
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y python3
+RUN apt update && apt upgrade 
+
+RUN apt-get install -y python3
 CMD ["bash"]
