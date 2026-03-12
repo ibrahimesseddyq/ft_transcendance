@@ -17,7 +17,7 @@ export const updateApplicationPhase = async (applicationPhaseId, updateData) => 
 
 export const getApplicaticationPhaseById =  async (applicationPhaseId) => {
     const applicationPhase = await  applicationPhaseRepository.getApplicationPhaseById(applicationPhaseId)
-    // console.log("applicationPhase :", applicationPhase)
+    console.log("applicationPhase :", applicationPhase)
     if (!applicationPhase)
         throw new HttpException(404, "application Phase not found");
     return applicationPhase;

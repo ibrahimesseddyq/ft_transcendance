@@ -103,7 +103,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
     outline-none focus:border-[#10B77F] transition-colors rounded-md px-3";
 
   return (
-    <div className="h-full w-full flex flex-col items-center transition-colors duration-300 p-4">
+    <div className="h-full w-full max-w-screen-xl flex flex-col items-center transition-colors duration-300 p-4">
       {/* Header Badge */}
       <div className='border rounded-xl px-5 py-2 border-gray-200 dark:border-[#1e2e52] bg-white dark:bg-[#121b31] mb-6 shadow-sm'>
         <h1 className='text-black dark:text-white text-lg font-bold'>Post New Job</h1>
