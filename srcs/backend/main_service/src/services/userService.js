@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import {HttpException} from '../utils/httpExceptions.js';
 import crypto from 'crypto';
 import * as fileService from './fileService.js';
-
+import {getSafeUser} from '../utils/excludeSensitive.js'
 export const createUser = async (userData) => {
     const {password, ...data} = userData;
     const passwordHash = await argon2.hash(password);
@@ -47,6 +47,14 @@ export const updateUser = async (userId, updateData) => {
 
 export const deleteUser = async (userId) => {
     await userRepository.deleteUser(userId);
+}
+
+export const getUserApplications = async (userId) => {
+    return await userRepository.getUserApplications(userId);
+}
+
+export const getUserJobs = async (userId) => {
+    return await  userRepository.getUserJobs(userId);
 }
 
 export const getUsers = async (filters) => {

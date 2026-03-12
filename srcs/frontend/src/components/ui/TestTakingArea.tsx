@@ -1,66 +1,98 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { mainApi } from '@/utils/Api';
 import { Timer, ChevronRight, Diamond, Loader2, AlertCircle } from 'lucide-react';
 
-const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
+const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [timeLeft, setTimeLeft] = useState(900);
 
-    const questions = testData?.questions || [];
+    const questions = testData?.mcqs || [];
     const currentQuestion = questions[currentStep];
     const totalSteps = questions.length;
+    const isLastQuestion = currentStep === totalSteps - 1;
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const isTimeRunningOut = timeLeft < 60;
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
 
     const handleSelect = (choiceText: string) => {
         setError(null);
-        setSelectedAnswers({ ...selectedAnswers, [currentStep]: choiceText });
-    };
-
-    const handleSubmit = async () => {
-        setIsSubmitting(true);
-        setError(null);
-
-        const payload = {
-            candidateId,
-            phaseId,
-            testId: testData.id,
-            responses: Object.entries(selectedAnswers).map(([index, answer]) => ({
-                questionId: questions[Number(index)].id,
-                selectedOption: answer
-            })),
-            completedAt: new Date().toISOString()
-        };
-
-        try {
-            const response = await mainApi.post(`/api/test`, payload);
-
-            const result = response.data;
-            console.log("Success:", result);
-
-        } catch (err: any) {
-            setError(err.message || "Submission failed. Please check your connection.");
-            console.error("Fetch Error:", err);
-        } finally {
-            setIsSubmitting(false);
-        }
+        setSelectedAnswers({ 
+            ...selectedAnswers, 
+            [currentStep]: choiceText 
+        });
     };
 
     const handleNext = () => {
-        if (currentStep < totalSteps - 1) {
-            setCurrentStep(prev => prev + 1);
+        if (!isLastQuestion) {
+            setCurrentStep(currentStep + 1);
         } else {
             handleSubmit();
         }
     };
 
-    if (!currentQuestion) 
-        return <div className="text-back dark:text-white p-10 text-center">No questions available.</div>;
+    const handleSubmit = useCallback(async () => {
+        setIsSubmitting(true);
+        setError(null);
+
+        const formattedAnswers = Object.keys(selectedAnswers).map((key) => {
+            const index = Number(key);
+            return {
+                questionId: questions[index].id,
+                selectedOption: selectedAnswers[index]
+            };
+        });
+
+        const payload = {
+            
+            applicationPhaseId: phaseId,
+            userId: candidateId,
+            answers: formattedAnswers,
+            completedAt: new Date().toISOString()
+        };
+
+        try {
+            console.log("This my payload : ", payload);
+            const response = await mainApi.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
+            console.log("Success:", response.data);
+            // TODO: Add success redirect 
+        } catch (err: any) {
+            console.error("Submit Error:", err);
+            setError("Submission failed. Please check your connection.");
+            setIsSubmitting(false);
+        }
+    }, [phaseId, candidateId, selectedAnswers, questions, env_main_api, testData.id]);
+
+    useEffect(() => {
+        if (timeLeft <= 0 || isSubmitting) return;
+
+        const timerId = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime <= 1) {
+                    clearInterval(timerId);
+                    handleSubmit();
+                    return 0;
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, [isSubmitting, handleSubmit, timeLeft]);
+
+    if (!currentQuestion) {
+        return <div className="text-black dark:text-white p-10 text-center">No questions available.</div>;
+    }
 
     return (
-        <div className='flex flex-col gap-6 bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300'>
-
-            {/* Header: Progress & Timer */}
+        <div className='flex flex-col gap-6 transition-colors duration-300'>
             <div className='flex justify-between items-center'>
                 <div className='flex flex-col gap-1 w-2/3'>
                     <div className='flex justify-between text-xs font-bold text-slate-400 dark:text-slate-500 mb-1'>
@@ -74,9 +106,14 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                         />
                     </div>
                 </div>
-                <div className='flex items-center gap-2 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg border border-red-100 dark:border-red-900/50'>
+                
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+                    isTimeRunningOut 
+                        ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 animate-pulse' 
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                }`}>
                     <Timer size={18} />
-                    <span className='font-mono font-bold'>14:59</span>
+                    <span className='font-mono font-bold'>{formatTime(timeLeft)}</span>
                 </div>
             </div>
 
@@ -89,7 +126,6 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                 </div>
             )}
 
-            {/* Question Body */}
             <div className='py-4'>
                 <div className='flex gap-3 items-center mb-6'>
                     <span className='bg-black dark:bg-white text-white dark:text-black px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase'>MCQ</span>
@@ -101,11 +137,12 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                 </h2>
 
                 <div className='grid grid-cols-1 gap-4'>
-                    {currentQuestion.choices.map((choice: any, i: number) => {
+                    {currentQuestion.choices.map((choice: any, index: number) => {
                         const isSelected = selectedAnswers[currentStep] === choice.text;
+                        
                         return (
                             <button 
-                                key={i} 
+                                key={index} 
                                 onClick={() => handleSelect(choice.text)}
                                 disabled={isSubmitting}
                                 className={`group flex items-center justify-between p-5 rounded-xl border-2 transition-all text-left
@@ -128,7 +165,6 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                 </div>
             </div>
 
-            {/* Footer Actions */}
             <div className='flex justify-between items-center mt-4 border-t border-slate-100 dark:border-slate-800 pt-6'>
                 <div className='flex items-center gap-2 text-slate-400 dark:text-slate-500'>
                     <Diamond size={16} className='text-yellow-500 fill-yellow-500' />
@@ -138,7 +174,10 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                 <button 
                     disabled={!selectedAnswers[currentStep] || isSubmitting}
                     onClick={handleNext}
-                    className="flex items-center gap-3 bg-black dark:bg-white text-white dark:text-black px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed"
+                    className="flex items-center gap-3 bg-black dark:bg-white text-white dark:text-black 
+                        px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all 
+                        disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 
+                        disabled:cursor-not-allowed"
                 >
                     {isSubmitting ? (
                         <>
@@ -147,7 +186,7 @@ const TestTakingArea = ({ testData, candidateId, phaseId }: any) => {
                         </>
                     ) : (
                         <>
-                            <span>{currentStep === totalSteps - 1 ? 'Submit Results' : 'Next Question'}</span>
+                            <span>{isLastQuestion ? 'Submit Results' : 'Next Question'}</span>
                             <ChevronRight size={20} />
                         </>
                     )}
