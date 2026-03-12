@@ -80,19 +80,19 @@ vault write auth/kubernetes/role/quiz_service_db \
 
 echo "Storing secrets in vault..."
 vault kv put secret/main_service_db/config \
-  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_ROOT_PASSWORD="${MARIADB_MAIN_ROOT_PASSWORD}" \
   MARIADB_DATABASE="hirefy" \
   MARIADB_USER="hirefy" \
-  MARIADB_PASSWORD="change-me-too"
+  MARIADB_PASSWORD="${MARIADB_MAIN_PASSWORD}"
 ## change those to env!!!!!!!!!!!!!
 vault kv put secret/quiz_service_db/config \
-  MARIADB_ROOT_PASSWORD="change-me" \
+  MARIADB_ROOT_PASSWORD="${MARIADB_QUIZ_ROOT_PASSWORD}" \
   MARIADB_DATABASE="hirefy" \
   MARIADB_USER="hirefy" \
-  MARIADB_PASSWORD="change-me-too"
+  MARIADB_PASSWORD="${MARIADB_QUIZ_PASSWORD}"
 
 vault kv put secret/quiz-service/database \
-  DATABASE_URL="mysql://hirefy:change-me-too@quiz_service_db:3306/hirefy"
+  DATABASE_URL="mysql://${MARIADB_QUIZ_USER}:${MARIADB_QUIZ_PASSWORD}@quiz_service_db:3306/hirefy"
 
 vault kv put secret/main-service/oauth \
   GOOGLE_CLIENT_ID="your-id" \
@@ -100,7 +100,7 @@ vault kv put secret/main-service/oauth \
   GOOGLE_CALLBACK_URL="your-url"
 
 vault kv put secret/main-service/database \
-  DATABASE_URL="mysql://hirefy:change-me-too@main_service_db:3306/hirefy"
+  DATABASE_URL="mysql://${MARIADB_MAIN_USER}:${MARIADB_MAIN_PASSWORD}@main_service_db:3306/hirefy"
 echo "Storing AI service secrets..."
 
 vault kv put secret/ai-service/config \
