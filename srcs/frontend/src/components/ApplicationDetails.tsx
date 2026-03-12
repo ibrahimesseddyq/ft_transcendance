@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mainApi } from '@/utils/Api';
+import { useAuthStore } from '@/utils/ZuStand'
 
 export function ApplicationDetails() {
   const { id } = useParams(); 
@@ -8,6 +9,8 @@ export function ApplicationDetails() {
   
   const [details, setDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user} = useAuthStore();
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   useEffect(() => {
@@ -78,9 +81,16 @@ export function ApplicationDetails() {
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">App ID: {id}</p>
           </div>
-          <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-            {details.status || "Pending"}
-          </span>
+          {details.status === 'rejected' 
+            ?
+              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                {details.status}
+              </span>
+            :
+              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                {details.status || "Pending"}
+              </span>
+          }
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -117,14 +127,19 @@ export function ApplicationDetails() {
           </div>
         </div>
 
-        <div className="mt-10 flex gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
-          <button onClick={handleAdvancePhase} className="px-6 py-2 bg-[#00adef] text-white rounded-xl hover:bg-[#00adef]/80 transition-colors font-medium">
-            Advance Phase
-          </button>
-          <button onClick={handleRejectCandidate} className="px-6 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors font-medium">
-            Reject Candidate
-          </button>
-        </div>
+
+        {isAdminOrRecruiter
+          ?
+            <div className="mt-10 flex gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+              <button onClick={handleAdvancePhase} className="px-6 py-2 bg-[#00adef] text-white rounded-xl hover:bg-[#00adef]/80 transition-colors font-medium">
+                Advance Phase
+              </button>
+              <button onClick={handleRejectCandidate} className="px-6 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors font-medium">
+                Reject Candidate
+              </button>
+            </div>
+          : null
+        }
 
       </div>
     </div>
