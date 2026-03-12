@@ -13,7 +13,7 @@ class ChatSocketService {
   }
 
   connect(token?: string): void {
-    if (this.socket?.connected) {
+    if (this.socket) {
       return;
     }
 
@@ -90,6 +90,14 @@ class ChatSocketService {
     });
 
     // Notification events
+    this.socket.on('notification:new', (data: any) => {
+      this.emit('onNotificationNew', data);
+    });
+
+    this.socket.on('notification:cleared', (data: any) => {
+      this.emit('onNotificationCleared', data);
+    });
+
     this.socket.on('notification:message', (data: any) => {
       this.emit('onNotification', data);
     });
