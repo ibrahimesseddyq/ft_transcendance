@@ -21,6 +21,13 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP 
+          env:
+            - name: PARANOIA
+              value: "2"
+            - name: MODSEC_RULE_ENGINE
+              value: "On"
+            - name: BACKEND
+              value: "http://gateway:8081"
 ---
 apiVersion: v1 
 kind: Service 
