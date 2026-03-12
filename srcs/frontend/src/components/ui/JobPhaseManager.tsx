@@ -181,7 +181,7 @@ export function JobPhaseManager({ jobId }: Props) {
 
                   {showForm ? (
                     <form onSubmit={handleSubmit}
-                      className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-accent/40 bg-accent/5">
+                      className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-accent/40">
                       <select 
                         required 
                         value={form.testId}
@@ -190,15 +190,17 @@ export function JobPhaseManager({ jobId }: Props) {
                             setForm(f => ({ ...f, testId: e.target.value, name: selectedTest?.title || f.name }));
                         }}
                         className="h-8 w-full text-xs px-2 rounded-lg text-black dark:text-surface-main border border-gray-200 
-                          dark:border-slate-700 bg-surface-main dark:bg-secondary-darkbg outline-none focus:border-accent"
+                          dark:border-slate-700 bg-surface-main dark:bg-secondary-darkbg  outline-none focus:border-accent"
                       >
-                        <option value="">-- Select a Test --</option>
-                        {availableTests.map(test => {
-                          const testUniqueId = test.id || test._id;
-                          return (
-                            <option key={testUniqueId} value={testUniqueId}>{test.title}</option>
-                          )
-                        })}
+                        <div className='text-black'>
+                          <option value="">-- Select a Test --</option>
+                          {availableTests.map(test => {
+                            const testUniqueId = test.id || test._id;
+                            return (
+                              <option key={testUniqueId} value={testUniqueId}>{test.title}</option>
+                            )
+                          })}
+                        </div>
                       </select>
 
                       <div className="flex gap-2">

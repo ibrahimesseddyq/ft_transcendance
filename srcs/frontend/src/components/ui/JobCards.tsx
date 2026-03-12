@@ -166,34 +166,11 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
       </div>
 
       {/* Pagination */}
-      {jobsArray.length > 0 && (
-        <div className="flex justify-center items-center gap-6 mt-12 mb-8">
-          <button
-            disabled={currentPage <= 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className="px-5 py-2 rounded-xl bg-surface-main dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
-                       text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
-          >
-            Previous
-          </button>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">Page</span>
-            <span className="px-3 py-1 bg-primary text-surface-main rounded-md text-sm font-bold">
-              {currentPage}
-            </span>
-            <span className="text-sm text-gray-500">of {totalPages}</span>
-          </div>
-
-          <button
-            disabled={currentPage >= totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className="px-5 py-2 rounded-xl bg-surface-main dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
-                       text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
-          >
-            Next
-          </button>
-        </div>
+      {totalPages > 1 && (
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={totalPages} 
+          setCurrentPage={setCurrentPage}/>
       )}
 
     </div>
