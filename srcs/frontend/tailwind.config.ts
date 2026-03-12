@@ -10,6 +10,34 @@ export default {
 	],
 	prefix: "",
 	theme: {
+		extend:{
+			colors: {
+      		  primary: {
+      		    DEFAULT: 'var(--color-primary)',
+				darkbg: 'var(--color-darkbg)',
+				whitebg: 'var(--color-whitebg)',
+      		    hover: 'var(--color-primary-hover)',
+				border:'var(--color-primary-border)',
+      		  },
+			  secondary: {
+      		    DEFAULT: 'var(--color-secondary)',
+				darkbg: 'var(--color-darkbg)',
+				whitebg: 'var(--color-whitebg)',
+      		    hover: 'var(--color-secondary-hover)',
+				border:'var(--color-secondary-border)',
+      		  },
+      		  surface: {
+      		    main: 'var(--color-surface-main)',
+      		    child: 'var(--color-surface-child)',
+      		  },
+      		  accent: 'var(--color-accent)',
+      		  danger: {
+				DEFAULT: 'var(--color-danger)',
+				hover: 'var(--color-hover)'
+			  }, 
+				
+      		},
+		},
 		container: {
 			center: true,
 			padding: '2rem',

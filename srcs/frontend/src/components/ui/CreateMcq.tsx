@@ -159,7 +159,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                                 border border-gray-200 dark:border-gray-700 rounded-lg p-2 outline-none focus:border-[#00adef]"
                         />
                     )}
-                    {errors[field.name as keyof typeof errors] && <p className="text-red-400 text-[10px] italic">{(errors[field.name as keyof typeof errors] as any).message}</p>}
+                    {errors[field.name as keyof typeof errors] && <p className="text-danger-hover text-[10px] italic">{(errors[field.name as keyof typeof errors] as any).message}</p>}
                 </div>
             ))}
 
@@ -215,7 +215,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                         hover:bg-[#008dbf] px-8 py-2 shadow-lg shadow-[#00adef]/20 active:scale-95"
                 >
                     <div className="flex items-center gap-3">
-                        <DiamondPlus className="w-5 h-5 text-white group-hover:rotate-12 transition-transform" /> 
+                        <DiamondPlus className="w-5 h-5 text-surface-main group-hover:rotate-12 transition-transform" /> 
                         <p className="font-bold text-base">Save Test</p>
                     </div>
                 </button>
@@ -234,7 +234,7 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
                 type='checkbox'
                 checked={checkBox}
                 onChange={() => setCheckBox(!checkBox)} 
-                className="h-5 w-5 accent-[#00adef]"
+                className="h-5 w-5 accent-primary"
             />
             <input 
                 type='text' 
@@ -251,7 +251,7 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
                     border-gray-300 dark:border-gray-700 rounded-lg text-black dark:text-white 
                     hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors duration-300'
             >
-                <Plus size={18} className="text-[#00adef]"/>
+                <Plus size={18} className="text-primary"/>
                 <span className="font-bold text-sm">ADD</span>
             </button>
         </div>
@@ -262,9 +262,9 @@ const DisplayChoice = ({ Item, onDelete }: any) => (
     <div className='flex gap-2 items-center w-full animate-in slide-in-from-left-2 duration-300'>
         <div className={`h-6 w-6 flex items-center justify-center rounded-md border transition-colors duration-300
             ${Item.isCorrect ? 
-            'bg-[#00adef] border-[#00adef]' : 
-            'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-600'}`}>
-            {Item.isCorrect && <Check className='text-white w-4 h-4' />}
+            'bg-primary border-primary' : 
+            'bg-surface-main dark:bg-slate-800 border-gray-300 dark:border-gray-600'}`}>
+            {Item.isCorrect && <Check className='text-surface-main w-4 h-4' />}
         </div>
         <div className='min-h-11 flex-1 bg-slate-50 dark:bg-slate-800/30 text-black dark:text-gray-200 truncate
             p-3 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center text-sm transition-colors duration-300'>
@@ -280,7 +280,7 @@ const DisplayChoice = ({ Item, onDelete }: any) => (
 
 const CardField = ({ title, tag, name, register, error, placeholder, type }: any) => (
     <div className='flex flex-col gap-2'>
-        <h1 className="font-semibold text-black dark:text-white">{title}</h1>
+        <h1 className="font-semibold text-black dark:text-surface-main">{title}</h1>
         <div className='flex items-center gap-2 py-2 px-4 rounded-lg bg-slate-100/50 
             dark:bg-slate-800/50 border border-gray-200 dark:border-gray-700 transition-colors duration-300'>
             <input
@@ -294,7 +294,7 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
                 <Sparkle size={16} className="text-yellow-500"/>
             </div>
         </div>
-        {error && <p className="text-red-400 text-[10px] italic">{error}</p>}
+        {error && <p className="text-danger-hover text-[10px] italic">{error}</p>}
     </div>
 );
 
@@ -308,13 +308,13 @@ const SingleTagInput = ({ onAddTag }: any) => {
                 onChange={(e) => setCurrentTag(e.target.value)} 
                 onKeyDown={(e) => { if(e.key === 'Enter') { e.preventDefault(); onAddTag(currentTag); setCurrentTag(""); }}}
                 placeholder='Type tag and press enter...'
-                className='h-12 flex-1 bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-white p-3 border 
-                    border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:border-[#00adef]'
+                className='h-12 flex-1 bg-slate-100/50 dark:bg-slate-800/50 text-black dark:text-surface-main p-3 border 
+                    border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:border-primary'
             />
             <button type='button' onClick={() => { onAddTag(currentTag); setCurrentTag(""); }} 
                 className='group h-12 px-4 border-2 border-dashed border-gray-300 dark:border-gray-700 
-                    rounded-lg text-gray-500 hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors'>
-                <Plus size={18} className='group-hover:text-[#00adef]'/>
+                    rounded-lg text-gray-500 hover:border-primary dark:hover:border-primary transition-colors'>
+                <Plus size={18} className='group-hover:text-primary'/>
             </button>
         </div>
     );

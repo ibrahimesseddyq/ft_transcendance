@@ -31,6 +31,8 @@ export function Jobs() {
   const [jobItem, setJobItem] = useState<Job | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
@@ -59,10 +61,19 @@ export function Jobs() {
       )}
 
       {/* Sidebar Filter Component */}
+      {/* <JobFilter
+        totalJobs={jobsArray}
+        setJobsArray={setJobsArray}
+        setIsLoading={setIsLoading}
+      /> */}
+
       <JobFilter
         totalJobs={jobsArray}
         setJobsArray={setJobsArray}
         setIsLoading={setIsLoading}
+        setTotalPages={setTotalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
       />
 
       {/* Content Area */}
@@ -71,20 +82,29 @@ export function Jobs() {
           <Loading />
         </div>
       ) : (
+        // <JobCards 
+        //   jobsArray={jobsArray}
+        //   setJobsArray={setJobsArray}
+        //   setJobItem={setJobItem}
+        //   setIsFormOpen={setIsFormOpen}
+        // />
         <JobCards 
           jobsArray={jobsArray}
           setJobsArray={setJobsArray}
           setJobItem={setJobItem}
           setIsFormOpen={setIsFormOpen}
+          currentPage={currentPage}
+          totalPages={totalPages} 
+          setCurrentPage={setCurrentPage}
         />
       )}
 
       {isAdminOrRecruiter && (
         <button 
           onClick={() => {setJobItem(null); setIsFormOpen(true)}}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-[#10B77F] hover:bg-[#0da371] dark:hover:bg-[#12cf91]
-            text-white dark:text-slate-900 font-extrabold rounded-full 
-            shadow-lg shadow-[#10B77F]/30 dark:shadow-[#10B77F]/20 
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-accent hover:bg-[#0da371] dark:hover:bg-[#12cf91]
+            text-surface-main dark:text-secondary-darkbg font-extrabold rounded-full 
+            shadow-lg shadow-accent/30 dark:shadow-accent/20 
             transition-all duration-300 flex items-center justify-center"
         >
           <Plus size={25} strokeWidth={3} />
