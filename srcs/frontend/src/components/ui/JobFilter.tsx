@@ -4,14 +4,19 @@ import { mainApi } from '@/utils/Api';
 
 interface JobsArrayProps {
   totalJobs: any,
+  currentPage: number;
   setJobsArray: (data: any) => void;
   setIsLoading: (data: boolean) => void;
+  setTotalPages: (data: number) => void;
+  setCurrentPage: (data: number) => void;
 }
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
-const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
+const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: JobsArrayProps) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 6;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -38,15 +43,15 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
       if (filters.isRemote !== null)
         params.append("isRemote", String(filters.isRemote));
 
-      const fetchPromise = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
-  
-      const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+      params.append("page", String(page));
+      params.append("limit", String(limit));
 
-      const [response] = await Promise.all([fetchPromise, timerPromise]);
+      const response = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
 
       const result =  response.data;
       console.log("all Jobs :", result.data);
       setJobsArray(result.data);
+      setTotalPages(result.data);
     } catch (error) {
       console.error("Fetch Error:", error);
     }finally{
@@ -88,9 +93,13 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 };
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, search]);
+
+  useEffect(() => {
     const delayDebounce = setTimeout(() => fetchJobs(), 300);
     return () => clearTimeout(delayDebounce);
-  }, [filters, search]);
+  }, [filters, search, currentPage]);
 
 
   return (
