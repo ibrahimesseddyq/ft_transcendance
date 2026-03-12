@@ -27,7 +27,7 @@ export function Header() {
 
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl max-w-screen-2xl items-center px-4 md:px-8 
-      bg-surface-main/80 dark:bg-secondary-darkbg/80 backdrop-blur-sm fixed md:sticky top-0 z-50 
+      bg-surface-main dark:bg-secondary-darkbg backdrop-blur-sm fixed md:sticky top-0 z-50 
       border-b md:border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       
       {/* Logo */}

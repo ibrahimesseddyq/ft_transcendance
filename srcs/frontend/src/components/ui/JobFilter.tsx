@@ -12,10 +12,10 @@ interface JobsArrayProps {
 }
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
-const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: JobsArrayProps) => {
+const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: any) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
-  const limit = 6;
+  const limit = 2;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -28,82 +28,67 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
     try {
       setIsLoading(true);
       const params = new URLSearchParams();
+      if (search) params.append("keyword", search);
+      if (filters.department.length > 0) params.append("department", filters.department.join(","));
+      if (filters.employmentType.length > 0) params.append("employmentType", filters.employmentType.join(","));
+      if (filters.status.length > 0) params.append("status", filters.status.join(","));
+      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
+      if (filters.isRemote !== null) params.append("isRemote", String(filters.isRemote));
       
-      if (search) 
-        params.append("keyword", search);
-      if (filters.department.length > 0)
-        params.append("department", filters.department.join(","));
-      if (filters.employmentType.length > 0)
-        params.append("employmentType", filters.employmentType.join(","));
-      if (filters.status.length > 0)
-          params.append("status", filters.status.join(","));
-      if (filters.skills.length > 0)
-        params.append("skills", filters.skills.join(","));
-      if (filters.isRemote !== null)
-        params.append("isRemote", String(filters.isRemote));
-
       params.append("page", String(currentPage));
       params.append("limit", String(limit));
 
-      const response = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
+      const [response] = await Promise.all([
+        mainApi.get(`${env_main_api}/jobs?${params.toString()}`),
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
 
-      const result =  response.data;
-      console.log("all Jobs :", result.data);
-      setJobsArray(result.data);
-      setTotalPages(result.data.totalPages);
+      const result = response.data.data; 
+
+      if (result) {
+        setJobsArray(result.data || []);
+        setTotalPages(result.totalPages || 1);
+      }
     } catch (error) {
       console.error("Fetch Error:", error);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const getCount = (key: any, value: string | boolean) => {
-    return totalJobs.filter((job:any) => {
-      if (typeof value === 'string') {
-        return String(job[key]).toLowerCase() === value.toLowerCase();
-      }
-      return job[key] === value;
+  const getCount = (key: string, value: any) => {
+    if (!Array.isArray(totalJobs)) return 0;
+    return totalJobs.filter((job: any) => {
+      if (typeof value === 'boolean') return job[key] === value;
+      return String(job[key]).toLowerCase() === String(value).toLowerCase();
     }).length;
   };
 
   const getSkillCount = (skill: string) => {
-    return totalJobs.filter((job:any) => 
+    if (!Array.isArray(totalJobs)) return 0;
+    return totalJobs.filter((job: any) => 
       job.skills?.toLowerCase().includes(skill.toLowerCase())
     ).length;
   };
 
-  const toggleFilter = (key: 'department' | 'employmentType' | 'skills' | 'status', value: string) => {
-  const normalizedValue = value.toLowerCase();
-
-  setFilters(prev => {
-    const currentValues = prev[key]; 
-    const isAlreadySelected = currentValues.includes(normalizedValue);
-  
-    const updatedValues = isAlreadySelected
-      ? currentValues.filter(v => v !== normalizedValue)
-      : [...currentValues, normalizedValue];
-
-    return {
+  const toggleFilter = (key: keyof typeof filters, value: string) => {
+    const val = value.toLowerCase();
+    setFilters(prev => ({
       ...prev,
-      [key]: updatedValues
-    };
-  });
-};
+      [key]: (prev[key] as string[]).includes(val)
+        ? (prev[key] as string[]).filter(v => v !== val)
+        : [...(prev[key] as string[]), val]
+    }));
+  };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters, search]);
-
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => fetchJobs(), 300);
-    return () => clearTimeout(delayDebounce);
-  }, [filters, search, currentPage]);
+  useEffect(() => { setCurrentPage(1); }, [filters, search]);
+ 
+  useEffect(() => { fetchJobs(); }, [filters, search, currentPage]);
 
 
   return (
-    <div className="flex flex-col w-full md:w-64 h-fit md:max-h-[calc(100vh-90px)] bg-[#1e1e1e] text-surface-main p-5 
-      rounded-2xl gap-6 sticky ">
+    <div className="flex flex-col w-full md:w-64 h-fit md:max-h-[calc(100vh-90px)] bg-[#1e1e1e] 
+      text-surface-main p-5 rounded-2xl gap-6 sticky ">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>

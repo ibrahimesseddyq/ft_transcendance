@@ -27,6 +27,10 @@ export const deleteJob = async (jobId) => {
 }
 
 export const findManyJobs = async (filters) => {
+    const page = parseInt(filters.page) || 1;
+    const limit = parseInt(filters.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const { keyword } = filters;
     const isRemoteBool = 
         filters.isRemote === "true" ? true : 
@@ -37,31 +41,43 @@ export const findManyJobs = async (filters) => {
     const skillsArray = filters.skills ? filters.skills.split(',') : undefined;
     const deptArray = filters.department ? filters.department.split(',') : undefined;
     const typeArray = filters.employmentType ? filters.employmentType.split(',') : undefined;
+    const whereClause = {
+        ...(keyword && {
+            OR: [
+                { title: { contains: keyword } },
+                { description: { contains: keyword } },
+                { department: { contains: keyword } },
+                { employmentType: { contains: keyword } },
+                { skills: { contains: keyword } },
+            ]
+        }),
+        ...(skillsArray && {
+            OR: skillsArray.map(skill => ({
+                skills: { contains: skill.trim(), mode: 'insensitive' }
+            }))
+        }),
+        department: deptArray ? { in: deptArray } : undefined,
+        employmentType: typeArray ? { in: typeArray } : undefined,
+        status: statusArray ? { in: statusArray } : undefined,
+        isRemote: isRemoteBool,
+    };
 
-    const jobs = await prisma.job.findMany({
-        where: {
-            ...(keyword && {
-                OR: [
-                    { title: { contains: keyword,} },
-                    { description: { contains: keyword,} },
-                    { department: { contains: keyword,} },
-                    { employmentType: { contains: keyword,} },
-                    { skills: { contains: keyword,} },
-                ]
-            }),
-            ...(skillsArray && {
-              OR: skillsArray.map(skill => ({
-                skills: {contains: skill.trim()}
-              }))
-            }),
-            department: deptArray ? { in: deptArray } : undefined,
-            employmentType: typeArray ? { in: typeArray } : undefined,
-            status: statusArray ? { in: statusArray} : undefined,
-            isRemote: isRemoteBool,
-        },
-    });
+    const [jobs, totalCount] = await Promise.all([
+        prisma.job.findMany({
+            where: whereClause,
+            skip: skip,
+            take: limit,
+            orderBy: { createdAt: 'desc' }
+        }),
+        prisma.job.count({ where: whereClause })
+    ]);
 
-    return jobs;
+    return {
+        data: jobs,
+        totalCount: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        currentPage: page
+    };
 };
 
 export const getApplicationsByJobId =  async (jobId) => {

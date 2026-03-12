@@ -17,7 +17,7 @@ export function QuizPage() {
             <div className='grid grid-cols-4 h-full w-full lg:divide-x-2 divide-gray-200 dark:divide-gray-800 p-4 lg:p-0'>
                 
                 {/* Sidebar */}
-                <div className="col-span-4 lg:col-span-1 gap-4 bg-transparent lg:bg-[#f3f4f6] dark:lg:bg-secondary-darkbg/50
+                <div className="col-span-4 lg:col-span-1 gap-4 bg-transparent lg:bg-[#f3f4f6] dark:lg:bg-secondary-darkbg
                     h-full w-full order-last lg:order-first p-4 transition-colors">
                     
                     {/* Header */}
