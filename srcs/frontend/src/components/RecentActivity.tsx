@@ -14,7 +14,7 @@ export function RecentActivity() {
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
       <header className="flex items-center justify-between h-full w-full max-h-16 sticky top-0 z-20 border-b border-gray-50 dark:border-slate-800">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white ml-5 m-3">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-surface-main ml-5 m-3">
           Recent Activity
         </h3>
       </header>
@@ -33,14 +33,14 @@ export function RecentActivity() {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-surface-main truncate">
                     {item.firstName} {item.lastName}
                   </p>
 
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                     item.status === "Accepted" 
                       ? "bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-500/20" 
-                      : "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/20"
+                      : "bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-danger-hover border-red-200 dark:border-red-500/20"
                   }`}>
                     {item.status === "Accepted" 
                       ? <CheckCircle2 size={12} className="mr-1"/> 

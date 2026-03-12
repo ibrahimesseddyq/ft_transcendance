@@ -18,7 +18,7 @@ interface Notification {
 
 const TYPE_COLORS: Record<string, string> = {
   accepted: 'text-green-400',
-  rejected: 'text-red-400',
+  rejected: 'text-danger-hover',
   newMessage: 'text-blue-400',
   applicationReceived: 'text-yellow-400',
 };
@@ -108,11 +108,11 @@ export function Notifications() {
       >
         <Bell
           className={`h-full w-full transition-colors ${
-            isOpen ? 'text-green-600' : 'text-black dark:text-white'
+            isOpen ? 'text-green-600' : 'text-black dark:text-surface-main'
           } hover:text-green-600`}
         />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-surface-main text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center leading-none">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -121,13 +121,13 @@ export function Notifications() {
       {isOpen && (
         <div className="absolute top-11 right-0 w-80 bg-[#1F2027] border border-[#5F88B8] rounded-md shadow-2xl z-[100]">
           <div className="flex items-center justify-between px-3 py-2 border-b border-gray-700">
-            <span className="text-white text-xs font-bold">
+            <span className="text-surface-main text-xs font-bold">
               Notifications {unreadCount > 0 && <span className="text-[#5F88B8]">({unreadCount})</span>}
             </span>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-[#10B77F] text-[10px] hover:underline"
+                className="text-accent text-[10px] hover:underline"
               >
                 Mark all as read
               </button>
@@ -151,7 +151,7 @@ export function Notifications() {
                     ${item.isRead ? 'hover:bg-[#2A2B35]' : 'bg-[#252730] hover:bg-[#2A2B35]'}`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className={`text-xs font-bold flex items-center gap-1 ${TYPE_COLORS[item.type] ?? 'text-white'}`}>
+                    <p className={`text-xs font-bold flex items-center gap-1 ${TYPE_COLORS[item.type] ?? 'text-surface-main'}`}>
                       {item.title}
                       {!item.isRead && (
                         <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />

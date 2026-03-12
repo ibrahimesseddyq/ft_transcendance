@@ -2,7 +2,7 @@ import { CopyCheck, Sparkle, Trash2 } from "lucide-react";
 
 const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => void }) => {
   return (
-    <div className="group bg-white dark:bg-slate-900 flex flex-col gap-3 border border-gray-200 dark:border-gray-800 px-4 py-4 rounded-xl mt-3 shadow-sm hover:shadow-md hover:border-[#00adef]/50 transition-all duration-300">
+    <div className="group bg-surface-main dark:bg-secondary-darkbg flex flex-col gap-3 border border-gray-200 dark:border-gray-800 px-4 py-4 rounded-xl mt-3 shadow-sm hover:shadow-md hover:border-primary/50 transition-all duration-300">
       
       <div className='flex gap-3 items-start'>
         <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
@@ -20,7 +20,7 @@ const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => voi
             </span>
           </div>
           
-          <h1 className="text-sm font-bold text-black dark:text-white leading-tight mt-1 break-words">
+          <h1 className="text-sm font-bold text-black dark:text-surface-main leading-tight mt-1 break-words">
             {test.question}
           </h1>
         </div>
@@ -37,7 +37,7 @@ const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => voi
 
       <div className='flex gap-2 justify-between items-center pt-2 border-t border-gray-50 dark:border-gray-800/50'>
         <div className='flex gap-2 items-center'>
-          <CopyCheck className='text-[#00adef] w-4 h-4'/>
+          <CopyCheck className='text-primary w-4 h-4'/>
           <span className='text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase'>
             {test.choices?.length || 0} Choices
           </span>
