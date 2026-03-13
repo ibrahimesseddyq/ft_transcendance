@@ -29,7 +29,7 @@ export function Main() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -44,7 +44,7 @@ export function Main() {
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/otp" element={<QRcode/>} />
+          <Route path="/Otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
@@ -97,14 +97,14 @@ export function Main() {
                 <Route path="/Jobs" element={<Jobs />} />
                 <Route path="/Jobdescription" element={<JobDescription />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/chat" element={<Chat />} />
+                <Route path="/Chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
                 <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
               </Route>
 
               {/* ROOT REDIRECT */}
               <Route path="/" element={
-                user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
+                user?.role === 'candidate' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
               } />
 
               <Route path="/NotFound" element={<NotFound />} />

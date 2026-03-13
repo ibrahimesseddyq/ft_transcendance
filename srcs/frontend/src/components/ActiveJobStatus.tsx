@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 
 export function ActiveJobStatus({ data }: { data: any[] }) {
 
@@ -29,7 +29,7 @@ export function ActiveJobStatus({ data }: { data: any[] }) {
                         />
                     ) : (
                         <div className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-2 border-surface-main dark:border-secondary-darkbg">
-                            <User className="text-gray-400" size={20} />
+                            <Icon name='User' className="text-gray-400" size={20} />
                         </div>
                     )}
                     <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface-main dark:border-secondary-darkbg xl:hidden bg-green-400`} />

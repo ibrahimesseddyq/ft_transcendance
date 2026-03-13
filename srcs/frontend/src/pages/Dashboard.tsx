@@ -6,33 +6,6 @@ import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from 'react'
 import { mainApi } from '@/utils/Api'
 
-const TotalStats = [
-  {
-    id: 1,
-    title: 'Active Job',
-    number: 20,
-    day: '+3 last 30 days'
-  },
-  {
-    id: 2,
-    title: 'Active Condidates',
-    number: 215,
-    day: '+3 last 30 days'
-  },
-  {
-    id: 3,
-    title: 'New Condidates',
-    number: 48,
-    day: '12% from last week'
-  },
-  {
-    id: 4,
-    title: 'Time To Hire',
-    number: 20,
-    day: '5 days from last month'
-  },
-]
-
 export function Dashboard() {
 
   const [dashboardData, setDashboardData] = useState<any>(null);

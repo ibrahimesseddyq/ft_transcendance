@@ -1,4 +1,4 @@
-import { CopyCheck, Sparkle, Trash2 } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 
 const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => void }) => {
   return (
@@ -30,14 +30,14 @@ const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => voi
              onClick={() => onDelete(test.id)}
              className='p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-950/30 text-gray-400 hover:text-red-500 rounded-lg transition-all'
            >
-             <Trash2 size={16} />
+             <Icon name='Trash2' size={16} />
            </button>
         </div>
       </div>
 
       <div className='flex gap-2 justify-between items-center pt-2 border-t border-gray-50 dark:border-gray-800/50'>
         <div className='flex gap-2 items-center'>
-          <CopyCheck className='text-primary w-4 h-4'/>
+          <Icon name='CopyCheck' className='text-primary w-4 h-4'/>
           <span className='text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase'>
             {test.choices?.length || 0} Choices
           </span>
@@ -45,7 +45,7 @@ const TestCard = ({ test, onDelete }: { test: any; onDelete: (id: string) => voi
         
         {test.passingScore && (
            <div className="flex items-center gap-1 bg-yellow-500/10 px-2 py-0.5 rounded">
-             <Sparkle size={10} className="text-yellow-600" />
+             <Icon name='Sparkle' size={10} className="text-yellow-600" />
              <span className="text-[10px] font-bold text-yellow-700">{test.passingScore} PT</span>
            </div>
         )}

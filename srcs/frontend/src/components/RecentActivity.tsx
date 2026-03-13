@@ -1,4 +1,4 @@
-import { CheckCircle2, XCircle, Clock, User } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 
 export function RecentActivity({ activities }: any) {
 
@@ -18,7 +18,7 @@ export function RecentActivity({ activities }: any) {
           >
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-sm">
-                {item.userInitials || <User size={16} />}
+                {item.userInitials || <Icon name='User' size={16} />}
               </div>
 
               <div className="flex-1 min-w-0">
@@ -41,7 +41,7 @@ export function RecentActivity({ activities }: any) {
                 </p>
                   
                 <div className="flex items-center mt-2 text-xs text-gray-400 dark:text-gray-500">
-                  <Clock size={12} className="mr-1" />
+                  <Icon name='Clock' size={12} className="mr-1" />
                   {item.timeAgo}
                 </div>
               </div>

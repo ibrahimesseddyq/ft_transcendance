@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CloudUpload, SquarePen, Loader2 } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
@@ -170,14 +170,14 @@ export function EditProfile() {
         >
           {isSubmitting && avatarProgress > 0 && (
              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-full text-surface-main text-xs font-bold backdrop-blur-[1px]">
-                {avatarProgress < 100 ? <Loader2 className="animate-spin h-5 w-5 mb-1 text-primary" /> : <span className="text-green-400 text-xl">✓</span>}
+                {avatarProgress < 100 ? <Icon name='Loader2' className="animate-spin h-5 w-5 mb-1 text-primary" /> : <span className="text-green-400 text-xl">✓</span>}
                 <span>{avatarProgress}%</span>
              </div>
           )}
         </div>
         <input id="avatar-upload" type='file' accept="image/*" className="hidden" onChange={handleImageChange} />
         <label htmlFor="avatar-upload" className="absolute bottom-1 right-1 p-2 bg-surface-main dark:bg-gray-800 rounded-full shadow-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:scale-110 transition-transform">
-          <SquarePen className="h-4 w-4" />
+          <Icon name='SquarePen' className="h-4 w-4" />
         </label>
       </div>
 
@@ -218,7 +218,7 @@ export function EditProfile() {
                   </div>
                 ) : (
                   <>
-                    <CloudUpload className={`h-10 w-10 mb-2 ${errors.resumeUrl ? 'text-red-500' : hasResume ? 'text-green-500' : 'text-gray-400'}`} />
+                    <Icon name='CloudUpload' className={`h-10 w-10 mb-2 ${errors.resumeUrl ? 'text-red-500' : hasResume ? 'text-green-500' : 'text-gray-400'}`} />
                     <h1 className="text-sm font-semibold text-gray-600 dark:text-gray-300">
                       {hasResume ? "New Resume Selected" : "Replace Resume"}
                     </h1>
@@ -238,7 +238,7 @@ export function EditProfile() {
           disabled={isSubmitting} 
           className="w-full md:w-48 bg-primary hover:bg-[#0086b8] disabled:bg-gray-300 text-surface-main font-bold py-3 px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
         >
-          {isSubmitting ? <><Loader2 className="animate-spin h-4 w-4" /> Updating...</> : "Update Profile"}
+          {isSubmitting ? <><Icon name='Loader2' className="animate-spin h-4 w-4" /> Updating...</> : "Update Profile"}
         </button>
         <button type="button" onClick={() => navigate(-1)} className="font-semibold py-3 px-6 text-black dark:text-surface-main hover:text-red-500 transition-colors">
           Cancel

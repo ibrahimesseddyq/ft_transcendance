@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, FlaskConical, CheckCircle2 } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { mainApi, quizApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 
@@ -126,7 +126,7 @@ export function JobPhaseManager({ jobId }: Props) {
           text-gray-500 dark:text-gray-400 hover:text-accent transition-colors w-full"
       >
         <span className="flex items-center gap-1">
-          <FlaskConical size={13} className="text-accent" />
+          <Icon name='FlaskConical' size={13} className="text-accent" />
           Assigned Test
           {phases.length > 0 && (
             <span className="ml-1 px-1.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold">
@@ -134,14 +134,14 @@ export function JobPhaseManager({ jobId }: Props) {
             </span>
           )}
         </span>
-        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        {open ? <Icon name='ChevronUp' size={14} /> : <Icon name='ChevronDown' size={14} />}
       </button>
 
       {open && (
         <div className="mt-3 flex flex-col gap-2">
           {loading ? (
             <div className="flex justify-center py-3">
-              <Loader2 size={16} className="animate-spin text-accent" />
+              <Icon name='Loader2' size={16} className="animate-spin text-accent" />
             </div>
           ) : (
             <>
@@ -152,7 +152,7 @@ export function JobPhaseManager({ jobId }: Props) {
                     return (
                       <li key={uniqueId} className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 group">
                         <div className="flex items-center gap-2 min-w-0">
-                          <CheckCircle2 size={12} className="text-accent shrink-0" />
+                          <Icon name='CheckCircle2' size={12} className="text-accent shrink-0" />
                           <div className="min-w-0">
                             <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{phase.name}</p>
                             <p className="text-[10px] text-gray-400 italic">Linked to Quiz ID: {phase.testId?.slice(0, 8)}...</p>
@@ -165,7 +165,7 @@ export function JobPhaseManager({ jobId }: Props) {
                           }} 
                           className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
                         >
-                          <Trash2 size={12} />
+                          <Icon name='Trash2' size={12} />
                         </button>
                       </li>
                     );
@@ -217,7 +217,7 @@ export function JobPhaseManager({ jobId }: Props) {
                     className="flex items-center justify-center gap-1 w-full h-8 rounded-lg border
                      border-dashed border-gray-300 dark:border-slate-700 text-xs 
                      text-gray-400 hover:border-accent hover:text-accent transition-colors">
-                      <Plus size={13} /> Link Quiz
+                      <Icon name='Plus' size={13} /> Link Quiz
                     </button>
                   )}
                 </>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { quizApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
-import { FlaskConical, DiamondPlus } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 interface Mcq {
     id: string;
@@ -87,7 +87,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
             {/* Header */}
             <div className='flex justify-between items-center'>
                 <div className='py-2 px-4 flex gap-2 bg-slate-300/20 dark:bg-slate-700/30 w-fit rounded-lg'>
-                    <FlaskConical className='text-primary' />
+                    <Icon name='FlaskConical' className='text-primary' />
                     <h1 className='text-lg font-semibold text-black dark:text-surface-main'>Create Test</h1>
                 </div>
                 <select 
@@ -200,7 +200,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
                     className="group flex rounded-xl text-surface-main text-lg h-12 items-center bg-primary 
                         hover:bg-[#008dbf] px-8 py-2 shadow-lg shadow-primary/20 transition-all active:scale-95">
                     <div className="flex items-center gap-3">
-                        <DiamondPlus className="w-5 h-5 text-surface-main group-hover:rotate-12 transition-transform" />
+                        <Icon name='DiamondPlus' className="w-5 h-5 text-surface-main group-hover:rotate-12 transition-transform" />
                         <p className="font-bold text-base">Create Test</p>
                     </div>
                 </button>

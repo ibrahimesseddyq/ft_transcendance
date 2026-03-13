@@ -2,7 +2,7 @@ import { McqSchema } from '@/utils/ZodSchema';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CopyCheck, Check, Plus, Trash2, Sparkle, DiamondPlus } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useState } from 'react';
 import Notification from "@/utils/TostifyNotification";
 import { quizApi } from '@/utils/Api';
@@ -110,7 +110,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
             <div className='flex justify-between'>
                 <div className='py-2 px-2 lg:px-4 flex gap-2 bg-slate-300/20 
                     dark:bg-slate-700/30 w-fit rounded-lg transition-colors duration-300'>
-                    <CopyCheck className='text-black dark:text-white transition-colors duration-300' />
+                        <Icon name="CopyCheck" className='text-black dark:text-white transition-colors duration-300'/>
                     <h1 className='text-sm lg:text-lg font-semibold text-black 
                         dark:text-white transition-colors duration-300'>
                         Multiple Choice
@@ -190,7 +190,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                             rounded-md border border-slate-200 dark:border-slate-700 transition-colors duration-300'>
                             <span className='text-sm font-medium text-black dark:text-gray-300 transition-colors duration-300'>#{tag}</span>
                             <button type="button" onClick={() => removeTag(tag)} className='text-slate-500 hover:text-red-500 transition-colors duration-300'>
-                                <Trash2 size={14} />
+                                <Icon name="Trash2" size={14} />
                             </button>
                         </div>
                     ))}
@@ -215,7 +215,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
                         hover:bg-[#008dbf] px-8 py-2 shadow-lg shadow-[#00adef]/20 active:scale-95"
                 >
                     <div className="flex items-center gap-3">
-                        <DiamondPlus className="w-5 h-5 text-surface-main group-hover:rotate-12 transition-transform" /> 
+                        <Icon name="DiamondPlus" className="w-5 h-5 text-surface-main group-hover:rotate-12 transition-transform" />
                         <p className="font-bold text-base">Save Test</p>
                     </div>
                 </button>
@@ -251,7 +251,7 @@ const AddChoice = ({ onAdd, setInputError }: any) => {
                     border-gray-300 dark:border-gray-700 rounded-lg text-black dark:text-white 
                     hover:border-[#00adef] dark:hover:border-[#00adef] transition-colors duration-300'
             >
-                <Plus size={18} className="text-primary"/>
+                <Icon name="Plus" size={18} className="text-primary" />
                 <span className="font-bold text-sm">ADD</span>
             </button>
         </div>
@@ -264,7 +264,7 @@ const DisplayChoice = ({ Item, onDelete }: any) => (
             ${Item.isCorrect ? 
             'bg-primary border-primary' : 
             'bg-surface-main dark:bg-slate-800 border-gray-300 dark:border-gray-600'}`}>
-            {Item.isCorrect && <Check className='text-surface-main w-4 h-4' />}
+            {Item.isCorrect && <Icon name="Check" className='text-surface-main w-4 h-4' />}
         </div>
         <div className='min-h-11 flex-1 bg-slate-50 dark:bg-slate-800/30 text-black dark:text-gray-200 truncate
             p-3 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center text-sm transition-colors duration-300'>
@@ -273,7 +273,7 @@ const DisplayChoice = ({ Item, onDelete }: any) => (
         <button type="button" onClick={() => onDelete(Item.id)} 
             className='p-2.5 text-gray-400 hover:text-red-500 bg-slate-100 
                 dark:bg-slate-800 rounded-lg transition-colors duration-300'>
-            <Trash2 size={18} />
+            <Icon name="Trash2" size={18} />
         </button>
     </div>
 );
@@ -291,7 +291,7 @@ const CardField = ({ title, tag, name, register, error, placeholder, type }: any
             />
             <div className='flex gap-2 border-l border-gray-300 dark:border-gray-600 pl-2 items-center'>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{tag}</p>
-                <Sparkle size={16} className="text-yellow-500"/>
+                <Icon name="Sparkle" size={16} className="text-yellow-500" />
             </div>
         </div>
         {error && <p className="text-danger-hover text-[10px] italic">{error}</p>}
@@ -314,7 +314,7 @@ const SingleTagInput = ({ onAddTag }: any) => {
             <button type='button' onClick={() => { onAddTag(currentTag); setCurrentTag(""); }} 
                 className='group h-12 px-4 border-2 border-dashed border-gray-300 dark:border-gray-700 
                     rounded-lg text-gray-500 hover:border-primary dark:hover:border-primary transition-colors'>
-                <Plus size={18} className='group-hover:text-primary'/>
+                <Icon name="Plus" size={18} className='group-hover:text-primary' />
             </button>
         </div>
     );
