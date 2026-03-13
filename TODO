@@ -6,3 +6,4 @@ need to ckeck all filters and make sure that are implemented correctly
 -------------------------------------------------------------------------------
 [ibrahim]
 set secure to true
+- also remove all hardcoded cred => ton env
