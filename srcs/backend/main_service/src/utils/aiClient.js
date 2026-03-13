@@ -11,7 +11,13 @@ const aiClient = axios.create({
 })
 
 aiClient.interceptors.response.use(
-
+    (res) => res,
+    (err) => {
+        const isTimeout = err.code === 'ECONNABORTED';
+        const status =  err.response?.status;
+        const data = err.response?.data;
+        return Promise.reject({aiError: true, isTimeout, status, data, message: err.message })
+    }
 )
 
 export default aiClient;

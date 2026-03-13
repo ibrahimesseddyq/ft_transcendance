@@ -1,6 +1,7 @@
 import {HttpException} from '../utils/httpExceptions.js';
 import path from 'path';
 import fs from 'fs/promises';
+import { classifyAvatar } from './aiService.js';
 
 export const saveResume = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
@@ -15,7 +16,20 @@ export const saveResume = async (userId, file) => {
 export const saveAvatar = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
     const filename = `${userId}${fileExt}`;
+    const physicalPath = file.path;
+    console.log('avatr physical path ',physicalPath);
     const avatarPath = '/uploads/avatars/' + filename;
+    try {
+        const result = await classifyAvatar(physicalPath);
+        if (result != 'valid profile')
+        {
+            await fs.unlink(physicalPath);
+            throw new HttpException(400, 'Avatar rejected by AI service');
+        }
+    } catch (err) {
+        await fs.unlink(filePath).catch(() => {});
+        throw err;
+    }
     return {
         type :'avatar',
         avatarUrl: avatarPath,
