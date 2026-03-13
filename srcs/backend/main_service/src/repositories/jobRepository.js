@@ -1,6 +1,4 @@
 import {prisma} from '../config/prisma.js';
-import { getJobPhases } from './jobPhaseRepository.js';
-
 
 export const findJobById = async (jobId) => {
     return await prisma.job.findUnique({

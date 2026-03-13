@@ -1,4 +1,3 @@
-import { success } from 'zod';
 import * as userService from '../services/userService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { getSafeUser } from '../utils/excludeSensitive.js';
@@ -32,7 +31,7 @@ export const getUserApplications = asyncHandler(async (req,res,next) => {
     res.status(200)
     .json({
         success : true,
-        data : applications,
+        data : getSafeUser(applications),
     })
 })
 
@@ -41,7 +40,7 @@ export const getUserJobs = asyncHandler(async (req,res,next) => {
     res.status(200)
     .json({
         success: true,
-        data: jobs
+        data: getSafeUser(jobs)
     })
 })
 
