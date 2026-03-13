@@ -71,11 +71,12 @@ kube-build:
 	docker build -t frontend:dev   $(ROOT)srcs/frontend
 
 kube-load: kube-build
-	CONTEXT=$$(kubectl config current-context)
-	if echo $$CONTEXT | grep -q "k3d"; then
-		CLUSTER=$$(echo $$CONTEXT | sed 's/k3d-//')
-		k3d image import  gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev  waf:dev -c $$CLUSTER
-	fi
+	k3d image import gateway:dev -c hirefy
+	k3d image import main-service:dev -c hirefy
+	k3d image import quiz-service:dev -c hirefy
+	k3d image import ai-service:dev -c hirefy
+	k3d image import frontend:dev -c hirefy
+	k3d image import waf:dev -c hirefy
 
 kube-deploy:
 	# 1. Namespace first
