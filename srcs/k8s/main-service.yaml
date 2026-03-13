@@ -23,8 +23,8 @@ spec:
         vault.hashicorp.com/agent-inject-secret-jwt: "secret/data/main-service/jwt"
         vault.hashicorp.com/agent-inject-template-jwt: |
           {{- with secret "secret/data/main-service/jwt" -}}
-          export JWT_SECRET="{{ .Data.data.JWT_SECRET }}"
-          export JWT_EXPIRES_IN="{{ .Data.data.JWT_EXPIRES_IN }}"
+          export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+          export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
           {{- end }}
         vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/oauth"
         vault.hashicorp.com/agent-inject-template-oauth: |
@@ -40,6 +40,9 @@ spec:
         - name: main-service
           image: main-service:dev
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: main-service-config
           command:
           - /bin/sh
           - -c
@@ -54,6 +57,7 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+
       # initContainers:
       #   - name: prisma-db-push
       #     image: main-service:dev
@@ -98,3 +102,12 @@ data:
   NODE_ENV: "production"
   HOSTNAME: "main-service"
   HOST_IP: "main-service"
+  HOST: "main-service"
+  BCRYPT_ROUNDS: "10"
+  CALLBACK_URL: "https://52.47.74.144.nio.io/api/main/auth/google/callback"
+  ACCESS_TOKEN_EXPIRY: "1d"
+  REFRESH_TOKEN_EXPIRY: "7d"
+  VERIFY_SECRET_EXPIRY: "7d"
+  FRONTEND_URL: "https://52.47.74.144.nio.io"
+  BACKEND_URL: "http://gateway:8081/api/main"
+  QUIZ_SERVICE_URL: "http://gateway:8081/api/quiz"
