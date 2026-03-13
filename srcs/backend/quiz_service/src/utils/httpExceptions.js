@@ -1,25 +1,19 @@
-class CustomError extends Error {
-    constructor(message , statusCode = 500,errors = []) {
+export class CustomError extends Error {
+    constructor(statusCode = 500, message ,errors = []) {
         super(message);
         this.statusCode = statusCode;
         this.errors = errors.length ? errors : [message];
     }
 }
 
-class HttpException extends CustomError {
-    constructor(message = 'Something went wrong',statusCode = 500) {
-        super(message,statusCode,[message])
+export class HttpException extends CustomError {
+    constructor(statusCode = 500,message = 'Something went wrong') {
+        super(statusCode,[message],message)
     }
 }
 
-class HttpValidationException extends  CustomError {
+export class HttpValidationException extends  CustomError {
     constructor(errors = ['Bad Request']) {
-        super('Bad Request',400);
+        super(400, errors);
     }
-}
-
-export {
-    CustomError,
-    HttpException,
-    HttpValidationException
 }
