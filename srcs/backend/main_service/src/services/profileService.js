@@ -3,24 +3,37 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as fileService from './fileService.js';
 import * as userService from './userService.js';
 
-export const createProfile = async  (userId , profileData) => {
-    const createData =  {...profileData.body};
-    const uploadTasks = [];
-    const tasks = [];
-    if (profileData.files?.avatar?.[0])
-        uploadTasks.push(fileService.saveAvatar(userId, profileData.files.avatar[0]))     
-    if (profileData.files?.resume?.[0])
-        uploadTasks.push(fileService.saveResume(userId, profileData.files.resume[0]))
-    const [{avatarUrl},{resumeUrl}] = await Promise.all(uploadTasks)
-    tasks.push(profileRepository.createProfile({
-        ...createData,
-        userId,
-        resumeUrl
-    }))
-    if (avatarUrl)
-        tasks.push(userService.updateUser(userId, {avatarUrl}))
+// this updated need to be checked
+export const createProfile = async (userId, profileData) => {
+    const createData = { ...profileData.body };
+    
+    let avatarUrl = null;
+    let resumeUrl = null;
+
+    if (profileData.files?.avatar?.[0]) {
+        const result = await fileService.saveAvatar(userId, profileData.files.avatar[0]);
+        avatarUrl = result.avatarUrl;
+    }
+    if (profileData.files?.resume?.[0]) {
+        const result = await fileService.saveResume(userId, profileData.files.resume[0]);
+        resumeUrl = result.resumeUrl;
+    }
+    const tasks = [
+        profileRepository.createProfile({
+            ...createData,
+            userId,
+            resumeUrl
+        })
+    ];
+
+    if (avatarUrl) {
+        tasks.push(userService.updateUser(userId, { avatarUrl }));
+    }
+
     const [profile, user] = await Promise.all(tasks);
-    profile.user.avatarUrl = user.avatarUrl;
+    if (user && user.avatarUrl) {
+        profile.user.avatarUrl = user.avatarUrl;
+    }
     return profile;
 }
 

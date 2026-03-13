@@ -21,7 +21,7 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 import  quizRoutes from './routes/quizRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js';
-import notificationRoutes from './routes/notificationRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js'
 
 const app =  express();
 
