@@ -175,6 +175,14 @@ export function useChat() {
     chatSocket.on('onOnlineUsers', handleOnlineUsers);
     chatSocket.on('onNewConversation', handleNewConversation);
 
+    // If the socket connected before these handlers were registered,
+    // synchronize state immediately so online status is not stale.
+    if (chatSocket.isConnected()) {
+      hasConnectedOnce.current = true;
+      setState((prev) => ({ ...prev, isConnected: true }));
+      chatSocket.requestOnlineUsers();
+    }
+
     return () => {
       chatSocket.off('onConnect', handleConnect);
       chatSocket.off('onDisconnect', handleDisconnect);
