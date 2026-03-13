@@ -81,14 +81,14 @@ vault write auth/kubernetes/role/quiz_service_db \
 echo "Storing secrets in vault..."
 vault kv put secret/main_service_db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_MAIN_ROOT_PASSWORD}" \
-  MARIADB_DATABASE="hirefy" \
-  MARIADB_USER="hirefy" \
+  MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
+  MARIADB_USER="${MARIADB_MAIN_USER}" \
   MARIADB_PASSWORD="${MARIADB_MAIN_PASSWORD}"
 ## change those to env!!!!!!!!!!!!!
 vault kv put secret/quiz_service_db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_QUIZ_ROOT_PASSWORD}" \
-  MARIADB_DATABASE="hirefy" \
-  MARIADB_USER="hirefy" \
+  MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
+  MARIADB_USER="${MARIADB_MAIN_USER}" \
   MARIADB_PASSWORD="${MARIADB_QUIZ_PASSWORD}"
 
 vault kv put secret/quiz-service/database \
