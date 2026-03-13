@@ -33,7 +33,7 @@ spec:
           image: quiz-service:dev
           envFrom:
             - configMapRef:
-              name: main-service-config
+                - name: main-service-config
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
