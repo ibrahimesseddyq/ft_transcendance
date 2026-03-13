@@ -29,12 +29,12 @@ export function Main() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const hasProfile = !!profile;
   
-  const publicPaths = ['/Login', '/reset-password', '/otp', '/auth/callback'];
+  const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
     <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] 
-      dark:bg-[#0f172a] md:h-screen md:overflow-hidden pt-4 px-4 transition-colors duration-300">
+      dark:bg-[#0f172a] md:h-screen md:overflow-hidden ">
       {children}
     </main>
   );
@@ -44,7 +44,7 @@ export function Main() {
       <FullScreenWrapper>
         <Routes>
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/otp" element={<QRcode/>} />
+          <Route path="/Otp" element={<QRcode/>} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="*" element={<Navigate to="/Login" replace />} />
         </Routes>
@@ -65,14 +65,14 @@ export function Main() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a] 
-        md:h-screen overflow-y-auto custom-scrollbar md:px-4 ">
+      <div className="min-h-screen w-full bg-[#F0F3FA] dark:bg-[#0f172a]  
+        md:h-screen overflow-y-auto custom-scrollbar px-2 md:px-4 ">
         <div className="h-20 w-full sticky top-2 z-50">
           <Header />
         </div>
 
         <div className="flex flex-1 w-full max-w-screen-2xl  overflow-hidden mx-auto">
-          <main className="w-full">
+          <main className="w-full h-full">
             <Routes>
               {/* STAFF ROUTES (Admin & Recruiter) */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter']} />}>
@@ -97,14 +97,14 @@ export function Main() {
                 <Route path="/Jobs" element={<Jobs />} />
                 <Route path="/Jobdescription" element={<JobDescription />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
-                <Route path="/chat" element={<Chat />} />
+                <Route path="/Chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
                 <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
               </Route>
 
               {/* ROOT REDIRECT */}
               <Route path="/" element={
-                user?.role === 'user' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
+                user?.role === 'candidate' ? <Navigate to="/Jobs" /> : <Navigate to="/Dashboard" />
               } />
 
               <Route path="/NotFound" element={<NotFound />} />

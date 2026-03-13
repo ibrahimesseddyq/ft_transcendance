@@ -1,4 +1,4 @@
-import { ArrowRightToLine, ChevronLeft } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
@@ -114,11 +114,11 @@ export function QRcode() {
 
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 
-            bg-white dark:bg-slate-900 rounded-2xl transition-colors duration-300">
+            bg-surface-main dark:bg-secondary-darkbg rounded-2xl transition-colors duration-300">
             <div className="flex flex-col gap-4 md:gap-8 items-center max-w-sm">
                 {/* Header Text */}
                 <div className="flex flex-col gap-1 items-center text-center">
-                    <h1 className="font-bold text-black dark:text-white text-lg md:text-xl">
+                    <h1 className="font-bold text-black dark:text-surface-main text-lg md:text-xl">
                         {firstLogin && step === 'QR_CODE' ? "Scan QR Code" : "Verify Code"}
                     </h1>
                     <p className="font-light text-black dark:text-gray-400 text-xs md:text-sm">
@@ -131,7 +131,7 @@ export function QRcode() {
                 {/* QR Code Section */}
                 {firstLogin && step === 'QR_CODE' ? (
                     <div className='relative flex items-center justify-center p-2 border-2 border-dashed 
-                        border-gray-200 dark:border-gray-700 rounded-lg bg-white'>
+                        border-gray-200 dark:border-gray-700 rounded-lg bg-surface-main'>
                         {qrLink ? (
                             <img src={qrLink} alt="2FA QR Code" className='h-40 w-40' />
                         ) : (
@@ -150,11 +150,11 @@ export function QRcode() {
                         type="submit" 
                         disabled={loading}
                         className="group flex gap-2 justify-center items-center w-full h-12 
-                            bg-[#00adef] hover:bg-[#008dbf] rounded-lg font-extrabold 
-                            text-white transition-colors shadow-lg shadow-[#00adef]/20"
+                            bg-primary hover:bg-[#008dbf] rounded-lg font-extrabold 
+                            text-surface-main transition-colors shadow-lg shadow-primary/20"
                     >
                         <span>{loading ? "Verifying..." : step === 'QR_CODE' ? "Next" : "Verify"}</span>
-                        <ArrowRightToLine className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
+                        <Icon name='ArrowRightToLine' className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
                     </button>
 
                     <div className="flex flex-col items-center gap-2">
@@ -163,9 +163,9 @@ export function QRcode() {
                                 type="button" 
                                 onClick={() => setStep('QR_CODE')}
                                 className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-400 
-                                    hover:text-black dark:hover:text-white transition-colors"
+                                    hover:text-black dark:hover:text-surface-main transition-colors"
                             >
-                                <ChevronLeft className="w-4 h-4"/> Back to QR
+                                <Icon name='ChevronLeft' className="w-4 h-4"/> Back to QR
                             </button>
                         )}
 
@@ -173,10 +173,10 @@ export function QRcode() {
                             Need help?{" "}
                             {firstLogin
                                 ?
-                                <span onClick={handleReset} className="font-bold underline cursor-pointer text-black dark:text-white">
+                                <span onClick={handleReset} className="font-bold underline cursor-pointer text-black dark:text-surface-main">
                                     Reset 2FA    
                                 </span> 
-                                : <span className="font-bold underline cursor-pointer text-black dark:text-white">
+                                : <span className="font-bold underline cursor-pointer text-black dark:text-surface-main">
                                     Contact support 
                                 </span> 
                             }

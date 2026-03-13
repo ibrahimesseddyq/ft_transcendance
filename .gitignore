@@ -9,6 +9,7 @@
 **/.env.prod
 **/.env.local
 **/.env copy
+profile_classf_model.weights.h5
 # keep .env.example files (safe to push as templates)
 !**/.env.example
 

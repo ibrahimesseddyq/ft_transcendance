@@ -9,12 +9,12 @@ export function LoginPage() {
 
   const getTabClasses = (tabName: string) => {
     let baseClasses = "relative maincard duration-1000 transition-all cursor-pointer \
-        overflow-hidden rounded-2xl shadow-xl shadow-[#00adef]/20 border dark:border-gray-800 ";
+        overflow-hidden rounded-2xl shadow-xl shadow-primary/20 border dark:border-gray-800 ";
     
     const isActive = activeCard === tabName;
 
     if (isActive) {
-      baseClasses += 'bg-white dark:bg-black/30 z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
+      baseClasses += 'bg-surface-main dark:bg-black/30 z-20 scale-100 min-h-[500px] h-auto w-full md:h-full md:w-[85%]';
     } else {
       baseClasses += 'bg-gray-100 dark:bg-zinc-900 z-10 scale-95 h-[70px] w-full md:h-full md:w-[15%]';
     }
