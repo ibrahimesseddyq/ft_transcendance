@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
@@ -106,7 +106,7 @@ export function Notifications() {
         className="inline-flex items-center justify-center h-6 w-6 relative"
         onClick={() => setIsOpen((o) => !o)}
       >
-        <Bell
+        <Icon name='Bell'
           className={`h-full w-full transition-colors ${
             isOpen ? 'text-green-600' : 'text-black dark:text-surface-main'
           } hover:text-green-600`}
@@ -144,7 +144,7 @@ export function Notifications() {
                     if (item.type === 'newMessage' && item.referenceId) {
                       sessionStorage.setItem('chat_conversationId', item.referenceId);
                       setIsOpen(false);
-                      navigate('/chat');
+                      navigate('/Chat');
                     }
                   }}
                   className={`flex flex-col gap-1 p-3 cursor-pointer border-b border-gray-800 last:border-0 transition-colors

@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navigation";
 import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
-import { Sun, Moon } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
@@ -58,8 +58,8 @@ export function Header() {
           className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-yellow-400 
             hover:ring-2 ring-primary transition-all"
         >
-          <Sun className="hidden dark:block w-5 h-5" />
-          <Moon className="block dark:hidden w-5 h-5" />
+          <Icon name='Sun' className="hidden dark:block w-5 h-5" />
+          <Icon name='Moon' className="block dark:hidden w-5 h-5" />
         </button>
 
         {isAdminOrRecruiter ? (

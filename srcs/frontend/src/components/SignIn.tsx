@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Mail, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +12,7 @@ import { mainApi } from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
-    const [Icon, setIcon] = useState<any>(Eye);
+    const [PassIcon, setPassIcon] = useState<any>(Eye);
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
@@ -30,11 +31,11 @@ const Signin = () => {
     const handleToggle = () => {
         if (passtype === 'password') {
             setPasstype('text');
-            setIcon(Eye);
+            setPassIcon(Eye);
         }
         else {
             setPasstype('password');
-            setIcon(EyeOff);
+            setPassIcon(EyeOff);
         }
     }
     
@@ -57,7 +58,7 @@ const Signin = () => {
             if (userId) {
                 setUserId(userId);
                 reset();
-                navigate("/otp", { replace: true });
+                navigate("/Otp", { replace: true });
             }
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message || "Login failed";
@@ -95,7 +96,7 @@ const Signin = () => {
                                 className="w-full h-full text-black dark:text-surface-main whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
-                            <Mail className="h-5 w-5 text-gray-500 whitespace-nowrap overflow-hidden" />
+                            <Icon name='Mail' className="h-5 w-5 text-gray-500 whitespace-nowrap overflow-hidden" />
                         </div>
                         {errors.email && <p className="pl-5 text-red-500 text-xs italic">{errors.email.message}</p>}
 
@@ -109,7 +110,7 @@ const Signin = () => {
                                 className="w-full h-full text-black dark:text-surface-main whitespace-nowrap
                                     outline-none placeholder-gray-500 bg-transparent overflow-hidden"
                             />
-                            <Icon onClick={handleToggle}
+                            <PassIcon onClick={handleToggle}
                                 className='cursor-pointer h-5 w-5 text-gray-500 hover:text-primary transition-colors whitespace-nowrap overflow-hidden' />
                         </div>
                         {errors.password && <p className="pl-5 text-red-500 text-xs italic">{errors.password.message}</p>}
