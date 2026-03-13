@@ -27,6 +27,7 @@ const tempTokenOptions = {
 export const login = asyncHandler(async (req, res, next) => {
         // 2FA
         const result = await authService.login(req.body);
+        console.log(req.body)
         if (result.require2FA)
         {
             return res
