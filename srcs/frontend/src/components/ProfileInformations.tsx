@@ -58,6 +58,7 @@ export function ProfileInformations() {
   const setProfile = useAuthStore((state) => state.setProfile);
   const profile = useAuthStore((state) => state.profile);
   const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
@@ -122,7 +123,7 @@ export function ProfileInformations() {
       setProfile(response.data.data);
       Notification("Profile updated successfully!", "success");
 
-      const targetPath = (user?.role === "recruiter" || user?.role === "admin") ? '/Dashboard' : '/Jobs';
+      const targetPath = isAdminOrRecruiter ? '/Dashboard' : '/Jobs';
       setTimeout(() => navigate(targetPath, { replace: true }), 800);
 
     } catch (error) {

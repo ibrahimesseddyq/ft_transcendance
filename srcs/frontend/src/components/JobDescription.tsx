@@ -28,7 +28,7 @@ export function JobDescription(){
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {
       console.log("Apply failed:", error);
-      Notification("You alreay applyed", "Failed");
+      Notification("cannot apply to this job (already apply || no phases)", "Failed");
     }
   };
 
