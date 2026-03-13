@@ -1,4 +1,3 @@
-import { application } from 'express';
 import *  as quizService from '../services/quizService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 

@@ -2,7 +2,6 @@ import * as applicationRepository from '../repositories/applicationRepository.js
 import * as applicationPhaseservice from './applicationPhaseService.js';
 import {HttpException} from '../utils/httpExceptions.js';
 import * as jobService from './jobService.js';
-import * as jobPhaseService from './jobPhaseService.js';
 import {prisma} from '../config/prisma.js';
 import { createNotification } from './notificationService.js';
 
@@ -15,7 +14,6 @@ export const submitApplication = async (data, io) => {
 	const application = await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
 			include: {
-				applicationPhases: true,
 				candidate: { select: { firstName: true, lastName: true } }
 			}
 		});
