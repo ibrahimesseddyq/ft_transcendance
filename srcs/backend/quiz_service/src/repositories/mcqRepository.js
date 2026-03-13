@@ -1,4 +1,3 @@
-import { int } from "zod";
 import {prisma} from "../config/prisma.js";
 
 export const createMcq =  async (mcqData) => {
@@ -26,10 +25,11 @@ export const deleteMcq = async (mcqId) => {
     })
 }
 
-export const getManyMcqs = async (skip = 0 , take = 10, filters = []) => {
+export const getManyMcqs = async (skip = 0 , take = 10, filters = {}) => {
+     const whereClause = Array.isArray(filters) ? {} : filters;
     return await prisma.mcq.findMany({
         skip: Number(skip),
         take : Number(take),
-        where: filters
+        where: whereClause
     })
 }
