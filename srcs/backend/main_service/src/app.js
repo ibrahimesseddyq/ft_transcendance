@@ -98,7 +98,7 @@ app.use('/api/main/quizzes',
 ,quizRoutes)
 
 app.use('/api/main/dashboard',
-  // verifyToken,
+  verifyToken,
   dashboardRoutes);
 
 app.use('/api/main/conversations',
