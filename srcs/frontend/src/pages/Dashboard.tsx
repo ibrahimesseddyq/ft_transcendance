@@ -1,5 +1,5 @@
 import {OverviewStatistics} from "@/components/OverviewStatistics"
-import { ActiveJobStatus } from "@/components/ActiveJobStatus";
+import { ActiveCondidates } from "@/components/ActiveCondidates";
 import { RecentActivity } from "@/components/RecentActivity";
 import { SourceOfHire } from "@/components/SourceOfHire";
 import { ToastContainer } from "react-toastify";
@@ -18,7 +18,7 @@ export function Dashboard() {
         setIsLoading(true);
         const res = await mainApi.get(`${env_main_api}/dashboard`);
         if (res.data?.success) {
-          console.log("Dashboard : ", res.data);
+          console.log("Dashboard : respons ", res.data);
           setDashboardData(res.data.data);
         }
       } catch (err) {
@@ -74,11 +74,10 @@ export function Dashboard() {
 
       <div className="flex flex-col md:flex-row gap-4">
         <div className="h-[500px] w-full bg-surface-main dark:bg-slate-800 rounded-xl border dark:border-slate-700">
-          {/* Pass real data to charts */}
-          {/* <OverviewStatistics data={dashboardData?.applicationsOverview} /> */}
+          <OverviewStatistics data={dashboardData?.applicationsOverview} />
         </div>
         <div className="h-[500px] w-full bg-surface-main dark:bg-slate-800 rounded-xl border dark:border-slate-700">
-          <ActiveJobStatus data={dashboardData?.recruitmentStatus} />
+          <ActiveCondidates data={dashboardData?.activeCandidatesList} />
         </div>
       </div>
 

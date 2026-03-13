@@ -182,25 +182,38 @@ export function JobPhaseManager({ jobId }: Props) {
                   {showForm ? (
                     <form onSubmit={handleSubmit}
                       className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-accent/40">
-                      <select 
-                        required 
+                      <select
+                        required
                         value={form.testId}
-                        onChange={e => {
-                            const selectedTest = availableTests.find(t => (t.id || t._id) === e.target.value);
-                            setForm(f => ({ ...f, testId: e.target.value, name: selectedTest?.title || f.name }));
+                        onChange={(e) => {
+                          const selectedId = e.target.value;
+                          const selectedTest = availableTests.find(
+                            (t) => (t.id || t._id) === selectedId
+                          );
+                          setForm((f) => ({
+                            ...f,
+                            testId: selectedId,
+                            name: selectedTest?.title || f.name,
+                          }));
                         }}
-                        className="h-8 w-full text-xs px-2 rounded-lg text-black dark:text-surface-main border border-gray-200 
-                          dark:border-slate-700 bg-surface-main dark:bg-secondary-darkbg  outline-none focus:border-accent"
+                        className="h-8 w-full text-xs px-2 rounded-lg border border-gray-200 
+                                   bg-white text-gray-900
+                                   dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100
+                                   outline-none focus:border-accent appearance-none"
                       >
-                        <div className='text-black'>
-                          <option value="">-- Select a Test --</option>
-                          {availableTests.map(test => {
-                            const testUniqueId = test.id || test._id;
-                            return (
-                              <option key={testUniqueId} value={testUniqueId}>{test.title}</option>
-                            )
-                          })}
-                        </div>
+                        <option value="" disabled>-- Select a Test --</option>
+                        
+                        {availableTests?.map((test) => {
+                          const testUniqueId = test.id || test._id;
+                          return (
+                            <option 
+                              key={testUniqueId} 
+                              value={testUniqueId}
+                            >
+                              {test.title}
+                            </option>
+                          );
+                        })}
                       </select>
 
                       <div className="flex gap-2">

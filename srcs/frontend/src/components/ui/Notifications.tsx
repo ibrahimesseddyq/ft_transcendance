@@ -118,8 +118,20 @@ export function Notifications() {
         )}
       </button>
 
+
       {isOpen && (
-        <div className="absolute top-11 right-0 w-80 bg-[#1F2027] border border-[#5F88B8] rounded-md shadow-2xl z-[100]">
+        <div className="
+          /* Positioning: Absolute on desktop, fixed/centered on mobile */
+          fixed md:absolute 
+          top-16 md:top-11 
+          left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0
+
+          /* Size: Responsive width */
+          w-[92vw] md:w-80 
+
+          /* Styling */
+          bg-[#1F2027] border border-[#5F88B8] rounded-md shadow-2xl z-[100]
+        ">
           <div className="flex items-center justify-between px-3 py-2 border-b border-gray-700">
             <span className="text-surface-main text-xs font-bold">
               Notifications {unreadCount > 0 && <span className="text-[#5F88B8]">({unreadCount})</span>}
@@ -133,8 +145,8 @@ export function Notifications() {
               </button>
             )}
           </div>
-
-          <div className="max-h-72 overflow-y-auto custom-scrollbar">
+          
+          <div className="max-h-[60vh] md:max-h-72 overflow-y-auto custom-scrollbar">
             {notifications.length > 0 ? (
               notifications.map((item) => (
                 <div
@@ -147,7 +159,7 @@ export function Notifications() {
                       navigate('/Chat');
                     }
                   }}
-                  className={`flex flex-col gap-1 p-3 cursor-pointer border-b border-gray-800 last:border-0 transition-colors
+                  className={`flex flex-col gap-1 p-4 md:p-3 cursor-pointer border-b border-gray-800 last:border-0 transition-colors
                     ${item.isRead ? 'hover:bg-[#2A2B35]' : 'bg-[#252730] hover:bg-[#2A2B35]'}`}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -162,12 +174,14 @@ export function Notifications() {
                     </span>
                   </div>
                   {item.message && (
-                    <p className="text-[#94999A] text-[10px] leading-snug">{item.message}</p>
+                    <p className="text-[#94999A] text-[11px] md:text-[10px] leading-snug">
+                      {item.message}
+                    </p>
                   )}
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-[#94999A] text-xs">No notifications</div>
+              <div className="p-10 text-center text-[#94999A] text-xs">No notifications</div>
             )}
           </div>
         </div>
