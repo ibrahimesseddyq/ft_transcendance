@@ -1,94 +1,64 @@
-import * as messagesService from '../services/MessagesService.js';
+import * as messagesService from '../services/messagesService.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
-export const getMessages = async (req, res, next) => {
-  try {
+export const getMessages = asyncHandler(async (req, res, next) => {
     const messages = await messagesService.getMessages({
       conversationId: req.params.conversationId,
       userId: req.user.id,
       limit: req.query.limit,
       before: req.query.before
     });
-
     res.status(200).json(messages);
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-export const sendMessage = async (req, res, next) => {
-  try {
+export const sendMessage = asyncHandler(async (req, res, next) => {
     const result = await messagesService.sendMessage({
       conversationId: req.params.conversationId,
       userId: req.user.id,
-      content: req.body.content,
+      content: req.body.conten,
       messageType: req.body.messageType || 'text',
       io: req.app.get('io')
     });
-
     if (result.blocked) {
       return res.status(400).json({
         error: 'Message blocked by moderation',
         moderation: result.moderation
       });
     }
-
     res.status(201).json(result.message);
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-export const editMessage = async (req, res, next) => {
-  try {
+export const editMessage = asyncHandler(async (req, res, next) => {
     const updatedMessage = await messagesService.editMessage({
       id: req.params.id,
       userId: req.user.id,
       content: req.body.content
     });
-
     res.status(200).json(updatedMessage);
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-export const deleteMessage = async (req, res, next) => {
-  try {
+export const deleteMessage = asyncHandler(async (req, res, next) => {
     await messagesService.deleteMessage({
       id: req.params.id,
       userId: req.user.id
     });
-
     res.status(200).json({ message: 'Message deleted successfully' });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-export const getUnreadCount = async (req, res, next) => {
-  try {
+export const getUnreadCount = asyncHandler(async (req, res, next) => {
     const count = await messagesService.getUnreadCount({
       conversationId: req.params.conversationId,
       userId: req.user.id
     });
-
     res.status(200).json({ count });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-export const uploadFile = async (req, res, next) => {
-  try {
+export const uploadFile = asyncHandler(async (req, res, next) => {
     const message = await messagesService.uploadFile({
       userId: req.user.id,
       conversationId: req.body.conversationId,
       file: req.file,
       io: req.app.get('io')
     });
-
     res.status(201).json(message);
-  } catch (error) {
-    next(error);
-  }
-};
+});
