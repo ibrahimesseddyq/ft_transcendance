@@ -4,16 +4,6 @@ import handlePrismaError from '../utils/prismaErrorHandler.js'
 
 const errorFactory = (err,res) => {
     if (err instanceof CustomError) {
-        if (err.isLogging) {
-            console.log(JSON.stringify({
-                    statusCode : err.statusCode,
-                    errors: err.errors,
-                    stack : err.stack,
-                },
-                null,
-                2
-            ));
-        }
         res.status(err.statusCode).json({
             success: false,
             errors : err.errors
