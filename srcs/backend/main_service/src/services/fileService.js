@@ -17,7 +17,6 @@ export const saveAvatar = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
     const filename = `${userId}${fileExt}`;
     const physicalPath = file.path;
-    console.log('avatr physical path ',physicalPath);
     const avatarPath = '/uploads/avatars/' + filename;
     try {
         const result = await classifyAvatar(physicalPath);
@@ -27,7 +26,7 @@ export const saveAvatar = async (userId, file) => {
             throw new HttpException(400, 'Avatar rejected by AI service');
         }
     } catch (err) {
-        await fs.unlink(filePath).catch(() => {});
+        await fs.unlink(physicalPath).catch(() => {});
         throw err;
     }
     return {
