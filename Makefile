@@ -22,7 +22,8 @@ clean: clear
 	$(PROD_COMPOSE) down --remove-orphans || true
 	docker system prune -f
 
-
+fclean: clean
+	docker system prune -af --volumes
 # ---------- Docker Compose (dev) ----------
 down-dev:
 	$(DEV_COMPOSE) down
@@ -55,12 +56,11 @@ clear:
 	sudo systemctl stop mariadb 2>/dev/null; true
 	
 cluster-create:
-	k3d cluster create hirefy -p "80:80@loadbalancer" -p 443:443@loadbalancer"
+	k3d cluster create hirefy -p "80:80@loadbalancer" -p "443:443@loadbalancer"
 # ---------- Kubernetes ----------
 kube-build:
 	echo $(ROOT)
 	@mkdir -p logs
-	@cd $(ROOT)srcs/backend/eureka  && ./gradlew clean bootJar
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
 
 	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs
@@ -71,11 +71,12 @@ kube-build:
 	docker build -t frontend:dev   $(ROOT)srcs/frontend
 
 kube-load: kube-build
-	CONTEXT=$$(kubectl config current-context)
-	if echo $$CONTEXT | grep -q "k3d"; then
-		CLUSTER=$$(echo $$CONTEXT | sed 's/k3d-//')
-		k3d image import  eureka:dev gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev  waf:dev -c $$CLUSTER
-	fi
+	k3d image import gateway:dev -c hirefy
+	k3d image import main-service:dev -c hirefy
+	k3d image import quiz-service:dev -c hirefy
+	k3d image import ai-service:dev -c hirefy
+	k3d image import frontend:dev -c hirefy
+	k3d image import waf:dev -c hirefy
 
 kube-deploy:
 	# 1. Namespace first
