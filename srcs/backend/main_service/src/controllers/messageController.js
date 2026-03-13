@@ -2,7 +2,9 @@ import { prisma } from '../config/prisma.js';
 import { HttpException } from '../utils/httpExceptions.js';
 import pkg from '../../generated/prisma/index.js';
 import { createChatNotification } from '../services/notificationService.js';
+import {moderateText} from '../services/aiService.js';
 const { MessageType } = pkg;
+
 
 /**
  * Get messages for a conversation (paginated)
@@ -78,12 +80,10 @@ export const sendMessage = async (req, res, next) => {
     const { conversationId } = req.params;
     const userId = req.user.id;
     const { content, messageType = MessageType.text } = req.body;
-
     if (!content || content.trim() === '') {
       throw new HttpException(400, 'Message content is required');
     }
-
-    // Verify user is part of the conversation
+        // Verify user is part of the conversation
     const participant = await prisma.conversationParticipant.findFirst({
       where: {
         conversationId,
@@ -94,6 +94,17 @@ export const sendMessage = async (req, res, next) => {
     if (!participant) {
       throw new HttpException(403, 'Access denied to this conversation');
     }
+    
+    const moderation = await moderateText(content, { conversationId, userId});
+     if (moderation.action === 'block') {
+      return res.status(400).json({
+        error: 'Message blocked by moderation',
+        moderation
+      });
+    }
+
+
+
 
     // Create message and update conversation
     const message = await prisma.message.create({
