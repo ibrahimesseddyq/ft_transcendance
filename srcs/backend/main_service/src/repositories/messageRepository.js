@@ -48,8 +48,7 @@ export const getConversationParticipants = async (conversationId) => {
 export const getMessagesByConversation = async ({ conversationId, limit = 50, before }) => {
     const parsedLimit = Number.parseInt(limit, 10);
     const take = Number.isFinite(parsedLimit) && parsedLimit > 0
-        ? Math.min(parsedLimit, 100)
-        : 50;
+        ? Math.min(parsedLimit, 100) : 50;
 
     return await prisma.message.findMany({
         where: {
@@ -74,13 +73,7 @@ export const getMessagesByConversation = async ({ conversationId, limit = 50, be
     });
 }
 
-export const createMessage = async ({
-    conversationId,
-    senderId,
-    content,
-    messageType,
-    attachment
-}) => {
+export const createMessage = async ({conversationId, senderId, content, messageType, attachment })=> {
     return await prisma.message.create({
         data: {
             conversationId,
