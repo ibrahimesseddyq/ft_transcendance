@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 export default function ProfessionalInformations({career, del}:any){
   return (
@@ -11,7 +11,7 @@ export default function ProfessionalInformations({career, del}:any){
                                 onClick={() => del(item.id)}
                                 className='absolute top-2 right-2 text-surface-main  group-hover:opacity-100 transition-opacity hover:text-red-500'
                               >
-                              <Trash2 size={14} />
+                              <Icon name='Trash2' size={14} />
                         </button>
                         <div
                           key={item.id}

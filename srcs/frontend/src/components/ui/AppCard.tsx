@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { mainApi } from '@/utils/Api'
-import {MapPinHouse}  from 'lucide-react'
+import Icon  from '@/components/ui/Icon'
 import { useParams } from 'react-router-dom'
 import Notification from "@/utils/TostifyNotification"
 
@@ -62,7 +62,7 @@ const AppCard = ({app}:props) => {
                 <span className="inline-flex items-center px-2.5 py-1 text-sm 
                   font-medium text-slate-600 dark:text-slate-300 transition-colors duration-300">
                   <div className="flex gap-1">
-                    <MapPinHouse className="text-gray-400 w-4 h-4"/> {(job as any)?.location}
+                    <Icon name="MapPinHouse" className="text-gray-400 w-4 h-4"/> {(job as any)?.location}
                   </div>
                 </span>
                 <span className="inline-flex items-center px-2.5 py-1 text-sm 

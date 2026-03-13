@@ -1,4 +1,4 @@
-import { ArrowRightToLine, ChevronLeft } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
@@ -154,7 +154,7 @@ export function QRcode() {
                             text-surface-main transition-colors shadow-lg shadow-primary/20"
                     >
                         <span>{loading ? "Verifying..." : step === 'QR_CODE' ? "Next" : "Verify"}</span>
-                        <ArrowRightToLine className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
+                        <Icon name='ArrowRightToLine' className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
                     </button>
 
                     <div className="flex flex-col items-center gap-2">
@@ -165,7 +165,7 @@ export function QRcode() {
                                 className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-400 
                                     hover:text-black dark:hover:text-surface-main transition-colors"
                             >
-                                <ChevronLeft className="w-4 h-4"/> Back to QR
+                                <Icon name='ChevronLeft' className="w-4 h-4"/> Back to QR
                             </button>
                         )}
 

@@ -4,7 +4,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { mainApi } from '@/utils/Api';
 import Pagination from '@/components/ui/Pagination'
 import { JobPhaseManager } from "./JobPhaseManager";
-import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 interface props {
   jobsArray: any[];
@@ -79,7 +79,7 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
               {/* Icon & Title */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 flex items-center justify-center text-primary">
-                   <ScreenShare className="w-10 h-10"/>
+                   <Icon name='ScreenShare' className="w-10 h-10"/>
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-surface-main truncate">{item.title}</h2>
               </div>
@@ -88,15 +88,15 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
               {/* Meta Info Slots */}
               <div className="flex items-center justify-between text-gray-600 dark:text-gray-400 text-xs font-medium mb-4">
                 <div className="flex items-center gap-1">
-                  <Briefcase size={14} />
+                  <Icon name='Briefcase' size={14} />
                   <span className="truncate">{item.employmentType}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <MapPin size={14} />
+                  <Icon name='MapPin' size={14} />
                   <span className="truncate">{item.isRemote ? "Remote" : "On site"}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <BarChart3 size={14} />
+                  <Icon name='BarChart3' size={14} />
                   <span className="truncate">{item.department}</span>
                 </div>
               </div>
@@ -146,15 +146,15 @@ const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem
                   {isAdminOrRecruiter && (
                     <>
                       <button onClick={() => { setJobItem(item); setIsFormOpen(true); }} className="hover:text-primary">
-                        <SquarePen size={16} />
+                        <Icon name='SquarePen' size={16} />
                       </button>
                       <button onClick={() => DeleteJob(item.id)} className="hover:text-red-500">
-                        <Trash size={16} />
+                        <Icon name='Trash' size={16} />
                       </button>
                     </>
                   )}
                   <button className="hover:text-yellow-500 transition-colors">
-                    <Bookmark size={18} />
+                    <Icon name='Bookmark' size={18} />
                   </button>
                 </div>
               </div>

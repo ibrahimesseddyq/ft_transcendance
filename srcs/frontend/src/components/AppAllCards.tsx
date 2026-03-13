@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserCard from '@/components/ui/UserCard';
-import { Search, ChevronLeft, Users as UsersIcon } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 export function AppAllCards() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export function AppAllCards() {
               onClick={() => navigate(-1)}
               className="p-2 hover:bg-surface-main/10 rounded-full transition-colors"
             >
-              <ChevronLeft className="w-6 h-6 text-primary" />
+              <Icon name='ChevronLeft' className="w-6 h-6 text-primary" />
             </button>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">{Title}</h1>
@@ -39,7 +39,7 @@ export function AppAllCards() {
 
           {/* Search Bar */}
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+            <Icon name='Search' className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input 
               type="text"
               placeholder="Search by name or position..."
@@ -66,7 +66,7 @@ export function AppAllCards() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-32 text-slate-400">
-            <UsersIcon className="w-16 h-16 mb-4 opacity-20" />
+            <Icon name='UsersIcon' className="w-16 h-16 mb-4 opacity-20" />
             <h2 className="text-xl font-semibold">No results found</h2>
             <p>Try a different search term or check back later.</p>
           </div>

@@ -3,7 +3,7 @@ import AppCard from '@/components/ui/AppCard';
 import { mainApi } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand';
 import { ToastContainer } from "react-toastify";
-import { Briefcase } from 'lucide-react'
+import Icon  from '@/components/ui/Icon'
 import { Link } from 'react-router-dom';
 
 export function UserApplications() {
@@ -54,14 +54,14 @@ export function UserApplications() {
         ) : (
             <div className="flex flex-col items-center justify-center mt-20 text-center animate-in fade-in zoom-in duration-300">
                 <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                    <Briefcase className="w-10 h-10 text-slate-400" />
+                    <Icon name='Briefcase' className="w-10 h-10 text-slate-400" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-surface-main">No applications yet</h3>
                 <p className="text-slate-500 dark:text-gray-400 max-w-xs mt-2">
                     You haven't applied to any positions. Check out our open roles and start your journey!
                 </p>
                 <Link 
-                    to="/jobs" 
+                    to="/Jobs" 
                     className="mt-6 px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all active:scale-95"
                 >
                     Browse Jobs

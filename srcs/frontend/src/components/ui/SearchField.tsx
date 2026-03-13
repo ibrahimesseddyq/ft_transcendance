@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin } from "lucide-react";
+import Icon  from '@/components/ui/Icon'
 
 const MOCK_JOBS = [
   { id: 1, title: "Front-End Developer", category: "Engineering", location: "Remote", type: "Full-time" },
@@ -35,7 +35,7 @@ export function SearchField() {
     
 
       <div className={`h-9 w-80 items-center rounded-md bg-[#1F2027] border border-[#5F88B8] px-3 gap-2`}>
-        <Search className="h-4 w-4 text-[#94999A]" />
+        <Icon name='Search' className="h-4 w-4 text-[#94999A]" />
         <input
           placeholder="Search jobs..."
           type='text'
@@ -56,7 +56,7 @@ export function SearchField() {
                   <div className="flex justify-between items-center mt-1">
                     <p className="text-accent text-[10px]">{job.category}</p>
                     <p className="text-[#94999A] text-[10px] flex items-center gap-1">
-                      <MapPin size={10} /> {job.location}
+                      <Icon name='MapPin' size={10} /> {job.location}
                     </p>
                   </div>
                 </div>

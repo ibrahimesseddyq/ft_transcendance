@@ -1,10 +1,9 @@
 import TestTakingArea from '@/components/ui/TestTakingArea'
-import { ChevronRight } from 'lucide-react'
-import { useParams, useNavigate } from 'react-router-dom';
+import Icon  from '@/components/ui/Icon'
+import { useParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand'
 import { mainApi } from '@/utils/Api'
-import { Loading } from './Loading';
 
 export function UserPhase() {
     const { appId } = useParams();
@@ -131,7 +130,7 @@ export function UserPhase() {
         disabled:cursor-not-allowed'
       >
         Start Test
-        <ChevronRight size={20} />
+        <Icon name='ChevronRight' size={20} />
       </button>
     )}
 

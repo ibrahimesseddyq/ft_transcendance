@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-import { Search } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { mainApi } from '@/utils/Api';
 
-interface JobsArrayProps {
-  totalJobs: any,
-  currentPage: number;
-  setJobsArray: (data: any) => void;
-  setIsLoading: (data: boolean) => void;
-  setTotalPages: (data: number) => void;
-  setCurrentPage: (data: number) => void;
-}
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: any) => {
@@ -114,7 +106,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+        <Icon name='Search' className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
       </div>
 
       <div className="h-[1px] bg-gray-800 w-full" />

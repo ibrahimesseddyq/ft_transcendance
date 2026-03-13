@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowDownFromLine, MessageSquarePlus } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { chatApi } from '@/services/chatApi';
@@ -38,11 +38,11 @@ export function ProfileCover({ profile, user }: props) {
 
       if (existing) {
         sessionStorage.setItem('chat_conversationId', existing.id);
-        navigate('/chat');
+        navigate('/Chat');
       } else {
         const newConversation = await chatApi.createConversation(user?.id);
         sessionStorage.setItem('chat_conversationId', newConversation.id);
-        navigate('/chat');
+        navigate('/Chat');
       }
     } catch (error) {
       console.error('Failed to open conversation:', error);
@@ -85,7 +85,7 @@ export function ProfileCover({ profile, user }: props) {
                 rounded-lg text-surface-main py-2 px-4 text-sm font-semibold hover:bg-indigo-700 transition-all 
                 shadow-lg shadow-indigo-500/20 active:scale-95"
             >
-              <MessageSquarePlus className="h-4 w-4"/>
+              <Icon name='MessageSquarePlus' className="h-4 w-4"/>
               Message
             </button>
           )}
@@ -97,7 +97,7 @@ export function ProfileCover({ profile, user }: props) {
             className="flex-1 flex items-center justify-center gap-2 border border-primary rounded-lg 
                        text-primary py-2 px-4 text-sm font-semibold hover:bg-primary/10 transition-colors"
           >
-            <ArrowDownFromLine className="h-4 w-4"/>
+            <Icon name='ArrowDownFromLine' className="h-4 w-4"/>
             CV
           </a>
 

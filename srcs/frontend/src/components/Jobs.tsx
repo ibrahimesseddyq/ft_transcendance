@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import { ToastContainer } from "react-toastify";
@@ -71,7 +71,7 @@ export function Jobs() {
           onClick={() => {setJobItem(null); setIsFormOpen(true)}}
           className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-accent hover:bg-[#0da371] text-white rounded-full shadow-lg transition-all flex items-center justify-center"
         >
-          <Plus size={25} strokeWidth={3} />
+          <Icon name='Plus' size={25} strokeWidth={3} />
         </button>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { mainApi } from '@/utils/Api';
-import { Timer, ChevronRight, Diamond, Loader2, AlertCircle } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useNavigate } from 'react-router-dom';
 
 const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
@@ -114,7 +114,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                         ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-danger-hover border-red-200 dark:border-red-900/50 animate-pulse' 
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                 }`}>
-                    <Timer size={18} />
+                    <Icon name='Timer' size={18} />
                     <span className='font-mono font-bold'>{formatTime(timeLeft)}</span>
                 </div>
             </div>
@@ -123,7 +123,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
 
             {error && (
                 <div className='flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-danger-hover rounded-lg text-sm'>
-                    <AlertCircle size={16} />
+                    <Icon name='AlertCircle' size={16} />
                     {error}
                 </div>
             )}
@@ -169,7 +169,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
 
             <div className='flex justify-between items-center mt-4 border-t border-slate-100 dark:border-slate-800 pt-6'>
                 <div className='flex items-center gap-2 text-slate-400 dark:text-slate-500'>
-                    <Diamond size={16} className='text-yellow-500 fill-yellow-500' />
+                    <Icon name='Diamond' size={16} className='text-yellow-500 fill-yellow-500' />
                     <span className='text-sm font-bold'>{currentQuestion.points || 0} Points</span>
                 </div>
 
@@ -183,13 +183,13 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                 >
                     {isSubmitting ? (
                         <>
-                            <Loader2 className="animate-spin" size={20} />
+                            <Icon name='Loader2' className="animate-spin" size={20} />
                             <span>Sending...</span>
                         </>
                     ) : (
                         <>
                             <span>{isLastQuestion ? 'Submit Results' : 'Next Question'}</span>
-                            <ChevronRight size={20} />
+                            <Icon name='ChevronRight' size={20} />
                         </>
                     )}
                 </button>
