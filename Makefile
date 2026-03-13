@@ -55,7 +55,7 @@ clear:
 	sudo systemctl stop mariadb 2>/dev/null; true
 	
 cluster-create:
-	k3d cluster create hirefy -p "80:80@loadbalancer" -p 443:443@loadbalancer"
+	k3d cluster create hirefy -p "80:80@loadbalancer" -p "443:443@loadbalancer"
 # ---------- Kubernetes ----------
 kube-build:
 	echo $(ROOT)
