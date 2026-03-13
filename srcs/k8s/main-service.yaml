@@ -54,6 +54,7 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+
       # initContainers:
       #   - name: prisma-db-push
       #     image: main-service:dev
@@ -98,3 +99,12 @@ data:
   NODE_ENV: "production"
   HOSTNAME: "main-service"
   HOST_IP: "main-service"
+  HOST: "localhost"
+  BCRYPT_ROUNDS: "10"
+  CALLBACK_URL: "/api/main/auth/google/callback"
+  ACCESS_TOKEN_EXPIRY: "1d"
+  REFRESH_TOKEN_EXPIRY: "7d"
+  VERIFY_SECRET_EXPIRY: "7d"
+  FRONTEND_URL: "http://localhost:5173"
+  BACKEND_URL: "http://localhost:3000/"
+  QUIZ_SERVICE_URL: "http://localhost:3308/"
