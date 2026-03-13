@@ -62,3 +62,11 @@ metadata:
 data:
   PORT: "3001"
   NODE_ENV: "production"
+  APP_NAME: "quiz-service"
+  HOST: "localhost"
+  BCRYPT_ROUNDS: "10"
+  CALLBACK_URL: "/api/main/auth/google/callback"
+  ACCESS_TOKEN_EXPIRY: "1d"
+  REFRESH_TOKEN_EXPIRY: "7d"
+  FRONTEND_URL: "http://localhost:5173"
+  BACKEND_URL: "http://localhost:3307/"
