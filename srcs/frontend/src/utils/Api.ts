@@ -19,8 +19,6 @@ const attachInterceptors = (instance: AxiosInstance) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
-
-        config.headers['x-internal-api-key'] = import.meta.env.VITE_INTERNAL_API_KEY;
         return config;
     });
 

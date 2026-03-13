@@ -1,25 +1,24 @@
 
-const Pagination = ({ currentPage, totalPages, onPageChange }: any) => {
+const Pagination = ({ currentPage, totalPages, setCurrentPage }: any) => {
   return (
-    <div className="flex justify-center items-center gap-4 mt-8 pb-10">
-      <button 
-        disabled={currentPage === 1}
-        onClick={() => onPageChange(currentPage - 1)}
-        className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+    <div className="fixed bottom-1 left-1/2 -translate-x-1/2 md:bottom-6 md:right-24 md:left-auto md:translate-x-0 z-40 flex items-center gap-4 
+      bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-2 px-4 rounded-2xl border shadow-xl">
+      <button
+        disabled={currentPage <= 1}
+        onClick={() => setCurrentPage(currentPage - 1)}
+        className="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 "
       >
-        Previous
+        <small className="font-bold text-black dark:text-white">Prev</small>
       </button>
-      
-      <span className="text-gray-400">
-        Page <strong>{currentPage}</strong> of {totalPages}
-      </span>
-
-      <button 
-        disabled={currentPage === totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
-        className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+      <div className="px-4 border-x text-sm font-bold text-black dark:text-white">
+        {currentPage} / {totalPages}
+      </div>
+      <button
+        disabled={currentPage >= totalPages}
+        onClick={() => setCurrentPage(currentPage + 1)}
+        className="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 "
       >
-        Next
+        <small className="font-bold text-black dark:text-white">Next</small>
       </button>
     </div>
   );
