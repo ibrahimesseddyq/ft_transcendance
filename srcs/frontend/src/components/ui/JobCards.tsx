@@ -7,12 +7,15 @@ import { Trash, SquarePen, Briefcase, MapPin, BarChart3, Bookmark, ScreenShare }
 
 interface props {
   jobsArray: any[];
+  currentPage: number;
+  totalPages: number;
   setJobsArray: (item: any) => void;
   setJobItem: (item: any) => void;
   setIsFormOpen: (open: boolean) => void;
+  setCurrentPage: (item: number) => void;
 }
 
-const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props) => {
+const JobCards = ({ jobsArray, currentPage, totalPages, setJobsArray, setJobItem, setIsFormOpen, setCurrentPage }: props) => {
   console.log("jobsArray : ", jobsArray);
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
@@ -160,6 +163,38 @@ const JobCards = ({ jobsArray, setJobsArray, setJobItem, setIsFormOpen }: props)
           <div className="text-center w-full py-10 text-gray-400">No jobs found.</div>
         )}
       </div>
+
+      {/* Pagination */}
+      {jobsArray.length > 0 && (
+        <div className="flex justify-center items-center gap-6 mt-12 mb-8">
+          <button
+            disabled={currentPage <= 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            className="px-5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
+                       text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
+          >
+            Previous
+          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">Page</span>
+            <span className="px-3 py-1 bg-[#00adef] text-white rounded-md text-sm font-bold">
+              {currentPage}
+            </span>
+            <span className="text-sm text-gray-500">of {totalPages}</span>
+          </div>
+
+          <button
+            disabled={currentPage >= totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            className="px-5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 
+                       text-sm font-semibold disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
     </div>
   );
 };

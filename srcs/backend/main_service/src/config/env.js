@@ -3,7 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv'
 import fs from 'fs'
 
-const envPath = process.NODE_ENV === 'production' ? "../../.env" : "../../.env.example";
+const envPath = process.env.NODE_ENV === 'production' ? "../../.env" : "../../.env.example";
 
 dotenv.config({
   path: path.resolve(import.meta.dirname,envPath),

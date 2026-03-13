@@ -279,7 +279,7 @@ enum PhaseType {
 
 enum ApplicationPhaseStatus {
   pending
-  in_progress
+  inProgress
   completed
   skipped
   failed

@@ -37,12 +37,11 @@ export const getJobById = asyncHandler(async(req,res,next) => {
 })
 
 export const getJobs = asyncHandler(async (req, res, next) => {
-    const filters = req.query; 
-    const jobs = await jobService.getJobs(filters);
-    
+    const result = await jobService.getJobs(req);
     res.status(200).json({
-        status: true,
-        data: jobs
+        success: true,
+        data: result.data,
+        meta: result.meta
     });
 })
 
