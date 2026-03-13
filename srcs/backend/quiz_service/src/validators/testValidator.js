@@ -51,7 +51,7 @@ const updateCodeTestSchema = updateBaseTestSchema.extend({
         .optional()
 }).strict();
 
-export const updateTestschema = z.union([
+export const updateTestSchema = z.union([
     updateQuizTestSchema,
     updateCodeTestSchema
 ]);

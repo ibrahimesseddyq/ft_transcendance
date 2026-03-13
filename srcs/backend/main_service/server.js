@@ -2,7 +2,7 @@ import app from './src/app.js';
 import env from './src/config/env.js';
 import {prisma} from './src/config/prisma.js';
 import { createServer } from 'node:http';
-import { initializeChatSocketServer } from './src/socket/chatSocketServer.js';
+import { initializeChatSocketServer } from './src/services/chatSocketServer.js';
 
 const server = createServer(app);
 
@@ -10,7 +10,7 @@ const io = initializeChatSocketServer({
   server,
   prisma,
   accessTokenSecret: env.ACCESS_TOKEN_SECRET,
-  corsOrigin: 'http://localhost:5173'
+  corsOrigin: env.FRONTEND_URL
 });
 
 // Make io accessible to routes/controllers
