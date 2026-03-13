@@ -8,6 +8,7 @@ export const getRecruiterDashboard = async () => {
     if (cache && Date.now() - cache.ts < CACHE_TTL) return cache.data;
 
     const { start, end } = getLast30Days();
+    console.log("Querying from:", start, "to:", end);
     const { start: pStart, end: pEnd } = getPrevious30Days();
     const [
         kpiCards,
@@ -24,6 +25,8 @@ export const getRecruiterDashboard = async () => {
         dashboardRepository.getHiringFunnel(start, end),
         dashboardRepository.getRecruitmentStatusBreakdown(start, end),
     ]);
+    console.log("DEBUG: applicationsOverview Result:", applicationsOverview);
+    console.log("DEBUG: KPI Apps Count:", kpiCards.find(k => k.id === 'new_applications')?.value);
 
     const data = { 
         kpiCards, applicationsOverview, activeCandidatesList, 

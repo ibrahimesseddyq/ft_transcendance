@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navigation";
 import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
-import { Sun, Moon } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
@@ -19,21 +19,15 @@ export function Header() {
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
   const handleTheme = () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.theme = "light";
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.theme = "dark";
-    }
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.theme = isDark ? "dark" : "light";
   };
 
   const LogoutClassName = 'hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight';
 
   return (
     <header className="mx-auto flex justify-between h-16 w-full md:rounded-xl max-w-screen-2xl items-center px-4 md:px-8 
-      bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm fixed md:sticky top-0 z-50 
+      bg-surface-main dark:bg-secondary-darkbg backdrop-blur-sm fixed md:sticky top-0 z-50 
       border-b md:border border-gray-100 dark:border-slate-800 transition-colors duration-300">
       
       {/* Logo */}
@@ -45,7 +39,8 @@ export function Header() {
           alt="RH Connect" 
           className="w-7 h-7 md:w-8 md:h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
         />
-        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white transition-colors">
+        <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white 
+          transition-colors duration-300">
           RH-<span className="text-[#00adef] font-bold">Connect</span>
         </h1>
       </Link>
@@ -61,10 +56,10 @@ export function Header() {
         <button 
           onClick={handleTheme}
           className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-yellow-400 
-            hover:ring-2 ring-[#00adef] transition-all"
+            hover:ring-2 ring-primary transition-all"
         >
-          <Sun className="hidden dark:block w-5 h-5" />
-          <Moon className="block dark:hidden w-5 h-5" />
+          <Icon name='Sun' className="hidden dark:block w-5 h-5" />
+          <Icon name='Moon' className="block dark:hidden w-5 h-5" />
         </button>
 
         {isAdminOrRecruiter ? (
@@ -76,16 +71,16 @@ export function Header() {
         ) : (
           <Link to={`/Profile/${user?.id}`} className="flex items-center gap-2 md:gap-3 group">
             <div className="text-right hidden lg:block">
-              <p className="text-sm font-bold text-black dark:text-white group-hover:text-[#00adef] transition-colors">
+              <p className="text-sm font-bold text-black dark:text-surface-main group-hover:text-primary transition-colors">
                 {user?.firstName}
               </p>
-              <p className="text-[10px] text-[#00adef] font-semibold tracking-wider uppercase">
+              <p className="text-[10px] text-primary font-semibold tracking-wider uppercase">
                 @{user?.role}
               </p>
             </div>
             <div
               className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
-                border-gray-800 dark:border-slate-200 group-hover:border-[#00adef] transition-all"
+                border-gray-800 dark:border-slate-200 group-hover:border-primary transition-all"
               style={{ backgroundImage: `url("${avatarUrl}")` }}
             />
           </Link>
