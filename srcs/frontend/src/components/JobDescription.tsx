@@ -28,7 +28,7 @@ export function JobDescription(){
       setTimeout(()=>{navigate('/Jobs');}, 1500)
     } catch (error) {
       console.log("Apply failed:", error);
-      Notification("You alreay applyed", "Failed");
+      Notification("cannot apply to this job (already apply || no phases)", "Failed");
     }
   };
 
@@ -46,24 +46,24 @@ export function JobDescription(){
   }
 
   const Buttons = () => {
-    const btnStyle = "flex-1 rounded-xl text-white text-lg max-w-fit h-12 \
-      bg-gradient-to-r from-[#00adef] to-slate-700 dark:to-slate-800 \
-      px-6 hover:scale-105 transition-all shadow-lg shadow-[#00adef]/20";
+    const btnStyle = "flex-1 rounded-xl text-surface-main text-lg max-w-fit h-12 \
+      bg-gradient-to-r from-primary to-slate-700 dark:to-slate-800 \
+      px-6 hover:scale-105 transition-all shadow-lg shadow-primary/20";
 
     return (
       <div className='flex-1 justify-end flex flex-wrap gap-2 items-center'>
         {isAdminOrRecruiter ? (
           <Link to={`/Application/${jobItem.id}`} className={btnStyle}>
             <div className="flex items-center gap-3 h-full">
-              <ClipboardList className="w-5 h-5 text-white" /> 
+              <ClipboardList className="w-5 h-5 text-surface-main" /> 
               <p className="font-bold text-base">See Applications</p>
             </div>
           </Link>
         ) : (
           <button onClick={() => ApplySubmit(submitData)} type='button' className={btnStyle}>
             <div className="flex items-center gap-3">
-              <Send className="w-5 h-5 text-white" /> 
-              <p className="font-bold text-base text-white">Apply Now</p>
+              <Send className="w-5 h-5 text-surface-main" /> 
+              <p className="font-bold text-base text-surface-main">Apply Now</p>
             </div>
           </button>
         )}
@@ -71,7 +71,7 @@ export function JobDescription(){
     );
   }
 
-  const cardStyle = "col-span-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 \
+  const cardStyle = "col-span-1 bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-gray-800 \
     shadow-sm rounded-2xl overflow-hidden p-6 transition-all";
 
   const DesCover = () => {
@@ -83,8 +83,8 @@ export function JobDescription(){
             dark:border-gray-800 hover:scale-110 transition-transform duration-500 shadow-md'
         />
         <div className='flex flex-col gap-1 justify-center flex-1'>
-          <h1 className="text-[#0a0a0a] dark:text-white text-2xl font-extrabold">{jobItem.title}</h1>
-          <h1 className="text-[#00adef] text-lg font-bold tracking-tight">RH-CONNECT</h1>
+          <h1 className="text-[#0a0a0a] dark:text-surface-main text-2xl font-extrabold">{jobItem.title}</h1>
+          <h1 className="text-primary text-lg font-bold tracking-tight">RH-CONNECT</h1>
           <div className='flex flex-wrap gap-x-4 gap-y-2 mt-2'>
             <MiniBox Icon={CalendarDays} title={new Date(jobItem.createdAt).toLocaleDateString()} />
             <MiniBox Icon={MapPin} title={jobItem.location} />
@@ -106,8 +106,8 @@ export function JobDescription(){
         <div className={`${cardStyle} flex flex-col gap-8`}>
           {/* Description */}
           <section>
-            <h2 className="text-lg font-bold text-black dark:text-white mb-3 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
+            <h2 className="text-lg font-bold text-black dark:text-surface-main mb-3 flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-primary rounded-full" />
               Description
             </h2>
             <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed break-words">
@@ -117,8 +117,8 @@ export function JobDescription(){
 
           {/* Requirements */}
           <section>
-            <h2 className="text-lg font-bold text-black dark:text-white mb-3 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-[#00adef] rounded-full" />
+            <h2 className="text-lg font-bold text-black dark:text-surface-main mb-3 flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-primary rounded-full" />
               Requirements
             </h2>
             <p className="text-[#737373] dark:text-gray-400 text-justify text-base leading-relaxed break-words">
@@ -143,8 +143,8 @@ export function JobDescription(){
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end pt-6 
             border-t border-gray-100 dark:border-gray-800 gap-4">
             <div className="flex flex-col gap-1">
-              <h2 className="text-sm font-bold text-black dark:text-white uppercase tracking-wider">Salary Range</h2>
-              <p className="text-2xl font-black text-[#10B77F]">
+              <h2 className="text-sm font-bold text-black dark:text-surface-main uppercase tracking-wider">Salary Range</h2>
+              <p className="text-2xl font-black text-accent">
                 {jobItem.salaryMin} - {jobItem.salaryMax} <span className="text-sm font-medium">{jobItem.salaryCurrency}</span>
               </p>
             </div>
@@ -153,7 +153,7 @@ export function JobDescription(){
               uppercase flex flex-col gap-1 md:text-right">
               <span>Posted: {new Date(jobItem.createdAt).toLocaleDateString()}</span>
               {jobItem.closedAt && (
-                <span className="text-red-400">Deadline: {new Date(jobItem.closedAt).toLocaleDateString()}</span>
+                <span className="text-danger-hover">Deadline: {new Date(jobItem.closedAt).toLocaleDateString()}</span>
               )}
             </div>
           </div>

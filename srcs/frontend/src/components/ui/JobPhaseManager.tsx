@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, FlaskConical, CheckCircle2 } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { mainApi, quizApi } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 
@@ -123,25 +123,25 @@ export function JobPhaseManager({ jobId }: Props) {
       <button
         onClick={() => setOpen(o => !o)}
         className="flex gap-2 items-center justify-between text-xs font-semibold 
-          text-gray-500 dark:text-gray-400 hover:text-[#10B77F] transition-colors w-full"
+          text-gray-500 dark:text-gray-400 hover:text-accent transition-colors w-full"
       >
         <span className="flex items-center gap-1">
-          <FlaskConical size={13} className="text-[#10B77F]" />
+          <Icon name='FlaskConical' size={13} className="text-accent" />
           Assigned Test
           {phases.length > 0 && (
-            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-[#10B77F]/10 text-[#10B77F] text-[10px] font-bold">
+            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold">
               {phases.length}
             </span>
           )}
         </span>
-        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        {open ? <Icon name='ChevronUp' size={14} /> : <Icon name='ChevronDown' size={14} />}
       </button>
 
       {open && (
         <div className="mt-3 flex flex-col gap-2">
           {loading ? (
             <div className="flex justify-center py-3">
-              <Loader2 size={16} className="animate-spin text-[#10B77F]" />
+              <Icon name='Loader2' size={16} className="animate-spin text-accent" />
             </div>
           ) : (
             <>
@@ -152,7 +152,7 @@ export function JobPhaseManager({ jobId }: Props) {
                     return (
                       <li key={uniqueId} className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 group">
                         <div className="flex items-center gap-2 min-w-0">
-                          <CheckCircle2 size={12} className="text-[#10B77F] shrink-0" />
+                          <Icon name='CheckCircle2' size={12} className="text-accent shrink-0" />
                           <div className="min-w-0">
                             <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{phase.name}</p>
                             <p className="text-[10px] text-gray-400 italic">Linked to Quiz ID: {phase.testId?.slice(0, 8)}...</p>
@@ -165,7 +165,7 @@ export function JobPhaseManager({ jobId }: Props) {
                           }} 
                           className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
                         >
-                          <Trash2 size={12} />
+                          <Icon name='Trash2' size={12} />
                         </button>
                       </li>
                     );
@@ -181,28 +181,43 @@ export function JobPhaseManager({ jobId }: Props) {
 
                   {showForm ? (
                     <form onSubmit={handleSubmit}
-                      className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-[#10B77F]/40 bg-[#10B77F]/5">
-                      <select 
-                        required 
+                      className="flex flex-col gap-2 p-3 rounded-lg border border-dashed border-accent/40">
+                      <select
+                        required
                         value={form.testId}
-                        onChange={e => {
-                            const selectedTest = availableTests.find(t => (t.id || t._id) === e.target.value);
-                            setForm(f => ({ ...f, testId: e.target.value, name: selectedTest?.title || f.name }));
+                        onChange={(e) => {
+                          const selectedId = e.target.value;
+                          const selectedTest = availableTests.find(
+                            (t) => (t.id || t._id) === selectedId
+                          );
+                          setForm((f) => ({
+                            ...f,
+                            testId: selectedId,
+                            name: selectedTest?.title || f.name,
+                          }));
                         }}
-                        className="h-8 w-full text-xs px-2 rounded-lg text-black dark:text-white border border-gray-200 
-                          dark:border-slate-700 bg-white dark:bg-slate-900 outline-none focus:border-[#10B77F]"
+                        className="h-8 w-full text-xs px-2 rounded-lg border border-gray-200 
+                                   bg-white text-gray-900
+                                   dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100
+                                   outline-none focus:border-accent appearance-none"
                       >
-                        <option value="">-- Select a Test --</option>
-                        {availableTests.map(test => {
+                        <option value="" disabled>-- Select a Test --</option>
+                        
+                        {availableTests?.map((test) => {
                           const testUniqueId = test.id || test._id;
                           return (
-                            <option key={testUniqueId} value={testUniqueId}>{test.title}</option>
-                          )
+                            <option 
+                              key={testUniqueId} 
+                              value={testUniqueId}
+                            >
+                              {test.title}
+                            </option>
+                          );
                         })}
                       </select>
 
                       <div className="flex gap-2">
-                        <button type="submit" disabled={submitting} className="flex-1 h-8 text-xs font-bold rounded-lg bg-[#10B77F] text-white hover:bg-[#0da371] disabled:opacity-50 transition-colors">
+                        <button type="submit" disabled={submitting} className="flex-1 h-8 text-xs font-bold rounded-lg bg-accent text-surface-main hover:bg-[#0da371] disabled:opacity-50 transition-colors">
                           {submitting ? 'Saving...' : 'Assign Test'}
                         </button>
                         <button type="button" onClick={() => setShowForm(false)} className="h-8 px-3 text-xs font-semibold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
@@ -214,8 +229,8 @@ export function JobPhaseManager({ jobId }: Props) {
                     <button onClick={() => setShowForm(true)} 
                     className="flex items-center justify-center gap-1 w-full h-8 rounded-lg border
                      border-dashed border-gray-300 dark:border-slate-700 text-xs 
-                     text-gray-400 hover:border-[#10B77F] hover:text-[#10B77F] transition-colors">
-                      <Plus size={13} /> Link Quiz
+                     text-gray-400 hover:border-accent hover:text-accent transition-colors">
+                      <Icon name='Plus' size={13} /> Link Quiz
                     </button>
                   )}
                 </>
