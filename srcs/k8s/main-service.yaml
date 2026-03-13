@@ -42,7 +42,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-              name: main-service-config
+                name: main-service-config
           command:
           - /bin/sh
           - -c
