@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: main_service_db
+  name: main-service-db
   namespace: hirefy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: main_service_db
+      app: main-service-db
   template:
     metadata:
       labels:
-        app: main_service_db
+        app: main-service-db
       annotations:
         vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "main_service_db"
-        vault.hashicorp.com/agent-inject-secret-config: "secret/data/main_service_db/config"
+        vault.hashicorp.com/role: "main-service-db"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/main-service-db/config"
         vault.hashicorp.com/agent-inject-template-config: |
-          {{- with secret "secret/data/main_service_db/config" -}}
+          {{- with secret "secret/data/main-service-db/config" -}}
           export MARIADB_ROOT_PASSWORD="{{ .Data.data.MARIADB_ROOT_PASSWORD }}"
           export MARIADB_DATABASE="{{ .Data.data.MARIADB_DATABASE }}"
           export MARIADB_USER="{{ .Data.data.MARIADB_USER }}"
@@ -26,7 +26,7 @@ spec:
     spec:
       serviceAccountName: app-service-account
       containers:
-        - name: main_service_db
+        - name: main-service-db
           image: mariadb:11
           ports:
             - name: mysql
@@ -46,16 +46,16 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: main_service_db_pvc
+            claimName: main-service-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: main_service_db
+  name: main-service-db
   namespace: hirefy
 spec:
   selector:
-    app: main_service_db
+    app: main-service-db
   ports:
     - name: mysql
       port: 3306
