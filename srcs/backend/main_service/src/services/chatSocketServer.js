@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
+import { registerNotificationSocketEvents } from './notificationSocketEvents.js';
 
 export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, corsOrigin }) => {
   const io = new Server(server, {
@@ -139,32 +140,7 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
       }
     });
 
-    socket.on('message:read', async (data) => {
-      try {
-        const { conversationId } = data;
-
-        socket.to(conversationId).emit('message:read-by', {
-          userId,
-          conversationId,
-          readAt: new Date()
-        });
-
-        await prisma.notification.updateMany({
-          where: {
-            userId,
-            type: 'newMessage',
-            referenceType: 'conversation',
-            referenceId: conversationId,
-            isRead: false
-          },
-          data: { isRead: true }
-        });
-
-        io.in(`user_${userId}`).emit('notification:cleared', { conversationId });
-      } catch (error) {
-        console.error('Error broadcasting read status:', error);
-      }
-    });
+    registerNotificationSocketEvents({ io, socket, prisma, userId });
 
     socket.on('disconnect', () => {
       console.log(`Socket disconnected for user: ${userId}`);
