@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-service-db
+  namespace: hirefy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-service-db
+  template:
+    metadata:
+      labels:
+        app: main-service-db
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "main-service-db"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/main-service-db/config"
+        vault.hashicorp.com/agent-inject-template-config: |
+          {{- with secret "secret/data/main-service-db/config" -}}
+          export MARIADB_ROOT_PASSWORD="{{ .Data.data.MARIADB_ROOT_PASSWORD }}"
+          export MARIADB_DATABASE="{{ .Data.data.MARIADB_DATABASE }}"
+          export MARIADB_USER="{{ .Data.data.MARIADB_USER }}"
+          export MARIADB_PASSWORD="{{ .Data.data.MARIADB_PASSWORD }}"
+          {{- end }}
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: main-service-db
+          image: mariadb:11
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Source Vault secrets
+              . /vault/secrets/config
+              # Start MariaDB
+              docker-entrypoint.sh mariadbd
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: main-service-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-service-db
+  namespace: hirefy
+spec:
+  selector:
+    app: main-service-db
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+  type: ClusterIP

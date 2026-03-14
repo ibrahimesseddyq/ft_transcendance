@@ -53,7 +53,6 @@ export const updateTest = async (testId, updateData) => {
 }
 
 export const getTestById = async (testId) => {
-    console.log("Quiz service testId => ", testId);
     return await prisma.test.findUnique({
         where: {id : testId},
         include : {
