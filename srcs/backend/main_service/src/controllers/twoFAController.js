@@ -1,5 +1,4 @@
 import  TwoFAService from  '../services/twoFAService.js';
-import * as userService from  '../services/userService.js';
 
 const twoFAService = new TwoFAService();
 
