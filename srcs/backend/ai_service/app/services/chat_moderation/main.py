@@ -28,5 +28,4 @@ def moderate(text):
         }
     )
 
-    print(result_2)
     return result_2
