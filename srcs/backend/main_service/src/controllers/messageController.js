@@ -15,7 +15,7 @@ export const sendMessage = asyncHandler(async (req, res, next) => {
     const result = await messagesService.sendMessage({
       conversationId: req.params.conversationId,
       userId: req.user.id,
-      content: req.body.conten,
+      content: req.body.content,
       messageType: req.body.messageType || 'text',
       io: req.app.get('io')
     });
