@@ -31,7 +31,6 @@ export const findUserOrCreate = async (profile) => {
 }
 
 export const getUserById = async (userId) => {
-    console.log('UserId : ', userId);
     const user = await userRepository.getUserById(userId);
     if (!user)
         throw new HttpException(404, 'user not found');

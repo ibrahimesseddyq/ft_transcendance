@@ -36,33 +36,50 @@ export const createProfile = async (userId, profileData) => {
     }
     return profile;
 }
-
 export const updateProfile = async (userId, profileData) => {
-    const user = await userService.getUserById(userId);
-    if (!user)
-        throw new HttpException(404, 'user not found');
-    const profile = await profileRepository.getProfileById(userId);
-    if (!profile)
-        throw new HttpException(404, "profile not found");
-    const updateData = {...profileData.body};
-    if (profileData.files?.resume?.[0]) {
-        const {resumeUrl} = await fileService.saveResume(userId,profileData.files.resume[0]);
-        if (profile.resumeUrl && profile.resumeUrl !== resumeUrl)
-            await fileService.deleteFile(profile.resumeUrl);
-        updateData.resumeUrl = resumeUrl;
+    const [user, profile] = await Promise.all([
+        userService.getUserById(userId),
+        profileRepository.getProfileById(userId)
+    ]);
+    if (!user) throw new HttpException(404, 'user not found');
+    if (!profile) throw new HttpException(404, 'profile not found');
+    const updateData = { ...profileData.body };
+    const [avatarResult, resumeResult] = await Promise.all([
+        profileData.files?.avatar?.[0] 
+            ? fileService.saveAvatar(userId, profileData.files.avatar[0]) 
+            : Promise.resolve(null),
+        profileData.files?.resume?.[0] 
+            ? fileService.saveResume(userId, profileData.files.resume[0]) 
+            : Promise.resolve(null)
+    ]);
+    const newAvatarUrl = avatarResult?.avatarUrl;
+    const newResumeUrl = resumeResult?.resumeUrl;
+    if (newResumeUrl) {
+        updateData.resumeUrl = newResumeUrl;
     }
-    if (profileData.files?.avatar?.[0])
-    {
-        const {avatarUrl} = await fileService.saveAvatar(userId,profileData.files.avatar[0])
-        if (user.avatarUrl && user.avatarUrl !== avatarUrl)
-        {
-            await Promise.all([fileService.deleteFile(user.avatarUrl),
-                userService.updateUser(userId, {avatarUrl})
-            ])
-        }
+    const executionQueue = [];
+    if (newResumeUrl && profile.resumeUrl && profile.resumeUrl !== newResumeUrl) {
+        executionQueue.push(fileService.deleteFile(profile.resumeUrl));
     }
-    return await profileRepository.updateProfile(userId, updateData);
-}
+    if (newAvatarUrl && user.avatarUrl && user.avatarUrl !== newAvatarUrl) {
+        executionQueue.push(fileService.deleteFile(user.avatarUrl));
+    }
+    const updateProfilePromise = profileRepository.updateProfile(userId, updateData);
+    executionQueue.push(updateProfilePromise);
+    let updateUserPromise = Promise.resolve(user);
+    if (newAvatarUrl) {
+        updateUserPromise = userService.updateUser(userId, { avatarUrl: newAvatarUrl });
+        executionQueue.push(updateUserPromise);
+    }
+    await Promise.all(executionQueue);
+    const updatedProfile = await updateProfilePromise;
+    const updatedUser = await updateUserPromise;
+    if (updatedUser && updatedUser.avatarUrl) {
+        if (!updatedProfile.user) updatedProfile.user = {}; 
+        updatedProfile.user.avatarUrl = updatedUser.avatarUrl;
+    }
+    return updatedProfile;
+};
 
 export const getProfile =  async (userId) => {
     const profile = await profileRepository.getProfileById(userId);

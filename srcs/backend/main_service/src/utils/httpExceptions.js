@@ -15,6 +15,6 @@ export class HttpException extends CustomError {
 
 export class HttpValidationException extends  CustomError {
     constructor(errors = ['Bad Request']) {
-        super(400,errors);
+        super(400,'Bad Request',errors);
     }
 }

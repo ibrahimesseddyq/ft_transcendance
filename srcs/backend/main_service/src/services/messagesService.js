@@ -49,7 +49,6 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 			}
 		} catch (error) {
 			// Do not block messaging if moderation service is unavailable.
-			console.warn('Text moderation unavailable:', error?.message || error);
 		}
 	}
 
