@@ -3,6 +3,41 @@ set -e
 
 export VAULT_ADDR="http://127.0.0.1:8200"
 export VAULT_TOKEN="root"
+# export MARIADB_MAIN_ROOT_PASSWORD=root
+# export MARIADB_MAIN_DATABASE=hirefy
+# export MARIADB_MAIN_USER=user1
+# export MARIADB_MAIN_PASSWORD=pass
+# export MARIADB_QUIZ_ROOT_PASSWORD=root
+# export MARIADB_QUIZ_DATABASE=hirefy
+# export MARIADB_QUIZ_USER=user2
+# export MARIADB_QUIZ_PASSWORD=pass
+
+# ############# Global ###################
+# export DATABASE_URL="mysql://user1:pass@localhost:3306/hirefy"
+# export PORT=3000
+# export HOST=localhost
+# export NODE_ENV=development
+# export BCRYPT_ROUNDS=10
+
+# export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
+# export GOOGLE_CLIENT_SECRET=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
+# export CALLBACK_URL=/api/main/auth/google/callback
+
+# export ACCESS_TOKEN_SECRET=96c2401320859efdd13ac8b2043d93ffce79dc76d93872e61a210c556582b1c4e4865ea773b185805bb5ab92dcba4c5a8334cb4d334197bd71c7efa0680858d9
+# export ACCESS_TOKEN_EXPIRY="1d"
+# export REFRESH_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+# export REFRESH_TOKEN_EXPIRY="7d"
+
+# export VERIFY_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+# export VERIFY_SECRET_EXPIRY="7d"
+# export USER_EMAIL=fttranscendencefttranscendence@gmail.com
+# export USER_PASSWORD=mqsuowqknwrumsmp
+# export FRONTEND_URL=http://localhost:5173
+# export BACKEND_URL=http://localhost:3000/
+# export INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+# export QUIZ_SERVICE_URL=http://localhost:3308/
+# export AI_INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+# export RECRUITER_PASS=Abdellatif123@@ 
 
 # Wait until Vault API is up (no curl required)
 until vault status >/dev/null 2>&1; do
@@ -36,12 +71,12 @@ vault policy write quiz-service - << 'EOF'
 path "secret/data/quiz-service/*" { capabilities = [ "read", "list" ] }
 EOF
 
-vault policy write main_service_db - << 'EOF'
-path "secret/data/main_service_db/*" { capabilities = [ "read", "list" ] }
+vault policy write main-service-db - << 'EOF'
+path "secret/data/main-service-db/*" { capabilities = [ "read", "list" ] }
 EOF
 
-vault policy write quiz_service_db - << 'EOF'
-path "secret/data/quiz_service_db/*" { capabilities = [ "read", "list" ] }
+vault policy write quiz-service-db - << 'EOF'
+path "secret/data/quiz-service-db/*" { capabilities = [ "read", "list" ] }
 EOF
 
 vault policy write ai-service - << 'EOF'
@@ -66,26 +101,26 @@ vault write auth/kubernetes/role/ai-service \
     policies=ai-service \
     ttl=24h
 
-vault write auth/kubernetes/role/main_service_db \
+vault write auth/kubernetes/role/main-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=main_service_db \
+    policies=main-service-db \
     ttl=24h
 
-vault write auth/kubernetes/role/quiz_service_db \
+vault write auth/kubernetes/role/quiz-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=quiz_service_db \
+    policies=quiz-service-db \
     ttl=24h
 
 echo "Storing secrets in vault..."
-vault kv put secret/main_service_db/config \
+vault kv put secret/main-service-db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_MAIN_ROOT_PASSWORD}" \
   MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
   MARIADB_USER="${MARIADB_MAIN_USER}" \
   MARIADB_PASSWORD="${MARIADB_MAIN_PASSWORD}"
 ## change those to env!!!!!!!!!!!!!
-vault kv put secret/quiz_service_db/config \
+vault kv put secret/quiz-service-db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_QUIZ_ROOT_PASSWORD}" \
   MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
   MARIADB_USER="${MARIADB_MAIN_USER}" \
