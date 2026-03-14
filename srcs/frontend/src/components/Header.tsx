@@ -4,6 +4,7 @@ import { Notifications } from '@/components/ui/Notifications';
 import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import Icon  from '@/components/ui/Icon'
+import { toggleTheme } from '@/utils/theme';
 
 export function Header() {
   const user = useAuthStore((state) => state.user);
@@ -19,8 +20,7 @@ export function Header() {
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
   const handleTheme = () => {
-    const isDark = document.documentElement.classList.toggle("dark");
-    localStorage.theme = isDark ? "dark" : "light";
+    toggleTheme();
   };
 
   const LogoutClassName = 'hidden xl:block ml-2 text-xs font-bold uppercase tracking-tight';
