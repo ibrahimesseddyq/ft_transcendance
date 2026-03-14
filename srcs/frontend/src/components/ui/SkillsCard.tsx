@@ -7,7 +7,7 @@ const SkillsCard = ({ profile }: props) => {
   return (
     <div className="flex-1 w-full md:w-auto p-2">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="pramary-text text-xl flex items-center gap-2">Top Skills</h2>
+        <h2 className="text-[#00adef] font-medium text-xl flex items-center gap-2">Top Skills</h2>
       </div>
       
       {profile?.skills && profile.skills.length > 0 ? (
