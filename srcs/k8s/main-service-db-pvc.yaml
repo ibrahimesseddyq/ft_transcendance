@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: quiz_service_db_pvc
+  name: main-service-db-pvc
   namespace: hirefy
 spec:
   accessModes: ["ReadWriteOnce"]
