@@ -39,12 +39,12 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 	if (!text) {
 		throw new HttpException(400, 'Message content is required');
 	}
-
+	
 	if (messageType === 'text') {
 		try {
 			
 			const moderation = await moderateText(text, { conversationId, userId });
-			if (moderation?.blocked === true) {
+			if (moderation?.action === 'Block') {
 				return { blocked: true, moderation };
 			}
 		} catch (error) {
