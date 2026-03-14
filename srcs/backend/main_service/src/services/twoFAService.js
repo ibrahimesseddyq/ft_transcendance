@@ -56,12 +56,9 @@ import * as  jwtService from './jwtService.js';
         );
         if (user.firstLogin === true)
         {
-            console.log("\x1b[31m" + "first login \n" + "\x1b[0m");
-            console.log(user)
             const check = await userService.updateUser(user.id, { firstLogin: false });
             if (check.ok)
             {
-                console.log("succed");
                 user.firstLogin = false;
             }
         }
