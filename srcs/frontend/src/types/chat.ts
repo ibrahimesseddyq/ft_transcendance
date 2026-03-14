@@ -1,3 +1,5 @@
+export const CHAT_MESSAGE_MAX_LENGTH = 512;
+
 export interface User {
   id: string;
   firstName?: string;
