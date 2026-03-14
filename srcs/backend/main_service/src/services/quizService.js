@@ -33,11 +33,9 @@ export const startTest = async (data) => {
 
 export const submitTest = async (data) => {
     const testId = data.params.testId;
-    console.log("data body:", data.body);
     const {applicationPhaseId, answers, userId} = data.body;
-    console.log("pyload = ", data.body);
     const applicationPhase = await applicationPhaseService.getApplicaticationPhaseById(applicationPhaseId);
-    console.log("applicationPhase.application?.candidateId = ", applicationPhase.application?.candidateId);
+
     if (applicationPhase.application?.candidateId != userId)
         throw new HttpException(403, 'not your application');
     if (applicationPhase.status != 'inProgress')

@@ -38,16 +38,14 @@ export const evaluateTest = async (testId, answers) => {
     if (test.type === 'MCQ')
         result = evaluateQuiz(test, answers);
     else
-        result = evaluateCodeChallenge(test, answers);
+        result = await evaluateCodeChallenge(test, answers);
     return result;
 }
 
 export const getTestForEvalution = async (testId) => {
-    const test = testService.getTestById(testId);
+    const test = await testService.getTestById(testId);
     if (!test)
         throw new HttpException(404, 'test not found');
-    if (!test.isPublished)
-        throw new HttpException(401, 'unauthorized evaluation');
     return test;
 }
 

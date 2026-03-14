@@ -53,7 +53,7 @@ export const listUsers = asyncHandler(async (req,res,next) => {
     const result = await userService.listUsers({});
     res.status(200).json({
         success : true,
-        data : result.forEach(element => getSafeUser(element))
+        data : result.map(getSafeUser)
     })
 })
 
