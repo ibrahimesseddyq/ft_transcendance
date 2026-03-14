@@ -33,6 +33,18 @@ spec:
           export GOOGLE_CLIENT_SECRET="{{ .Data.data.GOOGLE_CLIENT_SECRET }}"
           export GOOGLE_CALLBACK_URL="{{ .Data.data.GOOGLE_CALLBACK_URL }}"
           {{- end }}
+        vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/other"
+        vault.hashicorp.com/agent-inject-template-oauth: |
+          {{- with secret "secret/data/main-service/oauth" -}}
+          export RECRUITER_PASS="{{ .Data.data.RECRUITER_PASS }}"
+          export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
+          export USER_EMAIL="{{ .Data.data.USER_EMAIL }}"
+
+          export USER_PASSWORD="{{ .Data.data.USER_PASSWORD }}"
+          export QUIZ_PUBLIC_API_KEY="{{ .Data.data.QUIZ_PUBLIC_API_KEY }}"
+          export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
+
+          {{- end }}
         # vault.hashicorp.com/agent-inject-command-database: "/bin/sh -c 'source /vault/secrets/database && source /vault/secrets/config && source /vault/secrets/jwt && source /vault/secrets/oauth && exec node /app/server.js'"
     spec:
       serviceAccountName: app-service-account
