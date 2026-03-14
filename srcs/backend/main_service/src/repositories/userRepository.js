@@ -1,6 +1,4 @@
-import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
-import { application } from 'express';
 
 export const getUserById = async (userId) => {
     return await prisma.user.findUnique({

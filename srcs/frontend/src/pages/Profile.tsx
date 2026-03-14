@@ -69,7 +69,7 @@ export function Profile() {
     return (
       <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="pramary-text text-xl font-bold flex items-center gap-2">
+            <h2 className="text-[#00adef] font-medium text-xl font-bold flex items-center gap-2">
               Personal details
             </h2>
           </div>
