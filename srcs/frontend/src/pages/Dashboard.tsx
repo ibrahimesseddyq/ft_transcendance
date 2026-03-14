@@ -1,7 +1,7 @@
 import {OverviewStatistics} from "@/components/OverviewStatistics"
 import { ActiveCondidates } from "@/components/ActiveCondidates";
 import { RecentActivity } from "@/components/RecentActivity";
-import { SourceOfHire } from "@/components/SourceOfHire";
+import { RecruitmentPieChart } from "@/components/RecruitmentPieChart";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from 'react'
 import { mainApi } from '@/utils/Api'
@@ -30,6 +30,7 @@ export function Dashboard() {
     fetchDashboard();
   }, [env_main_api]);
 
+  console.log("Dashboard : data ", dashboardData);
   const TotalStatistics = () => {
     const stats = dashboardData?.kpiCards || [];
 
@@ -85,8 +86,8 @@ export function Dashboard() {
         <div className="h-[500px] w-full rounded-xl bg-surface-main dark:bg-slate-800 border dark:border-slate-700 ">
           <RecentActivity activities={dashboardData?.recentActivity} />
         </div>
-        <div className="h-[500px] w-full rounded-xl bg-surface-main dark:bg-slate-800 border dark:border-slate-700">
-          {/* <SourceOfHire data={dashboardData?.hiringFunnel} /> */}
+        <div className="h-[500px] w-full rounded-xl bg-surface-main dark:bg-slate-800 border dark:border-slate-700 place-content-center">
+          <RecruitmentPieChart data={dashboardData?.recruitmentStatus} />
         </div>
       </div>
     </div>

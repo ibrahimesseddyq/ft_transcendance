@@ -25,7 +25,6 @@ export const generateAuthTokens =  (payload) => {
 }
 
 export const verify = async (token, secret) => {
-    console.log('*****************token is :', token)
     return new Promise((resolve,reject) => {
         jwt.verify(token,secret, (err, decoded) => {
             if(err) {
@@ -68,7 +67,6 @@ export const refreshAccessToken = async (refreshToken) => {
 }
 
 export const verifyVerificationToken = async (token) => {
-    console.log("Iam Here ************ toke = ", token)
     const decoded = await verify(token,accessTokenSecret);
     if (!decoded || decoded.type !== 'email_verification')
         throw new HttpException(403, 'Invalid token type');
