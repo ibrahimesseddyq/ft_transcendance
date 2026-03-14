@@ -5,29 +5,40 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
-  *, *::before, *::after {
-    @apply transition-colors duration-300 ease-in-out;
+    body {
+        @apply transition-colors duration-300 ease-in-out;
+    }
+
+    .theme-switching *,
+    .theme-switching *::before,
+    .theme-switching *::after {
+        transition: none !important;
+        animation: none !important;
   }
 }
 
 :root {
-  --color-primary: #00adef;
-  --color-primary-whitebg: #F0F3FA;
-  --color-primary-darkbg: #0f172a;
-  --color-primary-hover: #008fcc;
-  --color-primary-border: ;
+    --color-primary: #00adef;
+    --color-primary-whitebg: #F0F3FA;
+    --color-primary-darkbg: #0f172a;
+    --color-primary-hover: #008fcc;
+    --color-primary-border: #0098d4;
 
-  --color-secondary: ;
-  --color-secondary-whitebg: ;
-  --color-secondary-darkbg: #0f172a;
-  --color-secondary-hover: ;
-  --color-secondary-border: ;
+    --color-secondary: #1e293b;
+    --color-secondary-whitebg: #f8fafc;
+    --color-secondary-darkbg: #0f172a;
+    --color-secondary-hover: #334155;
+    --color-secondary-border: #334155;
 
-  --color-surface-main: #FFFFFF;
-  --color-surface-child: #f8fafc;
-  --color-accent: #10B77F;
-  --color-danger: #ff3b3b;
-  --color-danger-hover: #f97272;
+    --color-whitebg: #F0F3FA;
+    --color-darkbg: #0f172a;
+
+    --color-surface-main: #FFFFFF;
+    --color-surface-child: #f8fafc;
+    --color-accent: #10B77F;
+    --color-danger: #ff3b3b;
+    --color-hover: #f97272;
+    --color-danger-hover: #f97272;
 }
 
 @layer utilities {
@@ -51,44 +62,6 @@
 
     .no-scrollbar::-webkit-scrollbar {
         display: none;
-    }
-
-    .pramary-text {
-        font-weight: 500;
-        color: #00adef; 
-    }
-
-    .header-title {
-        font-size: 1.25rem;
-        line-height: 1.75rem;
-        font-weight: 500;
-        color: #000000;
-    }
-
-    .logo {
-        background-color: #121b31;
-        border-radius: 0.375rem;
-        color: #ffffff;
-        border-color: #1f2937;
-        border-width: 1px;
-    }
-
-    .maincard {
-        background-color: #FFFFFF;
-        border-radius: 1.5rem;
-        border-width: 1px;
-    }
-
-    .maincard:hover {
-        border-color: #00adef; 
-    }
-
-
-    .childcard {
-        background-color: #1e293b; 
-        border-width: 1px;
-        border-radius: 0.5rem;
-        border-color: rgba(0, 173, 239, 0.2); 
     }
 
     .custom-scrollbar {
