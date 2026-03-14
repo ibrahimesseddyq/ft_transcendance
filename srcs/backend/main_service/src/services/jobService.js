@@ -28,13 +28,13 @@ export const getJobs = async (req) => {
     const sortOrder = req.query?.sortOrder === 'asc' ? 'asc' : 'desc';
     const skip = (page - 1) * limit;
     const take = limit;
-    const { 
-        page: _page, 
-        limit: _limit, 
-        sortBy: _sortBy, 
-        sortOrder: _sortOrder, 
-        ...filters 
-    } = req.query;
+    const allowedFilters = ['status', 'jobType', 'location', 'experienceLevel'];
+    const filters = {};
+    for (const key of allowedFilters) {
+        if (req.query?.[key] !== undefined && req.query?.[key] !== '') {
+            filters[key] = req.query[key];
+        }
+    }
     const result = await jobRepository.findManyJobs(filters, skip, take, sortBy, sortOrder);
     return result;
 };

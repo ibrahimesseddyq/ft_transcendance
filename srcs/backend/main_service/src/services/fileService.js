@@ -18,17 +18,17 @@ export const saveAvatar = async (userId, file) => {
     const filename = `${userId}${fileExt}`;
     const physicalPath = file.path;
     const avatarPath = '/uploads/avatars/' + filename;
-    try {
-        const result = await classifyAvatar(physicalPath);
-        if (result !== 'valid profile')
-        {
-            await fs.unlink(physicalPath);
-            throw new HttpException(400, 'Avatar rejected by AI service');
-        }
-    } catch (err) {
-        await fs.unlink(physicalPath).catch(() => {});
-        throw err;
-    }
+    // try {
+    //     const result = await classifyAvatar(physicalPath);
+    //     if (result !== 'valid profile')
+    //     {
+    //         await fs.unlink(physicalPath);
+    //         throw new HttpException(400, 'Avatar rejected by AI service');
+    //     }
+    // } catch (err) {
+    //     await fs.unlink(physicalPath).catch(() => {});
+    //     throw err;
+    // }
     return {
         type :'avatar',
         avatarUrl: avatarPath,
