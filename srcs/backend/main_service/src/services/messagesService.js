@@ -35,7 +35,6 @@ export const getMessages = async ({ conversationId, userId, limit, before }) => 
 
 export const sendMessage = async ({ conversationId, userId, content, messageType = 'text', io }) => {
 	await validateConversationAccess(conversationId, userId);
-
 	const text = typeof content === 'string' ? content.trim() : '';
 	if (!text) {
 		throw new HttpException(400, 'Message content is required');
@@ -43,13 +42,13 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 
 	if (messageType === 'text') {
 		try {
+			
 			const moderation = await moderateText(text, { conversationId, userId });
 			if (moderation?.blocked === true) {
 				return { blocked: true, moderation };
 			}
 		} catch (error) {
 			// Do not block messaging if moderation service is unavailable.
-			console.warn('Text moderation unavailable:', error?.message || error);
 		}
 	}
 
