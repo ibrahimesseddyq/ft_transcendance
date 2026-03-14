@@ -4,10 +4,8 @@ import  { HttpValidationException } from '../utils/httpExceptions.js';
 const validateRequest = (schema) => {
     return (req,res,next) => {
         try {
-
             req.body = schema.parse(req.body);
-            console.log("Body is ", req.body);
-        }catch (error) {
+        } catch (error) {
             if(error instanceof ZodError) {
                 const errorMessages = error.issues.map((issue) => 
                     `${issue.path.join(".")} is ${issue.message.toLowerCase()}`
