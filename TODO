@@ -6,4 +6,11 @@ need to ckeck all filters and make sure that are implemented correctly
 -------------------------------------------------------------------------------
 [ibrahim]
 set secure to true
+
+TODO: 
+    -soufian need to update the avatarUrl with the response when i edit the profile, update the avatar like in the profile form
+    -fix the login for the accepting the condidate after finishing the tests
+    -there is a problem when i wanna asyn the phases for job in backend
+    -make the dark/ligth mode more smooth
+    -add || delete savedJobs
 - also remove all hardcoded cred => ton env

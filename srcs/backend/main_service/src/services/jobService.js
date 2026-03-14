@@ -36,6 +36,7 @@ export const getJobs = async (req) => {
         ...filters 
     } = req.query;
     const result = await jobRepository.findManyJobs(filters, skip, take, sortBy, sortOrder);
+    return result;
 };
 
 export const getApplicaticationsBJobId = async (jobId) => {
