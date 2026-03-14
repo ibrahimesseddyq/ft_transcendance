@@ -10,6 +10,6 @@ export const classifyAvatar =  async (filePath) => {
 }
 
 export const moderateText = async (text, meta = {}) => {
-    const res = await aiClient.post('/api/ai/moderate-text', {text, meta});
+    const res = await aiClient.post('/api/ai/moderate', {text, meta});
     return res.data;
 }
