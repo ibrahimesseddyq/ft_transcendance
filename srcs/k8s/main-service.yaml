@@ -33,8 +33,8 @@ spec:
           export GOOGLE_CLIENT_SECRET="{{ .Data.data.GOOGLE_CLIENT_SECRET }}"
           export GOOGLE_CALLBACK_URL="{{ .Data.data.GOOGLE_CALLBACK_URL }}"
           {{- end }}
-        vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/other"
-        vault.hashicorp.com/agent-inject-template-oauth: |
+        vault.hashicorp.com/agent-inject-secret-other: "secret/data/main-service/other"
+        vault.hashicorp.com/agent-inject-template-other: |
           {{- with secret "secret/data/main-service/oauth" -}}
           export RECRUITER_PASS="{{ .Data.data.RECRUITER_PASS }}"
           export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
