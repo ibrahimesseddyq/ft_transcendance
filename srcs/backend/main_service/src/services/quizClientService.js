@@ -6,11 +6,9 @@ export const getTestById = async (testId) => {
 }
 
 export const evaluateTest = async (testId, answers) => {
-    console.log("------------ Iam here ----------")
    const respose = await quizClient.post(
     `/api/quiz/internal/tests/${testId}/evaluate`,
     {answers : answers}
    )
-   console.log("respose.data => ", respose.data)
    return  respose.data;
 }

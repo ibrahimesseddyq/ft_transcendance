@@ -36,12 +36,12 @@ vault policy write quiz-service - << 'EOF'
 path "secret/data/quiz-service/*" { capabilities = [ "read", "list" ] }
 EOF
 
-vault policy write main_service_db - << 'EOF'
-path "secret/data/main_service_db/*" { capabilities = [ "read", "list" ] }
+vault policy write main-service-db - << 'EOF'
+path "secret/data/main-service-db/*" { capabilities = [ "read", "list" ] }
 EOF
 
-vault policy write quiz_service_db - << 'EOF'
-path "secret/data/quiz_service_db/*" { capabilities = [ "read", "list" ] }
+vault policy write quiz-service-db - << 'EOF'
+path "secret/data/quiz-service-db/*" { capabilities = [ "read", "list" ] }
 EOF
 
 vault policy write ai-service - << 'EOF'
@@ -66,26 +66,26 @@ vault write auth/kubernetes/role/ai-service \
     policies=ai-service \
     ttl=24h
 
-vault write auth/kubernetes/role/main_service_db \
+vault write auth/kubernetes/role/main-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=main_service_db \
+    policies=main-service-db \
     ttl=24h
 
-vault write auth/kubernetes/role/quiz_service_db \
+vault write auth/kubernetes/role/quiz-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=quiz_service_db \
+    policies=quiz-service-db \
     ttl=24h
 
 echo "Storing secrets in vault..."
-vault kv put secret/main_service_db/config \
+vault kv put secret/main-service-db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_MAIN_ROOT_PASSWORD}" \
   MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
   MARIADB_USER="${MARIADB_MAIN_USER}" \
   MARIADB_PASSWORD="${MARIADB_MAIN_PASSWORD}"
 ## change those to env!!!!!!!!!!!!!
-vault kv put secret/quiz_service_db/config \
+vault kv put secret/quiz-service-db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_QUIZ_ROOT_PASSWORD}" \
   MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
   MARIADB_USER="${MARIADB_MAIN_USER}" \

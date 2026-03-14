@@ -17,3 +17,4 @@ COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
 # COPY waf/modsecurity.conf /etc/modsecurity.d/modsecurity.conf
 # RUN chown -R nginx:nginx /etc/modsecurity.d
 # USER nginx
+RUN ln -sf /etc/modsecurity.d/unicode.mapping /etc/nginx/modsecurity.d/unicode.mapping

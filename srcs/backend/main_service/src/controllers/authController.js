@@ -25,9 +25,7 @@ const tempTokenOptions = {
 
 
 export const login = asyncHandler(async (req, res, next) => {
-        // 2FA
         const result = await authService.login(req.body);
-        console.log(req.body)
         if (result.require2FA)
         {
             return res
@@ -51,31 +49,23 @@ export const login = asyncHandler(async (req, res, next) => {
                 }
             }
         );
-        console.log('cookies set:', result.accessToken, result.refreshToken);
 })
 
 export const verify2FA = asyncHandler(async (req, res, next) =>{
-    console.log("body :", req.cookies);
     const tempToken = req.cookies.tempToken;
-
     const {code} = req.body;
-    console.log('code ', code, 'tempToken ', tempToken)
-
     const { user, accessToken, refreshToken} = await authService.verifyLoginWith2FA(tempToken, code);
-    console.log('accessToken:', accessToken);
-    console.log('refreshToken:', refreshToken);
+    
     res
     .cookie('accessToken',accessToken,accessTokenOptions)
     .cookie('refreshToken', refreshToken ,refreshTokenOptions)
     .status(200)
-    .json(
-        {
-            message:'login successful',
-            data: {
-                user,
-            }
+    .json({
+        message:'login successful',
+        data: {
+            user,
         }
-    );
+    });
 })
 
 export const register = asyncHandler(async (req, res, next) => {
