@@ -1,8 +1,17 @@
 import express from 'express';
 import * as messageController from '../controllers/messageController.js';
 import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import validateRequest from '../middleware/ValidateRequest.js';
+import {
+  conversationIdParamsSchema,
+  editMessageBodySchema,
+  getMessagesQuerySchema,
+  routeIdParamsSchema,
+  sendMessageBodySchema,
+  uploadFileBodySchema
+} from '../validators/chatValidator.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,21 +38,31 @@ const upload = multer({
 const router = express.Router();
 
 // Upload file message
-router.post('/upload', upload.single('file'), messageController.uploadFile);
+router.post('/upload', upload.single('file'), validateRequest(uploadFileBodySchema), messageController.uploadFile);
 
 // Get messages for a conversation (paginated)
-router.get('/conversation/:conversationId', messageController.getMessages);
+router.get(
+  '/conversation/:conversationId',
+  validateRequest(conversationIdParamsSchema, 'params'),
+  validateRequest(getMessagesQuerySchema, 'query'),
+  messageController.getMessages
+);
 
 // Send a message
-router.post('/conversation/:conversationId', messageController.sendMessage);
+router.post(
+  '/conversation/:conversationId',
+  validateRequest(conversationIdParamsSchema, 'params'),
+  validateRequest(sendMessageBodySchema),
+  messageController.sendMessage
+);
 
 // Edit a message
-router.patch('/:id', messageController.editMessage);
+router.patch('/:id', validateRequest(routeIdParamsSchema, 'params'), validateRequest(editMessageBodySchema), messageController.editMessage);
 
 // Delete a message (soft delete)
-router.delete('/:id', messageController.deleteMessage);
+router.delete('/:id', validateRequest(routeIdParamsSchema, 'params'), messageController.deleteMessage);
 
 // Get unread count for a conversation
-router.get('/conversation/:conversationId/unread', messageController.getUnreadCount);
+router.get('/conversation/:conversationId/unread', validateRequest(conversationIdParamsSchema, 'params'), messageController.getUnreadCount);
 
 export default router;

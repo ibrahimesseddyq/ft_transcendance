@@ -48,6 +48,7 @@ const Signin = () => {
         try {
             const response = await mainApi.post(`${env_main_api}/auth/login`, data);
             const result = response.data?.data;
+            console.log("result?.id = ", result?.id);
             const userId = result?.id;
 
             console.log ("result :", result);
