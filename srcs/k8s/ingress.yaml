@@ -9,7 +9,7 @@ spec:
   tls:
     - secretName: hirefy-tls
   rules:
-    - host: 13.38.15.15.nio.io
+    - host: 13.38.15.15
       http:
         paths:
           - path: /
