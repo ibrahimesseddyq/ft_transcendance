@@ -37,15 +37,7 @@ export const getJobById = asyncHandler(async(req,res,next) => {
 })
 
 export const getJobs = asyncHandler(async (req, res, next) => {
-    const { page, limit, sortBy, sortOrder, ...filters } = req.query || {};
-    const queryOptions = {
-        page: page !== undefined ? parseInt(page, 10) : undefined,
-        limit: limit !== undefined ? parseInt(limit, 10) : undefined,
-        sortBy,
-        sortOrder,
-        filters,
-    };
-    const result = await jobService.getJobs(queryOptions);
+    const result = await jobService.getJobs(req);
     res.status(200).json({
         success: true,
         data: result?.data,
