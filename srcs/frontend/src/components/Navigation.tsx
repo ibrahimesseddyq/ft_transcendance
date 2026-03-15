@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { House, Menu, BriefcaseBusiness, Info, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
+import { House, Menu, BriefcaseBusiness, MessageCircleMore, X, GitPullRequestCreateArrow, Info  } from 'lucide-react';
 import { useAuthStore } from '@/utils/ZuStand';
 
 export const navigation = [
