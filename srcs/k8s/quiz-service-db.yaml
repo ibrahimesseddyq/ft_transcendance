@@ -33,13 +33,25 @@ spec:
               containerPort: 3306
               protocol: TCP
           command:
-            - /bin/sh
-            - -c
-            - |
-              # Source Vault secrets
-              . /vault/secrets/config
-              # Start MariaDB
-              docker-entrypoint.sh mariadbd
+          - /bin/sh
+          - -c
+          - |
+            # Wait for Vault to inject the file
+            for i in $(seq 1 60); do
+              [ -f /vault/secrets/config ] && break
+              echo "Waiting for Vault secret file /vault/secrets/config..."
+              sleep 1
+            done
+
+            if [ ! -f /vault/secrets/config ]; then
+              echo "ERROR: Vault secret file /vault/secrets/config not found"
+              exit 1
+            fi
+
+            . /vault/secrets/config
+            env | grep -E '^MARIADB_' || true
+
+            exec docker-entrypoint.sh mariadbd
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql

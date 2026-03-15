@@ -15,3 +15,5 @@ TODO:
     -make the dark/ligth mode more smooth
     -add || delete savedJobs
 - also remove all hardcoded cred => ton env
+[abdellatif]
+sinup does not check if request fails
