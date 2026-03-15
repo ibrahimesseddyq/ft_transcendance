@@ -25,6 +25,9 @@ spec:
           {{- with secret "secret/data/main-service/jwt" -}}
           export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
           export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
+          export TEMP_TOKEN_SECRET="{{ .Data.data.TEMP_TOKEN_SECRET }}"
+          export VERIFY_TOKEN_SECRET="{{ .Data.data.VERIFY_TOKEN_SECRET }}"
+
           {{- end }}
         vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/oauth"
         vault.hashicorp.com/agent-inject-template-oauth: |
