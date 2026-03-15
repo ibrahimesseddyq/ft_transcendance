@@ -5,17 +5,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import validateRequest from '../middleware/ValidateRequest.js';
 import {
-  conversationIdParamsSchema,
   editMessageBodySchema,
-  getMessagesQuerySchema,
-  routeIdParamsSchema,
-  sendMessageBodySchema,
   uploadFileBodySchema
 } from '../validators/chatValidator.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, '../../uploads/chat'));
@@ -28,41 +23,36 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+  limits: { fileSize: 100 * 1024 * 1024 }, 
   fileFilter: (req, file, cb) => {
-    // Allow all file types
     cb(null, true);
   }
 });
 
 const router = express.Router();
 
-// Upload file message
-router.post('/upload', upload.single('file'), validateRequest(uploadFileBodySchema), messageController.uploadFile);
+router.post('/upload', upload.single('file'),
+  validateRequest(uploadFileBodySchema),
+    messageController.uploadFile);
 
-// Get messages for a conversation (paginated)
 router.get(
   '/conversation/:conversationId',
-  validateRequest(conversationIdParamsSchema, 'params'),
-  validateRequest(getMessagesQuerySchema, 'query'),
   messageController.getMessages
 );
 
-// Send a message
 router.post(
   '/conversation/:conversationId',
-  validateRequest(conversationIdParamsSchema, 'params'),
-  validateRequest(sendMessageBodySchema),
   messageController.sendMessage
 );
 
-// Edit a message
-router.patch('/:id', validateRequest(routeIdParamsSchema, 'params'), validateRequest(editMessageBodySchema), messageController.editMessage);
+router.patch('/:id',
+  validateRequest(editMessageBodySchema),
+   messageController.editMessage);
 
-// Delete a message (soft delete)
-router.delete('/:id', validateRequest(routeIdParamsSchema, 'params'), messageController.deleteMessage);
+router.delete('/:id',
+   messageController.deleteMessage);
 
-// Get unread count for a conversation
-router.get('/conversation/:conversationId/unread', validateRequest(conversationIdParamsSchema, 'params'), messageController.getUnreadCount);
+router.get('/conversation/:conversationId/unread'
+  , messageController.getUnreadCount);
 
 export default router;
