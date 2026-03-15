@@ -3,11 +3,12 @@ import { z } from "zod";
 import Icon  from '@/components/ui/Icon'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CandidateProfileSchema } from "@/utils/ZodSchema";
-import Notification from "@/utils/TostifyNotification";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { mainApi } from '@/utils/Api';
+import Notification from "@/utils/TostifyNotification";
+import { ToastContainer } from "react-toastify";
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -140,7 +141,7 @@ export function EditProfile() {
       console.error("Update failed:", error);
       setAvatarProgress(0);
       setResumeProgress(0);
-      Notification("Technical error occurred", "error");
+      Notification("PLease enter a valide profile", "error");
     }
   };
 
@@ -155,6 +156,7 @@ export function EditProfile() {
 
   return (
     <form onSubmit={handleSubmit(onApplySubmit)} className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent w-full mx-auto">
+      <ToastContainer />
       <header className="border-b border-gray-200 dark:border-gray-800 pb-4 w-full">
         <h1 className="text-black dark:text-surface-main text-2xl font-bold">Profile Update</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm">Refine your professional presence.</p>
