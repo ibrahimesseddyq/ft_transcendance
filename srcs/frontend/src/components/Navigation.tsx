@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { House, Menu, BriefcaseBusiness, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
+import { House, Menu, BriefcaseBusiness, MessageCircleMore, X, GitPullRequestCreateArrow, Info  } from 'lucide-react';
 import { useAuthStore } from '@/utils/ZuStand';
 
 export const navigation = [
@@ -9,6 +9,7 @@ export const navigation = [
     { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "Quiz", path: "/QuizPage", icon: GitPullRequestCreateArrow },
     { name: "Applications", path: "/Applications", icon: GitPullRequestCreateArrow },
+    { name: "About", path: "/About", icon: Info },
 ];
 
 export function Navbar() {
