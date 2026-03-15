@@ -2,23 +2,24 @@ import env from'../config/env.js';
 import * as authService from'../services/authService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import * as jwtService from '../services/jwtService.js';
+import ms from 'ms';
 
 const accessTokenOptions = {
     httpOnly: true,
-    maxAge:7 * 24 * 60 * 60 * 1000,
+    maxAge: ms(env.ACCESS_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production"
 }
 const refreshTokenOptions = {
     httpOnly: true,
-    maxAge:7 * 24 * 60 * 60 * 1000,
+    maxAge: ms(env.REFRESH_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production",
     path: '/api/main/auth/refresh'
 }
 const tempTokenOptions = {
     httpOnly: true,
-    maxAge:7 * 24 * 60 * 60 * 1000,
+    maxAge: ms(env.TEMP_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production",
 }
@@ -111,6 +112,7 @@ export const logout =  asyncHandler(async (req, res, next) => {
 })
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
+    console.log(' enter here');
     const token = req.params.token;
     await authService.verifyEmail(token);
     res.redirect(`${env.FRONTEND_URL}`);
