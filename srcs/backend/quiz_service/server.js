@@ -1,17 +1,27 @@
 import app from "./app.js";
 import env from "./src/config/env.js"
 
-app.get("/", (req, res) => {
-  res.json({ message: "Server is running " });
+
+app.get('/health', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({
+      status: 'OK',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    console.error('Health check failed:', error.message);
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
 });
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP" });
-});
-
-app.get("/info", (req, res) => {
-  res.json({ app: env.APP_NAME});
-});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
