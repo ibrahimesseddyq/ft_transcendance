@@ -33,7 +33,6 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   ACCESS_TOKEN_SECRET: z.string().min(32,'Access token secret must be at least 32 characters'),
   FRONTEND_URL: z.string(),
-  BACKEND_URL:z.string(),
   APP_NAME:z.string().min(1).default("service"),
   QUIZ_PUBLIC_API_KEY:z.string().min(32),
   INTERNAL_API_KEY: z.string().min(32)
