@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { House, Menu, BriefcaseBusiness, Bookmark, BotMessageSquare, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
+import { House, Menu, BriefcaseBusiness, Bookmark, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
 import { useAuthStore } from '@/utils/ZuStand';
 
 export const navigation = [
     { name: "Dashboard", path: "/Dashboard", icon: House },
     { name: "Jobs", path: "/Jobs", icon: BriefcaseBusiness },
     { name: "Saved", path: "/Savedjobs", icon: Bookmark },
-    { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
     { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "Quiz", path: "/QuizPage", icon: GitPullRequestCreateArrow },
     { name: "Applications", path: "/Applications", icon: GitPullRequestCreateArrow },
