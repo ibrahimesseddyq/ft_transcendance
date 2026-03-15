@@ -36,12 +36,12 @@ dev: clean-dev down-dev
 	sudo npm install -g concurrently
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
-# 	@echo "Waiting for databases..."
-# 	@until docker exec main-service-db healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
-# 	       docker exec quiz-service-db healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
-# 	  echo "Waiting for DBs..."; sleep 2; \
-# 	done
-# 	@echo "Databases ready!"
+	@echo "Waiting for databases..."
+	@until docker exec main_service_db healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
+	       docker exec quiz_service_db healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
+	  echo "Waiting for DBs..."; sleep 2; \
+	done
+	@echo "Databases ready!"
 	npx concurrently \
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run seed && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
@@ -63,20 +63,15 @@ kube-build:
 	@mkdir -p logs
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
 
-	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs
-	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway
-	docker build -t main-service:dev $(ROOT)srcs/backend/main_service
-	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service
-	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service
-	docker build -t frontend:dev   $(ROOT)srcs/frontend
+	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs &
+	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway &
+	docker build -t main-service:dev $(ROOT)srcs/backend/main_service &
+	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service &
+	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service &
+	docker build -t frontend:dev   $(ROOT)srcs/frontend &
 
 kube-load: kube-build
-	k3d image import gateway:dev -c hirefy
-	k3d image import main-service:dev -c hirefy
-	k3d image import quiz-service:dev -c hirefy
-	k3d image import ai-service:dev -c hirefy
-	k3d image import frontend:dev -c hirefy
-	k3d image import waf:dev -c hirefy
+	k3d image import gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev waf:dev -c hirefy
 
 kube-deploy:
 	# 1. Namespace first

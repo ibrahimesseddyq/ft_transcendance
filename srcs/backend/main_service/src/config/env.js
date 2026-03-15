@@ -16,7 +16,7 @@ const vaultFiles = [
 vaultFiles.forEach(file => {
   if (fs.existsSync(file)) {
     const envConfig = dotenv.parse(fs.readFileSync(file));
-    for (let k  of envConfig) {
+    for (let k  in envConfig) {
       process.env[k] =  envConfig[k];
     }
   }
@@ -35,21 +35,29 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID : z.string(),
   GOOGLE_CLIENT_SECRET : z.string(),
   CALLBACK_URL : z.string(),
+  
   ACCESS_TOKEN_SECRET: z.string().min(32,'Access token secret must be at least 32 characters'),
-  REFRESH_TOKEN_SECRET: z.string().min(32, 'Refresh token secret must be at least 32 characters'),
   ACCESS_TOKEN_EXPIRY: z.string().default('15m'),
+  
+  REFRESH_TOKEN_SECRET: z.string().min(32, 'Refresh token secret must be at least 32 characters'),
   REFRESH_TOKEN_EXPIRY:z.string().default('7d'),
+
+  VERIFY_TOKEN_SECRET:z.string(),
+  VERIFY_TOKEN_EXPIRY:z.string(),
+  
   USER_EMAIL:z.string(),
   USER_PASSWORD:z.string(),
-  VERIFY_SECRET:z.string(),
-  VERIFY_SECRET_EXPIRY:z.string(),
+
+  TEMP_TOKEN_SECRET:z.string(),
+  TEMP_TOKEN_EXPIRY: z.string(),
+
   FRONTEND_URL: z.string(),
   BACKEND_URL:z.string(),
   APP_NAME:z.string().min(1).default("service"),
   QUIZ_SERVICE_URL: z.string(),
   INTERNAL_API_KEY: z.string(),
   AI_SERVICE_URL: z.string(),
-  AI_INTERNAL_API_KEY: z.string(),  
+  AI_INTERNAL_API_KEY: z.string(), 
 });
 
 const envVars = envSchema.safeParse(process.env);

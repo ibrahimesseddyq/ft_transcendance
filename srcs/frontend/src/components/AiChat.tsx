@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { mainApi } from '@/utils/Api';
+import { aiapi } from '@/utils/Api';
 
 export default function AiChat() {
   const [messages, setMessages] = useState([
@@ -11,7 +11,7 @@ export default function AiChat() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const env_ai_api = import.meta.env.VITE_AI_SERVICE_URL;
+  const env_ai_api = import.meta.env.VITE_AI_API_URL;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,12 +57,13 @@ export default function AiChat() {
     setIsProcessing(true);
     
     const formData = new FormData();
-    formData.append("file", blob, "recording.mp3");
+    formData.append("audio", blob, "recording.mp3");
 
     try {
-      const response = await mainApi.post(`${env_ai_api}/Ai`, formData);
+      const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
 
       const data = response.data;
+      console.log("data : ", data);
       if (data.text) {
         setInput(data.text);
       }
@@ -77,11 +78,10 @@ export default function AiChat() {
     if (!input.trim()) return;
     setMessages(prev => [...prev, { role: "user", content: input }]);
     setInput("");
-    // Add logic here to get AI response for the chat...
   };
 
   return (
-    <div className="flex flex-col h-[500px] w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border">
+    <div className="flex flex-col z-50 w-full h-[450px] md:h-[500px] md:max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border">
       <div className="bg-black p-4 text-white font-bold">AI Assistant</div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
