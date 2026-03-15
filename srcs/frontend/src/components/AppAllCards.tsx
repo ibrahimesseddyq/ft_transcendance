@@ -8,7 +8,6 @@ export function AppAllCards() {
   const location = useLocation();
   const Title = location.state?.title || "Default Title";
   const applications = location.state?.applications || [];
-  // console.log("Applications :", applications);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredApplications = useMemo(() => {

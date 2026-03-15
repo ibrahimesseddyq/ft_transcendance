@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
 import { mainApi } from '@/utils/Api';
-
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -19,7 +19,7 @@ const Signup = () => {
     });
 
     const GoogleSubmit = async () => {
-        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
+        window.location.href = `${env_main_api}/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {
@@ -27,11 +27,10 @@ const Signup = () => {
             await mainApi.post(`${env_main_api}/auth/register`, data);
             console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
-            window.location.href = '/';
+            navigate('/', { replace: true });
         } catch (error) {
-            console.error("Submission failed:", error);
+            console.log("Submission failed:", error);
             Notification("error Sign Up", "error");
-            window.location.href = '/';
         }
         reset();
     };
@@ -69,7 +68,9 @@ const Signup = () => {
                                     {...register(field.name as any, { required: true })}
                                     placeholder={field.placeholder}
                                     type={field.type}
-                                    className="h-[45px] w-full text-sm text-black dark:text-surface-main outline-none px-3 border border-gray-300 dark:border-gray-800 rounded-md bg-transparent focus:border-primary transition-colors placeholder:text-gray-500"
+                                    className="h-[45px] w-full text-sm text-black dark:text-surface-main 
+                                        outline-none px-3 border border-gray-300 dark:border-gray-800 rounded-md bg-transparent 
+                                        focus:border-primary transition-colors placeholder:text-gray-500"
                                 />
                                 {errors[field.name as keyof typeof errors] && (
                                     <p className="pl-2 text-red-500 text-[10px] italic">

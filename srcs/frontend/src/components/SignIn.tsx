@@ -16,7 +16,6 @@ const Signin = () => {
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     const {
@@ -41,17 +40,17 @@ const Signin = () => {
     
     
     const GoogleSubmit = () => {
-        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
+        window.location.href = `${env_main_api}/auth/google`;
     }
 
 
     const LoginSubmit = async (data: any) => {
         try {
             const response = await mainApi.post(`${env_main_api}/auth/login`, data);
-            const result = response.data;
-            const userId = result?.userId;
+            const result = response.data?.data;
+            const userId = result?.id;
 
-            console.log ("first Login :", result?.firstLogin);
+            console.log ("result :", result);
             console.log ("userId :", userId);
             setFirstLogin(result?.firstLogin);
 
