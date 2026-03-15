@@ -1,4 +1,3 @@
-
 import { mainApi } from '@/utils/Api';
 
 interface ProfileProps {
