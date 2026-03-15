@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import JobFilter from "@/components/ui/JobFilter";
 import JobCards from '@/components/ui/JobCards';
 import { useAuthStore } from '@/utils/ZuStand';
+import {AiChatButton} from '@/components/ui/AiChatButton'
 
 export function Jobs() {
   const [jobsArray, setJobsArray] = useState<any[]>([]);
@@ -74,6 +75,8 @@ export function Jobs() {
           <Icon name='Plus' size={25} strokeWidth={3} />
         </button>
       )}
+
+      <AiChatButton />
     </div>
   );
 }
