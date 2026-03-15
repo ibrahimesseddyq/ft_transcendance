@@ -1,41 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: adminer
   namespace: hirefy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: adminer
   template:
     metadata:
       labels:
-        app: frontend
+        app: adminer
     spec:
       containers:
-        - name: frontend
-          image: frontend:dev
+        - name: adminer
           imagePullPolicy: IfNotPresent
+          image: adminer
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
-          env:
-            - name: VITE_API_URL # to check
-              value: "http://gateway:8081"
 ---
 apiVersion: v1
 kind: Service
-metadata:
-  name: frontend
+metadata: 
+  name: adminer
   namespace: hirefy
 spec:
   selector:
-    app: frontend
+    app: adminer
   ports:
     - name: http
       port: 80
       targetPort: 80
       protocol: TCP
   type: ClusterIP
+

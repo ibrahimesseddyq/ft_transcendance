@@ -1,4 +1,3 @@
-import data from '../config/env.js';
 import * as mcqService from '../services/mcqService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 

@@ -11,6 +11,7 @@ export function Profile() {
   const id = params.postId;
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
  
   useEffect(() => {
@@ -18,8 +19,8 @@ export function Profile() {
       try{
 
         const [res1, res2] = await Promise.all([
-          mainApi.get(`/api/users/${id}`),
-          mainApi.get(`/api/profiles/${id}`),
+          mainApi.get(`${env_main_api}/users/${id}`),
+          mainApi.get(`${env_main_api}/profiles/${id}`),
         ]);
 
         const userData = res1.data;
@@ -55,7 +56,7 @@ export function Profile() {
     const SingleLine = ({title, value}: any) => {
       return (
         <div className='flex gap-10 p-2'>
-          <h1 className='text-black dark:text-white font-medium text-sm'>{title}:</h1>
+          <h1 className='text-black dark:text-surface-main font-medium text-sm'>{title}:</h1>
           {value 
             ? 
               <p className='text-gray-500 dark:text-gray-400 font-medium text-sm'>{value}</p>
@@ -68,7 +69,7 @@ export function Profile() {
     return (
       <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="pramary-text text-xl font-bold flex items-center gap-2">
+            <h2 className="text-[#00adef] font-medium text-xl font-bold flex items-center gap-2">
               Personal details
             </h2>
           </div>
@@ -95,12 +96,12 @@ export function Profile() {
       </div>
 
       <div className='w-full grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <div className='col-span-1 lg:col-span-3 p-2 bg-white dark:bg-slate-900 border 
+        <div className='col-span-1 lg:col-span-3 p-2 bg-surface-main dark:bg-secondary-darkbg border 
           border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           <UserInfoCard profile={profile} user={user}/>
         </div>
 
-        <div className='col-span-1 lg:col-span-2 w-full p-2 bg-white dark:bg-slate-900 border
+        <div className='col-span-1 lg:col-span-2 w-full p-2 bg-surface-main dark:bg-secondary-darkbg border
            border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
           {profile && <SkillsCard profile={profile} />}
         </div>

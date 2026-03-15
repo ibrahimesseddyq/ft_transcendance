@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import swaggerJSDoc from 'swagger-jsdoc';
 
 const options =  {
@@ -14,12 +13,13 @@ const options =  {
             description : 'API base path'
         }],
         components : {
-            securitySchemes : {
-                ApiAuthKey : {
-                    type : 'apiKey',
-                    in : 'Header',
-                    name : 'x-api-key',
-                    description: 'your api key'
+
+            securitySchemes: {
+                ApiKeyAuth: {
+                    type: 'apiKey',
+                    in: 'header',
+                    name: 'x-api-key',
+                    description: 'Public API Key'
                 }
             },
             schemas : {
@@ -86,9 +86,9 @@ const options =  {
                     },
                 },
         },
-            security: [{ ApiKeyAuth: [] }],
-        },
     },
-    apis: ['./src/routes/*.js'],
+    security: [{ ApiKeyAuth: [] }],
+},
+apis: ['./src/routes/*.js'],
 }
 export const swaggerSpec = swaggerJSDoc(options);
