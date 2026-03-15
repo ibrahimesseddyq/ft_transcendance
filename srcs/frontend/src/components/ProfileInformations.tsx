@@ -130,7 +130,7 @@ export function ProfileInformations() {
     } catch (error) {
       setAvatarProgress(0);
       setResumeProgress(0);
-      Notification("Failed to save profile", "error");
+      Notification("PLease enter a valide profile", "error");
     }
   };
 

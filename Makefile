@@ -37,19 +37,14 @@ dev: clean-dev down-dev
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
 	@echo "Waiting for databases..."
-<<<<<<< HEAD
-	@until docker exec srcs-main_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
-	       docker exec srcs-quiz_service_db-1 healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
-=======
 	@until docker exec main_service_db healthcheck.sh --connect --innodb_initialized 2>/dev/null && \
 	       docker exec quiz_service_db healthcheck.sh --connect --innodb_initialized 2>/dev/null; do \
->>>>>>> e74637a2170b8c2ceb67b76b4fc448c93a61a8f9
 	  echo "Waiting for DBs..."; sleep 2; \
 	done
 	@echo "Databases ready!"
 	npx concurrently \
-	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run seed && npm run dev" \
-	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
+	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run seed && npm run dev" \
+	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.example && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
 re: clean up
 
