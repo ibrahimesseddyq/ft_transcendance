@@ -1,9 +1,10 @@
-import  { ZodError } from 'zod';
+import  {z, ZodError } from 'zod';
 import  { HttpValidationException } from '../utils/httpExceptions.js';
 
-const validateRequest = (schema, target = 'body') => {
+const validateRequest = (schema) => {
     return (req,res,next) => {
         try {
+            console.log('req.body validate request middelware ',req.body)
             req.body = schema.parse(req.body);
         } catch (error) {
             if(error instanceof ZodError) {
