@@ -1,5 +1,6 @@
 import axios from "axios";
-import env from '../config/env.js'
+import env from '../config/env.js';
+import { HttpException } from "./httpExceptions.js";
 
 const aiClient = axios.create({
     baseURL: env.AI_SERVICE_URL,

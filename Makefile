@@ -48,7 +48,6 @@ dev: clean-dev down-dev
 	  "cd srcs/frontend && npm install && npm run dev"
 re: clean up
 
-# Kill local dev processes/ports only (NO docker compose here)
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true
@@ -63,12 +62,12 @@ kube-build:
 	@mkdir -p logs
 	@cd $(ROOT)srcs/backend/gateway && ./gradlew clean bootJar
 
-	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs &
-	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway &
-	docker build -t main-service:dev $(ROOT)srcs/backend/main_service &
-	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service &
-	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service &
-	docker build -t frontend:dev   $(ROOT)srcs/frontend &
+	docker build -t waf:dev -f $(ROOT)srcs/waf/Dockerfile $(ROOT)srcs 
+	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway 
+	docker build -t main-service:dev $(ROOT)srcs/backend/main_service 
+	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
+	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
+	docker build -t frontend:dev   $(ROOT)srcs/frontend 
 
 kube-load: kube-build
 	k3d image import gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev waf:dev -c hirefy
