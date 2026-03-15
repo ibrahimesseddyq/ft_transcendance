@@ -39,6 +39,9 @@ export QUIZ_SERVICE_URL=http://localhost:3308/
 export AI_INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export RECRUITER_PASS=Abdellatif123@@ 
 
+export VERIFY_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+
+export EMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 # Wait until Vault API is up (no curl required)
 until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
@@ -141,14 +144,16 @@ vault kv put secret/main-service/database \
   DATABASE_URL="mysql://${MARIADB_MAIN_USER}:${MARIADB_MAIN_PASSWORD}@main_service_db:3306/hirefy"
 echo "Storing AI service secrets..."
 
-vault kv put secret/ai-service/config \
-  AI_MODEL_NAME="gpt-3.5-turbo" \
-  AI_API_KEY="your-api-key-here"
+# vault kv put secret/ai-service/config \
+#   AI_MODEL_NAME="gpt-3.5-turbo" \
+#   AI_API_KEY="your-api-key-here"
 
 vault kv put secret/main-service/jwt \
   ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
-  REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"
-
+  REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"\
+  VERIFY_TOKEN_SECRET="${VERIFY_TOKEN_SECRET}" \
+  TEMP_TOKEN_SECRET="${TEMP_TOKEN_SECRET}"
+  
 vault kv put secret/main-service/other \
   RECRUITER_PASS="${RECRUITER_PASS}" \
   AI_INTERNAL_API_KEY="${AI_INTERNAL_API_KEY}"\
