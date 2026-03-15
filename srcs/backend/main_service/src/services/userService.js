@@ -52,14 +52,14 @@ export const deleteUser = async (userId) => {
 export const getUserApplications = async (userId) => {
     const applications = await userRepository.getUserApplications(userId);
     if (!applications)
-        throw new HttpException(400, 'user not found');
+        throw new HttpException(404, 'user not found');
     return applications;
 }
 
 export const getUserJobs = async (userId) => {
     const jobs = await  userRepository.getUserJobs(userId);
     if (!jobs)
-        throw new HttpException(400, 'user not found');
+        throw new HttpException(404, 'user not found');
     return jobs;
 }
 

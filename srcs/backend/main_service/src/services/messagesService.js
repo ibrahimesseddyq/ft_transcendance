@@ -2,6 +2,11 @@ import { HttpException } from '../utils/httpExceptions.js';
 import * as messageRepository from '../repositories/messageRepository.js';
 import { moderateText } from './aiService.js';
 import { createChatNotification } from './notificationService.js';
+import {
+	sendMessageInputSchema,
+	editMessageInputSchema,
+	uploadFileInputSchema
+} from '../validators/chatValidator.js';
 
 const validateConversationAccess = async (conversationId, userId) => {
 	const participant = await messageRepository.getConversationParticipant(conversationId, userId);
@@ -28,6 +33,18 @@ const notifyOtherParticipants = async ({ io, conversationId, senderId, senderNam
 	);
 };
 
+const moderateTextSafely = async ({ text, conversationId, userId }) => {
+	const moderation = await moderateText(text, {
+		conversationId,
+		userId
+	}).catch((error) => {
+		console.warn('Text moderation unavailable:', error?.message || error);
+		return null;
+	});
+
+	return moderation;
+};
+
 export const getMessages = async ({ conversationId, userId, limit, before }) => {
 	await validateConversationAccess(conversationId, userId);
 	return await messageRepository.getMessagesByConversation({ conversationId, limit, before });
@@ -39,13 +56,12 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 	if (!text) {
 		throw new HttpException(400, 'Message content is required');
 	}
-	
+
 	if (messageType === 'text') {
 		try {
-			
 			const moderation = await moderateText(text, { conversationId, userId });
 			if (moderation?.action === 'Block') {
-				return { blocked: true, moderation };
+				return {moderation };
 			}
 		} catch (error) {
 			// Do not block messaging if moderation service is unavailable.
@@ -53,44 +69,40 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 	}
 
 	const message = await messageRepository.createMessage({
-		conversationId,
-		senderId: userId,
+		conversationId: payload.conversationId,
+		senderId: payload.userId,
 		content: text,
-		messageType
+		messageType: payload.messageType
 	});
 
-	await messageRepository.touchConversation(conversationId);
+	await messageRepository.touchConversation(payload.conversationId);
 
 	const senderName = `${message.sender?.firstName || ''} ${message.sender?.lastName || ''}`.trim() || 'Someone';
 	await notifyOtherParticipants({
 		io,
-		conversationId,
-		senderId: userId,
+		conversationId: payload.conversationId,
+		senderId: payload.userId,
 		senderName
 	});
 
 	if (io) {
-		io.to(conversationId).emit('message:received', message);
+		io.to(payload.conversationId).emit('message:received', message);
 	}
 
 	return { blocked: false, message };
 };
 
 export const editMessage = async ({ id, userId, content }) => {
-	const existingMessage = await messageRepository.getMessageById(id);
+	const payload = editMessageInputSchema.parse({ id, userId, content });
+	const existingMessage = await messageRepository.getMessageById(payload.id);
 	if (!existingMessage || existingMessage.isDeleted) {
 		throw new HttpException(404, 'Message not found');
 	}
-	if (existingMessage.senderId !== userId) {
+	if (existingMessage.senderId !== payload.userId) {
 		throw new HttpException(403, 'Forbidden');
 	}
 
-	const text = typeof content === 'string' ? content.trim() : '';
-	if (!text) {
-		throw new HttpException(400, 'Message content is required');
-	}
-
-	return await messageRepository.updateMessage(id, { content: text });
+	return await messageRepository.updateMessage(payload.id, { content: payload.content });
 };
 
 export const deleteMessage = async ({ id, userId }) => {
@@ -118,13 +130,11 @@ export const getUnreadCount = async ({ conversationId, userId }) => {
 };
 
 export const uploadFile = async ({ userId, conversationId, file, io }) => {
-	if (!file) {
-		throw new HttpException(400, 'File is required');
-	}
+	const payload = uploadFileInputSchema.parse({ userId, conversationId, file });
 
-	await validateConversationAccess(conversationId, userId);
+	await validateConversationAccess(payload.conversationId, payload.userId);
 
-	const mimeType = file.mimetype || 'application/octet-stream';
+	const mimeType = payload.file.mimetype || 'application/octet-stream';
 	let messageType = 'file';
 	if (mimeType.startsWith('image/')) {
 		messageType = 'image';
@@ -133,30 +143,30 @@ export const uploadFile = async ({ userId, conversationId, file, io }) => {
 	}
 
 	const message = await messageRepository.createMessage({
-		conversationId,
-		senderId: userId,
-		content: file.originalname || 'File',
+		conversationId: payload.conversationId,
+		senderId: payload.userId,
+		content: payload.file.originalname || 'File',
 		messageType,
 		attachment: {
-			fileName: file.originalname,
-			filePath: `/uploads/chat/${file.filename}`,
-			fileSize: file.size,
+			fileName: payload.file.originalname,
+			filePath: `/uploads/chat/${payload.file.filename}`,
+			fileSize: payload.file.size,
 			mimeType
 		}
 	});
 
-	await messageRepository.touchConversation(conversationId);
+	await messageRepository.touchConversation(payload.conversationId);
 
 	const senderName = `${message.sender?.firstName || ''} ${message.sender?.lastName || ''}`.trim() || 'Someone';
 	await notifyOtherParticipants({
 		io,
-		conversationId,
-		senderId: userId,
+		conversationId: payload.conversationId,
+		senderId: payload.userId,
 		senderName
 	});
 
 	if (io) {
-		io.to(conversationId).emit('message:received', message);
+		io.to(payload.conversationId).emit('message:received', message);
 	}
 
 	return message;
