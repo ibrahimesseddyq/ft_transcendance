@@ -22,6 +22,7 @@ import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 import  quizRoutes from './routes/quizRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js'
+import aboutRoutes from './routes/aboutRoutes.js'
 
 const app =  express();
 
@@ -112,6 +113,9 @@ app.use('/api/main/messages',
 app.use('/api/main/notifications',
   verifyToken,
   notificationRoutes);
+
+app.use('/api/main/about',
+  aboutRoutes);
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
