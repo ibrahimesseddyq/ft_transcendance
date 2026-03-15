@@ -7,7 +7,7 @@ const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
 const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: any) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
-  const limit = 1;
+  const limit = 6;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
