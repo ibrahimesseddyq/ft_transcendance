@@ -1,0 +1,1791 @@
+{
+    "name": "srcs",
+    "path": "/home/armanov/Desktop/trans/srcs",
+    "type": "directory",
+    "children": [
+      {
+        "name": "backend",
+        "type": "directory",
+        "path": "/home/armanov/Desktop/trans/srcs/backend",
+        "children": [
+          {
+            "name": "ai_service",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/ai_service",
+            "children": [
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/ai_service/Dockerfile",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "eureka",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka",
+            "children": [
+              {
+                "name": "gradle",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradle",
+                "children": [
+                  {
+                    "name": "wrapper",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradle/wrapper",
+                    "children": [
+                      {
+                        "name": "gradle-wrapper.jar",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradle/wrapper/gradle-wrapper.jar",
+                        "icon": null
+                      },
+                      {
+                        "name": "gradle-wrapper.properties",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradle/wrapper/gradle-wrapper.properties",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "src",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src",
+                "children": [
+                  {
+                    "name": "main",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main",
+                    "children": [
+                      {
+                        "name": "java",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/java",
+                        "children": [
+                          {
+                            "name": "com",
+                            "type": "directory",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/java/com",
+                            "children": [
+                              {
+                                "name": "hirefy",
+                                "type": "directory",
+                                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/java/com/hirefy",
+                                "children": [
+                                  {
+                                    "name": "eureka",
+                                    "type": "directory",
+                                    "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/java/com/hirefy/eureka",
+                                    "children": [
+                                      {
+                                        "name": "EurekaApplication.java",
+                                        "type": "file",
+                                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/java/com/hirefy/eureka/EurekaApplication.java",
+                                        "icon": null
+                                      }
+                                    ],
+                                    "icon": null
+                                  }
+                                ],
+                                "icon": null
+                              }
+                            ],
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "resources",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/resources",
+                        "children": [
+                          {
+                            "name": "application-dev.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/resources/application-dev.yaml",
+                            "icon": null
+                          },
+                          {
+                            "name": "application-prod.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/resources/application-prod.yaml",
+                            "icon": null
+                          },
+                          {
+                            "name": "application.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/main/resources/application.yaml",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "test",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test",
+                    "children": [
+                      {
+                        "name": "java",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test/java",
+                        "children": [
+                          {
+                            "name": "com",
+                            "type": "directory",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test/java/com",
+                            "children": [
+                              {
+                                "name": "hirefy",
+                                "type": "directory",
+                                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test/java/com/hirefy",
+                                "children": [
+                                  {
+                                    "name": "eureka",
+                                    "type": "directory",
+                                    "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test/java/com/hirefy/eureka",
+                                    "children": [
+                                      {
+                                        "name": "EurekaApplicationTests.java",
+                                        "type": "file",
+                                        "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/src/test/java/com/hirefy/eureka/EurekaApplicationTests.java",
+                                        "icon": null
+                                      }
+                                    ],
+                                    "icon": null
+                                  }
+                                ],
+                                "icon": null
+                              }
+                            ],
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": ".gitattributes",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/.gitattributes",
+                "icon": null
+              },
+              {
+                "name": ".gitignore",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/.gitignore",
+                "icon": null
+              },
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/Dockerfile",
+                "icon": null
+              },
+              {
+                "name": "build.gradle",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/build.gradle",
+                "icon": null
+              },
+              {
+                "name": "gradlew",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradlew",
+                "icon": null
+              },
+              {
+                "name": "gradlew.bat",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/gradlew.bat",
+                "icon": null
+              },
+              {
+                "name": "settings.gradle",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/eureka/settings.gradle",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "gateway",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway",
+            "children": [
+              {
+                "name": ".gradle",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle",
+                "children": [
+                  {
+                    "name": "8.7",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7",
+                    "children": [
+                      {
+                        "name": "checksums",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/checksums",
+                        "children": [
+                          {
+                            "name": "checksums.lock",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/checksums/checksums.lock",
+                            "icon": null
+                          },
+                          {
+                            "name": "md5-checksums.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/checksums/md5-checksums.bin",
+                            "icon": null
+                          },
+                          {
+                            "name": "sha1-checksums.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/checksums/sha1-checksums.bin",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "dependencies-accessors",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/dependencies-accessors",
+                        "children": [
+                          {
+                            "name": "gc.properties",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/dependencies-accessors/gc.properties",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "executionHistory",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/executionHistory",
+                        "children": [
+                          {
+                            "name": "executionHistory.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/executionHistory/executionHistory.bin",
+                            "icon": null
+                          },
+                          {
+                            "name": "executionHistory.lock",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/executionHistory/executionHistory.lock",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "expanded",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/expanded",
+                        "children": [],
+                        "icon": null
+                      },
+                      {
+                        "name": "fileChanges",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileChanges",
+                        "children": [
+                          {
+                            "name": "last-build.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileChanges/last-build.bin",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "fileHashes",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileHashes",
+                        "children": [
+                          {
+                            "name": "fileHashes.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileHashes/fileHashes.bin",
+                            "icon": null
+                          },
+                          {
+                            "name": "fileHashes.lock",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileHashes/fileHashes.lock",
+                            "icon": null
+                          },
+                          {
+                            "name": "resourceHashesCache.bin",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/fileHashes/resourceHashesCache.bin",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "vcsMetadata",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/vcsMetadata",
+                        "children": [],
+                        "icon": null
+                      },
+                      {
+                        "name": "gc.properties",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/8.7/gc.properties",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "buildOutputCleanup",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/buildOutputCleanup",
+                    "children": [
+                      {
+                        "name": "buildOutputCleanup.lock",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/buildOutputCleanup/buildOutputCleanup.lock",
+                        "icon": null
+                      },
+                      {
+                        "name": "cache.properties",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/buildOutputCleanup/cache.properties",
+                        "icon": null
+                      },
+                      {
+                        "name": "outputFiles.bin",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/buildOutputCleanup/outputFiles.bin",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "vcs-1",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/vcs-1",
+                    "children": [
+                      {
+                        "name": "gc.properties",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/vcs-1/gc.properties",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "file-system.probe",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gradle/file-system.probe",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "gradle",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradle",
+                "children": [
+                  {
+                    "name": "wrapper",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradle/wrapper",
+                    "children": [
+                      {
+                        "name": "gradle-wrapper.jar",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradle/wrapper/gradle-wrapper.jar",
+                        "icon": null
+                      },
+                      {
+                        "name": "gradle-wrapper.properties",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradle/wrapper/gradle-wrapper.properties",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "src",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src",
+                "children": [
+                  {
+                    "name": "main",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main",
+                    "children": [
+                      {
+                        "name": "java",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/java",
+                        "children": [
+                          {
+                            "name": "com",
+                            "type": "directory",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/java/com",
+                            "children": [
+                              {
+                                "name": "hirefy",
+                                "type": "directory",
+                                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/java/com/hirefy",
+                                "children": [
+                                  {
+                                    "name": "gateway",
+                                    "type": "directory",
+                                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/java/com/hirefy/gateway",
+                                    "children": [
+                                      {
+                                        "name": "GatewayApplication.java",
+                                        "type": "file",
+                                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/java/com/hirefy/gateway/GatewayApplication.java",
+                                        "icon": null
+                                      }
+                                    ],
+                                    "icon": null
+                                  }
+                                ],
+                                "icon": null
+                              }
+                            ],
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "resources",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/resources",
+                        "children": [
+                          {
+                            "name": "application-dev.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/resources/application-dev.yaml",
+                            "icon": null
+                          },
+                          {
+                            "name": "application-prod.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/resources/application-prod.yaml",
+                            "icon": null
+                          },
+                          {
+                            "name": "application.yaml",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/main/resources/application.yaml",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "test",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test",
+                    "children": [
+                      {
+                        "name": "java",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test/java",
+                        "children": [
+                          {
+                            "name": "com",
+                            "type": "directory",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test/java/com",
+                            "children": [
+                              {
+                                "name": "hirefy",
+                                "type": "directory",
+                                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test/java/com/hirefy",
+                                "children": [
+                                  {
+                                    "name": "gateway",
+                                    "type": "directory",
+                                    "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test/java/com/hirefy/gateway",
+                                    "children": [
+                                      {
+                                        "name": "GatewayApplicationTests.java",
+                                        "type": "file",
+                                        "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/src/test/java/com/hirefy/gateway/GatewayApplicationTests.java",
+                                        "icon": null
+                                      }
+                                    ],
+                                    "icon": null
+                                  }
+                                ],
+                                "icon": null
+                              }
+                            ],
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": ".gitattributes",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gitattributes",
+                "icon": null
+              },
+              {
+                "name": ".gitignore",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/.gitignore",
+                "icon": null
+              },
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/Dockerfile",
+                "icon": null
+              },
+              {
+                "name": "build.gradle",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/build.gradle",
+                "icon": null
+              },
+              {
+                "name": "gradlew",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradlew",
+                "icon": null
+              },
+              {
+                "name": "gradlew.bat",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/gradlew.bat",
+                "icon": null
+              },
+              {
+                "name": "settings.gradle",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/gateway/settings.gradle",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "hashicorp_vault",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/hashicorp_vault",
+            "children": [
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/hashicorp_vault/Dockerfile",
+                "icon": null
+              },
+              {
+                "name": "TODO",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/hashicorp_vault/TODO",
+                "icon": null
+              },
+              {
+                "name": "Untitled-1.json",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/hashicorp_vault/Untitled-1.json",
+                "icon": null
+              },
+              {
+                "name": "vault.hcl",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/hashicorp_vault/vault.hcl",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "main_service",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/main_service",
+            "children": [
+              {
+                "name": "database",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/database",
+                "children": [
+                  {
+                    "name": "init_main.sql",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/database/init_main.sql",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "prisma",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma",
+                "children": [
+                  {
+                    "name": "migrations",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma/migrations",
+                    "children": [
+                      {
+                        "name": "20260101035709_init",
+                        "type": "directory",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma/migrations/20260101035709_init",
+                        "children": [
+                          {
+                            "name": "migration.sql",
+                            "type": "file",
+                            "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma/migrations/20260101035709_init/migration.sql",
+                            "icon": null
+                          }
+                        ],
+                        "icon": null
+                      },
+                      {
+                        "name": "migration_lock.toml",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma/migrations/migration_lock.toml",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "schema.prisma",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/prisma/schema.prisma",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "src",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src",
+                "children": [
+                  {
+                    "name": "config",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config",
+                    "children": [
+                      {
+                        "name": "constants.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/constants.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "env.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/env.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "multer.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/multer.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "passport.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/passport.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "permissions.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/permissions.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "prisma.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/config/prisma.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "controllers",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/controllers",
+                    "children": [
+                      {
+                        "name": "authController.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/controllers/authController.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobController.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/controllers/jobController.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobPhaseController.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/controllers/jobPhaseController.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "userController.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/controllers/userController.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "middleware",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/middleware",
+                    "children": [
+                      {
+                        "name": "ErrorHandler.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/middleware/ErrorHandler.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "ValidateRequest.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/middleware/ValidateRequest.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "auth.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/middleware/auth.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "repositories",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories",
+                    "children": [
+                      {
+                        "name": "applicationRepository.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories/applicationRepository.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobPhaseREpository.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories/jobPhaseREpository.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobRepository.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories/jobRepository.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "profileRepository.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories/profileRepository.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "userRepository.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/repositories/userRepository.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "routes",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/routes",
+                    "children": [
+                      {
+                        "name": "authRoutes.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/routes/authRoutes.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobRoutes.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/routes/jobRoutes.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "userRoutes.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/routes/userRoutes.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "services",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services",
+                    "children": [
+                      {
+                        "name": "applicationService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/applicationService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "authService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/authService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "emailService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/emailService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "fileService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/fileService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobPhaseService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/jobPhaseService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/jobService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jwtService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/jwtService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "profileService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/profileService.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "userService.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/services/userService.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "utils",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/utils",
+                    "children": [
+                      {
+                        "name": "httpExceptions.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/utils/httpExceptions.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "validators",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/validators",
+                    "children": [
+                      {
+                        "name": "applicationValidator.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/validators/applicationValidator.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobPhaseValidator.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/validators/jobPhaseValidator.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "jobValidator.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/validators/jobValidator.js",
+                        "icon": null
+                      },
+                      {
+                        "name": "userValidator.js",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/validators/userValidator.js",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "app.js",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/src/app.js",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": ".env.dev",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/.env.dev",
+                "icon": null
+              },
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/Dockerfile",
+                "icon": null
+              },
+              {
+                "name": "package-lock.json",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/package-lock.json",
+                "icon": null
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/package.json",
+                "icon": null
+              },
+              {
+                "name": "server.js",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/server.js",
+                "icon": null
+              },
+              {
+                "name": "sonar-project.properties",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service/sonar-project.properties",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "main_service_db",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db",
+            "children": [
+              {
+                "name": "conf",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db/conf",
+                "children": [
+                  {
+                    "name": "50-server.cnf",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db/conf/50-server.cnf",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "tools",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db/tools",
+                "children": [
+                  {
+                    "name": "init-db.sh",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db/tools/init-db.sh",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/main_service_db/Dockerfile",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "quiz_service",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service",
+            "children": [
+              {
+                "name": "database",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/database",
+                "children": [
+                  {
+                    "name": "init_quiz.sql",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/database/init_quiz.sql",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "src",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/src",
+                "children": [
+                  {
+                    "name": "eureka.js",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/src/eureka.js",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": ".env.dev",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/.env.dev",
+                "icon": null
+              },
+              {
+                "name": "Dockerfile",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/Dockerfile",
+                "icon": null
+              },
+              {
+                "name": "package-lock.json",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/package-lock.json",
+                "icon": null
+              },
+              {
+                "name": "server.js",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/backend/quiz_service/server.js",
+                "icon": null
+              }
+            ],
+            "icon": null
+          }
+        ],
+        "icon": null
+      },
+      {
+        "name": "frontend",
+        "type": "directory",
+        "path": "/home/armanov/Desktop/trans/srcs/frontend",
+        "children": [
+          {
+            "name": "public",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/public",
+            "children": [
+              {
+                "name": "vite.svg",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/public/vite.svg",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "src",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/src",
+            "children": [
+              {
+                "name": "assets",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets",
+                "children": [
+                  {
+                    "name": "icons",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons",
+                    "children": [
+                      {
+                        "name": "Candidates.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Candidates.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "Dashboard.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Dashboard.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "Jobs.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Jobs.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "Logout.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Logout.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "Messages.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Messages.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "Settings.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/Settings.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "authentication.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/authentication.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "community.jpg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/community.jpg",
+                        "icon": null
+                      },
+                      {
+                        "name": "cover2.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/cover2.png",
+                        "icon": null
+                      },
+                      {
+                        "name": "deal.jpg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/deal.jpg",
+                        "icon": null
+                      },
+                      {
+                        "name": "eye.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/eye.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "eyeOff.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/eyeOff.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "google1.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/google1.png",
+                        "icon": null
+                      },
+                      {
+                        "name": "hireback.jpg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/hireback.jpg",
+                        "icon": null
+                      },
+                      {
+                        "name": "icons8-email.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/icons8-email.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "icons8-fail.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/icons8-fail.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "icons8-google.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/icons8-google.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "icons8-no.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/icons8-no.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "icons8-send.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/icons8-send.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "industry.jpg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/industry.jpg",
+                        "icon": null
+                      },
+                      {
+                        "name": "logo.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/logo.png",
+                        "icon": null
+                      },
+                      {
+                        "name": "opportunity.jpg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/opportunity.jpg",
+                        "icon": null
+                      },
+                      {
+                        "name": "passwordreset.svg",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/passwordreset.svg",
+                        "icon": null
+                      },
+                      {
+                        "name": "primage.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/primage.png",
+                        "icon": null
+                      },
+                      {
+                        "name": "profile.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/profile.png",
+                        "icon": null
+                      },
+                      {
+                        "name": "profileimage.png",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/assets/icons/profileimage.png",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "components",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components",
+                "children": [
+                  {
+                    "name": "ui",
+                    "type": "directory",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui",
+                    "children": [
+                      {
+                        "name": "ApplyJob.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/ApplyJob.tsx",
+                        "icon": null
+                      },
+                      {
+                        "name": "CreateOrEditJobForm.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/CreateOrEditJobForm.tsx",
+                        "icon": null
+                      },
+                      {
+                        "name": "JobCards.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/JobCards.tsx",
+                        "icon": null
+                      },
+                      {
+                        "name": "JobFilter.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/JobFilter.tsx",
+                        "icon": null
+                      },
+                      {
+                        "name": "Notifications.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/Notifications.tsx",
+                        "icon": null
+                      },
+                      {
+                        "name": "SearchField.tsx",
+                        "type": "file",
+                        "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ui/SearchField.tsx",
+                        "icon": null
+                      }
+                    ],
+                    "icon": null
+                  },
+                  {
+                    "name": "ActiveJobStatus.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ActiveJobStatus.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Condidates.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/Condidates.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "FunnielOverview.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/FunnielOverview.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Header.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/Header.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Jobs.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/Jobs.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "LoginInformations.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/LoginInformations.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "NotFound.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/NotFound.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "OTPpage.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/OTPpage.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "OnlineFriends.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/OnlineFriends.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "ProfitionalInformations.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ProfitionalInformations.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "RecentActivity.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/RecentActivity.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "RecuiretmentStatus.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/RecuiretmentStatus.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "ResetPassword.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ResetPassword.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Sidebar.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/Sidebar.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "SignIn.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/SignIn.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "SignUp.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/SignUp.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "SourceOfHire.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/SourceOfHire.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "ViewJob.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/components/ViewJob.tsx",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/lib",
+                "children": [
+                  {
+                    "name": "utils.ts",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/lib/utils.ts",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "pages",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/pages",
+                "children": [
+                  {
+                    "name": "Dashboard.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/pages/Dashboard.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Loginpage.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/pages/Loginpage.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "Profile.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/pages/Profile.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "main.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/pages/main.tsx",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "utils",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/utils",
+                "children": [
+                  {
+                    "name": "ProtectedRoutes.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/utils/ProtectedRoutes.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "TostifyNotification.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/utils/TostifyNotification.tsx",
+                    "icon": null
+                  },
+                  {
+                    "name": "ZodSchema.tsx",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/frontend/src/utils/ZodSchema.tsx",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              },
+              {
+                "name": "App.css",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/App.css",
+                "icon": null
+              },
+              {
+                "name": "App.tsx",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/App.tsx",
+                "icon": null
+              },
+              {
+                "name": "index.css",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/index.css",
+                "icon": null
+              },
+              {
+                "name": "main.tsx",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/main.tsx",
+                "icon": null
+              },
+              {
+                "name": "vite-env.d.ts",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/frontend/src/vite-env.d.ts",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/README.md",
+            "icon": null
+          },
+          {
+            "name": "achitecture",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/achitecture",
+            "icon": null
+          },
+          {
+            "name": "components.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/components.json",
+            "icon": null
+          },
+          {
+            "name": "index.html",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/index.html",
+            "icon": null
+          },
+          {
+            "name": "package-lock.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/package-lock.json",
+            "icon": null
+          },
+          {
+            "name": "package.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/package.json",
+            "icon": null
+          },
+          {
+            "name": "postcss.config.js",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/postcss.config.js",
+            "icon": null
+          },
+          {
+            "name": "tailwind.config.ts",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/tailwind.config.ts",
+            "icon": null
+          },
+          {
+            "name": "tsconfig.app.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/tsconfig.app.json",
+            "icon": null
+          },
+          {
+            "name": "tsconfig.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/tsconfig.json",
+            "icon": null
+          },
+          {
+            "name": "tsconfig.node.json",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/tsconfig.node.json",
+            "icon": null
+          },
+          {
+            "name": "vite.config.ts",
+            "type": "file",
+            "path": "/home/armanov/Desktop/trans/srcs/frontend/vite.config.ts",
+            "icon": null
+          }
+        ],
+        "icon": null
+      },
+      {
+        "name": "k8s",
+        "type": "directory",
+        "path": "/home/armanov/Desktop/trans/srcs/k8s",
+        "children": [
+          {
+            "name": "base",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/k8s/base",
+            "children": [
+              {
+                "name": "ai-service.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/ai-service.yaml",
+                "icon": null
+              },
+              {
+                "name": "gateway.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/gateway.yaml",
+                "icon": null
+              },
+              {
+                "name": "kustomization.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/kustomization.yaml",
+                "icon": null
+              },
+              {
+                "name": "main-service-secret.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/main-service-secret.yaml",
+                "icon": null
+              },
+              {
+                "name": "main-service.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/main-service.yaml",
+                "icon": null
+              },
+              {
+                "name": "mariadb-pvc.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/mariadb-pvc.yaml",
+                "icon": null
+              },
+              {
+                "name": "mariadb-secret.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/mariadb-secret.yaml",
+                "icon": null
+              },
+              {
+                "name": "mariadb.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/mariadb.yaml",
+                "icon": null
+              },
+              {
+                "name": "namespace.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/namespace.yaml",
+                "icon": null
+              },
+              {
+                "name": "quiz-service.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/quiz-service.yaml",
+                "icon": null
+              },
+              {
+                "name": "vault.yaml",
+                "type": "file",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/base/vault.yaml",
+                "icon": null
+              }
+            ],
+            "icon": null
+          },
+          {
+            "name": "overlays",
+            "type": "directory",
+            "path": "/home/armanov/Desktop/trans/srcs/k8s/overlays",
+            "children": [
+              {
+                "name": "dev",
+                "type": "directory",
+                "path": "/home/armanov/Desktop/trans/srcs/k8s/overlays/dev",
+                "children": [
+                  {
+                    "name": "kustomization.yaml",
+                    "type": "file",
+                    "path": "/home/armanov/Desktop/trans/srcs/k8s/overlays/dev/kustomization.yaml",
+                    "icon": null
+                  }
+                ],
+                "icon": null
+              }
+            ],
+            "icon": null
+          }
+        ],
+        "icon": null
+      },
+      {
+        "name": "docker-compose.yml",
+        "type": "file",
+        "path": "/home/armanov/Desktop/trans/srcs/docker-compose.yml",
+        "icon": null
+      }
+    ],
+    "generated": "2026-02-01T19:01:50.754Z",
+    "generator": "FileTree Pro Extension",
+    "note": "Common build folders, dependencies, and temporary files are automatically excluded.",
+    "showIcons": false
+  }

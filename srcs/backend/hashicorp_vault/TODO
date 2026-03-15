@@ -1,0 +1,4 @@
+- add dynamic secrets
+- give each service its role
+- integrate with kubernetes
+- integrate with docker-compose
