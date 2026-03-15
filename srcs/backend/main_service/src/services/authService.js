@@ -12,7 +12,6 @@ export const login = async (data) => {
     const { email, password } = data;
   
     const user = await userService.getUserByEmail(email);
-    // Always verify: real hash if user exists, dummy hash otherwise
     const hashToCheck = user ? user.passwordHash : DUMMY_HASH;
     
     let passwordOk = false;
@@ -22,22 +21,13 @@ export const login = async (data) => {
     }
     catch
     {
-        // If hash format is bad, treat as failure (don’t branch differently)
         passwordOk = false;
     }
-  
-    // Keep errors uniform for auth failure
     if (!user || !passwordOk) {
       throw new HttpException(400, "Wrong credentials or user doesnt exist");
     }
-  
-    // Consider making this message generic too if you want to avoid
-    // "verified account enumeration"
     if (!user.isVerified) {
-      // Safer: same as wrong credentials (or same status/message)
       throw new HttpException(400, "User is not verified");
-      // Alternative: still block but generic
-      // throw new HttpException(400, "Wrong credentials");
     }
   
     if (user.twoFAEnabled )
@@ -110,17 +100,13 @@ export const refresh = async  (refreshToken) => {
         throw new HttpException(403, "Forbidden");
     if (user.refreshToken !== refreshToken)
         throw new HttpException(403, "Forbidden");
-    const {accessToken} = jwtService.generateAuthTokens({
+    const {accessToken,refreshToken: newRefreshToken} = jwtService.generateAuthTokens({
         id : user.id,
         email : user.email,
         role: user.role
     });
-
-    return {
-        user,
-        accessToken,
-        refreshToken
-    }
+    await userService.updateUser(user.id, { refreshToken: newRefreshToken });
+    return { user, accessToken, refreshToken: newRefreshToken };
 }
 
 export const logout = async (refreshToken) => {

@@ -63,6 +63,8 @@ export const advance = async (applicationId) => {
 		throw new HttpException(400, 'cannot make progress in this application');
 	const phases = application.applicationPhases;
 	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
+	if (!currentPhase)
+    	throw new HttpException(400, 'Current phase not found in application phases');
 	if (currentPhase.status !== 'completed')
 		throw new HttpException(400,"can't advance to next phase");
 	const currentIndex = phases.indexOf(currentPhase);
@@ -85,6 +87,9 @@ export const rejectApplication = async (applicationId, io) => {
 		where: { id: applicationId },
 		include: { job: { select: { title: true } } }
 	});
+	if (!app) throw new HttpException(404, 'application not found');
+	if (['accepted', 'rejected', 'withdrawn'].includes(app.status))
+        throw new HttpException(400, `Cannot reject application with status: ${app.status}`);
 	const updated = await applicationRepository.updateApplication(applicationId, { status: 'rejected' });
 	if (app && io) {
 		await createNotification(io, {
@@ -119,12 +124,16 @@ export const acceptApplication = async (applicationId, io) => {
 	return updated;
 }
 
-export const withdrawApplication = async (applicationId) => {
-	const application = await applicationRepository.updateApplication(applicationId,{
-		status: 'withdrawn'
-	})
-	return application;
-}
+export const withdrawApplication = async (applicationId, userId) => {
+    const application = await applicationRepository.getApplicaticationById(applicationId);
+    if (!application)
+        throw new HttpException(404, 'application not found');
+    if (application.candidateId !== userId)
+        throw new HttpException(403, 'Forbidden');
+    if (['rejected', 'accepted', 'withdrawn'].includes(application.status))
+        throw new HttpException(400, `Cannot withdraw an application with status: ${application.status}`);
+    return await applicationRepository.updateApplication(applicationId, { status: 'withdrawn' });
+};
 
 export const getApplicaticationPhases = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);

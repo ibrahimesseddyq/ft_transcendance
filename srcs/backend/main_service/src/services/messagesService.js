@@ -56,12 +56,12 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 	if (!text) {
 		throw new HttpException(400, 'Message content is required');
 	}
-
+	let moderation = null;
 	if (messageType === 'text') {
 		try {
-			const moderation = await moderateText(text, { conversationId, userId });
+			moderation = await moderateText(text, { conversationId, userId });
 			if (moderation?.action === 'Block') {
-				return {moderation };
+				return {moderation};
 			}
 		} catch (error) {
 			// Do not block messaging if moderation service is unavailable.
@@ -89,7 +89,7 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 		io.to(conversationId).emit('message:received', message);
 	}
 
-	return { blocked: false, message };
+	return { moderation, message };
 };
 
 export const editMessage = async ({ id, userId, content }) => {
