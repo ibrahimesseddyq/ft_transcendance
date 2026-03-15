@@ -1,7 +1,21 @@
 import { useState, useEffect, useRef } from "react";
+import { AudioLines } from 'lucide-react';
 import { aiapi } from '@/utils/Api';
 
+const SUGGESTIONS = [
+  "How can i find job?",
+  "What is the rules of a valid picture?",
+  "How can i get the best job offer?"
+];
+
 export default function AiChat() {
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const handleSuggestionClick = (suggestion: string) => {
+    setMessages(prev => [...prev, { role: "user", content: suggestion }]);
+    setShowSuggestions(false);
+    console.log("Fetching AI response for:", suggestion);
+  };
+
   const [messages, setMessages] = useState([
     { role: "ai", content: "Hello! Upload an audio clip and I'll transcribe it." }
   ]);
@@ -19,25 +33,20 @@ export default function AiChat() {
 
   const startRecording = async () => {
     try {
-      //Get access to the microphone
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      //Collect audio data as it comes in
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       };
 
-      // recording stops
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         await sendAudioToAI(audioBlob);
-        
-        //Stop all tracks in the stream
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -75,13 +84,15 @@ export default function AiChat() {
   };
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim()) 
+      return;
     setMessages(prev => [...prev, { role: "user", content: input }]);
     setInput("");
+    setShowSuggestions(false);
   };
 
   return (
-    <div className="flex flex-col z-50 w-full h-[450px] md:h-[500px] md:max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border">
+    <div className="flex flex-col z-50 m-2 w-full md:w-80 h-[450px] md:h-[500px]  bg-white rounded-2xl shadow-2xl overflow-hidden border">
       <div className="bg-black p-4 text-white font-bold">AI Assistant</div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
@@ -94,6 +105,25 @@ export default function AiChat() {
             </div>
           </div>
         ))}
+
+        {showSuggestions && (
+          <div className="mt-4 space-y-2">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Example Questions</p>
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTIONS.map((text, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSuggestionClick(text)}
+                  className="text-left bg-white border border-gray-200 hover:border-pink-400 
+                  hover:bg-pink-50 transition-colors px-4 py-2 rounded-xl text-sm text-gray-700 shadow-sm"
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {isProcessing && <div className="text-xs italic text-gray-400">Transcribing audio...</div>}
         <div ref={chatEndRef} />
       </div>
@@ -105,7 +135,7 @@ export default function AiChat() {
             isRecording ? "bg-red-500 animate-pulse text-white" : "bg-gray-100 text-gray-600"
           }`}
         >
-          {isRecording ? "■" : "🎤"}
+          {isRecording ? "■" : <AudioLines/>}
         </button>
         
         <input
@@ -113,7 +143,7 @@ export default function AiChat() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isProcessing ? "Processing..." : "Speak or type..."}
-          className="flex-1 bg-gray-100 border-none rounded-full px-4 py-2 text-sm outline-none"
+          className="flex-1 text-black bg-gray-100 border-none rounded-full px-4 py-2 text-sm outline-none"
         />
         
         <button onClick={handleSend} className="bg-black text-white w-10 h-10 rounded-full">→</button>
