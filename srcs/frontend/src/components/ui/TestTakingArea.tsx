@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { mainApi } from '@/utils/Api';
 import Icon  from '@/components/ui/Icon'
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,6 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [timeLeft, setTimeLeft] = useState(900);
     const navigate = useNavigate();
 
     const questions = testData?.mcqs || [];
@@ -16,13 +15,6 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const totalSteps = questions.length;
     const isLastQuestion = currentStep === totalSteps - 1;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
-    const isTimeRunningOut = timeLeft < 60;
-
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
 
     const handleSelect = (choiceText: string) => {
         setError(null);
@@ -72,23 +64,6 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
         }
     }, [testData?.id, phaseId, candidateId, selectedAnswers, questions, env_main_api]);
 
-    useEffect(() => {
-        if (timeLeft <= 0 || isSubmitting) return;
-
-        const timerId = setInterval(() => {
-            setTimeLeft((prevTime) => {
-                if (prevTime <= 1) {
-                    clearInterval(timerId);
-                    handleSubmit();
-                    return 0;
-                }
-                return prevTime - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(timerId);
-    }, [isSubmitting, handleSubmit, timeLeft]);
-
     if (!currentQuestion) {
         return <div className="text-black dark:text-surface-main p-10 text-center">No questions available.</div>;
     }
@@ -107,15 +82,6 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                             style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
                         />
                     </div>
-                </div>
-                
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                    isTimeRunningOut 
-                        ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-danger-hover border-red-200 dark:border-red-900/50 animate-pulse' 
-                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                }`}>
-                    <Icon name='Timer' size={18} />
-                    <span className='font-mono font-bold'>{formatTime(timeLeft)}</span>
                 </div>
             </div>
 
