@@ -2,6 +2,7 @@ import env from'../config/env.js';
 import * as authService from'../services/authService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import * as jwtService from '../services/jwtService.js';
+import { getSafeUser } from '../utils/excludeSensitive.js';
 import ms from 'ms';
 
 const accessTokenOptions = {
@@ -33,9 +34,12 @@ export const login = asyncHandler(async (req, res, next) => {
             .cookie('tempToken', result.tempToken, tempTokenOptions)
             .status(200).json({
                 message: "2FA required",
-                require2FA: true,
-                userId: result.userId,
-                firstLogin: result.firstLogin
+                data : {
+                    require2FA: true,
+                    id: result.userId,
+                    firstLogin: result.firstLogin
+                }
+                
             });
         }
         res
@@ -45,9 +49,7 @@ export const login = asyncHandler(async (req, res, next) => {
         .json({
                 success: true,
                 message: 'login successful',
-                data:{
-                    user: result.user,
-                }
+                data: getSafeUser(result.user),
             }
         );
 })
@@ -63,9 +65,7 @@ export const verify2FA = asyncHandler(async (req, res, next) =>{
     .status(200)
     .json({
         message:'login successful',
-        data: {
-            user,
-        }
+        data:  getSafeUser(user)
     });
 })
 
@@ -95,9 +95,7 @@ export const refresh =  asyncHandler(async (req, res, next) => {
         .json({
             success: true,
             message: 'token refreshed successfully',
-            data:{
-                user,
-            }
+            data: getSafeUser(user)
         });
 })
 
