@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const navigate = useNavigate();
     const {
         register,
@@ -19,7 +20,7 @@ const Signup = () => {
     });
 
     const GoogleSubmit = async () => {
-        window.location.href = `${env_main_api}/auth/google`;
+        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {

@@ -38,19 +38,21 @@ export const submitTest = async (data) => {
 
     if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
-    if (applicationPhase.status != 'inProgress')
+    console.log('hello world ',applicationPhase.status)
+    if (applicationPhase.status !==  'inProgress')
         throw new HttpException(400,'Test not started or already completed');
-    const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
-    const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs
-   if (Date.now() > deadLine) {
-        await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
-            completedAt: new Date(),
-            status: 'failed',
-            score: 0,
-            notes: 'Time expired — auto-failed'
-        });
-        throw new HttpException(400, 'Test duration has expired');
-    }
+//     const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
+//     const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs
+//     console.log(applicationPhase.jobPhase?.durationMinutes)
+//    if (Date.now() > deadLine) {
+//         await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
+//             completedAt: new Date(),
+//             status: 'failed',
+//             score: 0,
+//             notes: 'Time expired — auto-failed'
+//         });
+//         throw new HttpException(400, 'Test duration has expired');
+//     }
     const evaluationResult = await quizSevice.evaluateTest(testId, answers);
     await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
         status: evaluationResult.passed ? 'completed' : 'failed',
