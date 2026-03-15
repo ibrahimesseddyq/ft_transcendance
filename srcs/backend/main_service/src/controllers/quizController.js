@@ -4,7 +4,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 export const startTest  = asyncHandler(async (req, res, next) => {
     const test  = await quizService.startTest({
         testId: req.params.testId,
-        userId: req.query.userId,
+        userId: req.user.userId,
         applicationPhaseId: req.query.applicationPhaseId
     });
     res.status(200)

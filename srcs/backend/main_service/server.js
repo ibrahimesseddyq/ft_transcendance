@@ -16,6 +16,8 @@ const io = initializeChatSocketServer({
 // Make io accessible to routes/controllers
 app.set('io', io);
 
+
+
 server.listen(env.PORT, () => {
   console.log(`Server running on port http://${env.HOST}:${env.PORT}`);
 });
