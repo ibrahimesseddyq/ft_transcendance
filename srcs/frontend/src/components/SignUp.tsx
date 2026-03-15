@@ -7,8 +7,8 @@ import { mainApi } from '@/utils/Api';
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const navigate = useNavigate();
     const {
         register,

@@ -9,14 +9,21 @@ import {
 const router = express.Router();
 
 
-router.get('/', conversationController.getConversations);
+router.get('/',
+	conversationController.getConversations);
 
-router.get('/rh-profile', conversationController.getRHProfile);
+router.get('/rh-profile',
+	conversationController.getRHProfile);
 
-router.get('/:id', validateRequest(routeIdParamsSchema, 'params'), conversationController.getConversationById);
+router.get('/:id', 
+	validateRequest(routeIdParamsSchema),
+	conversationController.getConversationById);
 
-router.post('/', validateRequest(createConversationBodySchema), conversationController.createConversation);
+router.post('/', validateRequest(createConversationBodySchema),
+			conversationController.createConversation
+		);
 
-router.patch('/:id/read', validateRequest(routeIdParamsSchema, 'params'), conversationController.markConversationAsRead);
+router.patch('/:id/read', validateRequest(routeIdParamsSchema),
+	 conversationController.markConversationAsRead);
 
 export default router;

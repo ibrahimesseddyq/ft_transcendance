@@ -71,11 +71,14 @@ export function QRcode() {
             console.log("Verified Successfully!");
             console.log("res :", res);
             const { data } = res.data;
+
+            console.log("user data = ", data);
         
-            if (data?.user) {
-                setUser(data.user);
+            if (data) {
+                setUser(data);
                 setQrVerified(true);
-                const currentUser = data.user; 
+                const currentUser = data; 
+                console.log("currentUser = ", currentUser.role);
                 if (currentUser.role === 'recruiter' || currentUser.role === 'admin') {
                     navigate('/Dashboard', { replace: true });
                 }else{

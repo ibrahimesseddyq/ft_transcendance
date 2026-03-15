@@ -15,6 +15,8 @@ export function RecruitmentPieChart({ data }: { data: any[] }) {
     statusKey: item.status,
   })) || [];
 
+  console.log("chartData = ", chartData);
+
   const totalApps = chartData.reduce((sum, item) => sum + item.value, 0);
   const activeSlices = chartData.filter(item => item.value > 0);
 

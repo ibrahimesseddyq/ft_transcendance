@@ -6,10 +6,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
-  tls:
-    - secretName: hirefy-tls
+  # tls:
+  #   - secretName: hirefy-tls
   rules:
-    - host: 52.47.74.144.nio.io
+    - host: 13.38.15.15
       http:
         paths:
           - path: /

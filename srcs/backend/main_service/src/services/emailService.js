@@ -10,7 +10,8 @@ const sendMail =  async ({from,to,subject,text}) => {
             subject,
             text
         }
-        console.log(emailOptions);
+        if (env.NODE_ENV === 'development')
+            console.log(emailOptions);
         const transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth : {
