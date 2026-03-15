@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js';
 import { HttpException } from '../utils/httpExceptions.js';
 import pkg from '../../generated/prisma/index.js';
+import { createChatNotification } from '../services/notificationService.js';
 const { MessageType } = pkg;
 
 /**
@@ -159,6 +160,16 @@ export const sendMessage = async (req, res, next) => {
             console.log('[MessageController] Emitted successfully to:', personalRoom);
           }
         });
+      }
+
+      // Send chat notification to non-sender participants (deduplicated per conversation)
+      if (conversation) {
+        const senderName = `${message.sender.firstName} ${message.sender.lastName}`;
+        for (const p of conversation.participants) {
+          if (p.userId !== userId) {
+            await createChatNotification(io, { recipientId: p.userId, senderName, conversationId });
+          }
+        }
       }
     } else {
       console.warn('[MessageController] Socket.IO not available');
@@ -410,6 +421,16 @@ export const uploadFile = async (req, res, next) => {
             });
           }
         });
+      }
+
+      // Send chat notification to non-sender participants (deduplicated per conversation)
+      if (conversation) {
+        const senderName = `${message.sender.firstName} ${message.sender.lastName}`;
+        for (const p of conversation.participants) {
+          if (p.userId !== userId) {
+            await createChatNotification(io, { recipientId: p.userId, senderName, conversationId });
+          }
+        }
       }
     }
 

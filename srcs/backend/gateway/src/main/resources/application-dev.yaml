@@ -1,4 +1,17 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: main-service
+          uri: http://localhost:3000
+          predicates:
+            - Path=/api/main/**
+        - id: quiz-service
+          uri: http://localhost:3001
+          predicates:
+            - Path=/api/quiz/**
+        - id: ai-service
+          uri: http://localhost:3002
+          predicates:
+            - Path=/api/ai/**

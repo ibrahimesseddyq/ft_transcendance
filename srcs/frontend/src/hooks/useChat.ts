@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { chatApi } from '../services/chatApi';
 import { chatSocket } from '../services/chatSocket';
 import { Conversation, Message, ChatState } from '../types/chat';
-import { toast } from 'react-toastify';
 
 
 function normalizeMessage(raw: any): Message {
@@ -33,6 +33,7 @@ export function useChat() {
   const [recruiter, setRecruiter] = useState<any>(null);
   const [isLoadingRecruiter, setIsLoadingRecruiter] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasConnectedOnce = useRef(false);
 
   // Initialize chat
   useEffect(() => {
@@ -66,7 +67,7 @@ export function useChat() {
               ...prev,
               conversations: [conversation],
               currentConversation: conversation,
-              messages: rawMessages.map(normalizeMessage),
+              messages: rawMessages.map(normalizeMessage).reverse(),
             }));
 
             // Join room only after state is settled
@@ -90,7 +91,7 @@ export function useChat() {
               setState((prev) => ({
                 ...prev,
                 currentConversation: saved,
-                messages: rawMessages.map(normalizeMessage),
+                messages: rawMessages.map(normalizeMessage).reverse(),
               }));
               chatSocket.joinConversation(savedId);
               chatSocket.markAsRead(savedId);
@@ -101,7 +102,6 @@ export function useChat() {
         setIsLoading(false);
       } catch (error: any) {
         console.error('Failed to initialize chat:', error);
-        toast.error('Failed to load chat. Please refresh the page.');
         setIsLoading(false);
       }
     };
@@ -117,6 +117,7 @@ export function useChat() {
   // These never re-register while the component is mounted so no status events are missed.
   useEffect(() => {
     const handleConnect = () => {
+      hasConnectedOnce.current = true;
       setState((prev) => ({ ...prev, isConnected: true }));
       // Re-request online users list on every (re)connect so state is
       // always fresh without needing a page refresh.
@@ -129,7 +130,6 @@ export function useChat() {
 
     const handleError = (error: any) => {
       console.error('Socket error:', error);
-      toast.error('Connection error. Retrying...');
     };
 
     const handleUserOnline = (data: { userId: string }) => {
@@ -317,7 +317,6 @@ export function useChat() {
       setIsLoadingMessages(false);
     } catch (error: any) {
       console.error('Failed to load conversation:', error);
-      toast.error('Failed to load messages');
       setIsLoadingMessages(false);
     }
   }, [state.conversations]);
@@ -379,10 +378,8 @@ export function useChat() {
             ),
           };
         });
-        toast.success('File uploaded successfully');
       } catch (error: any) {
         console.error('Failed to upload file:', error);
-        toast.error('Failed to upload file');
       }
     },
     [state.currentConversation]
@@ -418,6 +415,7 @@ export function useChat() {
     onlineUsers: state.onlineUsers,
     typingUsers: state.typingUsers,
     isConnected: state.isConnected,
+    hasConnectedOnce: hasConnectedOnce.current,
     isLoading,
     isLoadingMessages,
     recruiter,

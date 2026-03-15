@@ -12,14 +12,13 @@ interface CustomConfig extends InternalAxiosRequestConfig {
 
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
+const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
 const attachInterceptors = (instance: AxiosInstance) => {
     instance.interceptors.request.use((config) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
-
-        config.headers['x-internal-api-key'] = import.meta.env.VITE_INTERNAL_API_KEY;
         return config;
     });
 
@@ -42,7 +41,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
 
                 try {
                     await axios.post(
-                        `${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh`,
+                        `${import.meta.env.VITE_MAIN_SERVICE_URL}${env_main_api}/auth/refresh`,
                         {},
                         { withCredentials: true }
                     );
@@ -71,7 +70,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
 // ... remaining code (exports and calls) ...
 
 export const mainApi = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: import.meta.env.VITE_MAIN_SERVICE_URL,
     withCredentials: true,
 });
 

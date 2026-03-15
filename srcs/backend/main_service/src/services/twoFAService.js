@@ -4,7 +4,6 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as userRepository from '../repositories/userRepository.js';
 import * as userService from './userService.js';
 import * as  jwtService from './jwtService.js';
-import { refresh } from "./authService.js";
 
 
  class TwoFAService
@@ -29,7 +28,6 @@ import { refresh } from "./authService.js";
 
     async verifySetup(userId, token)
     {
-        console.log("user id :", userId, "token :", token);
         const user = await this.userRepo.getUserById(userId);
         if (!user?.twoFATempSecret)
             throw new HttpException(400, "No Setup in Progress");
