@@ -58,6 +58,7 @@ const Signin = () => {
             if (userId) {
                 setUserId(userId);
                 reset();
+                console.log("hiii iam here");
                 navigate("/Otp", { replace: true });
             }
         } catch (error: any) {
