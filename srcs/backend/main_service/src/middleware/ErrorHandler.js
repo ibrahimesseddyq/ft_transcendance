@@ -1,5 +1,6 @@
 import {CustomError} from '../utils/httpExceptions.js';
 import { Prisma } from '../../generated/prisma/client.js'
+import { ZodError } from 'zod';
 
 const errorFactory = (err,res) => {
     if (err instanceof CustomError) {
@@ -13,6 +14,13 @@ const errorFactory = (err,res) => {
         res.status(400).json({
             success: false,
             errors:['bad request']
+        });
+        return true;
+    }
+    if (err instanceof ZodError) {
+        res.status(400).json({
+            success: false,
+            errors: err.issues.map((issue) => issue.message)
         });
         return true;
     }

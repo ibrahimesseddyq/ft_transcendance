@@ -17,6 +17,21 @@ function normalizeMessage(raw: any): Message {
   };
 }
 
+function extractApiErrorMessage(error: any): string {
+  const errors = error?.response?.data?.errors;
+  if (Array.isArray(errors) && errors.length > 0) {
+    const firstError = errors[0];
+    return typeof firstError === 'string' ? firstError : 'Request validation failed';
+  }
+
+  const message = error?.response?.data?.message;
+  if (typeof message === 'string' && message.trim()) {
+    return message;
+  }
+
+  return 'Failed to send message';
+}
+
 export function useChat() {
   const [state, setState] = useState<ChatState>({
     user: null,
@@ -354,7 +369,7 @@ export function useChat() {
         });
       } catch (error: any) {
         console.error('Failed to send message:', error);
-        toast.error('Failed to send message');
+        toast.error(extractApiErrorMessage(error));
       }
     },
     [state.currentConversation]
