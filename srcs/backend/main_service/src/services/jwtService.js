@@ -4,23 +4,34 @@ import env from '../config/env.js';
 
 const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
 const accessTokenExpiry = env.ACCESS_TOKEN_EXPIRY;
+
+const verifyTokenSecret = env.VERIFY_TOKEN_SECRET
+const verifyTokenExpiry = env.VERIFY_TOKEN_EXPIRY
+
 const refreshTokenSecret = env.REFRESH_TOKEN_SECRET;
 const refreshTokenExpiry = env.REFRESH_TOKEN_EXPIRY;
-const tempTokenSecret = env.TEMP_TOKEN_SECRET || accessTokenSecret;
-const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY || "55m";
+
+const tempTokenSecret = env.TEMP_TOKEN_SECRET;
+const tempTokenExpiry = env.TEMP_TOKEN_EXPIRY;
 
 export const generateTempToken = (payload) =>
 {
     return sign(payload, tempTokenSecret, { expiresIn: tempTokenExpiry });
 };
+
 export const verifyTempToken = (payload) => {
     return verify(payload, tempTokenSecret);
 };
+
 export const generateAuthTokens =  (payload) => {
     const accessToken = sign(payload,accessTokenSecret,{
-        expiresIn : accessTokenExpiry})
+        expiresIn : accessTokenExpiry
+    })
+
     const refreshToken = sign(payload,refreshTokenSecret,{
-        expiresIn: refreshTokenExpiry }) 
+        expiresIn: refreshTokenExpiry 
+    })
+
     return {accessToken , refreshToken};  
 }
 
@@ -28,6 +39,7 @@ export const verify = async (token, secret) => {
     return new Promise((resolve,reject) => {
         jwt.verify(token,secret, (err, decoded) => {
             if(err) {
+                console.log(err.name)
                 if (err.name === 'TokenExpiredError')
                     reject(new HttpException(401,'Token expired'));
                 else if (err.name === 'JsonWebTokenError')
@@ -67,7 +79,7 @@ export const refreshAccessToken = async (refreshToken) => {
 }
 
 export const verifyVerificationToken = async (token) => {
-    const decoded = await verify(token,accessTokenSecret);
+    const decoded = await verify(token,verifyTokenSecret);
     if (!decoded || decoded.type !== 'email_verification')
         throw new HttpException(403, 'Invalid token type');
     return decoded;
@@ -79,6 +91,6 @@ export const generateVerificationToken = async (userId, email) => {
         email: email,
         type: 'email_verification'
     }
-    const token = sign(payload,accessTokenSecret,{expiresIn: "24h"});
+    const token = sign(payload, verifyTokenSecret,{expiresIn : verifyTokenExpiry} );
     return token;
 }
