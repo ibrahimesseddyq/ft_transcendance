@@ -41,7 +41,7 @@ dev: clean-dev down-dev
 	  echo "Waiting for DBs..."; sleep 2; \
 	done
 	@echo "Databases ready!"
-	concurrently \
+	npx concurrently \
 	  "cd srcs/backend/main_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run seed && npm run dev" \
 	  "cd srcs/backend/quiz_service && npm install && npx prisma generate && set -a && . ./.env.dev && set +a && npx prisma db push && npm run dev" \
 	  "cd srcs/frontend && npm install && npm run dev"
