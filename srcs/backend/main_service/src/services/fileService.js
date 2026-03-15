@@ -20,7 +20,6 @@ export const saveAvatar = async (userId, file) => {
     const avatarPath = '/uploads/avatars/' + filename;
     try {
         const result = await classifyAvatar(physicalPath);
-        console.log(result)
         if (result.class !== 'valid profile')
         {
             await fs.unlink(physicalPath);
