@@ -19,25 +19,20 @@ export default function AiChat() {
 
   const startRecording = async () => {
     try {
-      //Get access to the microphone
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      //Collect audio data as it comes in
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       };
 
-      // recording stops
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         await sendAudioToAI(audioBlob);
-        
-        //Stop all tracks in the stream
         stream.getTracks().forEach(track => track.stop());
       };
 
