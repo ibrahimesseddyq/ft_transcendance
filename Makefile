@@ -48,7 +48,6 @@ dev: clean-dev down-dev
 	  "cd srcs/frontend && npm install && npm run dev"
 re: clean up
 
-# Kill local dev processes/ports only (NO docker compose here)
 clear:
 	sudo fuser -k -HUP 3000/tcp 2>/dev/null; true
 	sudo fuser -k -HUP 5173/tcp 2>/dev/null; true

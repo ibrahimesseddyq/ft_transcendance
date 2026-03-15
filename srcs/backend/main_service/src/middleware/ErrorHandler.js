@@ -17,13 +17,6 @@ const errorFactory = (err,res) => {
         });
         return true;
     }
-    if (err instanceof ZodError) {
-        res.status(400).json({
-            success: false,
-            errors: err.issues.map((issue) => issue.message)
-        });
-        return true;
-    }
     return false;
 }
 

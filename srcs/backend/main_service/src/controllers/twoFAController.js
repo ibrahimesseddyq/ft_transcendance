@@ -6,9 +6,7 @@ export const    setup = async (req, res ,next) =>
 {
     try {
         const data = await twoFAService.setup(req.body.id);
-        res.json({
-            data : data
-        });
+        res.json(data);
         } catch (error) {
         next(error)
     }
@@ -50,9 +48,7 @@ export const    disable = async (req, res,next) => {
 
         const { token } = req.body;
         const data = await twoFAService.disable(req.body.id, token);
-        res.json({
-            data : data
-        });
+        res.json(data);
             } catch (error) {
         next(error)
     }
