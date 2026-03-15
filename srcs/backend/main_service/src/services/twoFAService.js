@@ -4,6 +4,7 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as userRepository from '../repositories/userRepository.js';
 import * as userService from './userService.js';
 import * as  jwtService from './jwtService.js';
+import { getSafeUser } from "../utils/excludeSensitive.js";
 
 
  class TwoFAService
@@ -57,15 +58,12 @@ import * as  jwtService from './jwtService.js';
         if (user.firstLogin === true)
         {
             const check = await userService.updateUser(user.id, { firstLogin: false });
-            if (check.ok)
-            {
+            if (user.firstLogin === true) {
+                await userService.updateUser(user.id, { firstLogin: false });
                 user.firstLogin = false;
             }
         }
-        delete user.passwordHash;
-        delete user.twoFASecret;
-        delete user.twoFATempSecret;
-        return { success: true, user: user, accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
+        return { success: true, user: getSafeUser(user), accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)
