@@ -14,18 +14,18 @@ export default {
 			colors: {
       		  primary: {
       		    DEFAULT: 'var(--color-primary)',
-				darkbg: 'var(--color-darkbg)',
-				whitebg: 'var(--color-whitebg)',
+				darkbg: 'var(--color-primary-darkbg)',
+				whitebg: 'var(--color-primary-whitebg)',
       		    hover: 'var(--color-primary-hover)',
 				border:'var(--color-primary-border)',
       		  },
 			  secondary: {
-      		    DEFAULT: 'var(--color-secondary)',
-				darkbg: 'var(--color-darkbg)',
-				whitebg: 'var(--color-whitebg)',
-      		    hover: 'var(--color-secondary-hover)',
+				DEFAULT: 'var(--color-secondary)',
+				darkbg: 'var(--color-secondary-darkbg)',
+				whitebg: 'var(--color-secondary-whitebg)',
+				hover: 'var(--color-secondary-hover)',
 				border:'var(--color-secondary-border)',
-      		  },
+			 },
       		  surface: {
       		    main: 'var(--color-surface-main)',
       		    child: 'var(--color-surface-child)',

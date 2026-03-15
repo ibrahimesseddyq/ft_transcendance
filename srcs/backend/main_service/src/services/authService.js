@@ -47,7 +47,6 @@ export const login = async (data) => {
             email: user.email,
             purpose: '2fa-pending'
         });
-        console.log(tempToken);
         return {
             require2FA: true,
             tempToken,
