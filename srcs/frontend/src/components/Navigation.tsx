@@ -51,7 +51,7 @@ export function Navbar() {
                                 to={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-4 p-3 rounded-xl font-bold transition-all
-                                    ${!isAdminOrRecruiter && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                    ${!isAdminOrRecruiter && (item.name === 'Dashboard' || item.name === 'Quiz') ? 'hidden' : ''}
                                     ${isAdminOrRecruiter && item.name === 'Applications' ? 'hidden' : ''}
                                     ${location.pathname.startsWith(item.path) 
                                         ? 'bg-primary text-surface-main' 

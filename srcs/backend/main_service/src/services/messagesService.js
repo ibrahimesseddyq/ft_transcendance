@@ -69,24 +69,24 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 	}
 
 	const message = await messageRepository.createMessage({
-		conversationId: payload.conversationId,
-		senderId: payload.userId,
+		conversationId: conversationId,
+		senderId: userId,
 		content: text,
-		messageType: payload.messageType
+		messageType: messageType
 	});
 
-	await messageRepository.touchConversation(payload.conversationId);
+	await messageRepository.touchConversation(conversationId);
 
 	const senderName = `${message.sender?.firstName || ''} ${message.sender?.lastName || ''}`.trim() || 'Someone';
 	await notifyOtherParticipants({
 		io,
-		conversationId: payload.conversationId,
-		senderId: payload.userId,
+		conversationId: conversationId,
+		senderId: userId,
 		senderName
 	});
 
 	if (io) {
-		io.to(payload.conversationId).emit('message:received', message);
+		io.to(conversationId).emit('message:received', message);
 	}
 
 	return { blocked: false, message };

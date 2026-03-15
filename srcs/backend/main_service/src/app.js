@@ -36,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173' || 'http://127.0.0.1:5173'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
@@ -46,7 +46,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
+      "frame-ancestors": ["'self'", env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence

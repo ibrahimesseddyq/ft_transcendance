@@ -26,12 +26,12 @@
 
     --color-secondary: #1e293b;
     --color-secondary-whitebg: #f8fafc;
-    --color-secondary-darkbg: #0f172a;
-    --color-secondary-hover: #334155;
+    /* --color-secondary-darkbg: #0f172a;
+    --color-secondary-hover: #334155; */
     --color-secondary-border: #334155;
 
     --color-whitebg: #f8fafc;
-    --color-darkbg: #162138;
+    --color-darkbg: #242c3e;
 
     --color-surface-main: #FFFFFF;
     --color-surface-child: #f8fafc;
