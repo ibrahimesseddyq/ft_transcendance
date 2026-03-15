@@ -16,8 +16,6 @@ export MARIADB_QUIZ_PASSWORD=pass
 export DATABASE_URL="mysql://user1:pass@localhost:3306/hirefy"
 export PORT=3000
 export HOST=localhost
-export NODE_ENV=development
-export BCRYPT_ROUNDS=10
 export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
 export GOOGLE_CLIENT_SECRET=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
@@ -42,7 +40,9 @@ export RECRUITER_PASS=Abdellatif123@@
 export VERIFY_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 
 export TEMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-# Wait until Vault API is up (no curl required)
+export AI_MODEL_NAME=gpt-3.5-turbo
+export AI_API_KEY=your-api-key-here
+
 until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
   sleep 2
@@ -85,6 +85,7 @@ EOF
 vault policy write ai-service - << 'EOF'
 path "secret/data/ai-service/*" { capabilities = [ "read", "list" ] }
 EOF
+
 #service account
 vault write auth/kubernetes/role/main-service \
     bound_service_account_names=app-service-account \
@@ -122,6 +123,7 @@ vault kv put secret/main-service-db/config \
   MARIADB_DATABASE="${MARIADB_MAIN_DATABASE}" \
   MARIADB_USER="${MARIADB_MAIN_USER}" \
   MARIADB_PASSWORD="${MARIADB_MAIN_PASSWORD}"
+
 ## change those to env!!!!!!!!!!!!!
 vault kv put secret/quiz-service-db/config \
   MARIADB_ROOT_PASSWORD="${MARIADB_QUIZ_ROOT_PASSWORD}" \
@@ -136,6 +138,10 @@ vault kv put secret/quiz-service/jwt \
   ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
   REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"
 
+vault kv put secret/quiz-service/other \
+  QUIZ_PUBLIC_API_KEY="${QUIZ_PUBLIC_API_KEY}" \
+  INTERNAL_API_KEY="${INTERNAL_API_KEY}"
+  
 vault kv put secret/main-service/oauth \
   GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}" \
   GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}" 
@@ -144,9 +150,6 @@ vault kv put secret/main-service/database \
   DATABASE_URL="mysql://${MARIADB_MAIN_USER}:${MARIADB_MAIN_PASSWORD}@main_service_db:3306/hirefy"
 echo "Storing AI service secrets..."
 
-# vault kv put secret/ai-service/config \
-#   AI_MODEL_NAME="gpt-3.5-turbo" \
-#   AI_API_KEY="your-api-key-here"
 
 vault kv put secret/main-service/jwt \
   ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
@@ -161,4 +164,18 @@ vault kv put secret/main-service/other \
   USER_PASSWORD="${USER_PASSWORD}"\
   QUIZ_PUBLIC_API_KEY="${QUIZ_PUBLIC_API_KEY}"\
   INTERNAL_API_KEY="${INTERNAL_API_KEY}"
+
+
+vault kv put secret/ai-service/config \
+  AI_MODEL_NAME="${AI_MODEL_NAME}" \
+  AI_API_KEY="${AI_API_KEY}"
+
+vault kv put secret/ai-service/jwt \
+  ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
+  REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"
+
+vault kv put secret/ai-service/other \
+  AI_INTERNAL_API_KEY="${AI_INTERNAL_API_KEY}" \
+  INTERNAL_API_KEY="${INTERNAL_API_KEY}"
+  
 echo "===== Vault initialization complete! ====="
