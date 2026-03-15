@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js';
 import { HttpException } from '../utils/httpExceptions.js';
 import pkg from '../../generated/prisma/index.js';
+import { createConversationInputSchema } from '../validators/chatValidator.js';
 const { UserRole } = pkg;
 
 /**
@@ -207,9 +208,7 @@ export const createConversation = async (req, res, next) => {
       participantId = rh.id;
     }
 
-    if (!participantId) {
-      throw new HttpException(400, 'Participant ID is required');
-    }
+    participantId = createConversationInputSchema.parse({ participantId }).participantId;
 
     // Verify participant exists
     const participant = await prisma.user.findUnique({

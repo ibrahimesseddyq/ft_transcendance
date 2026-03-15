@@ -33,7 +33,7 @@ spec:
           image: quiz-service:dev
           envFrom:
             - configMapRef:
-                 name: main-service-config
+                 name: quiz-service-config
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -45,6 +45,7 @@ spec:
             - |
               # Source Vault secrets
               . /vault/secrets/database
+              . /vault/secrets/jwt
               # Start the application
               npm run dev
 ---
@@ -74,8 +75,8 @@ data:
   APP_NAME: "quiz-service"
   HOST: "quiz-service"
   BCRYPT_ROUNDS: "10"
-  CALLBACK_URL: "https://52.47.74.144.nio.io/api/main/auth/google/callback"
+  CALLBACK_URL: "http://13.38.15.15/api/main/auth/google/callback"
   ACCESS_TOKEN_EXPIRY: "1d"
   REFRESH_TOKEN_EXPIRY: "7d"
-  FRONTEND_URL: "https://52.47.74.144.nio.io"
-  BACKEND_URL: "http://gateway:8081/api/main"
+  FRONTEND_URL: "http://13.38.15.15"
+  BACKEND_URL: "http://13.38.15.15/api/main"

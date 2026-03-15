@@ -1,6 +1,11 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { registerNotificationSocketEvents } from './notificationSocketEvents.js';
+import {
+  conversationIdSchema,
+  joinConversationPayloadSchema,
+  socketNewMessageSchema
+} from '../validators/chatValidator.js';
 
 export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, corsOrigin }) => {
   const io = new Server(server, {
@@ -85,8 +90,13 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
 
     const joinConversationHandler = async (payload) => {
       try {
-        const conversationId = typeof payload === 'object' ? payload.conversationId : payload;
-        if (!conversationId) return;
+        const parsedPayload = joinConversationPayloadSchema.safeParse(payload);
+        if (!parsedPayload.success) return;
+
+        const conversationId =
+          typeof parsedPayload.data === 'string'
+            ? parsedPayload.data
+            : parsedPayload.data.conversationId;
 
         const participant = await prisma.conversationParticipant.findFirst({
           where: {
@@ -108,27 +118,39 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
     socket.on('conversation:join', joinConversationHandler);
 
     socket.on('leave:conversation', (conversationId) => {
-      socket.leave(conversationId);
-      console.log(`User ${userId} left conversation ${conversationId}`);
+      const parsedConversationId = conversationIdSchema.safeParse(conversationId);
+      if (!parsedConversationId.success) return;
+
+      socket.leave(parsedConversationId.data);
+      console.log(`User ${userId} left conversation ${parsedConversationId.data}`);
     });
 
     socket.on('typing:start', (conversationId) => {
-      socket.to(conversationId).emit('user:typing', {
+      const parsedConversationId = conversationIdSchema.safeParse(conversationId);
+      if (!parsedConversationId.success) return;
+
+      socket.to(parsedConversationId.data).emit('user:typing', {
         userId,
-        conversationId
+        conversationId: parsedConversationId.data
       });
     });
 
     socket.on('typing:stop', (conversationId) => {
-      socket.to(conversationId).emit('user:stopped-typing', {
+      const parsedConversationId = conversationIdSchema.safeParse(conversationId);
+      if (!parsedConversationId.success) return;
+
+      socket.to(parsedConversationId.data).emit('user:stopped-typing', {
         userId,
-        conversationId
+        conversationId: parsedConversationId.data
       });
     });
 
     socket.on('message:new', async (data) => {
       try {
-        const { conversationId, message } = data;
+        const parsedData = socketNewMessageSchema.safeParse(data);
+        if (!parsedData.success) return;
+
+        const { conversationId, message } = parsedData.data;
         socket.to(conversationId).emit('message:received', message);
 
         await prisma.conversation.update({

@@ -46,7 +46,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
+      "frame-ancestors": ["'self'", env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence
@@ -112,6 +112,25 @@ app.use('/api/main/messages',
 app.use('/api/main/notifications',
   verifyToken,
   notificationRoutes);
+
+app.get('/health', async (req, res) => {
+  try {
+    res.status(200).json({
+      status: 'OK',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    console.error('Health check failed:', error.message);
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
+});
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));
