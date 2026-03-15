@@ -7,7 +7,6 @@ import { mainApi } from '@/utils/Api';
 
 
 const Signup = () => {
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
     const {
         register,
@@ -19,7 +18,7 @@ const Signup = () => {
     });
 
     const GoogleSubmit = async () => {
-        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
+        window.location.href = `${env_main_api}/auth/google`;
     }
 
     const SignUpSubmit = async (data: any) => {

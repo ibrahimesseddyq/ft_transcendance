@@ -16,7 +16,6 @@ const Signin = () => {
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
     const {
@@ -41,7 +40,7 @@ const Signin = () => {
     
     
     const GoogleSubmit = () => {
-        window.location.href = `${BACKEND_URL}${env_main_api}/auth/google`;
+        window.location.href = `${env_main_api}/auth/google`;
     }
 
 
