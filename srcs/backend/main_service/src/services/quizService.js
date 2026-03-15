@@ -13,7 +13,7 @@ export const startTest = async (data) => {
         throw new HttpException(400, 'application is not in progress');
     if (application.candidateId != userId)
         throw new HttpException(403, 'you are not a cadidate for this application');
-    if (applicationPhase.status != 'pending' && applicationPhase.status != 'inProgress')
+    if (applicationPhase.status !== 'pending' && applicationPhase.status !== 'inProgress')
         throw new HttpException(404, 'this test phase not available');
     if (applicationPhase.jobPhase.testId != testId)
         throw new HttpException(400,'This test is not assigned to this phase');
@@ -36,20 +36,20 @@ export const submitTest = async (data) => {
     const {applicationPhaseId, answers, userId} = data.body;
     const applicationPhase = await applicationPhaseService.getApplicaticationPhaseById(applicationPhaseId);
 
-    if (applicationPhase.application?.candidateId != userId)
+    if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
     if (applicationPhase.status != 'inProgress')
         throw new HttpException(400,'Test not started or already completed');
-    const deadLine = applicationPhase.startedAt + applicationPhase.jobPhase * 60 * 1000;
-    if ( Date.now() > new Date(deadLine).getTime())
-    {
+    const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
+    const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs
+   if (Date.now() > deadLine) {
         await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
-            completedAt : new Date(),
-            status:'failed',
+            completedAt: new Date(),
+            status: 'failed',
             score: 0,
-            notes : 'Time expired — auto-failed'
-        })
-        throw new HttpException(400, 'Test duration has expired ');
+            notes: 'Time expired — auto-failed'
+        });
+        throw new HttpException(400, 'Test duration has expired');
     }
     const evaluationResult = await quizSevice.evaluateTest(testId, answers);
     await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {

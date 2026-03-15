@@ -3,7 +3,6 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 export const createProfile = asyncHandler(async (req, res, next) => {
     const id =  req.params?.id;
-    console.log(req)
     const profile = await profileservice.createProfile(id, {
         body: req.body,
         files:req.files
@@ -17,7 +16,7 @@ export const createProfile = asyncHandler(async (req, res, next) => {
 })
 
 export const updateProfile = asyncHandler(async (req, res, next) => {
-    const id = req.params?.id || req.body.userId;
+    const id = req.params?.id;
     const updatedProfile = await profileservice.updateProfile(id,{
         body : req.body,
         files: req.files
