@@ -9,11 +9,11 @@ class ChatSocketService {
   private readonly eventHandlers: Map<string, Set<SocketEventCallback>> = new Map();
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    this.baseUrl = import.meta.env.VITE_MAIN_SERVICE_URL;
   }
 
   connect(token?: string): void {
-    if (this.socket?.connected) {
+    if (this.socket) {
       return;
     }
 
@@ -90,6 +90,14 @@ class ChatSocketService {
     });
 
     // Notification events
+    this.socket.on('notification:new', (data: any) => {
+      this.emit('onNotificationNew', data);
+    });
+
+    this.socket.on('notification:cleared', (data: any) => {
+      this.emit('onNotificationCleared', data);
+    });
+
     this.socket.on('notification:message', (data: any) => {
       this.emit('onNotification', data);
     });

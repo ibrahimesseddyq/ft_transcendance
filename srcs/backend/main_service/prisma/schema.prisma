@@ -96,17 +96,17 @@ model Application {
 }
 
 model Profile {
-  userId          String    @id @db.Char(36)
-  resumeUrl       String?   @db.Text
-  linkedinUrl     String?   @db.VarChar(255)
-  portfolioUrl    String?   @db.VarChar(255)
-  currentCompany  String?   @db.VarChar(255)
-  currentTitle    String?   @db.VarChar(255)
-  phone           String?   @db.VarChar(255)
+  userId          String  @id @db.Char(36)
+  resumeUrl       String? @db.Text
+  linkedinUrl     String? @db.VarChar(255)
+  portfolioUrl    String? @db.VarChar(255)
+  currentCompany  String? @db.VarChar(255)
+  currentTitle    String? @db.VarChar(255)
+  phone           String? @db.VarChar(255)
   yearsExperience Int?
-  skills          String?   @db.LongText
-  availableFrom   String?   @db.VarChar(255)
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills          String? @db.LongText
+  availableFrom   String? @db.VarChar(255)
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model InterviewParticipant {
@@ -183,55 +183,37 @@ model Offer {
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }
 
-model Session {
-  id           String   @id @default(uuid()) @db.Char(36)
-  userId       String   @db.Char(36)
-  refreshToken String   @unique @db.VarChar(512)
-  ipAdress     String?  @db.VarChar(45)
-  userAgent    String?  @db.VarChar(255)
-  expiresAt    DateTime @db.Timestamp(0)
-  createdAt    DateTime @default(now()) @db.Timestamp(0)
-  lastUsed     DateTime @default(now()) @db.Timestamp(0)
-
-  user User? @relation(fields: [userId], references: [id])
-
-  @@index([refreshToken, expiresAt])
-  @@index([userId])
-  @@index([expiresAt])
-}
-
 model User {
-  id                    String                 @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  email                 String                 @unique @db.VarChar(255)
-  passwordHash          String                 @db.VarChar(255)
-  role                  UserRole               @default(candidate)
-  firstName             String                 @db.VarChar(100)
-  lastName              String                 @db.VarChar(100)
-  phone                 String?                @db.VarChar(20)
-  avatarUrl             String?                @db.Text
-  createdAt             DateTime?              @default(now()) @db.Timestamp(0)
-  updatedAt             DateTime?              @default(now()) @db.Timestamp(0)
-  refreshToken          String?                @db.Text
-  applications          Application[]
-  profile               Profile?
-  interviewParticipants InterviewParticipant[]
-  jobs                  Job[]
-  notifications         Notification[]
-  isVerified            Boolean?               @default(false)
-  sessions              Session[]
-  twoFAEnabled          Boolean                @default(true)
-  firstLogin            Boolean                @default(true)
-  twoFASecret           String?
-  twoFATempSecret       String?
+  id                       String                    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  email                    String                    @unique @db.VarChar(255)
+  passwordHash             String                    @db.VarChar(255)
+  role                     UserRole                  @default(candidate)
+  firstName                String                    @db.VarChar(100)
+  lastName                 String                    @db.VarChar(100)
+  phone                    String?                   @db.VarChar(20)
+  avatarUrl                String?                   @db.Text
+  createdAt                DateTime?                 @default(now()) @db.Timestamp(0)
+  updatedAt                DateTime?                 @default(now()) @db.Timestamp(0)
+  refreshToken             String?                   @db.Text
+  applications             Application[]
+  profile                  Profile?
+  interviewParticipants    InterviewParticipant[]
+  jobs                     Job[]
+  notifications            Notification[]
+  isVerified               Boolean?                  @default(false)
+  twoFAEnabled             Boolean                   @default(true)
+  firstLogin               Boolean                   @default(true)
+  twoFASecret              String?
+  twoFATempSecret          String?
   conversationParticipants ConversationParticipant[]
-  messagesSent          Message[]
+  messagesSent             Message[]
 }
 
 model Conversation {
   id        String   @id @default(dbgenerated("(uuid())")) @db.Char(36)
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @db.Timestamp(0)
-  
+
   participants ConversationParticipant[]
   messages     Message[]
 
@@ -239,12 +221,12 @@ model Conversation {
 }
 
 model ConversationParticipant {
-  id             String       @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  conversationId String       @db.Char(36)
-  userId         String       @db.Char(36)
-  joinedAt       DateTime     @default(now()) @db.Timestamp(0)
-  lastReadAt     DateTime?    @db.Timestamp(0)
-  
+  id             String    @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  conversationId String    @db.Char(36)
+  userId         String    @db.Char(36)
+  joinedAt       DateTime  @default(now()) @db.Timestamp(0)
+  lastReadAt     DateTime? @db.Timestamp(0)
+
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -262,7 +244,7 @@ model Message {
   isDeleted      Boolean     @default(false)
   createdAt      DateTime    @default(now()) @db.Timestamp(0)
   updatedAt      DateTime    @default(now()) @db.Timestamp(0)
-  
+
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
   attachments  Attachment[]
@@ -279,7 +261,7 @@ model Attachment {
   fileSize  Int
   mimeType  String   @db.VarChar(100)
   createdAt DateTime @default(now()) @db.Timestamp(0)
-  
+
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@index([messageId])
@@ -297,7 +279,7 @@ enum PhaseType {
 
 enum ApplicationPhaseStatus {
   pending
-  in_progress
+  inProgress
   completed
   skipped
   failed
@@ -312,6 +294,7 @@ enum NotificationType {
   rejected
   offerSent
   offerResponse
+  newMessage
 }
 
 enum UserRole {

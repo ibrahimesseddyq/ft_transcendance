@@ -8,8 +8,9 @@ const choicesSchema =  z.object({
     text: z.string().min(1, "Choice text cannot be empty"),
     isCorrect: z.boolean()
 })
+
 const mcqSchema =  z.object({
-    question: z.string().min(1,),
+    question: z.string().min(1, 'question should not be empty'),
     choices: z.array(choicesSchema)
         .length(4, "Must provide exactly 4 choices")
         .refine(choices => {

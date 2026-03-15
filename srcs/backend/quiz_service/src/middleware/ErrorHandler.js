@@ -15,6 +15,7 @@ const errorFactory = (err,res) => {
             ));
         }
         res.status(err.statusCode).json({
+            success: false,
             errors : err.errors
         });
         return true;

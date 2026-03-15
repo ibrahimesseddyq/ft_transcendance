@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: waf-ingress
+  namespace: hirefy
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  tls:
+    - secretName: hirefy-tls
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: waf
+                port:
+                  number: 8080
+                  

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowDownFromLine, MessageSquarePlus } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { chatApi } from '@/services/chatApi';
@@ -10,7 +10,7 @@ interface props {
 }
 
 export function ProfileCover({ profile, user }: props) {
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   const loggedUser = useAuthStore((state) => state.user);
@@ -38,11 +38,11 @@ export function ProfileCover({ profile, user }: props) {
 
       if (existing) {
         sessionStorage.setItem('chat_conversationId', existing.id);
-        navigate('/chat');
+        navigate('/Chat');
       } else {
         const newConversation = await chatApi.createConversation(user?.id);
         sessionStorage.setItem('chat_conversationId', newConversation.id);
-        navigate('/chat');
+        navigate('/Chat');
       }
     } catch (error) {
       console.error('Failed to open conversation:', error);
@@ -50,17 +50,17 @@ export function ProfileCover({ profile, user }: props) {
   }
 
   return (
-    <div className="relative flex flex-col gap-4 p-6 pt-20 bg-white dark:bg-slate-900 border 
+    <div className="relative flex flex-col gap-4 p-6 pt-20 bg-surface-main dark:bg-secondary-darkbg border 
       border-gray-100 dark:border-slate-800 rounded-xl items-center shadow-sm transition-colors duration-300">
 
       <div 
         style={{ backgroundImage: `url("${avatarUrl}")` }}
         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
-            h-32 w-32 rounded-full bg-cover bg-center border-4 border-white dark:border-slate-900 shadow-xl z-10"
+            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl z-10"
       />
 
       <div className="text-center">
-        <h2 className="font-bold text-2xl text-slate-900 dark:text-white">
+        <h2 className="font-bold text-2xl text-secondary-darkbg dark:text-surface-main">
           {user?.firstName} {user?.lastName}
         </h2>
         <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{user?.role}</p>
@@ -82,10 +82,10 @@ export function ProfileCover({ profile, user }: props) {
             <button 
               onClick={handleStartChat}
               className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 dark:bg-indigo-500 
-                rounded-lg text-white py-2 px-4 text-sm font-semibold hover:bg-indigo-700 transition-all 
+                rounded-lg text-surface-main py-2 px-4 text-sm font-semibold hover:bg-indigo-700 transition-all 
                 shadow-lg shadow-indigo-500/20 active:scale-95"
             >
-              <MessageSquarePlus className="h-4 w-4"/>
+              <Icon name='MessageSquarePlus' className="h-4 w-4"/>
               Message
             </button>
           )}
@@ -94,16 +94,16 @@ export function ProfileCover({ profile, user }: props) {
             href={resumeUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 border border-[#00adef] rounded-lg 
-                       text-[#00adef] py-2 px-4 text-sm font-semibold hover:bg-[#00adef]/10 transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 border border-primary rounded-lg 
+                       text-primary py-2 px-4 text-sm font-semibold hover:bg-primary/10 transition-colors"
           >
-            <ArrowDownFromLine className="h-4 w-4"/>
+            <Icon name='ArrowDownFromLine' className="h-4 w-4"/>
             CV
           </a>
 
           <button onClick={handleCopy}
-            className="flex-1 bg-[#00adef] rounded-lg text-white py-2 px-4 text-sm 
-              font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-[#00adef]/20">
+            className="flex-1 bg-primary rounded-lg text-surface-main py-2 px-4 text-sm 
+              font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-primary/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>
           
