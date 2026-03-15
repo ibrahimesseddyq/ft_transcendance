@@ -35,7 +35,7 @@ spec:
           {{- end }}
         vault.hashicorp.com/agent-inject-secret-other: "secret/data/main-service/other"
         vault.hashicorp.com/agent-inject-template-other: |
-          {{- with secret "secret/data/main-service/oauth" -}}
+          {{- with secret "secret/data/main-service/other" -}}
           export RECRUITER_PASS="{{ .Data.data.RECRUITER_PASS }}"
           export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
           export USER_EMAIL="{{ .Data.data.USER_EMAIL }}"
@@ -124,3 +124,6 @@ data:
   FRONTEND_URL: "https://52.47.74.144.nio.io"
   BACKEND_URL: "http://gateway:8081/api/main"
   QUIZ_SERVICE_URL: "http://gateway:8081/api/quiz"
+  VERIFY_TOKEN_EXPIRY: "7d"
+  TEMP_TOKEN_EXPIRY: "15m"
+  AI_SERVICE_URL: "http://ai-service:5000"
