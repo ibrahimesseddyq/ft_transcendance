@@ -17,6 +17,7 @@ COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
 
 # Ensure expected directory exists
 RUN mkdir -p /etc/nginx/modsecurity.d
+# RUN rm -f /etc/nginx/templates/conf.d/modsecurity.conf.template
 
 # Put unicode.mapping where the NGINX/ModSecurity config expects it
 # Copy is more reliable than symlink across images/layers
