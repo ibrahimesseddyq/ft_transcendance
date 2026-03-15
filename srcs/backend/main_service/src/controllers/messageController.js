@@ -25,7 +25,11 @@ export const sendMessage = asyncHandler(async (req, res, next) => {
         moderation: result.moderation
       });
     }
-    res.status(201).json(result.message);
+    const response = { ...result.message };
+    if (result.moderation) {
+      response.moderation = result.moderation;
+    }
+    res.status(201).json(response);
 });
 
 export const editMessage = asyncHandler(async (req, res, next) => {
