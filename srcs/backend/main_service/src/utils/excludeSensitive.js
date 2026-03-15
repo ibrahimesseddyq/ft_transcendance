@@ -6,7 +6,6 @@ export const getSafeUser = (user) => {
         refreshToken, 
         twoFASecret, 
         twoFATempSecret,
-        firstLogin,
         ...safeUser 
     } = user;
     return safeUser;

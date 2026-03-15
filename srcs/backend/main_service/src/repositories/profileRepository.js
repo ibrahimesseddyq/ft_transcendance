@@ -37,7 +37,11 @@ export const getProfileById = async (userId) => {
     return await prisma.profile.findUnique({
         where : {userId : userId},
         include: {
-            user : true
+            user : {
+                 select: {
+                    avatarUrl: true,
+                },
+            }
         }
     })
 }
