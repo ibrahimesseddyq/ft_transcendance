@@ -3,6 +3,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 
 export const createProfile = asyncHandler(async (req, res, next) => {
     const id =  req.params?.id;
+    console.log(req)
     const profile = await profileservice.createProfile(id, {
         body: req.body,
         files:req.files
