@@ -113,7 +113,7 @@ export function QRcode() {
     };
 
     return (
-        <div className="p-4 py-10 flex flex-col items-center justify-center m-auto maincard 
+        <div className="p-4 py-10 flex flex-col items-center justify-center m-auto
             bg-surface-main dark:bg-secondary-darkbg rounded-2xl transition-colors duration-300">
             <div className="flex flex-col gap-4 md:gap-8 items-center max-w-sm">
                 {/* Header Text */}
