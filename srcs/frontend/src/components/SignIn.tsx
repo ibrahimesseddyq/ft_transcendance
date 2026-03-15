@@ -48,17 +48,16 @@ const Signin = () => {
     const LoginSubmit = async (data: any) => {
         try {
             const response = await mainApi.post(`${env_main_api}/auth/login`, data);
-            const result = response.data;
-            const userId = result?.userId;
+            const result = response.data?.data;
+            const userId = result?.id;
 
-            console.log ("first Login :", result?.firstLogin);
+            console.log ("result :", result);
             console.log ("userId :", userId);
             setFirstLogin(result?.firstLogin);
 
             if (userId) {
                 setUserId(userId);
                 reset();
-                console.log("hiii iam here");
                 navigate("/Otp", { replace: true });
             }
         } catch (error: any) {
