@@ -1,7 +1,6 @@
 [sessarhi] --------------------------------------------------------------------
-need to fix error middelware for 400/500 conflicts
-need to ckeck all filters and make sure that are implemented correctly
-- add frima errors factory
+
+- add prisma errors factory
 
 
 -------------------------------------------------------------------------------
@@ -15,5 +14,3 @@ TODO:
     -make the dark/ligth mode more smooth
     -add || delete savedJobs
 - also remove all hardcoded cred => ton env
-[abdellatif]
-sinup does not check if request fails
