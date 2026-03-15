@@ -19,7 +19,6 @@ class ChatAPI {
       withCredentials: true,
     });
 
-    // Response interceptor for error handling
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {

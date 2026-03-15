@@ -16,8 +16,8 @@ const Signin = () => {
     const navigate = useNavigate();
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
 
     const {
         register,
@@ -54,6 +54,8 @@ const Signin = () => {
 
             console.log ("result :", result);
             console.log ("userId :", userId);
+
+            
             setFirstLogin(result?.firstLogin);
 
             if (userId) {
