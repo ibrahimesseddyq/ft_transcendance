@@ -51,20 +51,20 @@ export const getMessages = async ({ conversationId, userId, limit, before }) => 
 };
 
 export const sendMessage = async ({ conversationId, userId, content, messageType = 'text', io }) => {
-	const payload = sendMessageInputSchema.parse({ conversationId, userId, content, messageType });
-	await validateConversationAccess(payload.conversationId, payload.userId);
+	await validateConversationAccess(conversationId, userId);
+	const text = typeof content === 'string' ? content.trim() : '';
+	if (!text) {
+		throw new HttpException(400, 'Message content is required');
+	}
 
-	const text = payload.content;
-
-	if (payload.messageType === 'text') {
-		const moderation = await moderateTextSafely({
-			text,
-			conversationId: payload.conversationId,
-			userId: payload.userId
-		});
-
-		if (moderation?.blocked === true) {
-			return { blocked: true, moderation };
+	if (messageType === 'text') {
+		try {
+			const moderation = await moderateText(text, { conversationId, userId });
+			if (moderation?.action === 'Block') {
+				return {moderation };
+			}
+		} catch (error) {
+			// Do not block messaging if moderation service is unavailable.
 		}
 	}
 
