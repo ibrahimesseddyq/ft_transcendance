@@ -18,7 +18,7 @@ export PORT=3000
 export HOST=localhost
 export NODE_ENV=development
 export BCRYPT_ROUNDS=10
-
+export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
 export GOOGLE_CLIENT_SECRET=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
 export CALLBACK_URL=/api/main/auth/google/callback
@@ -41,7 +41,7 @@ export RECRUITER_PASS=Abdellatif123@@
 
 export VERIFY_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 
-export EMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
+export TEMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 # Wait until Vault API is up (no curl required)
 until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
