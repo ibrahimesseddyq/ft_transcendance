@@ -2,7 +2,7 @@ from faster_whisper import WhisperModel
 
 model_size = "small.en"
 
-model = WhisperModel(model_size, device="cpu", compute_type="float32")
+model = WhisperModel(model_size, device="cpu", compute_type="int8")
 
 
 def recognate(audio_file):
