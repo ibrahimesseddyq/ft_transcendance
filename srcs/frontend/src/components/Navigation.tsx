@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { House, Menu, BriefcaseBusiness, Bookmark, BotMessageSquare, MessageCircleMore, X, GitPullRequestCreateArrow  } from 'lucide-react';
+import { House, Menu, BriefcaseBusiness, MessageCircleMore, X, GitPullRequestCreateArrow, Info  } from 'lucide-react';
 import { useAuthStore } from '@/utils/ZuStand';
 
 export const navigation = [
     { name: "Dashboard", path: "/Dashboard", icon: House },
     { name: "Jobs", path: "/Jobs", icon: BriefcaseBusiness },
-    { name: "Saved", path: "/Savedjobs", icon: Bookmark },
-    { name: "AI chat", path: "/AIchat", icon: BotMessageSquare },
     { name: "Contact", path: "/chat", icon: MessageCircleMore },
     { name: "Quiz", path: "/QuizPage", icon: GitPullRequestCreateArrow },
     { name: "Applications", path: "/Applications", icon: GitPullRequestCreateArrow },
+    { name: "About", path: "/About", icon: Info },
 ];
 
 export function Navbar() {
@@ -50,7 +49,7 @@ export function Navbar() {
                                 to={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-4 p-3 rounded-xl font-bold transition-all
-                                    ${!isAdminOrRecruiter && item.name === 'Dashboard' || item.name === 'Quiz' ? 'hidden' : ''}
+                                    ${!isAdminOrRecruiter && (item.name === 'Dashboard' || item.name === 'Quiz') ? 'hidden' : ''}
                                     ${isAdminOrRecruiter && item.name === 'Applications' ? 'hidden' : ''}
                                     ${location.pathname.startsWith(item.path) 
                                         ? 'bg-primary text-surface-main' 
