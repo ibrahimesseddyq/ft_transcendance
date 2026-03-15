@@ -50,7 +50,7 @@ export const deleteUser = asyncHandler(async (req,res,next) => {
 })
 
 export const listUsers = asyncHandler(async (req,res,next) => {
-    const result = await userService.listUsers({});
+    const result = await userService.getUsers(req.query || {});
     res.status(200).json({
         success : true,
         data : result.map(getSafeUser)

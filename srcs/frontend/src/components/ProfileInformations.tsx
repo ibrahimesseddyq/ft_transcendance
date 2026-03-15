@@ -110,6 +110,7 @@ export function ProfileInformations() {
       if (data.avatar instanceof File) formData.append("avatar", data.avatar);
       if (data.resumeUrl instanceof File) formData.append("resume", data.resumeUrl);
 
+      console.log("userId : ", userId);
       const apiPromise = mainApi.post(`${env_main_api}/profiles/${userId}`, formData);
       
       const animations = [];

@@ -1,5 +1,6 @@
 import {CustomError} from '../utils/httpExceptions.js';
 import { Prisma } from '../../generated/prisma/client.js'
+import { ZodError } from 'zod';
 
 const errorFactory = (err,res) => {
     if (err instanceof CustomError) {

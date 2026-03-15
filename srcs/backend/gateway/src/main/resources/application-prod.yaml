@@ -5,14 +5,14 @@ spring:
     gateway:
       routes:
         - id: main-service
-          uri: http://main-service
+          uri: http://main-service:3000
           predicates:
             - Path=/api/main/**
         - id: quiz-service
-          uri: http://quiz-service
+          uri: http://quiz-service:3001
           predicates:
             - Path=/api/quiz/**
         - id: ai-service
-          uri: http://ai-service
+          uri: http://ai-service:3002
           predicates:
             - Path=/api/ai/**

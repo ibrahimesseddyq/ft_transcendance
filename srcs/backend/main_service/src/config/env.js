@@ -30,7 +30,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']).default('development'),
   PORT: z.string().transform((val) => parseInt(val, 10)).default('3000'),
   HOST: z.string(),
-  DATABASE_URL: z.string(),
+  DATABASE_URL: z.string().min(10,'a valid url should be provided'),
   BCRYPT_ROUNDS:  z.string().transform((val) => parseInt(val, 10)).default('10'),
   GOOGLE_CLIENT_ID : z.string(),
   GOOGLE_CLIENT_SECRET : z.string(),
