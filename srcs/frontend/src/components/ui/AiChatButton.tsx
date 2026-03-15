@@ -16,7 +16,8 @@ export function AiChatButton() {
       {/* Main Toggle Button */}
       <button
         onClick={() => setVisible(!visible)}
-        className="h-12 w-12 bg-black hover:bg-gray-900 rounded-full flex items-center justify-center text-white shadow-xl transition-all active:scale-90 z-50"
+        className="h-12 w-12 bg-black dark:bg-white hover:bg-gray-900  dark:hover:bg-gray-300 
+          rounded-full flex items-center justify-center text-white dark:text-black shadow-2xl transition-all active:scale-90 z-50"
       >
         {visible ? (
           <span className="text-xl font-light">✕</span>
