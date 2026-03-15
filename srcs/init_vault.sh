@@ -14,7 +14,9 @@ export MARIADB_QUIZ_PASSWORD=pass
 
 ############# Global ###################
 export DATABASE_URL="mysql://user1:pass@localhost:3306/hirefy"
-export PORT=3000
+export MAIN_PORT=3000
+export QUIZ_PORT=3001
+export AI_PORT
 export HOST=localhost
 export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
