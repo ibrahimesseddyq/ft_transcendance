@@ -10,3 +10,7 @@ tensorflow-cpu
 numpy
 opencv-python
 python-multipart
+langchain-ollama
+langchain-community
+langchain-text-splitters
+langchain_chroma
