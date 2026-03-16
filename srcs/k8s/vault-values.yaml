@@ -3,20 +3,30 @@ ui:
 
 injector:
   enabled: true
+
 server:
-  dev:
-    enabled: true
-    devRootToken: "root" # Put it in env var
   enabled: true
   replicas: 1
-  
-  # dataStorage:
-  #   enabled: true
-  #   size: 1Gi
-  #   mountPath: /vault/data 
-  
+
+  dataStorage:
+    enabled: true
+    size: 1Gi
+    mountPath: /vault/data
+
   standalone:
     enabled: true
-  
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address     = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "file" {
+        path = "/vault/data"
+      }
+
   extraEnvironmentVars:
-    VAULT_ADDR: "http://127.0.0.1:8200" # put it in env var
+    VAULT_ADDR: "http://127.0.0.1:8200"
