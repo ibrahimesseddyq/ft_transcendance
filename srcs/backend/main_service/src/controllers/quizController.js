@@ -15,7 +15,8 @@ export const startTest  = asyncHandler(async (req, res, next) => {
 })
 
 export const submitTest =  asyncHandler(async (req, res, next) => {
-    const test = await quizService.submitTest(req);
+    const io = req.app.get('io');
+    const test = await quizService.submitTest(req, io);
     res.status(200)
     .json({
         success: true,

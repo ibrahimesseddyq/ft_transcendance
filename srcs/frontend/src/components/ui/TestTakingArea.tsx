@@ -16,6 +16,8 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const isLastQuestion = currentStep === totalSteps - 1;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
+    console.log("questions : ", questions);
+
     const getLetter = (index: number) => String.fromCharCode(65 + index);
 
     const handleSelect = (letterId: string) => {
