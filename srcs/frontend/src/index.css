@@ -26,12 +26,12 @@
 
     --color-secondary: #1e293b;
     --color-secondary-whitebg: #f8fafc;
-    --color-secondary-darkbg: #0f172a;
-    --color-secondary-hover: #334155;
+    /* --color-secondary-darkbg: #0f172a;
+    --color-secondary-hover: #334155; */
     --color-secondary-border: #334155;
 
     --color-whitebg: #f8fafc;
-    --color-darkbg: #162138;
+    --color-darkbg: #242c3e;
 
     --color-surface-main: #FFFFFF;
     --color-surface-child: #f8fafc;
@@ -39,6 +39,15 @@
     --color-danger: #ff3b3b;
     --color-hover: #f97272;
     --color-danger-hover: #f97272;
+}
+
+@keyframes audio-wave {
+  0%, 100% { height: 8px; }
+  50% { height: 20px; }
+}
+
+.animate-wave {
+  animation: audio-wave 1s ease-in-out infinite;
 }
 
 @layer utilities {

@@ -19,7 +19,6 @@ class ChatAPI {
       withCredentials: true,
     });
 
-    // Response interceptor for error handling
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -64,12 +63,20 @@ class ChatAPI {
     conversationId: string,
     content: string,
     messageType: 'text' | 'file' = 'text'
-  ): Promise<Message> {
-    const { data } = await this.api.post(
-      `${env_main_api}/messages/conversation/${conversationId}`,
-      { content, messageType }
-    );
-    return data.data || data;
+  ): Promise<any> {
+    try {
+      const { data } = await this.api.post(
+        `${env_main_api}/messages/conversation/${conversationId}`,
+        { content, messageType }
+      );
+      return data.data || data;
+    } catch (error: any) {
+      const moderation = error?.response?.data?.moderation;
+      if (moderation?.action === 'Block') {
+        return { blocked: true, moderation };
+      }
+      throw error;
+    }
   }
 
   async uploadFile(conversationId: string, file: File): Promise<Message> {

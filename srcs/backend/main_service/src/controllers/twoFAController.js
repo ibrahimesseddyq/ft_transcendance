@@ -1,57 +1,31 @@
 import  TwoFAService from  '../services/twoFAService.js';
+import {accessTokenOptions} from './authController.js'
+import { refreshTokenOptions } from './authController.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 const twoFAService = new TwoFAService();
 
-export const    setup = async (req, res ,next) =>
+export const    setup = asyncHandler(async (req, res ,next) =>
 {
-    try {
-        const data = await twoFAService.setup(req.body.id);
-        res.json(data);
-            } catch (error) {
-        next(error)
-    }
-};
+    const data = await twoFAService.setup(req.body.id);
+    res.json(data);
+});
 
-export const    verifySetup = async (req, res,next) => {
-     try {
+export const    verifySetup = asyncHandler( async (req, res,next) => {
+    const { code } = req.body;
+    const data = await twoFAService.verifySetup(req.body.id, code);
+    res
+    .cookie("accessToken", data.accessToken, accessTokenOptions)
+    .cookie("refreshToken", data.refreshToken, refreshTokenOptions)
+    .status(200)
+    .json({
+        message: "2FA setup successful",
+        data: data.user
+    });
+});
 
-        const { code } = req.body;
-        
-        const data = await twoFAService.verifySetup(req.body.id, code);
-
-        res
-        .cookie("accessToken", data.accessToken, {
-            httpOnly: true,
-            secure: false,        
-            sameSite: "lax",      
-            maxAge: 15 * 60 * 1000
-        })
-        .cookie("refreshToken", data.refreshToken, {
-            httpOnly: true,
-            secure: false,        
-            sameSite: "lax",      
-            maxAge: 15 * 60 * 1000
-        })
-        .status(200)
-        .json({
-            message: "2FA setup successful",
-            data: {
-            user: data.user
-            }
-        });
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const    disable = async (req, res,next) => {
-        try {
-
-        const { token } = req.body;
-        const data = await twoFAService.disable(req.body.id, token);
-        res.json(data);
-            } catch (error) {
-        next(error)
-    }
-};
+export const   disable = asyncHandler( async (req, res,next) => {
+    const { token } = req.body;
+    const data = await twoFAService.disable(req.body.id, token);
+    res.json(data);
+});
