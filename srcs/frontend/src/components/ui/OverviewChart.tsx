@@ -11,7 +11,7 @@ export default function OverviewChart({ data }: any) {
 
   return (
     <div className="w-full h-[350px]">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" aspect={undefined}>
         <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <CartesianGrid 
             strokeDasharray="3 3" 

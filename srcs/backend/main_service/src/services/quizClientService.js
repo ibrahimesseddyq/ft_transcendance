@@ -14,5 +14,5 @@ export const evaluateTest = async (testId, answers) => {
         answers : answers
     }
    )
-   return  respose.data;
+   return  respose.data.data;
 }

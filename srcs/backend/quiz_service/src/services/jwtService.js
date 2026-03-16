@@ -4,20 +4,6 @@ import env from '../config/env.js';
 
 const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
 
-// export const generateTempToken = (payload) =>
-// {
-//     return sign(payload, tempTokenSecret, { expiresIn: tempTokenExpiry });
-// };
-// export const verifyTempToken = (payload) => {
-//     return verify(payload, tempTokenSecret);
-// };
-// export const generateAuthTokens =  (payload) => {
-//     const accessToken = sign(payload,accessTokenSecret,{
-//         expiresIn : accessTokenExpiry})
-//     const refreshToken = sign(payload,refreshTokenSecret,{
-//         expiresIn: refreshTokenExpiry }) 
-//     return {accessToken , refreshToken};  
-// }
 
 export const verify = async (token, secret) => {
     return new Promise((resolve,reject) => {

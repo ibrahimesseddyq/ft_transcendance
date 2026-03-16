@@ -2,12 +2,13 @@ import {HttpException} from '../utils/httpExceptions.js'
 import crypto from 'crypto';
 import env from '../config/env.js';
 
-export const verifyApiKey = async (req, res, next) => {
-    let apiKey = req.headers["x-api-key"] || "";
-    const isEqual = apiKey.length === env.QUIZ_PUBLIC_API_KEY.length;
-    if(!apiKey || apiKey.length !== env.QUIZ_PUBLIC_API_KEY.length)
-        apiKey = env.QUIZ_PUBLIC_API_KEY;
-    if (crypto.timingSafeEqual(Buffer.from(env.QUIZ_PUBLIC_API_KEY), Buffer.from(apiKey)) && isEqual)
-        return next()
+export const verifyApiKey = (req, res, next) => {
+    const apiKey = req.headers["x-api-key"] ?? "";
+    const expected = env.QUIZ_PUBLIC_API_KEY;
+    const a = Buffer.from(apiKey.padEnd(expected.length, '\0').slice(0, expected.length));
+    const b = Buffer.from(expected);
+    if (a.length === b.length && crypto.timingSafeEqual(a, b) && apiKey.length === expected.length) {
+        return next();
+    }
     next(new HttpException(401, 'Unauthorized'));
-}
+};

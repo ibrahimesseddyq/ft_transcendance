@@ -68,15 +68,11 @@ export const deleteTest = async (testId) => {
     })
 }
 
-export const getTests = async (skip = 0, take = 10, filters = {}) => {
-    // here filters and pagination my implemented
+export const getTests = async (skip = 0, take = 100, filters = {}) => {
     return await prisma.test.findMany({
-        where : {},
-        skip : Number(skip),
+        where: filters,
+        skip: Number(skip),
         take: Number(take),
-        include: {
-            mcqs: true,
-            codeChallenges: true
-        }
-    })
-}
+        include: { mcqs: true, codeChallenges: true }
+    });
+};

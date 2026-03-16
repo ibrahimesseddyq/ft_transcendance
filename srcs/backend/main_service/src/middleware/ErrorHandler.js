@@ -1,10 +1,14 @@
 import { CustomError } from '../utils/httpExceptions.js';
 import handlePrismaError from '../utils/prismaErrorHandler.js';
+import env from '../config/env.js';
 
 const errorHandler = (err, req, res, next) => {
-    console.log("START ERROR");
-    console.error(err);
-    console.log("END ERROR");
+    if (env.NODE_ENV === 'development')
+    {
+        console.log("START ERROR");
+        console.error(err);
+        console.log("END ERROR");
+    }
     let processedError = err;
     if (err.name === 'PrismaClientKnownRequestError') {
         processedError = handlePrismaError(err) || err;
