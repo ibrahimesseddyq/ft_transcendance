@@ -25,10 +25,10 @@ export const saveAvatar = async (userId, file) => {
             await fs.unlink(physicalPath);
             throw new HttpException(400, 'inalid avatar image');
         }
+        else
+            await fs.unlink(physicalPath);
     } catch (err) {
-            await fs.unlink(physicalPath).catch(() => {});
-            if (err)
-            throw err;
+
     }
     return {
         type :'avatar',

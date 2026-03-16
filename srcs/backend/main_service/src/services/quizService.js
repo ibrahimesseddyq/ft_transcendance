@@ -44,7 +44,6 @@ export const submitTest = async (data, io) => {
     if (applicationPhase.status !== 'inProgress')
         throw new HttpException(400, 'Test not started or already completed');
     const evaluationResult = await quizSevice.evaluateTest(testId, answers);
-    console.log(evaluationResult)
     await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
         status: evaluationResult.passed ? 'completed' : 'failed',
         score: evaluationResult.totalScore,
