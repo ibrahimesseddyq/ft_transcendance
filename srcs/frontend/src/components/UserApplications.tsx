@@ -47,9 +47,9 @@ export function UserApplications() {
             <p className="text-slate-500 mt-10">Loading applications...</p>
         ) : applications.length > 0 ? (
             <div className='flex flex-wrap gap-4 justify-center w-full'>
-                {applications?.map((app: any, id:number) => (
+                {applications?.map((app: any) => (
                     <div className='flex gap-4 w-full max-w-[800px]' >
-                        <AppCard key={id} app={app}/>
+                        <AppCard  app={app}/>
                     </div>
                 ))}
             </div>
