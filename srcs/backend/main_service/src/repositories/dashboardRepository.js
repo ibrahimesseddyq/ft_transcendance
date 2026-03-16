@@ -129,7 +129,7 @@ export const getRecentActivity = async (limit = 10) => {
     });
 };
 
-export const getHiringFunnel = async (recruiterId, start, end) => {
+export const getHiringFunnel = async (start, end) => {
     const baseWhere = { appliedAt: { gte: start, lte: end } };
 
     const [applied, screening] = await Promise.all([
@@ -152,7 +152,6 @@ export const getRecruitmentStatusBreakdown = async (start, end) => {
         _count: { _all: true },
         where: { appliedAt: { gte: start, lte: end } }
     });
-    // console.log('groupings ', groupings)
 
     const countsMap = groupings.reduce((acc, curr) => {
         acc[curr.status] = curr._count._all;

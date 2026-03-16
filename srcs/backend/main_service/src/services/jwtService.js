@@ -39,7 +39,6 @@ export const verify = async (token, secret) => {
     return new Promise((resolve,reject) => {
         jwt.verify(token,secret, (err, decoded) => {
             if(err) {
-                console.log(err.name)
                 if (err.name === 'TokenExpiredError')
                     reject(new HttpException(401,'Token expired'));
                 else if (err.name === 'JsonWebTokenError')

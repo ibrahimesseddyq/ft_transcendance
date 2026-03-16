@@ -167,8 +167,7 @@ export function ChatInput({
       if (data.text) {
         setMessage((prev) => (prev ? prev + ' ' + data.text : data.text));
       }
-    } catch (err) {
-      console.error('Transcription error:', err);
+    } catch {
       toast.error('Failed to transcribe audio');
     } finally {
       setIsTranscribing(false);
@@ -216,8 +215,7 @@ export function ChatInput({
       recordingIntervalRef.current = setInterval(() => {
         setRecordingSeconds((current) => current + 1);
       }, 1000);
-    } catch (error) {
-      console.error('Failed to start audio recording:', error);
+    } catch {
       toast.error('Microphone access is required to record audio');
       resetRecordingState();
       stopMediaTracks();

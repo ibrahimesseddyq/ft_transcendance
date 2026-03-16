@@ -1,9 +1,6 @@
-/* ============================================================
-   CHAT LAYOUT — mirrors original public_chat/css/styles.css
-   CSS drives ALL responsive behaviour; JS only toggles classes.
-   ============================================================ */
 
-/* ---------- root layout ---------- */
+
+
 .chat-layout {
     display: flex;
     width: 100%;
@@ -11,7 +8,6 @@
     position: relative;
 }
 
-/* ---------- sidebar (base — desktop) ---------- */
 .sidebar {
     width: 256px;
     min-width: 256px;
@@ -24,7 +20,7 @@
     flex-shrink: 0;
 }
 
-/* ---------- candidate: blue pill sidebar ---------- */
+
 .sidebar.rh-profile-sidebar {
     width: 256px;
     min-width: 256px;
@@ -37,9 +33,9 @@
     flex-shrink: 0;
 }
 
-/* ---------- normal sidebar inner content ---------- */
+
 .normal-sidebar-content {
-    flex: 1;
+    /* flex: 1; */
     display: flex;
     flex-direction: column;
     background: #018ABE;
@@ -49,15 +45,15 @@
     min-width: 256px;
     max-width: 256px;
     height: 100%;
+    max-height: calc(100vh - 90px);
     box-sizing: border-box;
 }
 
-/* ---------- chat input area ---------- */
+
 .chat-input-area {
     padding: 16px 40px;
 }
 
-/* ---------- chat main ---------- */
 .chat-main {
     flex: 1;
     display: flex;
@@ -68,7 +64,7 @@
     min-width: 0;
 }
 
-/* ---------- chat empty state ---------- */
+
 .chat-empty-state {
     display: none;
     flex-direction: column;
@@ -83,7 +79,7 @@
     display: flex;
 }
 
-/* ---------- chat active area ---------- */
+
 .chat-active {
     display: none;
     flex-direction: column;
@@ -93,7 +89,7 @@
     display: flex;
 }
 
-/* ---------- mobile RH header (candidate mobile only) ---------- */
+
 .mobile-rh-header {
     display: none;
     align-items: center;
@@ -104,7 +100,7 @@
     flex-shrink: 0;
 }
 
-/* ---------- chat header (desktop: always visible) ---------- */
+
 .chat-header {
     display: flex;
     align-items: center;
@@ -115,12 +111,12 @@
     flex-shrink: 0;
 }
 
-/* Candidate: hide chat-header on all sizes (sidebar already shows recruiter info; mobile uses mobile-rh-header) */
+
 .chat-layout.candidate-view .chat-header {
     display: none !important;
 }
 
-/* ---------- mobile back button ---------- */
+
 .mobile-back-btn {
     display: none;
     align-items: center;
@@ -133,22 +129,19 @@
     border-radius: 6px;
 }
 
-/* ---------- mobile top bar (hamburger + title, non-candidate) ---------- */
+
 .mobile-topbar {
     display: none;
 }
 
-/* ---------- mobile menu toggle (hamburger) ---------- */
+
 .mobile-menu-toggle {
     display: none;
 }
 
-/* ============================================================
-   RESPONSIVE — ≤ 768px
-   ============================================================ */
+
 @media (max-width: 768px) {
 
-    /* Sidebar becomes an absolute panel that slides in/out */
     .sidebar {
         position: absolute;
         left: 0;
@@ -163,37 +156,30 @@
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Sidebar visible (hamburger opened) */
     .sidebar.active {
         transform: translateX(0);
     }
 
-    /* Conversation selected → slide sidebar away */
     .chat-layout.chat-open .sidebar {
         transform: translateX(-100%);
     }
 
-    /* Candidate: hide blue pill sidebar on mobile (use mobile-rh-header instead) */
     .chat-layout.candidate-view .sidebar.rh-profile-sidebar {
         display: none !important;
     }
 
-    /* Candidate: show the compact RH header at top of chat */
     .chat-layout.candidate-view .mobile-rh-header {
         display: flex !important;
     }
 
-    /* Non-candidate: show back button inside chat-header */
     .chat-layout:not(.candidate-view) .mobile-back-btn {
         display: flex !important;
     }
 
-    /* Chat main takes full width */
     .chat-main {
         width: 100%;
     }
 
-    /* Hamburger toggle — shown on mobile except when a chat is open */
     .mobile-topbar {
         display: flex;
         align-items: center;
@@ -232,38 +218,32 @@
         background: #f1f5f9;
     }
 
-    /* normal sidebar inner content goes fluid */
     .normal-sidebar-content {
         width: 100%;
         max-width: 100%;
         min-width: unset;
     }
 
-    /* Conversation items — tighter on mobile */
     .conv-item {
         gap: 10px !important;
         padding: 10px 6px !important;
     }
 
-    /* Avatar scales down on small screens */
     .conv-avatar {
         width: 36px !important;
         height: 36px !important;
         font-size: 13px !important;
     }
 
-    /* Keep info text from breaking layout */
     .conv-info {
         min-width: 0;
         overflow: hidden;
     }
 
-    /* Messages container padding reduction */
     .messages-container {
         padding: 16px 12px;
     }
 
-    /* Input area padding reduction */
     .chat-input-area {
         padding: 12px 16px;
     }
@@ -278,9 +258,6 @@
     }
 }
 
-/* ============================================================
-   TABLET — ≤ 1024px
-   ============================================================ */
 @media (max-width: 1024px) {
     .sidebar {
         width: 240px;
@@ -302,9 +279,6 @@
     }
 }
 
-/* ============================================================
-   DARK MODE overrides
-   ============================================================ */
 html.dark .chat-main {
     background: #0f172a !important;
 }
@@ -377,7 +351,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
     background: #64748b;
 }
 
-/* ---------- moderation overlay animation ---------- */
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
     10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }

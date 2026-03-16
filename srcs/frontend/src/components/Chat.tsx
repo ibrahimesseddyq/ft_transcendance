@@ -37,6 +37,7 @@ export function Chat() {
   const [chatOpen, setChatOpen] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
+  const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
 
   if (isLoading) {
     return (
@@ -61,13 +62,11 @@ export function Chat() {
 
   const handleSelectConversation = (id: string) => {
     selectConversation(id);
-    // Mark conversation as open → CSS slides sidebar away on mobile
     setChatOpen(true);
     setSidebarActive(false);
   };
 
   const handleBack = () => {
-    // Remove chat-open → CSS slides sidebar back in on mobile
     setChatOpen(false);
     setSidebarActive(true);
   };
@@ -76,7 +75,6 @@ export function Chat() {
     setSidebarActive(v => !v);
   };
 
-  // Click on chat-layout backdrop on mobile closes sidebar
   const handleLayoutClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth <= 768 && sidebarActive) {
       const aside = (e.currentTarget as HTMLDivElement).querySelector('.sidebar');
@@ -98,7 +96,6 @@ export function Chat() {
     sidebarActive ? 'active' : '',
   ].filter(Boolean).join(' ');
 
-  // Recruiter helpers for mobile-rh-header
   const recruiterName = recruiter
     ? `${recruiter.firstName || ''} ${recruiter.lastName || ''}`.trim() || 'Recruiter'
     : 'Loading...';
@@ -106,7 +103,7 @@ export function Chat() {
     ? (recruiter.firstName.charAt(0) + recruiter.lastName.charAt(0)).toUpperCase()
     : 'RH';
   const recruiterAvatarUrl = recruiter?.avatarUrl
-    ? (recruiter.avatarUrl.startsWith('http') ? recruiter.avatarUrl : `http://localhost:3000${recruiter.avatarUrl}`)
+    ? (recruiter.avatarUrl.startsWith('http') ? recruiter.avatarUrl : `${BACKEND_YRL}${recruiter.avatarUrl}`)
     : null;
 
   return (
@@ -116,7 +113,6 @@ export function Chat() {
       onClick={handleLayoutClick}
     >
       <ToastContainer/>
-      {/* ── Sidebar ───────────────────────────────────── */}
       <aside className={sidebarClasses}>
         {isCandidate ? (
           <RHProfileSidebar
@@ -135,9 +131,7 @@ export function Chat() {
         )}
       </aside>
 
-      {/* ── Main chat area ────────────────────────────── */}
       <main className="chat-main">
-        {/* Mobile top bar with hamburger (non-candidate mobile only — CSS controls display) */}
         {!isCandidate && (
           <div className="mobile-topbar">
             <button className="mobile-menu-toggle" onClick={handleHamburger} aria-label="Open sidebar">
@@ -149,7 +143,6 @@ export function Chat() {
           </div>
         )}
 
-        {/* ── Empty state ────────────────────────────── */}
         <div className={`chat-empty-state${!currentConversation ? ' active' : ''}`}>
           <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#e8ecf4', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, color: '#94a3b8' }}>
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -160,10 +153,8 @@ export function Chat() {
           <p style={{ fontSize: 14, color: '#64748b' }}>Choose a conversation from the sidebar or start a new one</p>
         </div>
 
-        {/* ── Active chat ────────────────────────────── */}
         <div className={`chat-active${currentConversation ? ' active' : ''}`}>
 
-          {/* Mobile RH header — candidate on mobile (CSS controls display) */}
           <div className="mobile-rh-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 44, height: 44, borderRadius: 6, background: '#e0f2fe', color: '#00adef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 16, overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
