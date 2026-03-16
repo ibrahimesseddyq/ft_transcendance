@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.get('/health', async (req, res) => {
+app.get('/api/quiz/health', async (req, res) => {
   try {
     res.status(200).json({
       status: 'OK',

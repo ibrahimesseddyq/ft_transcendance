@@ -54,10 +54,12 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
         if (user.firstLogin === true)
         {
             const check = await userService.updateUser(user.id, { firstLogin: false });
-            if (check.ok)
+            if (user.firstLogin === true) {
+                await userService.updateUser(user.id, { firstLogin: false });
                 user.firstLogin = false;
         }
         return { success: true, user: getSafeUser(user), accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
+    }
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)
