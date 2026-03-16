@@ -21,21 +21,14 @@ import  twoFARoutes from './routes/twoFARoutes.js';
 import jobPhasesRoutes from './routes/jobPhaseRoutes.js'
 import  quizRoutes from './routes/quizRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js'
 
 const app =  express();
 
 app.use(morgan('combined'));
-app.use((req, res, next) => {
-  console.log("Incoming Request:");
-  console.log("Method:", req.method);
-  console.log("URL:", req.originalUrl);
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  console.log("--------------");
-  next();
-});
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173' || 'http://127.0.0.1:5173'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
@@ -44,8 +37,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      // Allow the frontend to embed /chat in an iframe
-      "frame-ancestors": ["'self'", process.env.FRONTEND_URL],
+      "frame-ancestors": ["'self'", env.FRONTEND_URL],
     },
   },
   // Disable X-Frame-Options so CSP frame-ancestors takes precedence
@@ -97,16 +89,39 @@ app.use('/api/main/quizzes',
 ,quizRoutes)
 
 app.use('/api/main/dashboard',
-  // verifyToken,
+  verifyToken,
   dashboardRoutes);
 
-app.use('/api/main/chat/conversations',
+app.use('/api/main/conversations',
   verifyToken,
   conversationRoutes);
 
-app.use('/api/main/chat/messages',
+app.use('/api/main/messages',
   verifyToken,
   messageRoutes);
+
+app.use('/api/main/notifications',
+  verifyToken,
+  notificationRoutes);
+
+app.get('/api/main/health', async (req, res) => {
+  try {
+    res.status(200).json({
+      status: 'OK',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    console.error('Health check failed:', error.message);
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
+});
 
 app.use((req,res,next) => {
   next(new HttpException(404, "Route not found"));

@@ -1,6 +1,4 @@
 import {prisma} from '../config/prisma.js';
-import { getJobPhases } from './jobPhaseRepository.js';
-
 
 export const findJobById = async (jobId) => {
     return await prisma.job.findUnique({
@@ -25,6 +23,7 @@ export const updateJob = async (jobId, updateData) => {
 export const deleteJob = async (jobId) => {
     return await prisma.job.delete({where :{ id : jobId} });
 }
+
 export const findManyJobs = async (filters, skip = 0, take = 10, sortBy = 'createdAt', sortOrder = 'desc') => {
     const {keyword } = filters;
     const isRemoteBool = filters.isRemote === "true" ? true : 
@@ -33,7 +32,6 @@ export const findManyJobs = async (filters, skip = 0, take = 10, sortBy = 'creat
     const skillsArray = filters.skills ? filters.skills.split(',') : undefined;
     const deptArray = filters.department ? filters.department.split(',') : undefined;
     const typeArray = filters.employmentType ? filters.employmentType.split(',') : undefined;
-
     const whereClause = {
         ...(keyword && {
             OR: [
@@ -79,6 +77,8 @@ export const findManyJobs = async (filters, skip = 0, take = 10, sortBy = 'creat
         }
     };
 };
+
+
 
 export const getApplicationsByJobId =  async (jobId) => {
     return await prisma.job.findUnique({

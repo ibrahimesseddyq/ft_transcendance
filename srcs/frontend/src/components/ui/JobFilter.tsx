@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
-import { Search } from 'lucide-react';
+import Icon  from '@/components/ui/Icon'
 import { mainApi } from '@/utils/Api';
 
-interface JobsArrayProps {
-  totalJobs: any,
-  setJobsArray: (data: any) => void;
-  setIsLoading: (data: boolean) => void;
-}
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
-const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) => {
+const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTotalPages, setCurrentPage }: any) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const [search, setSearch] = useState("");
+  const limit = 6;
   const [filters, setFilters] = useState({
     department: [] as string[],
     employmentType: [] as string[],
@@ -24,78 +20,70 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
     try {
       setIsLoading(true);
       const params = new URLSearchParams();
+      if (search) params.append("keyword", search);
+      if (filters.department.length > 0) params.append("department", filters.department.join(","));
+      if (filters.employmentType.length > 0) params.append("employmentType", filters.employmentType.join(","));
+      if (filters.status.length > 0) params.append("status", filters.status.join(","));
+      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
+      if (filters.isRemote !== null) params.append("isRemote", String(filters.isRemote));
       
-      if (search) 
-        params.append("keyword", search);
-      if (filters.department.length > 0)
-        params.append("department", filters.department.join(","));
-      if (filters.employmentType.length > 0)
-        params.append("employmentType", filters.employmentType.join(","));
-      if (filters.status.length > 0)
-          params.append("status", filters.status.join(","));
-      if (filters.skills.length > 0)
-        params.append("skills", filters.skills.join(","));
-      if (filters.isRemote !== null)
-        params.append("isRemote", String(filters.isRemote));
+      params.append("page", String(currentPage));
+      params.append("limit", String(limit));
+      
+      const url = `${env_main_api}/jobs?${params.toString()}`;
+      console.log("Fetching URL:", url);
+      const [response] = await Promise.all([
+        mainApi.get(url),
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
 
-      const fetchPromise = await mainApi.get(`${env_main_api}/jobs?${params.toString()}`);
-  
-      const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+      const result = response.data; 
 
-      const [response] = await Promise.all([fetchPromise, timerPromise]);
-
-      const result =  response.data;
-      console.log("all Jobs :", result.data);
-      setJobsArray(result.data);
+      if (result) {
+        console.log("result : ", result);
+        setJobsArray(result.data || []);
+        setTotalPages(result.meta?.totalPages || 1);
+      }
     } catch (error) {
       console.error("Fetch Error:", error);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const getCount = (key: any, value: string | boolean) => {
-    return totalJobs.filter((job:any) => {
-      if (typeof value === 'string') {
-        return String(job[key]).toLowerCase() === value.toLowerCase();
-      }
-      return job[key] === value;
+  const getCount = (key: string, value: any) => {
+    if (!Array.isArray(totalJobs)) return 0;
+    return totalJobs.filter((job: any) => {
+      if (typeof value === 'boolean') return job[key] === value;
+      return String(job[key]).toLowerCase() === String(value).toLowerCase();
     }).length;
   };
 
   const getSkillCount = (skill: string) => {
-    return totalJobs.filter((job:any) => 
+    if (!Array.isArray(totalJobs)) return 0;
+    return totalJobs.filter((job: any) => 
       job.skills?.toLowerCase().includes(skill.toLowerCase())
     ).length;
   };
 
-  const toggleFilter = (key: 'department' | 'employmentType' | 'skills' | 'status', value: string) => {
-  const normalizedValue = value.toLowerCase();
-
-  setFilters(prev => {
-    const currentValues = prev[key]; 
-    const isAlreadySelected = currentValues.includes(normalizedValue);
-  
-    const updatedValues = isAlreadySelected
-      ? currentValues.filter(v => v !== normalizedValue)
-      : [...currentValues, normalizedValue];
-
-    return {
+  const toggleFilter = (key: keyof typeof filters, value: string) => {
+    const val = value.toLowerCase();
+    setFilters(prev => ({
       ...prev,
-      [key]: updatedValues
-    };
-  });
-};
+      [key]: (prev[key] as string[]).includes(val)
+        ? (prev[key] as string[]).filter(v => v !== val)
+        : [...(prev[key] as string[]), val]
+    }));
+  };
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => fetchJobs(), 300);
-    return () => clearTimeout(delayDebounce);
-  }, [filters, search]);
+  useEffect(() => { setCurrentPage(1); }, [filters, search]);
+ 
+  useEffect(() => { fetchJobs(); }, [filters, search, currentPage]);
 
 
   return (
-    <div className="flex flex-col w-full md:w-64 md:h-[calc(100vh-90px)] bg-[#1e1e1e] text-white p-5 
-      rounded-2xl gap-6 sticky ">
+    <div className="flex flex-col w-full md:w-64 h-fit md:max-h-[calc(100vh-90px)] bg-[#1e1e1e] 
+      text-surface-main p-5 rounded-2xl gap-6 sticky ">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -105,7 +93,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
 
         <button 
           onClick={() => {setSearch(""); setFilters({department: [],employmentType: [], status: [], skills: [], isRemote: null})}}
-          className="bg-[#ff3b3b] hover:bg-red-600 text-[10px] px-3 py-1.5 rounded-md font-bold transition"
+          className="bg-danger hover:bg-red-600 text-[10px] px-3 py-1.5 rounded-md font-bold transition"
         >
           Clear all
         </button>
@@ -120,7 +108,7 @@ const JobFilter = ({ totalJobs, setJobsArray, setIsLoading }: JobsArrayProps) =>
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+        <Icon name='Search' className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
       </div>
 
       <div className="h-[1px] bg-gray-800 w-full" />
@@ -243,11 +231,11 @@ const FilterSection = ({ title, children }: { title: string; children: React.Rea
 const Checkbox = ({ label, count, checked, onChange }: any) => (
   <label className="flex items-center cursor-pointer group">
     <div className={`w-4 h-4 rounded border flex items-center justify-center transition 
-        ${checked ? 'bg-[#00adef] border-[#00adef]' : 'border-gray-600 bg-transparent'}`}>
-      {checked && <div className="w-1.5 h-1.5 bg-white rounded-sm" />}
+        ${checked ? 'bg-primary border-primary' : 'border-gray-600 bg-transparent'}`}>
+      {checked && <div className="w-1.5 h-1.5 bg-surface-main rounded-sm" />}
     </div>
-    <span className={`ml-3 text-xs font-medium transition ${checked ? 'text-[#00adef]' : 'text-gray-400'}`}>
-      {label} <span className="text-[#00adef] ml-0.5">({count})</span>
+    <span className={`ml-3 text-xs font-medium transition ${checked ? 'text-primary' : 'text-gray-400'}`}>
+      {label} <span className="text-primary ml-0.5">({count})</span>
     </span>
     <input type="checkbox" className="hidden" checked={checked} onChange={onChange} />
   </label>

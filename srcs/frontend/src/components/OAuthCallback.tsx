@@ -21,9 +21,9 @@ export function OAuthCallback() {
         if (currentUserId !== userIdFromUrl) {
             setUserId(userIdFromUrl);
             setFirstLogin(firstLoginFromUrl);
-            navigate('/otp', { replace: true });
+            navigate('/Otp', { replace: true });
         } else {
-            navigate('/otp', { replace: true });
+            navigate('/Otp', { replace: true });
         }
         
     }, [currentUserId, searchParams, setUserId, setFirstLogin, navigate]);

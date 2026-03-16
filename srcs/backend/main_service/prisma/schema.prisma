@@ -201,7 +201,7 @@ model User {
   jobs                     Job[]
   notifications            Notification[]
   isVerified               Boolean?                  @default(false)
-  twoFAEnabled             Boolean                   @default(true)
+  twoFAEnabled             Boolean                   @default(false)
   firstLogin               Boolean                   @default(true)
   twoFASecret              String?
   twoFATempSecret          String?
@@ -294,6 +294,7 @@ enum NotificationType {
   rejected
   offerSent
   offerResponse
+  newMessage
 }
 
 enum UserRole {

@@ -12,7 +12,8 @@ export const getApplicaticationById =  asyncHandler(async (req, res, next) => {
 })
 
 export const submitApplication = asyncHandler( async (req, res, next) => {
-    const application = await applicationService.submitApplication(req.body);
+    const io = req.app.get('io');
+    const application = await applicationService.submitApplication(req.body, io);
     res.status(201)
     .json({
         success: true,
@@ -29,7 +30,16 @@ export const withdrawApplication = asyncHandler( async (req, res, next) => {
 
 export const rejectApplication = asyncHandler( async (req, res, next) => {
     const id = req.params?.id;
-    await applicationService.rejectApplication(id);
+    const io = req.app.get('io');
+    await applicationService.rejectApplication(id, io);
+    res.status(204)
+    .end();
+})
+
+export const acceptApplication = asyncHandler( async (req, res, next) => {
+    const id = req.params?.id;
+    const io = req.app.get('io');
+    await applicationService.acceptApplication(id, io);
     res.status(204)
     .end();
 })

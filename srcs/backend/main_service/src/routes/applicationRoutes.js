@@ -1,21 +1,26 @@
 import * as applicationController from '../controllers/applicationController.js';
 import express from 'express';
+import { verifyRoles } from '../middleware/auth.js';
+import { UserRole } from '../../generated/prisma/index.js';
 const router = express.Router();
 
 
 router.get('/:id', 
-                applicationController.getApplicaticationById)
+        applicationController.getApplicaticationById)
     .get('/:id/phase',
-            applicationController.getCurrentPhase)
+        applicationController.getCurrentPhase)
     .get('/:id/phases', 
-            applicationController.getApplicationPhases)
+        applicationController.getApplicationPhases)
     .post('/', 
-            applicationController.submitApplication)
+        applicationController.submitApplication)
     .patch('/:id/withdraw',
-            applicationController.withdrawApplication)
-    .patch('/:id/reject', 
-            applicationController.rejectApplication)
-    .patch('/:id/advance', 
-            applicationController.advance)
+        verifyRoles([UserRole.candidate]),
+        applicationController.withdrawApplication)
+    .patch('/:id/reject',
+        verifyRoles([UserRole.recruiter]),
+        applicationController.rejectApplication)
+    .patch('/:id/advance',
+        verifyRoles([UserRole.recruiter]),
+        applicationController.advance)
 
 export default router
