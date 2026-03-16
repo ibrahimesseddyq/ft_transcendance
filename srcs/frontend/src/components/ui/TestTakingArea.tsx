@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import { mainApi } from '@/utils/Api';
-import Icon  from '@/components/ui/Icon'
+import Icon from '@/components/ui/Icon';
 import { useNavigate } from 'react-router-dom';
 
 const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const [currentStep, setCurrentStep] = useState(0);
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string[]>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -16,20 +16,23 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const isLastQuestion = currentStep === totalSteps - 1;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
-    const handleSelect = (choiceText: string) => {
+    const getLetter = (index: number) => String.fromCharCode(65 + index);
+
+    const handleSelect = (letterId: string) => {
         setError(null);
+        const currentSelected = selectedAnswers[currentStep] || [];
+        
+        let newSelection: string[];
+        if (currentSelected.includes(letterId)) {
+            newSelection = currentSelected.filter(id => id !== letterId);
+        } else {
+            newSelection = [...currentSelected, letterId];
+        }
+
         setSelectedAnswers({ 
             ...selectedAnswers, 
-            [currentStep]: choiceText 
+            [currentStep]: newSelection 
         });
-    };
-
-    const handleNext = () => {
-        if (!isLastQuestion) {
-            setCurrentStep(currentStep + 1);
-        } else {
-            handleSubmit();
-        }
     };
 
     const handleSubmit = useCallback(async () => {
@@ -40,12 +43,11 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
             const index = Number(key);
             return {
                 questionId: questions[index].id,
-                selectedOption: selectedAnswers[index]
+                selectedIds: selectedAnswers[index] 
             };
         });
 
         const payload = {
-            
             applicationPhaseId: phaseId,
             userId: candidateId,
             answers: formattedAnswers,
@@ -53,23 +55,26 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
         };
 
         try {
-            console.log("This my payload : ", payload);
-            const response = await mainApi.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
-            console.log("Success:", response.data);
+            await mainApi.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
             navigate('/Applications', { replace: true });
         } catch (err: any) {
-            console.error("Submit Error:", err);
             setError("Submission failed. Please check your connection.");
             setIsSubmitting(false);
         }
-    }, [testData?.id, phaseId, candidateId, selectedAnswers, questions, env_main_api]);
+    }, [testData?.id, phaseId, candidateId, selectedAnswers, questions, env_main_api, navigate]);
 
-    if (!currentQuestion) {
-        return <div className="text-black dark:text-surface-main p-10 text-center">No questions available.</div>;
-    }
+    const handleNext = () => {
+        if (!isLastQuestion) {
+            setCurrentStep(currentStep + 1);
+        } else {
+            handleSubmit();
+        }
+    };
+
+    if (!currentQuestion) return null;
 
     return (
-        <div className='flex flex-col gap-6 transition-colors duration-300'>
+        <div className='flex flex-col gap-6'>
             <div className='flex justify-between items-center'>
                 <div className='flex flex-col gap-1 w-2/3'>
                     <div className='flex justify-between text-xs font-bold text-slate-400 dark:text-slate-500 mb-1'>
@@ -88,44 +93,42 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
             <hr className='border-slate-100 dark:border-slate-800' />
 
             {error && (
-                <div className='flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-danger-hover rounded-lg text-sm'>
-                    <Icon name='AlertCircle' size={16} />
-                    {error}
-                </div>
-            )}
+                <div className='flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 
+                    border border-red-200 dark:border-red-900/50 text-red-600 dark:text-danger-hover rounded-lg text-sm'>
+                <Icon name='AlertCircle' size={16} /> {error}</div>)}
 
             <div className='py-4'>
-                <div className='flex gap-3 items-center mb-6'>
-                    <span className='bg-black dark:bg-surface-main text-surface-main dark:text-black px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase'>MCQ</span>
-                    <span className='text-slate-400 dark:text-slate-500 text-sm font-medium'>Target: {testData.title}</span>
-                </div>
-
-                <h2 className='text-2xl font-bold text-slate-800 dark:text-surface-main mb-8 leading-snug'>
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-surface-main mb-8'>
                     {currentQuestion.question}
                 </h2>
 
                 <div className='grid grid-cols-1 gap-4'>
                     {currentQuestion.choices.map((choice: any, index: number) => {
-                        const isSelected = selectedAnswers[currentStep] === choice.text;
+                        const letterId = getLetter(index);
+                        const isSelected = (selectedAnswers[currentStep] || []).includes(letterId);
                         
                         return (
                             <button 
                                 key={index} 
-                                onClick={() => handleSelect(choice.text)}
+                                onClick={() => handleSelect(letterId)}
                                 disabled={isSubmitting}
-                                className={`group flex items-center justify-between p-5 rounded-xl border-2 transition-all text-left
+                                className={`group flex items-center justify-between p-5 rounded-xl border-2 transition-all
                                     ${isSelected 
                                         ? 'border-primary bg-blue-50/50 dark:bg-blue-950/20' 
-                                        : 'border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 bg-surface-main dark:bg-slate-800/50'}`}
+                                        : 'border-slate-100 dark:border-slate-700 bg-surface-main dark:bg-slate-800/50'}`}
                             >
-                                <span className={`font-semibold ${isSelected ? 'text-primary' : 'text-slate-700 dark:text-slate-200'}`}>
-                                    {choice.text}
-                                </span>
-                                <div className={`h-6 w-6 rounded-full border-2 transition-all flex items-center justify-center
-                                    ${isSelected 
-                                        ? 'border-primary bg-primary' 
-                                        : 'border-slate-200 dark:border-slate-600 group-hover:border-slate-300 dark:group-hover:border-slate-500'}`}>
-                                    {isSelected && <div className="w-2 h-2 bg-surface-main rounded-full" />}
+                                <div className="flex gap-4 items-center">
+                                    <span className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-slate-400'}`}>
+                                        {letterId}.
+                                    </span>
+                                    <span className={`font-semibold ${isSelected ? 'text-primary' : 'text-slate-700 dark:text-slate-200'}`}>
+                                        {choice.text}
+                                    </span>
+                                </div>
+                                
+                                <div className={`h-6 w-6 rounded border-2 flex items-center justify-center transition-all
+                                    ${isSelected ? 'border-primary bg-primary' : 'border-slate-200 dark:border-slate-600'}`}>
+                                    {isSelected && <Icon name='Check' size={14} className="text-white" />}
                                 </div>
                             </button>
                         );
@@ -133,31 +136,15 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
                 </div>
             </div>
 
-            <div className='flex justify-between items-center mt-4 border-t border-slate-100 dark:border-slate-800 pt-6'>
-                <div className='flex items-center gap-2 text-slate-400 dark:text-slate-500'>
-                    <Icon name='Diamond' size={16} className='text-yellow-500 fill-yellow-500' />
-                    <span className='text-sm font-bold'>{currentQuestion.points || 0} Points</span>
-                </div>
-
+            <div className='flex justify-between items-center mt-4 border-t pt-6'>
+                <span className='text-sm font-bold text-slate-400'>{currentQuestion.points || 0} Points</span>
+                
                 <button 
-                    disabled={!selectedAnswers[currentStep] || isSubmitting}
+                    disabled={!(selectedAnswers[currentStep]?.length > 0) || isSubmitting}
                     onClick={handleNext}
-                    className="flex items-center gap-3 bg-black dark:bg-surface-main text-surface-main dark:text-black 
-                        px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all 
-                        disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 
-                        disabled:cursor-not-allowed"
+                    className="flex items-center gap-3 bg-black dark:bg-surface-main text-surface-main dark:text-black px-10 py-3 rounded-xl font-bold disabled:opacity-50"
                 >
-                    {isSubmitting ? (
-                        <>
-                            <Icon name='Loader2' className="animate-spin" size={20} />
-                            <span>Sending...</span>
-                        </>
-                    ) : (
-                        <>
-                            <span>{isLastQuestion ? 'Submit Results' : 'Next Question'}</span>
-                            <Icon name='ChevronRight' size={20} />
-                        </>
-                    )}
+                    {isSubmitting ? 'Sending...' : (isLastQuestion ? 'Submit Results' : 'Next Question')}
                 </button>
             </div>
         </div>
