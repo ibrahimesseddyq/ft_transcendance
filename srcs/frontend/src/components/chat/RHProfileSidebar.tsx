@@ -6,9 +6,6 @@ interface RHProfileSidebarProps {
   isLoading?: boolean;
 }
 
-// Renders the inner content of the blue candidate sidebar.
-// The <aside className="sidebar rh-profile-sidebar"> wrapper lives in Chat.tsx;
-// CSS (.sidebar.rh-profile-sidebar) handles dimensions and border-radius.
 export function RHProfileSidebar({ recruiter, isOnline, isLoading = false }: RHProfileSidebarProps) {
   if (isLoading) {
     return (
@@ -25,10 +22,11 @@ export function RHProfileSidebar({ recruiter, isOnline, isLoading = false }: RHP
   };
 
   const getAvatarUrl = () => {
+    const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
     if (recruiter?.avatarUrl) {
       return recruiter.avatarUrl.startsWith('http')
         ? recruiter.avatarUrl
-        : `http://localhost:3000${recruiter.avatarUrl}`;
+        : `${BACKEND_YRL}${recruiter.avatarUrl}`;
     }
     return null;
   };
