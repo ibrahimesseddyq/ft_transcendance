@@ -4,7 +4,7 @@ import  { HttpValidationException } from '../utils/httpExceptions.js';
 const validateRequest = (schema) => {
     return (req,res,next) => {
         try {
-            console.log(req.body)
+            console.log('submit request ',req.body)
             req.body = schema.parse(req.body);
         } catch (error) {
             if(error instanceof ZodError) {
