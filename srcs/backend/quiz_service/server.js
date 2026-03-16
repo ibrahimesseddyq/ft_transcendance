@@ -14,3 +14,11 @@ const HOST = env.HOST;
 app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
 });
+
+
+
+
+// ansers = [question : {
+//     questionid: 'id',
+//     selectedIds: ['A', 'B']
+// }]
