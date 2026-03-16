@@ -16,7 +16,6 @@ import { JobDescription } from '@/components/JobDescription'
 import { QRcode } from '@/components/QRcode'
 import { QuizPage } from '@/components/QuizPage'
 import { Chat } from '@/components/Chat'
-import { CandidateQuizPage } from '@/components/CandidateQuizPage'
 import { AuthGuard } from '@/utils/AuthGard'
 import { EditProfile } from '@/components/EditProfile';
 import { ApplicationDetails } from '@/components/ApplicationDetails'
@@ -91,7 +90,6 @@ export function Main() {
 
               {/* CANDIDATE ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['candidate']} />}>
-                <Route path="/CandidateQuiz/:applicationId" element={<CandidateQuizPage/>} />
                 <Route path="/Applications" element={<UserApplications/>} />
                 <Route path="/UserPhase/:appId" element={<UserPhase/>} />
               </Route>
@@ -99,7 +97,7 @@ export function Main() {
               {/* SHARED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
-                <Route path="/Jobdescription" element={<JobDescription />} />
+                <Route path="/Jobdescription/:jobId" element={<JobDescription />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
                 <Route path="/Chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />

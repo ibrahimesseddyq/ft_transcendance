@@ -62,6 +62,7 @@ app.use('/api/main/auth',
   authRoutes);
 
 app.use('/api/main/2fa',
+  verifyToken,
   twoFARoutes); 
 
 app.use('/api/main/users',

@@ -23,7 +23,6 @@ class ChatAPI {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Handle unauthorized
           globalThis.location.href = '/login';
         }
         return Promise.reject(error);

@@ -24,7 +24,7 @@ export const deleteJob = async (jobId) => {
     return await prisma.job.delete({where :{ id : jobId} });
 }
 
-export const findManyJobs = async (filters, skip = 0, take = 10, sortBy = 'createdAt', sortOrder = 'desc') => {
+export const findManyJobs = async (filters, skip = 0, take = 100, sortBy = 'createdAt', sortOrder = 'desc') => {
     const {keyword } = filters;
     const isRemoteBool = filters.isRemote === "true" ? true : 
         filters.isRemote === "false" ? false : undefined;
@@ -83,6 +83,14 @@ export const findManyJobs = async (filters, skip = 0, take = 10, sortBy = 'creat
 export const getApplicationsByJobId =  async (jobId) => {
     return await prisma.job.findUnique({
         where:{id : jobId},
-        include:{applications: true}
+       include: {
+            applications: {
+                include: {
+                    candidate: {
+                        select: { id: true, firstName: true, lastName: true, email: true, avatarUrl: true }
+                    }
+                }
+            }
+        }
     })
 }
