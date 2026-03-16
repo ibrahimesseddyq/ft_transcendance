@@ -50,6 +50,18 @@ until vault status >/dev/null 2>&1; do
   sleep 2
 done
 
+# Initialize if needed (first run only)
+if ! vault operator init -status >/dev/null 2>&1; then
+  vault operator init -key-shares=1 -key-threshold=1 \
+    -format=json > /vault/data/init.json
+
+  UNSEAL_KEY=$(cat /vault/data/init.json | jq -r '.unseal_keys_b64[0]')
+  VAULT_TOKEN=$(cat /vault/data/init.json | jq -r '.root_token')
+
+  vault operator unseal "$UNSEAL_KEY"
+  export VAULT_TOKEN
+fi
+
 echo "Vault is ready!"
 vault status || true
 
