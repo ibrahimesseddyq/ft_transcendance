@@ -9,8 +9,8 @@ spec:
   # tls:
   #   - secretName: hirefy-tls
   rules:
-    - host: 15.237.53.13 
-      http:
+    # - host: 15.237.53.13 
+    - http:
         paths:
           - path: /
             pathType: Prefix
