@@ -78,6 +78,7 @@ export function QRcode() {
                 setUser(data);
                 setQrVerified(true);
                 const currentUser = data; 
+                console.log("currentUser = ", currentUser.role);
                 if (currentUser.role === 'recruiter' || currentUser.role === 'admin') {
                     navigate('/Dashboard', { replace: true });
                 }else{

@@ -22,6 +22,7 @@ import { EditProfile } from '@/components/EditProfile';
 import { ApplicationDetails } from '@/components/ApplicationDetails'
 import { UserApplications } from '@/components/UserApplications';
 import { UserPhase } from '@/components/UserPhase'
+import { AboutUs } from '@/pages/AboutUs'
 
 export function Main() {
   const location = useLocation();
@@ -100,6 +101,7 @@ export function Main() {
                 <Route path="/Chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
                 <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
+                <Route path="/About" element={<AboutUs />} />
               </Route>
 
               {/* ROOT REDIRECT */}
