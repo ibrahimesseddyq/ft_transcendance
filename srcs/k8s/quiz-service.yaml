@@ -56,7 +56,7 @@ spec:
               npx prisma generate
               npx prisma db push
               # Start the application
-              npm run dev
+              exec npm run dev
 ---
 apiVersion: v1
 kind: Service
@@ -84,8 +84,8 @@ data:
   APP_NAME: "quiz-service"
   HOST: "quiz-service"
   BCRYPT_ROUNDS: "10"
-  CALLBACK_URL: "http://15.237.53.13/api/main/auth/google/callback"
+  CALLBACK_URL: "http://13.36.189.126/api/main/auth/google/callback"
   ACCESS_TOKEN_EXPIRY: "1d"
   REFRESH_TOKEN_EXPIRY: "7d"
-  FRONTEND_URL: "http://15.237.53.13"
-  BACKEND_URL: "http://15.237.53.13/api/main"
+  FRONTEND_URL: "http://13.36.189.126"
+  BACKEND_URL: "http://13.36.189.126/api/main"
