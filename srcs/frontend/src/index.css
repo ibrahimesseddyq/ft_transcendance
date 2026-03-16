@@ -41,6 +41,15 @@
     --color-danger-hover: #f97272;
 }
 
+@keyframes audio-wave {
+  0%, 100% { height: 8px; }
+  50% { height: 20px; }
+}
+
+.animate-wave {
+  animation: audio-wave 1s ease-in-out infinite;
+}
+
 @layer utilities {
     body{
         --font-sans: "Calibri", "Arial", sans-serif;

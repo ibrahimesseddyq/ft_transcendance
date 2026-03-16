@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHAT_MESSAGE_MAX_LENGTH } from '../../types/chat';
+import { aiapi } from '@/utils/Api';
 
 const MAX_CHAT_FILE_SIZE_BYTES = 100 * 1024 * 1024;
-
-const getRecordedAudioExtension = (mimeType: string) => {
-  if (mimeType.includes('mp4')) return 'm4a';
-  if (mimeType.includes('ogg')) return 'ogg';
-  return 'webm';
-};
+const MAX_RECORDING_SECONDS = 30;
 
 const formatRecordingTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -18,37 +14,18 @@ const formatRecordingTime = (seconds: number) => {
 
 interface SelectedFilePreviewProps {
   readonly selectedFile: File;
-  readonly audioPreviewUrl: string | null;
   readonly onClear: () => void;
 }
 
-function SelectedFilePreview({ selectedFile, audioPreviewUrl, onClear }: SelectedFilePreviewProps) {
-  const isAudioFile = selectedFile.type.startsWith('audio/');
-
+function SelectedFilePreview({ selectedFile, onClear }: SelectedFilePreviewProps) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, padding: '6px 12px', background: '#e0f2fe', borderRadius: 6, fontSize: 13, color: '#1e293b', width: '100%', maxWidth: 576, boxSizing: 'border-box' }}>
-      {isAudioFile ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, minWidth: 0 }}>
-          <span style={{ fontWeight: 600, color: '#0f172a' }}>Voice message ready</span>
-          {audioPreviewUrl && (
-            <audio controls src={audioPreviewUrl} style={{ width: '100%' }}>
-              <track kind="captions" />
-            </audio>
-          )}
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {selectedFile.name}
-          </span>
-        </div>
-      ) : (
-        <>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00adef" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-          </svg>
-          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {selectedFile.name}
-          </span>
-        </>
-      )}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00adef" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+      </svg>
+      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {selectedFile.name}
+      </span>
       <button
         type="button"
         onClick={onClear}
@@ -81,38 +58,15 @@ export function ChatInput({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [validationError, setValidationError] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
-  const [audioPreviewUrl, setAudioPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!selectedFile?.type.startsWith('audio/')) {
-      setAudioPreviewUrl((currentUrl) => {
-        if (currentUrl) {
-          URL.revokeObjectURL(currentUrl);
-        }
-        return null;
-      });
-      return;
-    }
-
-    const nextUrl = URL.createObjectURL(selectedFile);
-    setAudioPreviewUrl((currentUrl) => {
-      if (currentUrl) {
-        URL.revokeObjectURL(currentUrl);
-      }
-      return nextUrl;
-    });
-
-    return () => {
-      URL.revokeObjectURL(nextUrl);
-    };
-  }, [selectedFile]);
+  const env_ai_api = import.meta.env.VITE_AI_API_URL;
 
   useEffect(() => {
     return () => {
@@ -120,11 +74,15 @@ export function ChatInput({
         clearInterval(recordingIntervalRef.current);
       }
       mediaRecorderRef.current?.stream.getTracks().forEach((track) => track.stop());
-      if (audioPreviewUrl) {
-        URL.revokeObjectURL(audioPreviewUrl);
-      }
     };
-  }, [audioPreviewUrl]);
+  }, []);
+
+  // Auto-stop recording at MAX_RECORDING_SECONDS
+  useEffect(() => {
+    if (isRecording && recordingSeconds >= MAX_RECORDING_SECONDS) {
+      stopRecording();
+    }
+  }, [isRecording, recordingSeconds]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = e.target.value;
@@ -199,8 +157,26 @@ export function ChatInput({
     return candidates.find((mimeType) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(mimeType)) || '';
   };
 
+  const sendAudioForTranscription = async (blob: Blob) => {
+    setIsTranscribing(true);
+    try {
+      const formData = new FormData();
+      formData.append('audio', blob, 'recording.mp3');
+      const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
+      const data = response.data;
+      if (data.text) {
+        setMessage((prev) => (prev ? prev + ' ' + data.text : data.text));
+      }
+    } catch (err) {
+      console.error('Transcription error:', err);
+      toast.error('Failed to transcribe audio');
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
   const startRecording = async () => {
-    if (disabled || isRecording) return;
+    if (disabled || isRecording || isTranscribing) return;
 
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
       toast.error('Audio recording is not supported in this browser');
@@ -215,7 +191,6 @@ export function ChatInput({
       mediaStreamRef.current = stream;
       mediaRecorderRef.current = recorder;
       recordedChunksRef.current = [];
-      setSelectedFile(null);
       setValidationError('');
       setIsRecording(true);
       setRecordingSeconds(0);
@@ -227,15 +202,11 @@ export function ChatInput({
       };
 
       recorder.onstop = () => {
-        const chunkType = recordedChunksRef.current[0]?.type || recorder.mimeType || 'audio/webm';
         if (recordedChunksRef.current.length > 0) {
-          const extension = getRecordedAudioExtension(chunkType);
-          const audioFile = new File(recordedChunksRef.current, `voice-message-${Date.now()}.${extension}`, {
-            type: chunkType,
-          });
-          setSelectedFile(audioFile);
+          const chunkType = recordedChunksRef.current[0]?.type || recorder.mimeType || 'audio/webm';
+          const audioBlob = new Blob(recordedChunksRef.current, { type: chunkType });
+          sendAudioForTranscription(audioBlob);
         }
-
         recordedChunksRef.current = [];
         resetRecordingState();
         stopMediaTracks();
@@ -276,7 +247,7 @@ export function ChatInput({
     <div className="chat-input-area" style={{ background: '#F0F3FA', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
       {/* File preview */}
       {selectedFile && (
-        <SelectedFilePreview selectedFile={selectedFile} audioPreviewUrl={audioPreviewUrl} onClear={clearFile} />
+        <SelectedFilePreview selectedFile={selectedFile} onClear={clearFile} />
       )}
 
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 576 }}>
@@ -307,14 +278,14 @@ export function ChatInput({
           <button
             type="button"
             onClick={isRecording ? stopRecording : startRecording}
-            disabled={disabled}
-            aria-label={isRecording ? 'Stop recording' : 'Record audio'}
+            disabled={disabled || isTranscribing}
+            aria-label={isTranscribing ? 'Transcribing' : isRecording ? 'Stop recording' : 'Record audio'}
             style={{
               padding: 6,
-              background: isRecording ? '#fee2e2' : 'transparent',
+              background: isRecording ? '#fee2e2' : isTranscribing ? '#e0f2fe' : 'transparent',
               border: 'none',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              color: isRecording ? '#dc2626' : '#64748b',
+              cursor: (disabled || isTranscribing) ? 'not-allowed' : 'pointer',
+              color: isRecording ? '#dc2626' : isTranscribing ? '#0ea5e9' : '#64748b',
               display: 'flex',
               alignItems: 'center',
               transition: 'color 0.2s, background 0.2s',
@@ -338,7 +309,7 @@ export function ChatInput({
             value={message}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={isRecording ? 'Recording audio...' : 'Type a message...'}
+            placeholder={isTranscribing ? 'Transcribing...' : isRecording ? 'Recording audio...' : 'Type a message...'}
             disabled={disabled}
             maxLength={CHAT_MESSAGE_MAX_LENGTH}
             style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 14, color: '#1e293b', outline: 'none', padding: '2px 0' }}
@@ -359,7 +330,7 @@ export function ChatInput({
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, padding: '0 4px', minHeight: 18 }}>
           <span style={{ fontSize: 12, color: validationError ? '#dc2626' : '#64748b' }}>
-            {validationError || (isRecording ? `Recording... ${formatRecordingTime(recordingSeconds)}` : '')}
+            {validationError || (isTranscribing ? 'Transcribing audio...' : isRecording ? `Recording... ${formatRecordingTime(recordingSeconds)} / ${formatRecordingTime(MAX_RECORDING_SECONDS)}` : '')}
           </span>
           <span style={{ fontSize: 12, color: messageLength > CHAT_MESSAGE_MAX_LENGTH ? '#dc2626' : '#64748b' }}>
             {messageLength}/{CHAT_MESSAGE_MAX_LENGTH}
