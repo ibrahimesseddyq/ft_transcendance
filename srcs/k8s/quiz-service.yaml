@@ -46,6 +46,8 @@ spec:
               # Source Vault secrets
               . /vault/secrets/database
               . /vault/secrets/jwt
+              npx prisma generate
+              npx prisma db push
               # Start the application
               npm run dev
 ---
