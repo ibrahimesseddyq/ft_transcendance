@@ -31,9 +31,10 @@ const InputField = ({ val, onChange, onKeyDown, inputRef }: InputFieldProps) => 
 interface OtpCodeProps {
   otp: string[];
   setOtp: (otp: string[]) => void;
+  onKeyEnter: (key: any) => void;
 }
 
-export function OtpCode({ otp, setOtp }: OtpCodeProps) {
+export function OtpCode({ otp, setOtp, onKeyEnter }: OtpCodeProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -54,6 +55,9 @@ export function OtpCode({ otp, setOtp }: OtpCodeProps) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    }
+    if (e.key === "Enter") {
+        onKeyEnter(e); 
     }
   };
 

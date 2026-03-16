@@ -99,7 +99,7 @@ export function Main() {
               {/* SHARED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={['admin', 'recruiter', 'candidate']} />}>
                 <Route path="/Jobs" element={<Jobs />} />
-                <Route path="/Jobdescription" element={<JobDescription />} />
+                <Route path="/Jobdescription/:jobId" element={<JobDescription />} />
                 <Route path="/Profile/:postId" element={<Profile />} />
                 <Route path="/Chat" element={<Chat />} />
                 <Route path="/EditProfile" element={<EditProfile />} />
