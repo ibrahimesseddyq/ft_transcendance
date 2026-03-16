@@ -26,6 +26,12 @@ spec:
           export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
           export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
           {{- end }}
+        vault.hashicorp.com/agent-inject-secret-other: "secret/data/quiz-service/other"
+        vault.hashicorp.com/agent-inject-template-other: |
+          {{- with secret "secret/data/quiz-service/other" -}}
+          export QUIZ_PUBLIC_API_KEY="{{ .Data.data.QUIZ_PUBLIC_API_KEY }}"
+          export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
+          {{- end }}
     spec:
       serviceAccountName: app-service-account
       containers:
@@ -46,8 +52,11 @@ spec:
               # Source Vault secrets
               . /vault/secrets/database
               . /vault/secrets/jwt
+              . /vault/secrets/other
+              npx prisma generate
+              npx prisma db push
               # Start the application
-              npm run dev
+              exec npm run dev
 ---
 apiVersion: v1
 kind: Service
@@ -75,8 +84,8 @@ data:
   APP_NAME: "quiz-service"
   HOST: "quiz-service"
   BCRYPT_ROUNDS: "10"
-  CALLBACK_URL: "http://15.237.53.13/api/main/auth/google/callback"
+  CALLBACK_URL: "http://13.36.189.126/api/main/auth/google/callback"
   ACCESS_TOKEN_EXPIRY: "1d"
   REFRESH_TOKEN_EXPIRY: "7d"
-  FRONTEND_URL: "http://15.237.53.13"
-  BACKEND_URL: "http://15.237.53.13/api/main"
+  FRONTEND_URL: "http://13.36.189.126"
+  BACKEND_URL: "http://13.36.189.126/api/main"
