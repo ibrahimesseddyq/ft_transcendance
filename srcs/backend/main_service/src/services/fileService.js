@@ -27,6 +27,7 @@ export const saveAvatar = async (userId, file) => {
         }
     } catch (err) {
             await fs.unlink(physicalPath).catch(() => {});
+            if (err)
             throw err;
     }
     return {
