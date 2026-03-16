@@ -13,6 +13,7 @@ export function ChatHeader({
   isOnline,
   onBack,
 }: ChatHeaderProps) {
+  const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
   if (!conversation) return null;
 
   const getInitials = () => {
@@ -26,7 +27,7 @@ export function ChatHeader({
 
   const getAvatarUrl = () => {
     const url = otherParticipant?.user?.avatarUrl;
-    if (url) return url.startsWith('http') ? url : `http://localhost:3000${url}`;
+    if (url) return url.startsWith('http') ? url : `${BACKEND_YRL}${url}`;
     return null;
   };
 

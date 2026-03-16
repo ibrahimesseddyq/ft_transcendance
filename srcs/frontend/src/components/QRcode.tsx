@@ -15,7 +15,6 @@ export function QRcode() {
     const [otpArray, setOtpArray] = useState<string[]>(new Array(6).fill(""));
     const navigate = useNavigate();
     const userId = useAuthStore(state => state.userId);
-    // const tmpToken = useAuthStore((state) => state.tmpToken);
     const setProfile = useAuthStore(state => state.setProfile);
     const setQrVerified = useAuthStore(state => state.setQrVerified);
     const firstLogin = useAuthStore(state => state.firstLogin);
@@ -117,7 +116,7 @@ export function QRcode() {
 
     return (
         <div className="p-4 py-10 flex flex-col items-center justify-center m-auto
-            bg-surface-main dark:bg-secondary-darkbg rounded-2xl transition-colors duration-300">
+            bg-surface-main dark:bg-[#242c3e] rounded-2xl transition-colors duration-300">
             <div className="flex flex-col gap-4 md:gap-8 items-center max-w-sm">
                 {/* Header Text */}
                 <div className="flex flex-col gap-1 items-center text-center">

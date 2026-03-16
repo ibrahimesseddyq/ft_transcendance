@@ -43,10 +43,11 @@ export function ChatSidebar({
   };
 
   const getAvatarUrl = (p: any) => {
+    const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
     if (p?.user?.avatarUrl) {
       return p.user.avatarUrl.startsWith('http')
         ? p.user.avatarUrl
-        : `http://localhost:3000${p.user.avatarUrl}`;
+        : `${BACKEND_YRL}${p.user.avatarUrl}`;
     }
     return null;
   };
@@ -66,7 +67,7 @@ export function ChatSidebar({
   };
 
   return (
-    <div className="normal-sidebar-content">
+    <div className="normal-sidebar-content ">
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px 0', marginBottom: 12 }}>
         <h2 style={{ fontSize: 20, fontWeight: 600, color: '#ffffff', margin: 0 }}>Messages</h2>
