@@ -51,8 +51,8 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
     };
     return (
         <div
-              className="relative flex flex-col w-full md:w-[350px] 
-                bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+              className="relative flex flex-col w-full md:w-[350px]
+                bg-surface-main dark:bg-[#0b1729] border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
             >
 
               {/* Status Badge */}
