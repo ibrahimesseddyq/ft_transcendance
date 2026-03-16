@@ -4,11 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
 import { mainApi } from '@/utils/Api';
-
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -27,11 +28,10 @@ const Signup = () => {
             await mainApi.post(`${env_main_api}/auth/register`, data);
             console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
-            window.location.href = '/';
+            navigate('/', { replace: true });
         } catch (error) {
-            console.error("Submission failed:", error);
+            console.log("Submission failed:", error);
             Notification("error Sign Up", "error");
-            window.location.href = '/';
         }
         reset();
     };
@@ -41,15 +41,15 @@ const Signup = () => {
             {/* Header Badge */}
             <div className='border rounded-xl px-5 border-gray-300 dark:border-gray-800 bg-gray-100 dark:bg-[#121b31]
                     whitespace-nowrap overflow-hidden mb-6 transition-colors'>
-                <h1 className='text-black dark:text-white whitespace-nowrap overflow-hidden'>Sign Up</h1>
+                <h1 className='text-black dark:text-surface-main whitespace-nowrap overflow-hidden'>Sign Up</h1>
             </div>
 
             <div className='h-auto w-full max-w-[350px] flex flex-col gap-4 overflow-y-auto custom-scrollbar my-auto'>
                 <div className="w-full h-auto">
-                    <h2 className="text-[#00adef] font-electrolize text-sm whitespace-nowrap overflow-hidden">
+                    <h2 className="text-primary font-electrolize text-sm whitespace-nowrap overflow-hidden">
                         Welcome!
                     </h2>
-                    <h1 className="text-md font-electrolize text-black dark:text-white whitespace-nowrap overflow-hidden transition-colors">
+                    <h1 className="text-md font-electrolize text-black dark:text-surface-main whitespace-nowrap overflow-hidden transition-colors">
                         We are happy to have you. 
                     </h1>
                 </div>
@@ -69,7 +69,9 @@ const Signup = () => {
                                     {...register(field.name as any, { required: true })}
                                     placeholder={field.placeholder}
                                     type={field.type}
-                                    className="h-[45px] w-full text-sm text-black dark:text-white outline-none px-3 border border-gray-300 dark:border-gray-800 rounded-md bg-transparent focus:border-[#00adef] transition-colors placeholder:text-gray-500"
+                                    className="h-[45px] w-full text-sm text-black dark:text-surface-main 
+                                        outline-none px-3 border border-gray-300 dark:border-gray-800 rounded-md bg-transparent 
+                                        focus:border-primary transition-colors placeholder:text-gray-500"
                                 />
                                 {errors[field.name as keyof typeof errors] && (
                                     <p className="pl-2 text-red-500 text-[10px] italic">
@@ -80,16 +82,16 @@ const Signup = () => {
                         ))}
 
                         <button type="submit"
-                                className="h-[45px] w-full text-white font-bold whitespace-nowrap
-                                    mx-auto rounded-lg bg-[#00adef] hover:bg-[#0086b8] transition-colors overflow-hidden">
+                                className="h-[45px] w-full text-surface-main font-bold whitespace-nowrap
+                                    mx-auto rounded-lg bg-primary hover:bg-[#0086b8] transition-colors overflow-hidden">
                             Register
                         </button>
                     </form>
 
                     <button onClick={GoogleSubmit}
                             className="h-[45px] w-full flex gap-5 rounded-lg border overflow-hidden
-                             border-gray-300 dark:border-gray-800 justify-center bg-transparent text-black dark:text-white
-                            hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all items-center mt-2">
+                             border-gray-300 dark:border-gray-800 justify-center bg-transparent text-black dark:text-surface-main
+                            hover:bg-black hover:text-surface-main dark:hover:bg-surface-main dark:hover:text-black transition-all items-center mt-2">
                         <img className="h-6 w-6" 
                              src="/icons/google1.png"
                              alt="Google icon"/>

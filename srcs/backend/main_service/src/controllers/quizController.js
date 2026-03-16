@@ -1,11 +1,10 @@
-import { application } from 'express';
 import *  as quizService from '../services/quizService.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 export const startTest  = asyncHandler(async (req, res, next) => {
     const test  = await quizService.startTest({
         testId: req.params.testId,
-        userId: req.user.id,
+        userId: req.query.userId,
         applicationPhaseId: req.query.applicationPhaseId
     });
     res.status(200)

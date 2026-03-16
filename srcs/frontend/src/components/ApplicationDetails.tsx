@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mainApi } from '@/utils/Api';
+import { useAuthStore } from '@/utils/ZuStand'
 
 export function ApplicationDetails() {
   const { id } = useParams(); 
@@ -8,6 +9,8 @@ export function ApplicationDetails() {
   
   const [details, setDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user} = useAuthStore();
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   useEffect(() => {
@@ -21,14 +24,15 @@ export function ApplicationDetails() {
           try {
             const userRes = await mainApi.get(`${env_main_api}/users/${appData.candidateId}`);
             appData.candidate = userRes.data.data || userRes.data;
+            console.log("appData => ", appData);
           } catch (userErr) {
-            console.error("Failed to fetch candidate details:", userErr);
+            console.log("Failed to fetch candidate details:", userErr);
           }
         }
         setDetails(appData);
 
       } catch (err) {
-        console.error("Failed to fetch application details:", err);
+        console.log("Failed to fetch application details:", err);
       } finally {
         setIsLoading(false);
       }
@@ -36,18 +40,6 @@ export function ApplicationDetails() {
 
     if (id) fetchDetailsAndUser();
   }, [id]);
-
-
-  const handleAdvancePhase = async () => {
-    try {
-      await mainApi.patch(`${env_main_api}/applications/${id}/advance`);
-      alert("Candidate advanced to the next phase!");
-      const res = await mainApi.get(`${env_main_api}/applications/${id}`);
-      setDetails(res.data.data || res.data);
-    } catch (error) {
-      alert(error);
-    }
-  };
 
   const handleRejectCandidate = async () => {
     if (!window.confirm("Are you sure you want to reject this candidate?")) return;
@@ -65,11 +57,11 @@ export function ApplicationDetails() {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-8">
-      <button onClick={() => navigate(-1)} className="text-[#00adef] hover:underline mb-6 flex items-center gap-2">
+      <button onClick={() => navigate(-1)} className="text-primary hover:underline mb-6 flex items-center gap-2">
         ← Back to Board
       </button>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 md:p-10 transition-colors">
+      <div className="bg-surface-main dark:bg-secondary-darkbg rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 md:p-10 transition-colors">
         
         <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
           <div>
@@ -78,9 +70,16 @@ export function ApplicationDetails() {
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">App ID: {id}</p>
           </div>
-          <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-            {details.status || "Pending"}
-          </span>
+          {details.status === 'rejected' 
+            ?
+              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-danger-hover">
+                {details.status}
+              </span>
+            :
+              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                {details.status || "Pending"}
+              </span>
+          }
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -117,14 +116,16 @@ export function ApplicationDetails() {
           </div>
         </div>
 
-        <div className="mt-10 flex gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
-          <button onClick={handleAdvancePhase} className="px-6 py-2 bg-[#00adef] text-white rounded-xl hover:bg-[#00adef]/80 transition-colors font-medium">
-            Advance Phase
-          </button>
-          <button onClick={handleRejectCandidate} className="px-6 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors font-medium">
-            Reject Candidate
-          </button>
-        </div>
+
+        {isAdminOrRecruiter
+          ?
+            <div className="mt-10 flex gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
+              <button onClick={handleRejectCandidate} className="px-6 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-surface-main transition-colors font-medium">
+                Reject Candidate
+              </button>
+            </div>
+          : null
+        }
 
       </div>
     </div>

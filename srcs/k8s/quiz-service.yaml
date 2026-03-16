@@ -20,11 +20,20 @@ spec:
           {{- with secret "secret/data/quiz-service/database" -}}
           export DATABASE_URL="{{ .Data.data.DATABASE_URL }}"
           {{- end }}
+        vault.hashicorp.com/agent-inject-secret-jwt: "secret/data/quiz-service/jwt"
+        vault.hashicorp.com/agent-inject-template-jwt: |
+          {{- with secret "secret/data/quiz-service/jwt" -}}
+          export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+          export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
+          {{- end }}
     spec:
       serviceAccountName: app-service-account
       containers:
         - name: quiz-service
           image: quiz-service:dev
+          envFrom:
+            - configMapRef:
+                 name: quiz-service-config
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -36,6 +45,7 @@ spec:
             - |
               # Source Vault secrets
               . /vault/secrets/database
+              . /vault/secrets/jwt
               # Start the application
               npm run dev
 ---
@@ -62,3 +72,11 @@ metadata:
 data:
   PORT: "3001"
   NODE_ENV: "production"
+  APP_NAME: "quiz-service"
+  HOST: "quiz-service"
+  BCRYPT_ROUNDS: "10"
+  CALLBACK_URL: "http://13.38.15.15/api/main/auth/google/callback"
+  ACCESS_TOKEN_EXPIRY: "1d"
+  REFRESH_TOKEN_EXPIRY: "7d"
+  FRONTEND_URL: "http://13.38.15.15"
+  BACKEND_URL: "http://13.38.15.15/api/main"

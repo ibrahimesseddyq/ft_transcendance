@@ -26,25 +26,41 @@ export const countNewApplications = async (start, end) => {
     });
 };
 
-export const getApplicationsOverview = async (recruiterId, start, end) => {
+export const getApplicationsOverview = async (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.error("Invalid dates passed to getApplicationsOverview:", { start, end });
+        return { labels: [], datasets: { received: [], processed: [] } };
+    }
+
     const applications = await prisma.application.findMany({
-        where: { appliedAt: { gte: start, lte: end } },
+        where: { 
+            appliedAt: { 
+                gte: startDate, 
+                lte: endDate 
+            } 
+        },
         select: { appliedAt: true, status: true }
     });
     
-    const monthMap = {};
+    const dayMap = {};
+
     applications.forEach(app => {
         const date = new Date(app.appliedAt);
-        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // Fixed padStart
-        const label = date.toLocaleString('en-US', { month: 'short' });
+        const key = date.toISOString().split('T')[0]; 
+        const label = date.toLocaleString('en-US', { month: 'short', day: 'numeric' });
         
-        if (!monthMap[key]) monthMap[key] = { label, received: 0, processed: 0 };
+        if (!dayMap[key]) {
+            dayMap[key] = { label, received: 0, processed: 0 };
+        }
         
-        monthMap[key].received++;
-        if (app.status !== 'pending') monthMap[key].processed++;
+        dayMap[key].received++;
+        if (app.status !== 'pending') dayMap[key].processed++;
     });
 
-    const sorted = Object.entries(monthMap)
+    const sorted = Object.entries(dayMap)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([, v]) => v);
 
@@ -69,7 +85,7 @@ export const getActiveCandidates = async (limit = 10) => {
                     id: true,
                     firstName: true,
                     lastName: true,
-                    avatarUrl: true, 
+                    avatarUrl: true,
                     profile: { select: { currentTitle: true } }
                 }
             },
@@ -91,7 +107,7 @@ export const getActiveCandidates = async (limit = 10) => {
             id: app.candidate.id,
             firstName: app.candidate.firstName,
             lastName: app.candidate.lastName,
-            avatarUrt: app.candidate.avatarUrt,
+            avatarUrl: app.candidate.avatarUrl, 
             currentTitle: app.candidate.profile?.currentTitle,
             jobTitle: app.job.title,
             applicationStatus: app.status
@@ -130,12 +146,13 @@ export const getHiringFunnel = async (recruiterId, start, end) => {
     return { applied, screening };
 };
 
-export const getRecruitmentStatusBreakdown = async (recruiterId, start, end) => {
+export const getRecruitmentStatusBreakdown = async (start, end) => {
     const groupings = await prisma.application.groupBy({
         by: ['status'],
         _count: { _all: true },
         where: { appliedAt: { gte: start, lte: end } }
     });
+    // console.log('groupings ', groupings)
 
     const countsMap = groupings.reduce((acc, curr) => {
         acc[curr.status] = curr._count._all;

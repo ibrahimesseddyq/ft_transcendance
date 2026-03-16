@@ -19,7 +19,6 @@ class ChatAPI {
       withCredentials: true,
     });
 
-    // Response interceptor for error handling
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -38,12 +37,12 @@ class ChatAPI {
   }
 
   async getConversations(): Promise<Conversation[]> {
-    const { data } = await this.api.get(`${env_main_api}/chat/conversations`);
+    const { data } = await this.api.get(`${env_main_api}/conversations`);
     return Array.isArray(data) ? data : data.data || [];
   }
 
   async getConversation(conversationId: string): Promise<Conversation> {
-    const { data } = await this.api.get(`${env_main_api}/chat/conversations/${conversationId}`);
+    const { data } = await this.api.get(`${env_main_api}/conversations/${conversationId}`);
     return data.data || data;
   }
 
@@ -52,7 +51,7 @@ class ChatAPI {
     limit: number = 50,
     before?: string
   ): Promise<Message[]> {
-    let url = `${env_main_api}/chat/messages/conversation/${conversationId}?limit=${limit}`;
+    let url = `${env_main_api}/messages/conversation/${conversationId}?limit=${limit}`;
     if (before) {
       url += `&before=${before}`;
     }
@@ -66,7 +65,7 @@ class ChatAPI {
     messageType: 'text' | 'file' = 'text'
   ): Promise<Message> {
     const { data } = await this.api.post(
-      `${env_main_api}/chat/messages/conversation/${conversationId}`,
+      `${env_main_api}/messages/conversation/${conversationId}`,
       { content, messageType }
     );
     return data.data || data;
@@ -77,7 +76,7 @@ class ChatAPI {
     formData.append('file', file);
     formData.append('conversationId', conversationId);
 
-    const { data } = await this.api.post(`${env_main_api}/chat/messages/upload`, formData, {
+    const { data } = await this.api.post(`${env_main_api}/messages/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -87,29 +86,29 @@ class ChatAPI {
   }
 
   async getRecruiter(): Promise<User> {
-    const { data } = await this.api.get(`${env_main_api}/chat/conversations/rh-profile`);
+    const { data } = await this.api.get(`${env_main_api}/conversations/rh-profile`);
     return data.data || data;
   }
 
   async createConversation(participantId?: string): Promise<Conversation> {
     const body = participantId ? { participantId } : {};
-    const { data } = await this.api.post(`${env_main_api}/chat/conversations`, body);
+    const { data } = await this.api.post(`${env_main_api}/conversations`, body);
     return data.data || data;
   }
 
   async markConversationAsRead(conversationId: string): Promise<void> {
-    await this.api.patch(`${env_main_api}/chat/conversations/${conversationId}/read`);
+    await this.api.patch(`${env_main_api}/conversations/${conversationId}/read`);
   }
 
   async editMessage(messageId: string, content: string): Promise<Message> {
-    const { data } = await this.api.patch(`${env_main_api}/chat/messages/${messageId}`, {
+    const { data } = await this.api.patch(`${env_main_api}/messages/${messageId}`, {
       content,
     });
     return data.data || data;
   }
 
   async deleteMessage(messageId: string): Promise<void> {
-    await this.api.delete(`/chat/messages/${messageId}`);
+    await this.api.delete(`${env_main_api}/messages/${messageId}`);
   }
 }
 
