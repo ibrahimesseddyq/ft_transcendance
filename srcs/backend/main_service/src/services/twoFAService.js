@@ -33,14 +33,12 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
         if (!user?.twoFATempSecret)
             throw new HttpException(400, "No Setup in Progress");
 
-        const ok = speakeasy.totp.verify(
-            {
-                secret: user.twoFATempSecret,
-                encoding: "base32",
-                token, 
-                window: 1
-            }
-        );
+        const ok = speakeasy.totp.verify({
+            secret: user.twoFATempSecret,
+            encoding: "base32",
+            token, 
+            window: 1
+        });
         if (!ok) throw new HttpException(400, "Invalid 2FA CODE");
         // enable 2fa
         await this.userRepo.updateUser(userId,{
@@ -48,22 +46,20 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
             twoFASecret: user.twoFATempSecret,
             twoFATempSecret: null
         });
-        const tokens = jwtService.generateAuthTokens(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.role,
-            }
-        );
+        const tokens = jwtService.generateAuthTokens({
+            id: user.id,
+            email: user.email,
+            role: user.role,
+        });
         if (user.firstLogin === true)
         {
             const check = await userService.updateUser(user.id, { firstLogin: false });
             if (user.firstLogin === true) {
                 await userService.updateUser(user.id, { firstLogin: false });
                 user.firstLogin = false;
-            }
         }
         return { success: true, user: getSafeUser(user), accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
+    }
     }
     // trow HTTP Exceptions
     async verifyLogin(userId, token)

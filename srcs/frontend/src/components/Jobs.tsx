@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import JobFilter from "@/components/ui/JobFilter";
 import JobCards from '@/components/ui/JobCards';
 import { useAuthStore } from '@/utils/ZuStand';
+import {AiChatButton} from '@/components/ui/AiChatButton'
 
 export function Jobs() {
   const [jobsArray, setJobsArray] = useState<any[]>([]);
@@ -19,12 +20,13 @@ export function Jobs() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
 
   return (
-    <div className="w-full h-screen md:h-[calc(100vh-80px)] flex
-      flex-col md:flex-row gap-5 overflow-hidden duration-300 items-start">
+    <div className="w-full h-screen md:h-[calc(100vh-80px)] 
+      flex flex-col md:flex-row gap-0 overflow-hidden duration-300 ">
       <ToastContainer />
 
       {isFormOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-black/20 dark:bg-black/40 overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-md 
+          bg-black/20 dark:bg-black/40 overflow-y-auto custom-scrollbar">
           <button 
             onClick={() => setIsFormOpen(false)}
             className="absolute top-6 right-6 text-2xl text-gray-600 dark:text-gray-500 hover:text-red-400"
@@ -36,7 +38,7 @@ export function Jobs() {
       )}
 
       {/* Sidebar */}
-      <div className="w-full md:w-64 h-fit md:h-full">
+      <div className="w-full md:w-64 h-fit md:h-full justify-start">
         <JobFilter
           totalJobs={jobsArray}
           setJobsArray={setJobsArray}
@@ -73,6 +75,10 @@ export function Jobs() {
         >
           <Icon name='Plus' size={25} strokeWidth={3} />
         </button>
+      )}
+    
+      {!isAdminOrRecruiter && (
+        <AiChatButton />
       )}
     </div>
   );

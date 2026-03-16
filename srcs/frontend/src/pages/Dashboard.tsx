@@ -66,7 +66,7 @@ export function Dashboard() {
 
   return (
     <div className="w-full h-full p-2 flex flex-col gap-4 overflow-y-auto custom-scrollbar 
-                    bg-gray-50 dark:bg-secondary-darkbg transition-colors duration-300">
+                     transition-colors duration-300">
       <ToastContainer />
 
       <div className="w-full h-fit p-2 place-content-center">
