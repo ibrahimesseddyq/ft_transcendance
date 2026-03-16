@@ -51,8 +51,6 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
 
   io.on('connection', (socket) => {
     const userId = socket.userId;
-    console.log(`User connected: ${userId} (${socket.userRole})`);
-
     socket.join(`user_${userId}`);
 
     if (!onlineUsers.has(userId)) {
@@ -64,7 +62,6 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
 
     if (wasOffline) {
       io.emit('user:online', { userId });
-      console.log(`User ${userId} is now ONLINE`);
     }
 
     socket.on('user:getOnlineUsers', (_data, callback) => {
@@ -107,10 +104,8 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
 
         if (participant) {
           socket.join(conversationId);
-          console.log(`User ${userId} joined conversation ${conversationId}`);
         }
-      } catch (error) {
-        console.error('Error joining conversation:', error);
+      } catch {
       }
     };
 
@@ -122,7 +117,6 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
       if (!parsedConversationId.success) return;
 
       socket.leave(parsedConversationId.data);
-      console.log(`User ${userId} left conversation ${parsedConversationId.data}`);
     });
 
     socket.on('typing:start', (conversationId) => {
@@ -157,21 +151,18 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
           where: { id: conversationId },
           data: { updatedAt: new Date() }
         });
-      } catch (error) {
-        console.error('Error broadcasting message:', error);
+      } catch {
       }
     });
 
     registerNotificationSocketEvents({ io, socket, prisma, userId });
 
     socket.on('disconnect', () => {
-      console.log(`Socket disconnected for user: ${userId}`);
       if (onlineUsers.has(userId)) {
         onlineUsers.get(userId).delete(socket.id);
         if (onlineUsers.get(userId).size === 0) {
           onlineUsers.delete(userId);
           io.emit('user:offline', { userId });
-          console.log(`User ${userId} is now OFFLINE`);
         }
       }
     });

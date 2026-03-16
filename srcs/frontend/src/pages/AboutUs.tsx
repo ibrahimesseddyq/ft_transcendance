@@ -45,10 +45,10 @@ const stackCategoryIcons: Record<keyof TechStack, React.ElementType> = {
 };
 
 const aboutUs: AboutData = {
-  name: "ft_transcendance",
+  name: "Hirefy",
   tagline: "A full-stack recruitment platform built as part of the 42 curriculum.",
   description:
-    "ft_transcendance is a modern, full-stack web application designed to streamline the recruitment process. " +
+    "Hirefy is a modern, full-stack web application designed to streamline the recruitment process. " +
     "It connects candidates and recruiters through a seamless interface, offering job listings, application tracking, " +
     "live chat, real-time notifications, quiz-based skill assessments, and a rich dashboard for recruiters. " +
     "Built with a microservices architecture, the platform consists of a main service handling users, jobs, " +
@@ -70,14 +70,34 @@ const aboutUs: AboutData = {
   ],
   team: [
     {
-      name: "Ibrahim Esseddy",
-      role: "Lead Developer",
+      name: "SOUFIANE ESSARHIR",
+      role: "Project Manager",
+      github: "https://github.com/soufianeessarhir"
+    },
+    {
+      name: "ABDELLATIF EL FAGROUCH",
+      role: "Product Owner",
+      github: "https://github.com/Chidori42"
+    },
+    {
+      name: "EL HOUSSAINE ABOUDI",
+      role: "Developer",
+      github: "https://github.com/eaboudi",
+    },
+    {
+      name: "IBRAHIM ESSEDDYQ",
+      role: "Architect",
       github: "https://github.com/ibrahimesseddyq",
+    },
+    {
+      name: "ABDELMAJID ACHALLAH",
+      role: "Devloper",
+      github: "https://github.com/AM9-push"
     },
   ],
   techStack: {
-    frontend: ["React", "Vite", "TypeScript"],
-    backend: ["Node.js", "Express", "Prisma", "PostgreSQL"],
+    frontend: ["React", "Vite", "TypeScript", "Tailwind"],
+    backend: ["Node.js", "Express", "Prisma", "MariaDb"],
     infrastructure: ["Docker", "Kubernetes", "Nginx"],
     realtime: ["Socket.IO"],
   },
