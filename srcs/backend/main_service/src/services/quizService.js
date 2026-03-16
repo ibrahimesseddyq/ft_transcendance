@@ -32,7 +32,7 @@ export const startTest = async (data) => {
     }
 }
 
-export const submitTest = async (data) => {
+export const submitTest = async (data, io) => {
     const testId = data.params.testId;
     const { applicationPhaseId, answers, userId } = data.body;
     
@@ -50,7 +50,10 @@ export const submitTest = async (data) => {
         score: evaluationResult.totalScore,
         completedAt: new Date(),
     });
-
+    if (!evaluationResult.data.passed)
+        await applicationService.rejectApplication(applicationPhase.applicationId, io)
+    else
+        await applicationService.acceptApplication(applicationPhase.applicationId, io)
     return {
         score: evaluationResult.totalScore,
         maxPossibleScore: evaluationResult.maxPossibleScore,
