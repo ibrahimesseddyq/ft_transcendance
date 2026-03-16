@@ -30,14 +30,16 @@ export const updateApplication = async (applicationId,updateData) => {
 export const getApplicaticationById = async (appliocationId) => {
 	return await prisma.application.findUnique({
 		where:{ id : appliocationId},
-		include : {
-			applicationPhases : true
-		}
+		include: {
+		applicationPhases: { orderBy: { jobPhase: { orderIndex: 'asc' } } },
+		job: { select: { title: true, status: true } },
+		candidate: { select: { firstName: true, lastName: true, email: true } }
+	}
 
 	})
 }
 
-export const getApplicatications = async (skip = 0, take = 10, filters = {}) => {
+export const getApplicatications = async (skip = 0, take = 100, filters = {}) => {
     return await prisma.application.findMany({
         where: filters,
         skip,
