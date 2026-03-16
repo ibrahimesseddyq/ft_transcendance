@@ -87,8 +87,7 @@ export function useChat() {
 
             // Join room only after state is settled
             chatSocket.joinConversation(conversation.id);
-          } catch (error) {
-            console.error('Failed to load recruiter profile:', error);
+          } catch {
           } finally {
             setIsLoadingRecruiter(false);
           }
@@ -115,8 +114,7 @@ export function useChat() {
         }
 
         setIsLoading(false);
-      } catch (error: any) {
-        console.error('Failed to initialize chat:', error);
+      } catch {
         setIsLoading(false);
       }
     };
@@ -143,8 +141,7 @@ export function useChat() {
       setState((prev) => ({ ...prev, isConnected: false }));
     };
 
-    const handleError = (error: any) => {
-      console.error('Socket error:', error);
+    const handleError = () => {
     };
 
     const handleUserOnline = (data: { userId: string }) => {
@@ -338,8 +335,7 @@ export function useChat() {
       }
 
       setIsLoadingMessages(false);
-    } catch (error: any) {
-      console.error('Failed to load conversation:', error);
+    } catch {
       setIsLoadingMessages(false);
     }
   }, [state.conversations]);
@@ -400,7 +396,6 @@ export function useChat() {
           };
         });
       } catch (error: any) {
-        console.error('Failed to send message:', error);
         toast.error(extractApiErrorMessage(error));
       }
     },
@@ -433,8 +428,7 @@ export function useChat() {
             ),
           };
         });
-      } catch (error: any) {
-        console.error('Failed to upload file:', error);
+      } catch {
       }
     },
     [state.currentConversation]
