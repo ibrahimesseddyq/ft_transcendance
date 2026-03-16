@@ -26,6 +26,12 @@ spec:
           export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
           export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
           {{- end }}
+        vault.hashicorp.com/agent-inject-secret-other: "secret/data/quiz-service/other"
+        vault.hashicorp.com/agent-inject-template-other: |
+          {{- with secret "secret/data/quiz-service/other" -}}
+          export QUIZ_PUBLIC_API_KEY="{{ .Data.data.QUIZ_PUBLIC_API_KEY }}"
+          export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
+          {{- end }}
     spec:
       serviceAccountName: app-service-account
       containers:
@@ -46,6 +52,7 @@ spec:
               # Source Vault secrets
               . /vault/secrets/database
               . /vault/secrets/jwt
+              . /vault/secrets/other
               npx prisma generate
               npx prisma db push
               # Start the application
