@@ -68,11 +68,12 @@ kube-build:
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
 # 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
 	docker build -t frontend:dev \
-	--build-arg VITE_MAIN_SERVICE_URL=http://15.237.53.13 /api/main/ \
-	--build-arg VITE_QUIZ_SERVICE_URL=http://15.237.53.13 /api/quiz/ \
+	--build-arg VITE_MAIN_SERVICE_URL=http://15.237.53.13/api/main/ \
+	--build-arg VITE_QUIZ_SERVICE_URL=http://15.237.53.13/api/quiz/ \
 	--build-arg VITE_MAIN_API_URL=/api/main \
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
 	$(ROOT)srcs/frontend
+
 kube-load: kube-build
 	k3d image import gateway:dev main-service:dev quiz-service:dev  frontend:dev waf:dev -c hirefy
 
