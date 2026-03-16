@@ -4,6 +4,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { mainApi } from '@/utils/Api';
 import { JobPhaseManager } from "./JobPhaseManager";
 import Icon  from '@/components/ui/Icon'
+import { Link } from 'react-router-dom';
 
 interface props {
     job: any;
@@ -41,13 +42,6 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
         } catch (error) {
             Notification("Error Deleting job", "error");
         }
-    };
-    const handleDetails = (job:any) => {
-        navigate('/Jobdescription', { 
-          state: {
-            job: job,
-          } 
-        });
     };
     return (
         <div
@@ -128,13 +122,12 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
 
               {/* Footer Actions */}
               <div className="flex items-center justify-between mt-auto gap-2">
-                <button 
-                  onClick={() => handleDetails(job)}
+                <Link to={`/Jobdescription/${job?.id}`} 
                   className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
                     rounded-xl hover:bg-[#3B5998] hover:text-surface-main transition-all active:scale-95 whitespace-nowrap"
                 >
                   Details
-                </button>
+                </Link>
 
                 {isAdminOrRecruiter && (
                   <>
