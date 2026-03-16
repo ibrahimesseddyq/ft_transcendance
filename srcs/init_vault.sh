@@ -35,7 +35,7 @@ export USER_PASSWORD=mqsuowqknwrumsmp
 export FRONTEND_URL=http://localhost:5173
 export BACKEND_URL=http://localhost:3000/
 export INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export QUIZ_SERVICE_URL=http://localhost:3308/
+export QUIZ_SERVICE_URL=http://localhost:3001/
 export AI_INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export RECRUITER_PASS=Abdellatif123@@ 
 
