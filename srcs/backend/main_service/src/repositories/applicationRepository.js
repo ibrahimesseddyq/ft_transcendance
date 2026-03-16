@@ -11,7 +11,13 @@ export const deleteApplication =  async (applicationId) => {
 	return await prisma.application.delete({
 		where:{
 			id: applicationId
-		}
+		},
+		include: {
+        applicationPhases: {
+            orderBy: { jobPhase: { orderIndex: 'asc' } }
+        },
+        job: { select: { status: true, title: true } }
+    }
 	})
 }
 
@@ -32,17 +38,17 @@ export const getApplicaticationById = async (appliocationId) => {
 	})
 }
 
-export const getApplicatications = async (skip = 0, take = 10, filters= []) => {
-	return await prisma.application.findMany({
-
-	})
-}
+export const getApplicatications = async (skip = 0, take = 10, filters = {}) => {
+    return await prisma.application.findMany({
+        where: filters,
+        skip,
+        take,
+        orderBy: { appliedAt: 'desc' }
+    });
+};
 
 export const getApplicationByJobAndCondidate = async(jobId, candidateId) => {
-	return await prisma.application.findUnique({
-		where :{
-			jobId: jobId,
-			candidateId:candidateId
-		}
-	})
+	return await prisma.application.findFirst({
+    	where: { jobId, candidateId }
+});
 }
