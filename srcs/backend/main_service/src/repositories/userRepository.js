@@ -1,6 +1,4 @@
-import { includes } from 'zod';
 import  {prisma} from '../config/prisma.js';
-import { application } from 'express';
 
 export const getUserById = async (userId) => {
     return await prisma.user.findUnique({
@@ -25,7 +23,7 @@ export const createUser = async (userData) => {
 }
 
 export const updateUser = async (userId , updateData) => {
-
+    console.log('update data',updateData)
     return await prisma.user.update({
         where : {id : userId},
         data: updateData,

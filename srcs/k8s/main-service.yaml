@@ -23,15 +23,29 @@ spec:
         vault.hashicorp.com/agent-inject-secret-jwt: "secret/data/main-service/jwt"
         vault.hashicorp.com/agent-inject-template-jwt: |
           {{- with secret "secret/data/main-service/jwt" -}}
-          export JWT_SECRET="{{ .Data.data.JWT_SECRET }}"
-          export JWT_EXPIRES_IN="{{ .Data.data.JWT_EXPIRES_IN }}"
+          export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+          export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
+          export TEMP_TOKEN_SECRET="{{ .Data.data.TEMP_TOKEN_SECRET }}"
+          export VERIFY_TOKEN_SECRET="{{ .Data.data.VERIFY_TOKEN_SECRET }}"
+
           {{- end }}
         vault.hashicorp.com/agent-inject-secret-oauth: "secret/data/main-service/oauth"
         vault.hashicorp.com/agent-inject-template-oauth: |
           {{- with secret "secret/data/main-service/oauth" -}}
           export GOOGLE_CLIENT_ID="{{ .Data.data.GOOGLE_CLIENT_ID }}"
           export GOOGLE_CLIENT_SECRET="{{ .Data.data.GOOGLE_CLIENT_SECRET }}"
-          export GOOGLE_CALLBACK_URL="{{ .Data.data.GOOGLE_CALLBACK_URL }}"
+          {{- end }}
+        vault.hashicorp.com/agent-inject-secret-other: "secret/data/main-service/other"
+        vault.hashicorp.com/agent-inject-template-other: |
+          {{- with secret "secret/data/main-service/other" -}}
+          export RECRUITER_PASS="{{ .Data.data.RECRUITER_PASS }}"
+          export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
+          export USER_EMAIL="{{ .Data.data.USER_EMAIL }}"
+
+          export USER_PASSWORD="{{ .Data.data.USER_PASSWORD }}"
+          export QUIZ_PUBLIC_API_KEY="{{ .Data.data.QUIZ_PUBLIC_API_KEY }}"
+          export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
+
           {{- end }}
         # vault.hashicorp.com/agent-inject-command-database: "/bin/sh -c 'source /vault/secrets/database && source /vault/secrets/config && source /vault/secrets/jwt && source /vault/secrets/oauth && exec node /app/server.js'"
     spec:
@@ -40,6 +54,9 @@ spec:
         - name: main-service
           image: main-service:dev
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: main-service-config
           command:
           - /bin/sh
           - -c
@@ -47,6 +64,7 @@ spec:
             . /vault/secrets/database
             . /vault/secrets/jwt
             . /vault/secrets/oauth
+            . /vault/secrets/other 
             npx prisma generate
             npx prisma db push
             exec node /app/server.js
@@ -54,23 +72,7 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
-      # initContainers:
-      #   - name: prisma-db-push
-      #     image: main-service:dev
-      #     imagePullPolicy: IfNotPresent
-      #     command:
-      #       - /bin/sh
-      #       - -c
-      #       - |
-      #         # Wait for Vault secrets to be available
-      #         while [ ! -f /vault/secrets/database ]; do
-      #           echo "Waiting for Vault secrets..."
-      #           sleep 2
-      #         done
-      #         # Source the secrets and run Prisma
-      #         . /vault/secrets/database
-      #         npx prisma db push
-      #         # npx prisma studio
+
  
 ---
 apiVersion: v1
@@ -98,3 +100,15 @@ data:
   NODE_ENV: "production"
   HOSTNAME: "main-service"
   HOST_IP: "main-service"
+  HOST: "main-service"
+  BCRYPT_ROUNDS: "10"
+  CALLBACK_URL: "http://13.38.15.15/api/main/auth/google/callback"
+  ACCESS_TOKEN_EXPIRY: "1d"
+  REFRESH_TOKEN_EXPIRY: "7d"
+  VERIFY_SECRET_EXPIRY: "7d"
+  FRONTEND_URL: "http://13.38.15.15"
+  BACKEND_URL: "http://gateway:8081/api/main"
+  QUIZ_SERVICE_URL: "http://gateway:8081/api/quiz"
+  VERIFY_TOKEN_EXPIRY: "7d"
+  TEMP_TOKEN_EXPIRY: "15m"
+  AI_SERVICE_URL: "http://ai-service:5000"

@@ -19,8 +19,6 @@ const attachInterceptors = (instance: AxiosInstance) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
-
-        config.headers['x-internal-api-key'] = import.meta.env.VITE_INTERNAL_API_KEY;
         return config;
     });
 
@@ -69,8 +67,6 @@ const attachInterceptors = (instance: AxiosInstance) => {
     );
 };
 
-// ... remaining code (exports and calls) ...
-
 export const mainApi = axios.create({
     baseURL: import.meta.env.VITE_MAIN_SERVICE_URL,
     withCredentials: true,
@@ -86,7 +82,15 @@ export const quizApi = axios.create({
     withCredentials: true,
 });
 
+export const aiapi = axios.create({
+    baseURL: import.meta.env.VITE_AI_SERVICE_URL, 
+    withCredentials: true,
+});
+
+
+
 
 attachInterceptors(mainApi);
 attachInterceptors(chatApi);
 attachInterceptors(quizApi);
+attachInterceptors(aiapi);

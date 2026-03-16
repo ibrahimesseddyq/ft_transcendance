@@ -6,6 +6,8 @@ import { ChatHeader } from './chat/ChatHeader';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import {ToastContainer} from "react-toastify";
+import { AiChatButton } from '@/components/ui/AiChatButton'
+
 import './chat/chat.css';
 
 export function Chat() {
@@ -17,6 +19,7 @@ export function Chat() {
     onlineUsers,
     typingUsers,
     isConnected,
+    hasConnectedOnce,
     isLoading,
     isLoadingMessages,
     recruiter,
@@ -30,10 +33,9 @@ export function Chat() {
     getOtherParticipant,
   } = useChat();
 
-  // chatOpen → adds .chat-open to layout (slides sidebar off on mobile)
   const [chatOpen, setChatOpen] = useState(false);
-  // sidebarActive → adds .active to sidebar (slides it in on mobile)
   const [sidebarActive, setSidebarActive] = useState(false);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
   if (isLoading) {
     return (
@@ -203,10 +205,13 @@ export function Chat() {
           />
         </div>
 
-        {!isConnected && (
+        {hasConnectedOnce && !isConnected && (
           <div style={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#f59e0b', color: 'white', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 200 }}>
             Reconnecting...
           </div>
+        )}
+        {!isAdminOrRecruiter && (
+          <AiChatButton />
         )}
       </main>
     </div>

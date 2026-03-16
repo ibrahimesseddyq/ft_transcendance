@@ -19,8 +19,8 @@ interface InputFieldProps {
   placeholder: string;
   type?: string;
 }
-const inputClass = "h-11 w-full text-sm text-white outline-none px-3 \
-    border border-[#405673] rounded-md bg-transparent focus:border-[#10B77F] transition-colors oveflow-auto custom-scrollbar";
+const inputClass = "h-11 w-full text-sm dark:text-surface-main dark:text-white outline-none px-3 \
+    border border-[#405673] rounded-md bg-transparent focus:border-accent transition-colors oveflow-auto custom-scrollbar";
 
 const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) => {
   const {
@@ -94,23 +94,23 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
     reset();
   };
 
-  const selectClass = "h-11 w-full text-sm text-black dark:text-white border \
+  const selectClass = "h-11 w-full text-sm text-black dark:text-surface-main border \
     bg-gray-50 dark:bg-[#1d273e] border-gray-300 dark:border-[#405673] \
-    outline-none focus:border-[#10B77F] transition-colors rounded-md px-3 cursor-pointer appearance-none";
+    outline-none focus:border-accent transition-colors rounded-md px-3 cursor-pointer appearance-none";
 
-  const inputClass = "h-11 w-full text-sm text-black dark:text-white border \
+  const inputClass = "h-11 w-full text-sm text-black dark:text-surface-main border \
     bg-gray-50 dark:bg-[#1d273e] border-gray-300 dark:border-[#405673] \
-    outline-none focus:border-[#10B77F] transition-colors rounded-md px-3";
+    outline-none focus:border-accent transition-colors rounded-md px-3";
 
   return (
-    <div className="h-full w-full flex flex-col items-center transition-colors duration-300 p-4">
+    <div className="h-full w-full max-w-screen-xl flex flex-col items-center transition-colors duration-300 p-4">
       {/* Header Badge */}
-      <div className='border rounded-xl px-5 py-2 border-gray-200 dark:border-[#1e2e52] bg-white dark:bg-[#121b31] mb-6 shadow-sm'>
-        <h1 className='text-black dark:text-white text-lg font-bold'>Post New Job</h1>
+      <div className='border rounded-xl px-5 py-2 border-gray-200 dark:border-[#1e2e52] bg-surface-main dark:bg-[#121b31] mb-6 shadow-sm'>
+        <h1 className='text-black dark:text-surface-main text-lg font-bold'>Post New Job</h1>
       </div>
 
       {/* Form Container */}
-      <div className='h-auto w-full bg-white dark:bg-[#121b31]/50 p-6 
+      <div className='h-auto w-full bg-surface-main dark:bg-[#121b31]/50 p-6 
         rounded-2xl border border-gray-200 dark:border-[#1e2e52] 
          overflow-y-auto custom-scrollbar shadow-2xl'>
         <form onSubmit={handleSubmit(JobSubmit)} className='flex flex-col gap-4 w-full'>
@@ -126,7 +126,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
                 <option value="marketing">Marketing</option>
                 <option value="sales">Sales</option>
               </select>
-              {errors.department && <p className="mt-1 text-red-400 text-[10px] italic">{errors.department.message}</p>}
+              {errors.department && <p className="mt-1 text-danger-hover text-[10px] italic">{errors.department.message}</p>}
             </div>
           </div>
 
@@ -135,8 +135,8 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
               <InputField name="location" 
                 register={register} error={errors.location?.message} placeholder="Location (City, Country)" />
                 <div className='flex-1 flex items-center gap-2 px-2'>
-                  <input type="checkbox" {...register("isRemote")} id="isRemote" className="accent-[#10B77F] h-4 w-4" />
-                  <label htmlFor="isRemote" className="text-black dark:text-white text-sm cursor-pointer">Remote</label>
+                  <input type="checkbox" {...register("isRemote")} id="isRemote" className="accent-accent h-4 w-4" />
+                  <label htmlFor="isRemote" className="text-black dark:text-surface-main text-sm cursor-pointer">Remote</label>
               </div>
           </div>
 
@@ -156,7 +156,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
                   <option value="EUR">EUR</option>
                   <option value="MAD">MAD</option>
                 </select>
-                {errors.salaryCurrency && <p className="mt-1 text-red-400 text-[10px] italic">{errors.salaryCurrency.message}</p>}
+                {errors.salaryCurrency && <p className="mt-1 text-danger-hover text-[10px] italic">{errors.salaryCurrency.message}</p>}
             </div>
           </div>
 
@@ -183,8 +183,8 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
           <div className='flex-1'>
             <textarea {...register("skills")}
               placeholder="Job skills" rows={4}
-              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
-                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
+              className="w-full text-sm text-black dark:text-surface-main outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-accent resize-none overflow-auto custom-scrollbar" />
             {errors.skills && <p className="mt-1 text-red-500 text-[10px]">{errors.skills.message}</p>}
           </div>
     
@@ -192,8 +192,8 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
           <div className='flex-1'>
             <textarea {...register("requirements")}
               placeholder="Job requirements" rows={4}
-              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
-                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
+              className="w-full text-sm text-black dark:text-surface-main outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-accent resize-none overflow-auto custom-scrollbar" />
             {errors.requirements && <p className="mt-1 text-red-500 text-[10px]">{errors.requirements.message}</p>}
           </div>
 
@@ -201,19 +201,19 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
           <div className='flex-1'>
             <textarea {...register("description")}
               placeholder="Job Description" rows={4}
-              className="w-full text-sm text-black dark:text-white outline-none p-3 border border-gray-300 dark:border-[#405673] 
-                rounded-md bg-gray-50 dark:bg-transparent focus:border-[#10B77F] resize-none overflow-auto custom-scrollbar" />
+              className="w-full text-sm text-black dark:text-surface-main outline-none p-3 border border-gray-300 dark:border-[#405673] 
+                rounded-md bg-gray-50 dark:bg-transparent focus:border-accent resize-none overflow-auto custom-scrollbar" />
             {errors.description && <p className="mt-1 text-red-500 text-[10px]">{errors.description.message}</p>}
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-2">
             <button type="button" onClick={() => setIsFormOpen(false)} 
-              className="h-11 flex-1 text-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              className="h-11 flex-1 text-gray-700 dark:text-surface-main border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               Cancel
             </button>
             <button type="submit"
-                className="h-11 flex-1 text-white dark:text-black font-bold rounded-lg bg-[#10B77F] hover:bg-[#0d9668] transition-colors shadow-lg shadow-[#10B77F]/20">
+                className="h-11 flex-1 text-surface-main dark:text-black font-bold rounded-lg bg-accent hover:bg-[#0d9668] transition-colors shadow-lg shadow-accent/20">
                 {jobItem ? "Save Changes" : "Create Job"}
             </button>
           </div>
@@ -233,7 +233,7 @@ const InputField = ({name, register, error, placeholder, type }: InputFieldProps
         placeholder={placeholder}
         className={inputClass}
       />
-      {error && <p className="mt-1 text-red-400 text-[10px] italic">{error}</p>}
+      {error && <p className="mt-1 text-danger-hover text-[10px] italic">{error}</p>}
     </div>
 );}
 

@@ -13,7 +13,7 @@ class ChatSocketService {
   }
 
   connect(token?: string): void {
-    if (this.socket?.connected) {
+    if (this.socket) {
       return;
     }
 
@@ -50,9 +50,24 @@ class ChatSocketService {
     });
 
     // Message events
-    this.socket.on('message:new', (data: any) => {
-      this.emit('onNewMessage', data);
-    });
+    const forwardMessage = (data: any) => {
+      // Support both payloads:
+      // 1) { message, conversationId }
+      // 2) direct message object with conversationId on it
+      const payload = data?.message
+        ? data
+        : {
+            message: data,
+            conversationId: data?.conversationId,
+          };
+
+      if (payload?.message && payload?.conversationId) {
+        this.emit('onNewMessage', payload);
+      }
+    };
+
+    this.socket.on('message:new', forwardMessage);
+    this.socket.on('message:received', forwardMessage);
 
     this.socket.on('message:updated', (data: any) => {
       this.emit('onMessageUpdated', data);
@@ -69,6 +84,24 @@ class ChatSocketService {
     // Typing events
     this.socket.on('typing:update', (data: any) => {
       this.emit('onTypingUpdate', data);
+    });
+
+    this.socket.on('user:typing', (data: any) => {
+      this.emit('onTypingUpdate', {
+        conversationId: data?.conversationId,
+        userId: data?.userId,
+        userName: data?.userName || 'Someone',
+        isTyping: true,
+      });
+    });
+
+    this.socket.on('user:stopped-typing', (data: any) => {
+      this.emit('onTypingUpdate', {
+        conversationId: data?.conversationId,
+        userId: data?.userId,
+        userName: data?.userName || 'Someone',
+        isTyping: false,
+      });
     });
 
     // User status events
@@ -90,6 +123,14 @@ class ChatSocketService {
     });
 
     // Notification events
+    this.socket.on('notification:new', (data: any) => {
+      this.emit('onNotificationNew', data);
+    });
+
+    this.socket.on('notification:cleared', (data: any) => {
+      this.emit('onNotificationCleared', data);
+    });
+
     this.socket.on('notification:message', (data: any) => {
       this.emit('onNotification', data);
     });
@@ -146,11 +187,11 @@ class ChatSocketService {
   }
 
   startTyping(conversationId: string): void {
-    this.socket?.emit('typing:start', { conversationId });
+    this.socket?.emit('typing:start', conversationId);
   }
 
   stopTyping(conversationId: string): void {
-    this.socket?.emit('typing:stop', { conversationId });
+    this.socket?.emit('typing:stop', conversationId);
   }
 
   joinConversation(conversationId: string): void {

@@ -24,7 +24,6 @@ export const getRecruiterDashboard = async () => {
         dashboardRepository.getHiringFunnel(start, end),
         dashboardRepository.getRecruitmentStatusBreakdown(start, end),
     ]);
-
     const data = { 
         kpiCards, applicationsOverview, activeCandidatesList, 
         recentActivity, hiringFunnel, recruitmentStatus 

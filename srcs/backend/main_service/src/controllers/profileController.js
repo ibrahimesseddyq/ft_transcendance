@@ -16,8 +16,7 @@ export const createProfile = asyncHandler(async (req, res, next) => {
 })
 
 export const updateProfile = asyncHandler(async (req, res, next) => {
-    const id = req.params?.id || req.body.userId;
-    console.log(req.body);
+    const id = req.params?.id;
     const updatedProfile = await profileservice.updateProfile(id,{
         body : req.body,
         files: req.files

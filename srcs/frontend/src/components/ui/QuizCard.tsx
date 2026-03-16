@@ -16,17 +16,17 @@ const QuizCard = ({Type}:any) =>{
         return (TrueOrFalse);
     }
     return (
-        <div className={`flex-1 group relative gap-4 min-h-40 min-w-72 overflow-hidden bg-white rounded-xl
+        <div className={`flex-1 group relative gap-4 min-h-40 min-w-72 overflow-hidden bg-surface-main rounded-xl
             shadow-md p-4 flex items-center justify-center bg-cover bg-center transition-all duration-300
             ${Type === "MultipleResponse" ? 'bg-[url(/MultipleResponse.jpg)]' :
               Type === "MultipleChoice" ? 'bg-[url(/MultipleChoice.jpg)]' : 
               'bg-[url(/TrueOrFalse.jpeg)]'}`}>
             
-            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-500 ease-out group-hover:opacity-0 group-hover:backdrop-blur-none" />
+            <div className="absolute inset-0 bg-secondary-darkbg/60 backdrop-blur-sm transition-opacity duration-500 ease-out group-hover:opacity-0 group-hover:backdrop-blur-none" />
 
             <div className="relative h-full w-full flex flex-col justify-between items-center
                 transition-transform duration-500 ease-out group-hover:scale-90">
-                <h1 className="text-xl font-semibold text-white opacity-100 group-hover:opacity-0">
+                <h1 className="text-xl font-semibold text-surface-main opacity-100 group-hover:opacity-0">
                     {Type}
                 </h1>
 
@@ -35,7 +35,7 @@ const QuizCard = ({Type}:any) =>{
                 </div>
 
                 <button className="mt-4 py-3 rounded-xl w-full
-                    bg-[#00adef] text-white hover:bg-blue-400 transition-colors">
+                    bg-primary text-surface-main hover:bg-blue-400 transition-colors">
                     Create Quiz
                 </button>
             </div>

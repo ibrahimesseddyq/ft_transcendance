@@ -1,7 +1,7 @@
 import express from 'express'
 import * as testController from '../controllers/testController.js'
 import validateRequest from '../middleware/ValidateRequest.js';
-import {createTestSchema, updateTestschema} from '../validators/testValidator.js'
+import {createTestSchema, updateTestSchema} from '../validators/testValidator.js'
 
 const router = express.Router();
 
@@ -160,7 +160,7 @@ router.get('/:id', testController.getTestById)
     .get('/', testController.getTests)
     .post('/', validateRequest(createTestSchema),
         testController.createTest)
-    .patch('/:id', validateRequest(updateTestschema),
+    .patch('/:id', validateRequest(updateTestSchema),
         testController.updateTest)
     .delete('/:id', testController.deleteTest)
 

@@ -9,11 +9,11 @@ export const startTest = async (data) => {
     if (!applicationPhase)
         throw new HttpException(404, 'application phase does not exists');
     const application =  await applicationService.getApplicaticationById(applicationPhase.applicationId);
-    if (application.status !== 'inProgress')
+    if (application.status !== 'inProgress' && application.status !== 'pending' )
         throw new HttpException(400, 'application is not in progress');
     if (application.candidateId != userId)
         throw new HttpException(403, 'you are not a cadidate for this application');
-    if (applicationPhase.status != 'pending' && applicationPhase.status != 'inProgress')
+    if (applicationPhase.status !== 'pending' && applicationPhase.status !== 'inProgress')
         throw new HttpException(404, 'this test phase not available');
     if (applicationPhase.jobPhase.testId != testId)
         throw new HttpException(400,'This test is not assigned to this phase');
@@ -21,41 +21,45 @@ export const startTest = async (data) => {
     if (applicationPhase.status === 'pending')
         await applicationPhaseService.updateApplicationPhase(applicationPhase.id,{
                 status: 'inProgress',
-                startedAt: Date.now()
+                startedAt: new Date()
             })
+    const startedAt = applicationPhase.startedAt || new Date();
+    const durationMs = (test.durationMinutes ?? 0) * 60 * 1000;
     return {
         test: test,
-        startedAt: applicationPhase.startedAt || Date.now(),
-        completedAt: (applicationPhase.completedAt || Date.now()) + test.durationMinutes,
-
+        startedAt: startedAt,
+        completedAt: new Date(startedAt.getTime() + durationMs)
     }
 }
 
 export const submitTest = async (data) => {
     const testId = data.params.testId;
-    const userId = data.user.userId;
-    const {applicationPhaseId, answers} = data.body;
+    const {applicationPhaseId, answers, userId} = data.body;
     const applicationPhase = await applicationPhaseService.getApplicaticationPhaseById(applicationPhaseId);
-    if (applicationPhase.application.candidateId != userId)
+
+    if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
-    if (applicationPhase.status != 'inProgress')
+    console.log('hello world ',applicationPhase.status)
+    if (applicationPhase.status !==  'inProgress')
         throw new HttpException(400,'Test not started or already completed');
-    const deadLine = applicationPhase.startedAt + applicationPhase.jobPhase * 60 * 1000;
-    if (Date.now() > deadLine)
-    {
+    const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
+    if (!applicationPhase.startedAt)
+        throw new HttpException(400, 'Test has not been started yet');
+    const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs;
+   if (Date.now() > deadLine) {
         await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
-            completedAt : Date.now(),
-            status:'failed',
+            completedAt: new Date(),
+            status: 'failed',
             score: 0,
-            notes : 'Time expired — auto-failed'
-        })
-        throw new HttpException(400, 'Test duration has expired ');
+            notes: 'Time expired — auto-failed'
+        });
+        throw new HttpException(400, 'Test duration has expired');
     }
     const evaluationResult = await quizSevice.evaluateTest(testId, answers);
     await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
         status: evaluationResult.passed ? 'completed' : 'failed',
         score: evaluationResult.totalScore,
-        completedAt: Date.now(),
+        completedAt: new Date(),
     })
     return {
         score: evaluationResult.totalScore,
