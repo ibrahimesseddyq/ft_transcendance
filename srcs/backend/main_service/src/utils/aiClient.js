@@ -4,7 +4,7 @@ import { HttpException } from "./httpExceptions.js";
 
 const aiClient = axios.create({
     baseURL: env.AI_SERVICE_URL,
-    timeout: 5000,
+    timeout: 10000,
     headers : {
         "Content-Type": "application/json",
         "x-api-ai-key":env.AI_INTERNAL_API_KEY
