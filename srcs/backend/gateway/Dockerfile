@@ -4,4 +4,4 @@ RUN apk update && apk upgrade
 WORKDIR /app
 COPY build/libs/*.jar app.jar
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "app.jar", "-Dspring-boot.run.profiles=prod"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]

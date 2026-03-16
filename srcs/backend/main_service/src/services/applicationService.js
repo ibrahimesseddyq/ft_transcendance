@@ -56,35 +56,46 @@ export const getApplicaticationById = async (applicationId) => {
 }
 
 export const advance = async (applicationId) => {
-	const application =  await applicationRepository.getApplicaticationById(applicationId);
-	if (!application)
-		throw new HttpException(404, "application not fount");
-	if (application.status != 'inProgress' || application.job.status != 'open')
-		throw new HttpException(400, 'cannot make progress in this application');
-	const phases = application.applicationPhases;
-	const currentPhase = phases.find(phase => phase.id === application.currentPhaseId)
-	if (currentPhase.status !== 'completed')
-		throw new HttpException(400,"can't advance to next phase");
-	const currentIndex = phases.indexOf(currentPhase);
-	if(currentIndex + 1 == phases.length)
-		throw new HttpException(400, 'application already completed');
-	const nextPhase = phases[currentIndex + 1];
-	const [newPhase, newApplication] = await Promise.all([
-		applicationPhaseservice.updateApplicationPhase(nextPhase.id, {
-			status:"inProgress"
-		}),
-		applicationRepository.updateApplication(applicationId,{
-			currentPhaseId: nextPhase.id
-		})
-	])
-	return newPhase;
-}
+    return await prisma.$transaction(async (tx) => {
+        const application = await tx.application.findUnique({
+            where: { id: applicationId },
+            include: { applicationPhases: true }
+        });
+        if (!application) throw new HttpException(404, 'application not found');
+        if (application.status !== 'inProgress')
+            throw new HttpException(400, 'cannot make progress in this application');
+
+        const phases = application.applicationPhases;
+        const currentPhase = phases.find(p => p.id === application.currentPhaseId);
+        if (currentPhase.status !== 'completed')
+            throw new HttpException(400, "can't advance to next phase");
+
+        const currentIndex = phases.indexOf(currentPhase);
+        if (currentIndex + 1 === phases.length)
+            throw new HttpException(400, 'application already completed');
+
+        const nextPhase = phases[currentIndex + 1];
+        const updated = await tx.application.updateMany({
+            where: { id: applicationId, currentPhaseId: currentPhase.id },
+            data: { currentPhaseId: nextPhase.id }
+        });
+        if (updated.count === 0) throw new HttpException(409, 'Concurrent modification — retry');
+
+        return await tx.applicationPhase.update({
+            where: { id: nextPhase.id },
+            data: { status: 'inProgress' }
+        });
+    });
+};
 
 export const rejectApplication = async (applicationId, io) => {
 	const app = await prisma.application.findUnique({
 		where: { id: applicationId },
 		include: { job: { select: { title: true } } }
 	});
+	if (!app) throw new HttpException(404, 'application not found');
+	if (['accepted', 'rejected', 'withdrawn'].includes(app.status))
+        throw new HttpException(400, `Cannot reject application with status: ${app.status}`);
 	const updated = await applicationRepository.updateApplication(applicationId, { status: 'rejected' });
 	if (app && io) {
 		await createNotification(io, {
@@ -119,12 +130,16 @@ export const acceptApplication = async (applicationId, io) => {
 	return updated;
 }
 
-export const withdrawApplication = async (applicationId) => {
-	const application = await applicationRepository.updateApplication(applicationId,{
-		status: 'withdrawn'
-	})
-	return application;
-}
+export const withdrawApplication = async (applicationId, userId) => {
+    const application = await applicationRepository.getApplicaticationById(applicationId);
+    if (!application)
+        throw new HttpException(404, 'application not found');
+    if (application.candidateId !== userId)
+        throw new HttpException(403, 'Forbidden');
+    if (['rejected', 'accepted', 'withdrawn'].includes(application.status))
+        throw new HttpException(400, `Cannot withdraw an application with status: ${application.status}`);
+    return await applicationRepository.updateApplication(applicationId, { status: 'withdrawn' });
+};
 
 export const getApplicaticationPhases = async (applicationId) => {
 	const application =  await applicationRepository.getApplicaticationById(applicationId);
