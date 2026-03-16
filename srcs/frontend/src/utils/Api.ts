@@ -67,8 +67,6 @@ const attachInterceptors = (instance: AxiosInstance) => {
     );
 };
 
-// ... remaining code (exports and calls) ...
-
 export const mainApi = axios.create({
     baseURL: import.meta.env.VITE_MAIN_SERVICE_URL,
     withCredentials: true,
@@ -84,7 +82,15 @@ export const quizApi = axios.create({
     withCredentials: true,
 });
 
+export const aiapi = axios.create({
+    baseURL: import.meta.env.VITE_AI_SERVICE_URL, 
+    withCredentials: true,
+});
+
+
+
 
 attachInterceptors(mainApi);
 attachInterceptors(chatApi);
 attachInterceptors(quizApi);
+attachInterceptors(aiapi);

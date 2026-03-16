@@ -143,6 +143,7 @@ interface MessageRowProps {
 
 function MessageRow({ message, currentUser }: Readonly<MessageRowProps>) {
   const isSent = message.senderId === currentUser?.id;
+  const modAction = message.moderation?.action;
 
   if (message.messageType === 'system') {
     return (
@@ -154,31 +155,62 @@ function MessageRow({ message, currentUser }: Readonly<MessageRowProps>) {
     );
   }
 
-  const contentStyle: React.CSSProperties = isSent
-    ? {
-        background: '#0ea5e9',
-        color: 'white',
-        borderRadius: 12,
-        borderBottomRightRadius: 4,
-        padding: '14px 18px',
-        fontSize: 14,
-        lineHeight: 1.6,
-        wordBreak: 'break-word',
-        maxWidth: 500,
-      }
-    : {
-        background: '#D6E8EE',
-        color: '#333',
-        borderRadius: 12,
-        borderBottomLeftRadius: 4,
-        padding: '14px 18px',
-        fontSize: 14,
-        lineHeight: 1.6,
-        wordBreak: 'break-word',
-        maxWidth: 500,
-      };
+  let contentStyle: React.CSSProperties;
 
-  const bubbleClass = isSent ? '' : 'received-bubble';
+  if (modAction === 'Block') {
+    contentStyle = {
+      background: '#fef2f2',
+      color: '#991b1b',
+      border: '2px solid #ef4444',
+      borderRadius: 12,
+      borderBottomRightRadius: 4,
+      padding: '14px 18px',
+      fontSize: 14,
+      lineHeight: 1.6,
+      wordBreak: 'break-word',
+      maxWidth: 500,
+    };
+  } else if (modAction === 'Warn') {
+    contentStyle = {
+      background: '#fffbeb',
+      color: '#92400e',
+      border: '2px solid #f59e0b',
+      borderRadius: 12,
+      borderBottomRightRadius: isSent ? 4 : 12,
+      borderBottomLeftRadius: isSent ? 12 : 4,
+      padding: '14px 18px',
+      fontSize: 14,
+      lineHeight: 1.6,
+      wordBreak: 'break-word',
+      maxWidth: 500,
+    };
+  } else if (isSent) {
+    contentStyle = {
+      background: '#0ea5e9',
+      color: 'white',
+      borderRadius: 12,
+      borderBottomRightRadius: 4,
+      padding: '14px 18px',
+      fontSize: 14,
+      lineHeight: 1.6,
+      wordBreak: 'break-word',
+      maxWidth: 500,
+    };
+  } else {
+    contentStyle = {
+      background: '#D6E8EE',
+      color: '#333',
+      borderRadius: 12,
+      borderBottomLeftRadius: 4,
+      padding: '14px 18px',
+      fontSize: 14,
+      lineHeight: 1.6,
+      wordBreak: 'break-word',
+      maxWidth: 500,
+    };
+  }
+
+  const bubbleClass = (isSent || modAction === 'Block' || modAction === 'Warn') ? '' : 'received-bubble';
   const fileUrl = buildFileUrl(message.fileUrl);
 
   return (
@@ -191,6 +223,12 @@ function MessageRow({ message, currentUser }: Readonly<MessageRowProps>) {
         )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 11, color: '#94a3b8' }}>
+        {modAction === 'Block' && (
+          <span style={{ color: '#ef4444', fontWeight: 500 }}>Blocked</span>
+        )}
+        {modAction === 'Warn' && (
+          <span style={{ color: '#f59e0b', fontWeight: 500 }}>Warning</span>
+        )}
         {formatTime(message.createdAt)}
       </div>
     </div>

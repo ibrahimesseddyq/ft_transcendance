@@ -41,18 +41,6 @@ export function ApplicationDetails() {
     if (id) fetchDetailsAndUser();
   }, [id]);
 
-
-  const handleAdvancePhase = async () => {
-    try {
-      await mainApi.patch(`${env_main_api}/applications/${id}/advance`);
-      alert("Candidate advanced to the next phase!");
-      const res = await mainApi.get(`${env_main_api}/applications/${id}`);
-      setDetails(res.data.data || res.data);
-    } catch (error) {
-      alert(error);
-    }
-  };
-
   const handleRejectCandidate = async () => {
     if (!window.confirm("Are you sure you want to reject this candidate?")) return;
     try {
@@ -132,9 +120,6 @@ export function ApplicationDetails() {
         {isAdminOrRecruiter
           ?
             <div className="mt-10 flex gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
-              <button onClick={handleAdvancePhase} className="px-6 py-2 bg-primary text-surface-main rounded-xl hover:bg-primary/80 transition-colors font-medium">
-                Advance Phase
-              </button>
               <button onClick={handleRejectCandidate} className="px-6 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-surface-main transition-colors font-medium">
                 Reject Candidate
               </button>

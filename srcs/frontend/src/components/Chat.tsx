@@ -6,6 +6,8 @@ import { ChatHeader } from './chat/ChatHeader';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import {ToastContainer} from "react-toastify";
+import { AiChatButton } from '@/components/ui/AiChatButton'
+
 import './chat/chat.css';
 
 export function Chat() {
@@ -29,12 +31,12 @@ export function Chat() {
     startTyping,
     stopTyping,
     getOtherParticipant,
+    moderationAlert,
   } = useChat();
 
-  // chatOpen → adds .chat-open to layout (slides sidebar off on mobile)
   const [chatOpen, setChatOpen] = useState(false);
-  // sidebarActive → adds .active to sidebar (slides it in on mobile)
   const [sidebarActive, setSidebarActive] = useState(false);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
   if (isLoading) {
     return (
@@ -208,6 +210,51 @@ export function Chat() {
           <div style={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#f59e0b', color: 'white', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 200 }}>
             Reconnecting...
           </div>
+        )}
+
+        {moderationAlert && (
+          <div className="moderation-overlay" style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 300,
+            padding: '20px 32px',
+            borderRadius: 12,
+            background: moderationAlert.action === 'Block' ? '#fef2f2' : '#fffbeb',
+            border: `2px solid ${moderationAlert.action === 'Block' ? '#ef4444' : '#f59e0b'}`,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+            textAlign: 'center',
+            maxWidth: 360,
+            animation: 'fadeInOut 4s ease-in-out forwards',
+          }}>
+            <div style={{
+              fontSize: 28,
+              marginBottom: 8,
+            }}>
+              {moderationAlert.action === 'Block' ? '\u26D4' : '\u26A0\uFE0F'}
+            </div>
+            <div style={{
+              fontWeight: 600,
+              fontSize: 16,
+              color: moderationAlert.action === 'Block' ? '#dc2626' : '#d97706',
+              marginBottom: 6,
+            }}>
+              {moderationAlert.action === 'Block' ? 'Message Blocked' : 'Warning'}
+            </div>
+            <div style={{
+              fontSize: 13,
+              color: '#475569',
+              lineHeight: 1.5,
+            }}>
+              {moderationAlert.reason.length > 0
+                ? `Reason: ${moderationAlert.reason.join(', ')}`
+                : 'Your message was flagged by moderation.'}
+            </div>
+          </div>
+        )}
+        {!isAdminOrRecruiter && (
+          <AiChatButton />
         )}
       </main>
     </div>

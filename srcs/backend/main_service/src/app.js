@@ -26,17 +26,9 @@ import notificationRoutes from './routes/notificationRoutes.js'
 const app =  express();
 
 app.use(morgan('combined'));
-app.use((req, res, next) => {
-  console.log("Incoming Request:");
-  console.log("Method:", req.method);
-  console.log("URL:", req.originalUrl);
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  console.log("--------------");
-  next();
-});
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173' || 'http://127.0.0.1:5173'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true 
 }));
@@ -45,7 +37,6 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      // Allow the frontend to embed /chat in an iframe
       "frame-ancestors": ["'self'", env.FRONTEND_URL],
     },
   },
@@ -113,7 +104,7 @@ app.use('/api/main/notifications',
   verifyToken,
   notificationRoutes);
 
-app.get('/health', async (req, res) => {
+app.get('/api/main/health', async (req, res) => {
   try {
     res.status(200).json({
       status: 'OK',

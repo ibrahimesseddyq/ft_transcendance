@@ -146,12 +146,13 @@ export const getHiringFunnel = async (recruiterId, start, end) => {
     return { applied, screening };
 };
 
-export const getRecruitmentStatusBreakdown = async (recruiterId, start, end) => {
+export const getRecruitmentStatusBreakdown = async (start, end) => {
     const groupings = await prisma.application.groupBy({
         by: ['status'],
         _count: { _all: true },
         where: { appliedAt: { gte: start, lte: end } }
     });
+    // console.log('groupings ', groupings)
 
     const countsMap = groupings.reduce((acc, curr) => {
         acc[curr.status] = curr._count._all;

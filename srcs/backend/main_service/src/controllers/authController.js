@@ -5,20 +5,20 @@ import * as jwtService from '../services/jwtService.js';
 import { getSafeUser } from '../utils/excludeSensitive.js';
 import ms from 'ms';
 
-const accessTokenOptions = {
+export const accessTokenOptions = {
     httpOnly: true,
     maxAge: ms(env.ACCESS_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production"
 }
-const refreshTokenOptions = {
+export const refreshTokenOptions = {
     httpOnly: true,
     maxAge: ms(env.REFRESH_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',
     secure: env.NODE_ENV === "production",
     path: '/api/main/auth/refresh'
 }
-const tempTokenOptions = {
+export const tempTokenOptions = {
     httpOnly: true,
     maxAge: ms(env.TEMP_TOKEN_EXPIRY),
     sameSite: env.NODE_ENV === "production" ? 'none' : 'lax',

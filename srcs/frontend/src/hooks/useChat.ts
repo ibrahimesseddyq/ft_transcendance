@@ -344,6 +344,8 @@ export function useChat() {
     }
   }, [state.conversations]);
 
+  const [moderationAlert, setModerationAlert] = useState<{ action: string; reason: string[] } | null>(null);
+
   // Send a message
   const sendMessage = useCallback(
     async (content: string) => {
@@ -354,7 +356,37 @@ export function useChat() {
           state.currentConversation.id,
           content.trim()
         );
+
+        // Block: message was not sent — show it locally in red
+        if (raw.blocked && raw.moderation?.action === 'Block') {
+          const blockedMessage: Message = {
+            id: `blocked-${Date.now()}`,
+            content: content.trim(),
+            messageType: 'text',
+            senderId: state.user?.id || '',
+            conversationId: state.currentConversation.id,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            moderation: raw.moderation,
+          };
+          setState((prev) => ({
+            ...prev,
+            messages: [...prev.messages, blockedMessage],
+          }));
+          setModerationAlert({ action: 'Block', reason: raw.moderation.reason || [] });
+          setTimeout(() => setModerationAlert(null), 4000);
+          return;
+        }
+
         const message = normalizeMessage(raw);
+
+        // Warn: message was sent but flagged
+        if (raw.moderation?.action === 'Warn') {
+          message.moderation = raw.moderation;
+          setModerationAlert({ action: 'Warn', reason: raw.moderation.reason || [] });
+          setTimeout(() => setModerationAlert(null), 4000);
+        }
+
         setState((prev) => {
           if (prev.messages.some((m) => m.id === message.id)) return prev;
           return {
@@ -372,7 +404,7 @@ export function useChat() {
         toast.error(extractApiErrorMessage(error));
       }
     },
-    [state.currentConversation]
+    [state.currentConversation, state.user]
   );
 
   // Upload and send file
@@ -450,5 +482,6 @@ export function useChat() {
     startTyping,
     stopTyping,
     getOtherParticipant,
+    moderationAlert,
   };
 }

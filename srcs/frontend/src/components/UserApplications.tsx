@@ -5,12 +5,14 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { ToastContainer } from "react-toastify";
 import Icon  from '@/components/ui/Icon'
 import { Link } from 'react-router-dom';
+import { AiChatButton } from '@/components/ui/AiChatButton'
 
 export function UserApplications() {
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const user = useAuthStore((state) => state.user);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+    const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
     useEffect(() => {
         const fetchUserContent = async () => {
@@ -45,9 +47,9 @@ export function UserApplications() {
             <p className="text-slate-500 mt-10">Loading applications...</p>
         ) : applications.length > 0 ? (
             <div className='flex flex-wrap gap-4 justify-center w-full'>
-                {applications?.map((app: any, id:number) => (
+                {applications?.map((app: any) => (
                     <div className='flex gap-4 w-full max-w-[800px]' >
-                        <AppCard key={id} app={app}/>
+                        <AppCard  app={app}/>
                     </div>
                 ))}
             </div>
@@ -68,7 +70,9 @@ export function UserApplications() {
                 </Link>
             </div>
         )}
-            
+        {!isAdminOrRecruiter && (
+            <AiChatButton />
+        )}
         </div>
     );
 }
