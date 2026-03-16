@@ -25,7 +25,8 @@ build/
 .next/
 out/
 generated/
-
+__pycache__/
+*.pyc
 tls.crt
 tls.key
 
@@ -63,7 +64,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-
+__pycache__/
+*.pyc
 # ── Personal notes ───────────────────────────────────────────────
 notesAndTodos.txt
 repomix-output.xml

@@ -4,7 +4,7 @@ import { Loading } from "@/components/Loading";
 import JobForm from "@/components/ui/CreateOrEditJobForm";
 import { ToastContainer } from "react-toastify";
 import JobFilter from "@/components/ui/JobFilter";
-import JobCards from '@/components/ui/JobCards';
+import JobCardsList from '@/components/ui/JobCardsList';
 import { useAuthStore } from '@/utils/ZuStand';
 import {AiChatButton} from '@/components/ui/AiChatButton'
 
@@ -33,7 +33,7 @@ export function Jobs() {
           >
             ✕
           </button>
-          <JobForm jobItem={jobItem} setIsFormOpen={setIsFormOpen} setJobsArray={setJobsArray}/>
+          <JobForm jobItem={jobItem} setIsFormOpen={setIsFormOpen} setJobsArray={setJobsArray} setTotalPages={setTotalPages}/>
         </div>
       )}
 
@@ -41,10 +41,10 @@ export function Jobs() {
       <div className="w-full md:w-64 h-fit md:h-full justify-start">
         <JobFilter
           totalJobs={jobsArray}
+          currentPage={currentPage}
           setJobsArray={setJobsArray}
           setIsLoading={setIsLoading}
           setTotalPages={setTotalPages}
-          currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
       </div>
@@ -56,13 +56,14 @@ export function Jobs() {
             <Loading />
           </div>
         ) : (
-          <JobCards 
+          <JobCardsList 
             jobsArray={jobsArray}
-            setJobsArray={setJobsArray}
-            setJobItem={setJobItem}
-            setIsFormOpen={setIsFormOpen}
-            currentPage={currentPage}
             totalPages={totalPages} 
+            currentPage={currentPage}
+            setJobItem={setJobItem}
+            setJobsArray={setJobsArray}
+            setIsFormOpen={setIsFormOpen}
+            setTotalPages={setTotalPages}
             setCurrentPage={setCurrentPage}
           />
         )}

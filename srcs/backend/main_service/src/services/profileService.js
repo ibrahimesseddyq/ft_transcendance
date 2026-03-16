@@ -3,7 +3,6 @@ import {HttpException} from '../utils/httpExceptions.js';
 import * as fileService from './fileService.js';
 import * as userService from './userService.js';
 
-// this updated need to be checked
 export const createProfile = async (userId, profileData) => {
     const createData = { ...profileData.body };
     
@@ -26,14 +25,12 @@ export const createProfile = async (userId, profileData) => {
         })
     ];
 
-    if (avatarUrl) {
+    if (avatarUrl)
         tasks.push(userService.updateUser(userId, { avatarUrl }));
-    }
 
     const [profile, user] = await Promise.all(tasks);
-    if (user && user.avatarUrl) {
+    if (user && user.avatarUrl)
         profile.user.avatarUrl = user.avatarUrl;
-    }
     return profile;
 }
 export const updateProfile = async (userId, profileData) => {
@@ -54,16 +51,17 @@ export const updateProfile = async (userId, profileData) => {
     ]);
     const newAvatarUrl = avatarResult?.avatarUrl;
     const newResumeUrl = resumeResult?.resumeUrl;
-    if (newResumeUrl) {
+    
+    if (newResumeUrl)
         updateData.resumeUrl = newResumeUrl;
-    }
+
     const executionQueue = [];
-    if (newResumeUrl && profile.resumeUrl && profile.resumeUrl !== newResumeUrl) {
+    if (newResumeUrl && profile.resumeUrl && profile.resumeUrl !== newResumeUrl)
         executionQueue.push(fileService.deleteFile(profile.resumeUrl));
-    }
-    if (newAvatarUrl && user.avatarUrl && user.avatarUrl !== newAvatarUrl) {
+
+    if (newAvatarUrl && user.avatarUrl && user.avatarUrl !== newAvatarUrl)
         executionQueue.push(fileService.deleteFile(user.avatarUrl));
-    }
+
     const updateProfilePromise = profileRepository.updateProfile(userId, updateData);
     executionQueue.push(updateProfilePromise);
     let updateUserPromise = Promise.resolve(user);
@@ -76,7 +74,7 @@ export const updateProfile = async (userId, profileData) => {
     const updatedUser = await updateUserPromise;
     if (updatedUser && updatedUser.avatarUrl) {
         if (!updatedProfile.user) updatedProfile.user = {}; 
-        updatedProfile.user.avatarUrl = updatedUser.avatarUrl;
+            updatedProfile.user.avatarUrl = updatedUser.avatarUrl;
     }
     return updatedProfile;
 };

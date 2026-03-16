@@ -1,11 +1,7 @@
 import * as dashboardRepository from '../repositories/dashboardRepository.js';
 import { getLast30Days, getPrevious30Days, calcPercentChange } from '../utils/dateUtils.js';
 
-let cache = null;
-const CACHE_TTL = 86_400_000;
-
 export const getRecruiterDashboard = async () => {
-    if (cache && Date.now() - cache.ts < CACHE_TTL) return cache.data;
 
     const { start, end } = getLast30Days();
     const { start: pStart, end: pEnd } = getPrevious30Days();
@@ -28,7 +24,6 @@ export const getRecruiterDashboard = async () => {
         kpiCards, applicationsOverview, activeCandidatesList, 
         recentActivity, hiringFunnel, recruitmentStatus 
     };
-    cache = { data, ts: Date.now() };
     return data;
 };
 
