@@ -45,7 +45,7 @@ export function ProfileCover({ profile, user }: props) {
         navigate('/Chat');
       }
     } catch (error) {
-      console.error('Failed to open conversation:', error);
+      console.log('Failed to open conversation:', error);
     }
   }
 

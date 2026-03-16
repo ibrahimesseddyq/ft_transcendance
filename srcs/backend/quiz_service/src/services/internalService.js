@@ -36,7 +36,7 @@ export const evaluateTest = async (testId, answers) => {
     if (!test)
         throw new HttpException(404, 'test not found');
     if (test.type === 'QUIZ')
-        result = evaluateQuiz(test, answers);;
+        result = await evaluateQuiz(test, answers);
     return result;
 }
 
