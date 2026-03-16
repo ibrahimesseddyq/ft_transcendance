@@ -25,8 +25,8 @@ export const evaluateQuiz = async (test, answers) => {
         })
     });
     const percentage = (totalScore / maxPossibleScore) * 100;
-    const Passed = percentage >= test.passingScore;
-    return {totalScore, maxPossibleScore, percentage,Passed,result}
+    const passed = percentage >= test.passingScore;
+    return {totalScore, maxPossibleScore, percentage,passed,result}
 }
 export const evaluateCodeChallenge =  async (test, answers) => {
     
