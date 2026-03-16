@@ -138,7 +138,7 @@ vault kv put secret/main-service/oauth \
   GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}" 
 
 vault kv put secret/main-service/database \
-  DATABASE_URL="mysql://${MARIADB_MAIN_USER}:${MARIADB_MAIN_PASSWORD}@main_service_db:3306/hirefy"
+  DATABASE_URL="mysql://${MARIADB_MAIN_USER}:${MARIADB_MAIN_PASSWORD}@main-service-db:3306/hirefy"
 echo "Storing AI service secrets..."
 
 
@@ -165,7 +165,7 @@ vault kv put secret/quiz-service-db/config \
   MARIADB_PASSWORD="${MARIADB_QUIZ_PASSWORD}"
 
 vault kv put secret/quiz-service/database \
-  DATABASE_URL="mysql://${MARIADB_QUIZ_USER}:${MARIADB_QUIZ_PASSWORD}@quiz_service_db:3306/hirefy"
+  DATABASE_URL="mysql://${MARIADB_QUIZ_USER}:${MARIADB_QUIZ_PASSWORD}@quiz-service-db:3306/hirefy"
 
 vault kv put secret/quiz-service/jwt \
   ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
