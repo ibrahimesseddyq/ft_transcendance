@@ -51,11 +51,11 @@ if ! vault operator init -status >/dev/null 2>&1; then
 
   UNSEAL_KEY=$(cat /vault/data/init.json | jq -r '.unseal_keys_b64[0]')
   VAULT_TOKEN=$(cat /vault/data/init.json | jq -r '.root_token')
-
+  
+  export VAULT_TOKEN  # Move this BEFORE the unseal command
+  
   vault operator unseal "$UNSEAL_KEY"
-  export VAULT_TOKEN
 fi
-
 echo "Vault is ready!"
 vault status || true
 

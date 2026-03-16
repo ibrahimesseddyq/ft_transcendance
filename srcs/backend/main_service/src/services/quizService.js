@@ -49,7 +49,7 @@ export const submitTest = async (data, io) => {
         score: evaluationResult.totalScore,
         completedAt: new Date(),
     });
-    if (!evaluationResult.data.passed)
+    if (!evaluationResult.passed)
         await applicationService.rejectApplication(applicationPhase.applicationId, io)
     else
         await applicationService.acceptApplication(applicationPhase.applicationId, io)

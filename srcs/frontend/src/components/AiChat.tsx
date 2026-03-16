@@ -21,6 +21,7 @@ export default function AiChat() {
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -60,6 +61,22 @@ export default function AiChat() {
     setIsRecording(false);
   };
 
+  const generateAiResponse = async (userText: string) => {
+    setIsGenerating(true);
+    try {
+      const response = await aiapi.post(`${env_ai_api}/generate`, { 
+        text: userText 
+      });
+
+      const aiText = response.data.result || response.data.text;
+      setMessages(prev => [...prev, { role: "ai", content: aiText }]);
+    } catch (err) {
+      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const sendAudioToAI = async (blob: Blob) => {
     setIsProcessing(true);
     
@@ -79,12 +96,15 @@ export default function AiChat() {
     }
   };
 
-  const handleSend = () => {
-    if (!input.trim()) 
-      return;
-    setMessages(prev => [...prev, { role: "user", content: input }]);
+  const handleSend = async () => {
+    const textToSend = input.trim();
+    if (!textToSend || isGenerating) return;
+
+    setMessages(prev => [...prev, { role: "user", content: textToSend }]);
     setInput("");
     setShowSuggestions(false);
+
+    await generateAiResponse(textToSend);
   };
 
   return (

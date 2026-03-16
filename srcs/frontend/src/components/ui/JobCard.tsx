@@ -4,6 +4,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { mainApi } from '@/utils/Api';
 import { JobPhaseManager } from "./JobPhaseManager";
 import Icon  from '@/components/ui/Icon'
+import { Link } from 'react-router-dom';
 
 interface props {
     job: any;
@@ -42,17 +43,10 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
             Notification("Error Deleting job", "error");
         }
     };
-    const handleDetails = (job:any) => {
-        navigate('/Jobdescription', { 
-          state: {
-            job: job,
-          } 
-        });
-    };
     return (
         <div
-              className="relative flex flex-col w-full md:w-[350px] 
-                bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+              className="relative flex flex-col w-full md:w-[350px]
+                bg-surface-main dark:bg-[#0b1729] border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
             >
 
               {/* Status Badge */}
@@ -128,13 +122,12 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
 
               {/* Footer Actions */}
               <div className="flex items-center justify-between mt-auto gap-2">
-                <button 
-                  onClick={() => handleDetails(job)}
+                <Link to={`/Jobdescription/${job?.id}`} 
                   className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
                     rounded-xl hover:bg-[#3B5998] hover:text-surface-main transition-all active:scale-95 whitespace-nowrap"
                 >
                   Details
-                </button>
+                </Link>
 
                 {isAdminOrRecruiter && (
                   <>

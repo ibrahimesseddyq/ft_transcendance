@@ -143,7 +143,7 @@ export const resendVerification = async (email) => {
         throw new HttpException(400,"email already verified");
     const verificationToken = await jwtService.generateVerificationToken(user.id, email);
     const subject = "verification email";
-    const message = `${env.FRONTEND_URL}api/main/auth/verify-email/${verificationToken}`;
+   const message = `${env.BACKEND_URL}api/main/auth/verify-email/${verificationToken}`;
     await sendMail({
         from : env.USER_EMAIL,
         to : user.email,

@@ -15,15 +15,20 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   console.log("AuthGuard userId :", userId);
+  
   useEffect(() => {
     const verifySession = async () => {
       if (!userId) {
         setIsLoading(false);
         return;
       }
-
       try {
-        await mainApi.get(`${env_main_api}/users/me`);
+        const response = await mainApi.get(`${env_main_api}/users/me`);
+        const fetchedUserId = response.data.data.user.id;
+
+        if (!fetchedUserId) {
+          clearAuth();
+        }
       } catch (error) {
         console.log('Session verification failed:', error);
         clearAuth();
@@ -35,7 +40,8 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     verifySession();
   }, [userId]);
 
-  if (!user) {
+
+   if (!user) {
     return <Navigate to="/Login" state={{ from: location }} replace />;
   }
   if (isLoading) {

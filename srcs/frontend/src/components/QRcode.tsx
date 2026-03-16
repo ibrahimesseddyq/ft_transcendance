@@ -1,5 +1,5 @@
 import Icon  from '@/components/ui/Icon'
-import { useState, useEffect } from 'react';
+import { useState, KeyboardEvent, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
@@ -45,6 +45,11 @@ export function QRcode() {
             setStep('VERIFY_OTP');
     }, [userId]);
 
+    const handleKeyEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+        handleSubmit(); 
+    }
+};
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
         if (confirm("Are you sure? This will invalidate the previous QR code.")) {
@@ -95,8 +100,9 @@ export function QRcode() {
         }
     }
    
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) 
+            e.preventDefault();
         if (step === 'QR_CODE') {
             setStep('VERIFY_OTP');
             return;
@@ -144,7 +150,7 @@ export function QRcode() {
                         )}
                     </div>
                 ) : (
-                    <OtpCode otp={otpArray} setOtp={setOtpArray} />
+                    <OtpCode otp={otpArray} setOtp={setOtpArray} onKeyEnter={handleKeyEnter} />
                 )}
 
                 <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
