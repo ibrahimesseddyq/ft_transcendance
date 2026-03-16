@@ -11,6 +11,11 @@ export interface User {
   isOnline?: boolean;
 }
 
+export interface Moderation {
+  action: 'Block' | 'Warn' | 'Allow';
+  reason?: string[];
+}
+
 export interface Message {
   id: string;
   content: string;
@@ -24,6 +29,7 @@ export interface Message {
   fileName?: string;
   fileSize?: number;
   fileMimetype?: string;
+  moderation?: Moderation;
 }
 
 export interface Participant {
