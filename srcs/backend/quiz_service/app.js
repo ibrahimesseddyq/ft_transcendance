@@ -14,6 +14,7 @@ import cookieParser from 'cookie-parser';
 import errorHandler from "./src/middleware/ErrorHandler.js";
 
 const app = express();
+
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
@@ -39,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.get('/health', async (req, res) => {
+app.get('/api/quiz/health', async (req, res) => {
   try {
     res.status(200).json({
       status: 'OK',

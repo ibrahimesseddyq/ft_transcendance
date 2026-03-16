@@ -23,11 +23,12 @@ export const startTest = async (data) => {
                 status: 'inProgress',
                 startedAt: new Date()
             })
+    const startedAt = applicationPhase.startedAt || new Date();
+    const durationMs = (test.durationMinutes ?? 0) * 60 * 1000;
     return {
         test: test,
-        startedAt: applicationPhase.startedAt || new Date(),
-        completedAt: (applicationPhase.completedAt || new Date()) + test.durationMinutes,
-
+        startedAt: startedAt,
+        completedAt: new Date(startedAt.getTime() + durationMs)
     }
 }
 
@@ -38,10 +39,13 @@ export const submitTest = async (data) => {
 
     if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
-    if (applicationPhase.status != 'inProgress')
+    console.log('hello world ',applicationPhase.status)
+    if (applicationPhase.status !==  'inProgress')
         throw new HttpException(400,'Test not started or already completed');
     const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
-    const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs
+    if (!applicationPhase.startedAt)
+        throw new HttpException(400, 'Test has not been started yet');
+    const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs;
    if (Date.now() > deadLine) {
         await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
             completedAt: new Date(),

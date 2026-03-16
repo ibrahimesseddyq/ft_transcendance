@@ -5,6 +5,7 @@ import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import { ToastContainer } from "react-toastify";
 import { mainApi } from '@/utils/Api';
+import { AiChatButton } from '@/components/ui/AiChatButton'
 
 export function Profile() {
   const params = useParams();
@@ -12,6 +13,7 @@ export function Profile() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
  
   useEffect(() => {
@@ -110,6 +112,10 @@ export function Profile() {
       <div className='w-full items-center mb-10'>
         <Logout />
       </div>
+      
+      {!isAdminOrRecruiter && (
+        <AiChatButton />
+      )}
 
     </div>
   );
