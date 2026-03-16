@@ -18,7 +18,6 @@ export function UserPhase() {
         const fetchEverything = async () => {
             try {
                 setLoading(true);
-                
                 const phaseResponse = await mainApi.get(`${env_main_api}/applications/${appId}/phase`);
                 const phaseResult = phaseResponse.data;
                 

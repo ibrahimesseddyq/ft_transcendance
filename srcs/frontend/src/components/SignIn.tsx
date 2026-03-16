@@ -118,13 +118,6 @@ const Signin = () => {
                         </div>
                         {errors.password && <p className="pl-5 text-red-500 text-xs italic">{errors.password.message}</p>}
 
-                        <button
-                            type="button"
-                            className="w-full text-right text-primary whitespace-nowrap
-                            text-xs font-semibold hover:underline hover:cursor-pointer">
-                            Forgot Password?
-                        </button>
-
                         <button type="submit"
                             className="h-[45px] w-full text-surface-main font-bold whitespace-nowrap
                                     mx-auto rounded-lg bg-primary hover:bg-[#0086b8] transition-colors overflow-hidden">

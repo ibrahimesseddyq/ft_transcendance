@@ -10,6 +10,7 @@ interface props{
   jobItem?: any; 
   setIsFormOpen: (open: boolean) => void ;
   setJobsArray: (open: any) => void ;
+  setTotalPages: (TotalePages: number) => void;
 }
 
 interface InputFieldProps {
@@ -22,7 +23,7 @@ interface InputFieldProps {
 const inputClass = "h-11 w-full text-sm dark:text-surface-main dark:text-white outline-none px-3 \
     border border-[#405673] rounded-md bg-transparent focus:border-accent transition-colors oveflow-auto custom-scrollbar";
 
-const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) => {
+const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPages }: props) => {
   const {
     register,
     handleSubmit,
@@ -69,9 +70,10 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
         const result = response.data;
         const savedJob = result.data;
         Notification("Job updated successfully!", "success");
+
         setJobsArray((prev:any) => 
-            prev.map((job:any) => (job.id === jobItem.id ? savedJob : job))
-          );
+          prev.map((job:any) => (job.id === jobItem.id ? savedJob : job))
+        );
         setIsFormOpen(false);
       } catch (error) {
         console.error("updated failed:", error);
@@ -79,11 +81,20 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray }: props) =>
       }
     }else{
       try {
-        const response = await mainApi.post(`${env_main_api}/jobs`, data);
-
-        const result = await response.data;
-        const savedJob = result.data;
-        setJobsArray((prev:any) => [savedJob, ...prev]);
+        await mainApi.post(`${env_main_api}/jobs`, data);
+        const limit = 6;
+        const params = new URLSearchParams();
+        params.append("limit", String(limit));
+        const url = `${env_main_api}/jobs?${params.toString()}`;
+        const [filter_res] = await Promise.all([
+          mainApi.get(url),
+          new Promise(resolve => setTimeout(resolve, 800))
+        ]);
+        const result = filter_res.data; 
+        if (result) {
+          setJobsArray(result.data || []);
+          setTotalPages(result.meta?.totalPages || 1);
+        }
         Notification("Job added successfully!", "success");
         setIsFormOpen(false);
       } catch (error) {
