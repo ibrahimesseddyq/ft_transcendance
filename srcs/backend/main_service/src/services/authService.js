@@ -133,6 +133,7 @@ export const verifyEmail = async(token) => {
     await userService.updateUser(user.id, {isVerified : true});
     return user;
 }
+
 export const resendVerification = async (email) => {
     const user = await userService.getUserByEmail(email);
     if (!user)
