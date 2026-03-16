@@ -40,10 +40,10 @@ export const deleteFile = async (filePath) => {
         const fullPath = path.join(process.cwd(), filePath);
         await fs.unlink(fullPath);
     } catch (error) {
-       
+        if (error.code === 'ENOENT') return;
+        throw error;
     }
-   
-}
+};
 
 export const fileExists = async (filePath) => {
     try {

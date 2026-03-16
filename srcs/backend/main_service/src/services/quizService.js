@@ -39,7 +39,6 @@ export const submitTest = async (data) => {
 
     if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
-    console.log('hello world ',applicationPhase.status)
     if (applicationPhase.status !==  'inProgress')
         throw new HttpException(400,'Test not started or already completed');
     const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;

@@ -72,10 +72,10 @@ export const uploadAvatar = async (userId, file) => {
     if (!user)
         throw new HttpException(404, 'user not found');
     const {avatarUrl} =  await fileService.saveAvatar(userId,file);
-    const tasks = [userRepository.updateUser(userId, {avatarUrl})];
+    let tasks = [userRepository.updateUser(userId, {avatarUrl})];
     if (avatarUrl !== user.avatarUrl)
         tasks.push(fileService.deleteFile(user.avatarUrl));
-    await Promise.all(tasks);
+    tasks = await Promise.all(tasks);
     return tasks[0];
 }
 
