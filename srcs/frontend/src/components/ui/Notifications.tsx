@@ -32,7 +32,6 @@ export function Notifications() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Connect socket and fetch existing notifications on login
   useEffect(() => {
     if (!user) return;
 
@@ -65,7 +64,6 @@ export function Notifications() {
     };
   }, [user]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
