@@ -66,7 +66,7 @@ kube-build:
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway 
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service 
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
-	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
+# 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
 	docker build -t frontend:dev \
 	--build-arg VITE_MAIN_SERVICE_URL=http://15.237.53.13 /api/main/ \
 	--build-arg VITE_QUIZ_SERVICE_URL=http://15.237.53.13 /api/quiz/ \
@@ -74,7 +74,7 @@ kube-build:
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
 	$(ROOT)srcs/frontend
 kube-load: kube-build
-	k3d image import gateway:dev main-service:dev quiz-service:dev ai-service:dev frontend:dev waf:dev -c hirefy
+	k3d image import gateway:dev main-service:dev quiz-service:dev  frontend:dev waf:dev -c hirefy
 
 kube-deploy:
 	# 1. Namespace first
@@ -114,7 +114,7 @@ kube-deploy:
 	# 7. Application services
 	kubectl apply -f srcs/k8s/main-service.yaml
 	kubectl apply -f srcs/k8s/quiz-service.yaml
-	kubectl apply -f srcs/k8s/ai-service.yaml
+# 	kubectl apply -f srcs/k8s/ai-service.yaml
 	kubectl apply -f srcs/k8s/gateway.yaml
 	kubectl apply -f srcs/k8s/waf.yaml
 	kubectl apply -f srcs/k8s/tls-secret.yaml
