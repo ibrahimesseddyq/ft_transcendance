@@ -30,7 +30,7 @@ const AppCard = ({app}:props) => {
       if (app.status === 'rejected')
         Notification("You are rejected from this job", "error")
       else if (app.status === 'accepted')
-        Notification("You are rejected from this job", "success")
+        Notification("You already accepted", "success")
       else
         navigate(`/UserPhase/${app.id}`);
     };

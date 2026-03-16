@@ -125,7 +125,7 @@ export function ProfileInformations() {
       Notification("Profile updated successfully!", "success");
 
       const targetPath = isAdminOrRecruiter ? '/Dashboard' : '/Jobs';
-      setTimeout(() => navigate(targetPath, { replace: true }), 800);
+      navigate(targetPath, { replace: true });
 
     } catch (error) {
       setAvatarProgress(0);

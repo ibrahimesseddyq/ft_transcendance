@@ -24,9 +24,10 @@ const isVideoFile = (mimeType?: string) => mimeType?.startsWith('video/');
 const isAudioFile = (mimeType?: string) => mimeType?.startsWith('audio/');
 
 const buildFileUrl = (fileUrl?: string) => {
+  const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
   if (!fileUrl) return null;
   if (fileUrl.startsWith('http')) return fileUrl;
-  return `http://localhost:3000${fileUrl}`;
+  return `${BACKEND_YRL}${fileUrl}`;
 };
 
 interface MediaAttachmentProps {
