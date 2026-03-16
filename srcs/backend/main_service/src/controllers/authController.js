@@ -110,7 +110,6 @@ export const logout =  asyncHandler(async (req, res, next) => {
 })
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
-    console.log(' enter here');
     const token = req.params.token;
     await authService.verifyEmail(token);
     res.redirect(`${env.FRONTEND_URL}`);

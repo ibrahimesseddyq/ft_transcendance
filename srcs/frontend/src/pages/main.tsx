@@ -23,6 +23,9 @@ import { ApplicationDetails } from '@/components/ApplicationDetails'
 import { UserApplications } from '@/components/UserApplications';
 import { UserPhase } from '@/components/UserPhase'
 import { AboutUs } from '@/pages/AboutUs'
+import { PrivacyPolicy } from '@/pages/PrivacyPolicy'
+import { TermsOfService } from '@/pages/TermsOfService'
+import { Footer } from '@/components/Footer'
 
 export function Main() {
   const location = useLocation();
@@ -34,7 +37,7 @@ export function Main() {
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
-    <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA] 
+    <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA]
       dark:bg-[#0f172a] md:h-screen md:overflow-hidden ">
       {children}
     </main>
@@ -102,6 +105,8 @@ export function Main() {
                 <Route path="/EditProfile" element={<EditProfile />} />
                 <Route path="/ApplicationDetails/:id" element={<ApplicationDetails />} />
                 <Route path="/About" element={<AboutUs />} />
+                <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+                <Route path="/TermsOfService" element={<TermsOfService />} />
               </Route>
 
               {/* ROOT REDIRECT */}
@@ -114,6 +119,7 @@ export function Main() {
             </Routes>
           </main>
         </div>
+        <Footer />
       </div>
     </AuthGuard>
   );
