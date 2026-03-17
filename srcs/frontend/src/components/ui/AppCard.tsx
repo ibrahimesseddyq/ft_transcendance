@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { mainApi } from '@/utils/Api'
+import { mainService } from '@/utils/Api'
 import Icon  from '@/components/ui/Icon'
-import { useParams } from 'react-router-dom'
 import Notification from "@/utils/TostifyNotification"
 
 interface props{
@@ -15,7 +14,7 @@ const AppCard = ({app}:props) => {
 
     const fetchJob = async () =>{
       try{
-        const res = await mainApi.get(`${env_main_api}/jobs/${app?.jobId}`)
+        const res = await mainService.get(`${env_main_api}/jobs/${app?.jobId}`)
         setJob(res.data.data);
       } catch (err){
         console.log(err);
