@@ -29,7 +29,7 @@ export function UserApplications() {
                     setApplications(res.data.data.applications || []);
                 }
             } catch (err) {
-                console.error("Failed to fetch applications:", err);
+                console.log("Failed to fetch applications:", err);
             } finally {
                 setIsLoading(false);
             }

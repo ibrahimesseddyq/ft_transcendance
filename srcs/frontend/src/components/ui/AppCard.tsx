@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { mainApi } from '@/utils/Api'
 import Icon  from '@/components/ui/Icon'
-import { useParams } from 'react-router-dom'
 import Notification from "@/utils/TostifyNotification"
 
 interface props{
