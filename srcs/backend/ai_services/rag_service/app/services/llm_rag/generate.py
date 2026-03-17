@@ -7,7 +7,7 @@ from langchain_text_splitters import (
     RecursiveCharacterTextSplitter,
 )
 
-llm = ChatOllama(model="llama3.2:1b", num_predict=200, num_ctx=2048)
+llm = ChatOllama(model="llama3.2:1b")
 
 embedding = OllamaEmbeddings(model="mxbai-embed-large")
 
@@ -68,7 +68,7 @@ def generate(prompt):
     ]
 
     response = llm.invoke(template)
-
+    print(response.content)
     return response.content
 
     # for chunk in llm.stream(template):
