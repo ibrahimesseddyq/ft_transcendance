@@ -52,8 +52,8 @@ if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  # Use hex key instead of base64 - no special characters
-  UNSEAL_KEY=$(grep 'unseal_keys_hex' /vault/data/init.json | cut -d'"' -f4)
+  # -A1 gets the line AFTER the key name, then strip spaces/quotes/commas
+  UNSEAL_KEY=$(grep -A1 'unseal_keys_hex' /vault/data/init.json | tail -1 | tr -d ' [],\"')
   VAULT_TOKEN=$(grep 'root_token' /vault/data/init.json | cut -d'"' -f4)
 
   echo "DEBUG UNSEAL_KEY=$UNSEAL_KEY"
