@@ -23,6 +23,7 @@ export default function AiChat() {
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const env_ai_api = import.meta.env.VITE_AI_API_URL;
+  const env_rag_api = import.meta.env.VITE_RAG_API_URL;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -62,7 +63,7 @@ export default function AiChat() {
     setIsGenerating(true);
 
     try {
-      const response = await mainService.post(`${env_ai_api}/generate`, { 
+      const response = await mainService.post(`${env_rag_api}/generate`, { 
         text: userText 
       });
 

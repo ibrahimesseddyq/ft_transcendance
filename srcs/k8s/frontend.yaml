@@ -50,8 +50,8 @@ metadata:
   name: front-service-config
   namespace: hirefy
 data:
-  VITE_MAIN_SERVICE_URL: "http://13.36.189.126/api/main/"
-  VITE_CHAT_SERVICE_URL: "http://13.36.189.126/api/main/"
-  VITE_QUIZ_SERVICE_URL: "http://13.36.189.126/api/quiz/"
+  VITE_SERVICE_URL: "http://13.36.189.126"
   VITE_MAIN_API_URL: "/api/main"
   VITE_QUIZ_API_URL: "/api/quiz"
+  VITE_RAG_API_URL: "/api/rag"
+  VITE_AI_API_URL: "/api/ai"
