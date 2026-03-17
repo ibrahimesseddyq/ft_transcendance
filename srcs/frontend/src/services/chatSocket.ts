@@ -9,7 +9,7 @@ class ChatSocketService {
   private readonly eventHandlers: Map<string, Set<SocketEventCallback>> = new Map();
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_MAIN_SERVICE_URL;
+    this.baseUrl = import.meta.env.VITE_SERVICE_URL;
   }
 
   connect(token?: string): void {
