@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { quizApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 import Icon  from '@/components/ui/Icon'
 
@@ -30,7 +30,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
     });
 
     useEffect(() => {
-        quizApi.get(`${env_quiz_api}/mcqs`)
+        mainService.get(`${env_quiz_api}/mcqs`)
             .then(res => setAvailableMcqs(res.data?.data || []))
             .catch(() => Notification('Failed to load MCQs', 'error'))
             .finally(() => setLoading(false));
@@ -51,7 +51,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
         }
 
         try {
-            await quizApi.post(`${env_quiz_api}/tests`, {
+            await mainService.post(`${env_quiz_api}/tests`, {
                 ...form,
                 type: 'QUIZ',
                 durationMinutes: Number(form.durationMinutes),
