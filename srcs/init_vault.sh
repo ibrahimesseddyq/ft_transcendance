@@ -48,14 +48,14 @@ until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
   sleep 2
 done
-apk add --no-cache jq
 # Now initialize + unseal if needed
 if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/init.json)
-  VAULT_TOKEN=$(jq -r '.root_token' /vault/data/init.json)
+  # Remove the apk install line entirely, and replace jq with:
+  UNSEAL_KEY=$(grep -o '"unseal_keys_b64":\["[^"]*"' /vault/data/init.json | grep -o '[^"]*"$' | tr -d '"')
+  VAULT_TOKEN=$(grep -o '"root_token":"[^"]*"' /vault/data/init.json | cut -d'"' -f4)
 
   vault operator unseal "$UNSEAL_KEY"
   export VAULT_TOKEN
