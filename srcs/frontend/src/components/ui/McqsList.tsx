@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { quizApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
 
@@ -15,7 +15,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
 
     const fetchUserContent = async () => {
         try {
-            const res = await quizApi.get(`${env_quiz_api}/mcqs`);
+            const res = await mainService.get(`${env_quiz_api}/mcqs`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.log(err);
@@ -32,7 +32,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
         if (!confirm("Are you sure you want to delete this Mcq?")) return;
         
         try {
-            await quizApi.delete(`${env_quiz_api}/mcqs/${id}`);
+            await mainService.delete(`${env_quiz_api}/mcqs/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Mcq deleted successfully", "success");
         } catch (err) {

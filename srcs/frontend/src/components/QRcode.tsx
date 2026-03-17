@@ -5,7 +5,7 @@ import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -26,7 +26,7 @@ export function QRcode() {
             return;
         setLoading(true);
         try {
-            const res = await mainApi.post(`${env_main_api}/2fa/setup/`, { id: userId });
+            const res = await mainService.post(`${env_main_api}/2fa/setup/`, { id: userId });
             const result = res.data;
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
@@ -63,7 +63,7 @@ export function QRcode() {
             : { code: finalOtp };
 
         try {
-            const res = await mainApi.post(`/${route}`, obj);
+            const res = await mainService.post(`/${route}`, obj);
 
             if (!res) {
                 setQrVerified(false);

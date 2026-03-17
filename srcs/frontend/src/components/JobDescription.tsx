@@ -3,7 +3,7 @@ import Notification from "@/utils/TostifyNotification"
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/utils/ZuStand';
 import { ToastContainer } from "react-toastify";
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { useState, useEffect } from 'react';
 
 export function JobDescription() {
@@ -23,7 +23,7 @@ export function JobDescription() {
 
   const FetchJob = async () => {
     try {
-      const response = await mainApi.get(`${env_main_api}/jobs/${jobId}`);
+      const response = await mainService.get(`${env_main_api}/jobs/${jobId}`);
       const result = response.data;
       
       if (result && result.data) {
@@ -41,7 +41,7 @@ export function JobDescription() {
 
   const ApplySubmit = async (item: any) => {
     try {
-      await mainApi.post(`${env_main_api}/applications`, item);
+      await mainService.post(`${env_main_api}/applications`, item);
       Notification("Job Applied successfully!", "success");
       setTimeout(() => { navigate('/Jobs'); }, 1500)
     } catch (error) {

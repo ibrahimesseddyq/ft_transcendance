@@ -3,7 +3,7 @@ import Icon  from '@/components/ui/Icon'
 import { useParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand'
-import { mainApi } from '@/utils/Api'
+import { mainService } from '@/utils/Api'
 
 export function UserPhase() {
     const { appId } = useParams();
@@ -18,7 +18,7 @@ export function UserPhase() {
         const fetchEverything = async () => {
             try {
                 setLoading(true);
-                const phaseResponse = await mainApi.get(`${env_main_api}/applications/${appId}/phase`);
+                const phaseResponse = await mainService.get(`${env_main_api}/applications/${appId}/phase`);
                 const phaseResult = phaseResponse.data;
                 
                 if (phaseResult?.data) {
@@ -27,7 +27,7 @@ export function UserPhase() {
                     
                     setPhaseId(fetchedPhaseId);
                     if (fetchedTestId) {
-                        const testRes = await mainApi.get(`${env_main_api}/quizzes/tests/${fetchedTestId}/start`, {
+                        const testRes = await mainService.get(`${env_main_api}/quizzes/tests/${fetchedTestId}/start`, {
                             params: {
                                 userId: user?.id,
                                 applicationPhaseId: fetchedPhaseId

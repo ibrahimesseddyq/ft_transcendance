@@ -8,7 +8,7 @@ class ChatAPI {
   private readonly baseUrl: string;
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_MAIN_SERVICE_URL;
+    this.baseUrl = import.meta.env.VITE_SERVICE_URL;
     
     
     this.api = axios.create({

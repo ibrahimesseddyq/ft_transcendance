@@ -4,7 +4,7 @@ import { RecentActivity } from "@/components/RecentActivity";
 import { RecruitmentPieChart } from "@/components/RecruitmentPieChart";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from 'react'
-import { mainApi } from '@/utils/Api'
+import { mainService } from '@/utils/Api'
 
 export function Dashboard() {
 
@@ -16,7 +16,7 @@ export function Dashboard() {
     const fetchDashboard = async () => {
       try {
         setIsLoading(true);
-        const res = await mainApi.get(`${env_main_api}/dashboard`);
+        const res = await mainService.get(`${env_main_api}/dashboard`);
         if (res.data?.success) {
           console.log("Dashboard : respons ", res.data);
           setDashboardData(res.data.data);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand'
 
 export function ApplicationDetails() {
@@ -17,12 +17,12 @@ export function ApplicationDetails() {
     const fetchDetailsAndUser = async () => {
       try {
         setIsLoading(true);
-        const appRes = await mainApi.get(`${env_main_api}/applications/${id}`);
+        const appRes = await mainService.get(`${env_main_api}/applications/${id}`);
         const appData = appRes.data.data || appRes.data;
 
         if (appData?.candidateId) {
           try {
-            const userRes = await mainApi.get(`${env_main_api}/users/${appData.candidateId}`);
+            const userRes = await mainService.get(`${env_main_api}/users/${appData.candidateId}`);
             appData.candidate = userRes.data.data || userRes.data;
             console.log("appData => ", appData);
           } catch (userErr) {
@@ -44,7 +44,7 @@ export function ApplicationDetails() {
   const handleRejectCandidate = async () => {
     if (!window.confirm("Are you sure you want to reject this candidate?")) return;
     try {
-      await mainApi.patch(`${env_main_api}/applications/${id}/reject`);
+      await mainService.patch(`${env_main_api}/applications/${id}/reject`);
       alert("Candidate has been rejected.");
       navigate(-1);
     } catch (error) {
