@@ -52,15 +52,13 @@ if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  # Use sed instead of jq or grep - always available in Alpine
-  UNSEAL_KEY=$(sed 's/.*"unseal_keys_b64":\["\([^"]*\)".*/\1/' /vault/data/init.json)
-  VAULT_TOKEN=$(sed 's/.*"root_token":"\([^"]*\)".*/\1/' /vault/data/init.json)
+  # grep the exact line, then cut out the value
+  UNSEAL_KEY=$(grep 'unseal_keys_b64' /vault/data/init.json | grep -o '"[A-Za-z0-9+/=]*"' | tr -d '"')
+  VAULT_TOKEN=$(grep 'root_token' /vault/data/init.json | cut -d'"' -f4)
 
-  # Verify parsing worked before attempting unseal
   echo "DEBUG UNSEAL_KEY=$UNSEAL_KEY"
   echo "DEBUG VAULT_TOKEN=$VAULT_TOKEN"
 
-  # Pass as positional arg - no TTY needed
   vault operator unseal "$UNSEAL_KEY"
   export VAULT_TOKEN
   vault login "$VAULT_TOKEN"
