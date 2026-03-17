@@ -1,0 +1,157 @@
+import Notification from "@/utils/TostifyNotification";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from '@/utils/ZuStand';
+import { mainApi } from '@/utils/Api';
+import { JobPhaseManager } from "./JobPhaseManager";
+import Icon  from '@/components/ui/Icon'
+import { Link } from 'react-router-dom';
+
+interface props {
+    job: any;
+    setTotalPages: (TotalPages: number) => void;
+    setJobItem: (item: any) => void;
+    setIsFormOpen: (open: boolean) => void;
+    setJobsArray: (open: any) => void;
+}
+
+const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: props) =>{
+    const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
+    const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
+    const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+
+    const DeleteJob = async (jobId: string | number) => {
+        if (!confirm("Are you sure you want to delete this job?")) 
+            return;
+        try {
+            await mainApi.delete(`${env_main_api}/jobs/${jobId}`);
+            const limit = 6;
+            const params = new URLSearchParams();
+            params.append("limit", String(limit));
+            const url = `${env_main_api}/jobs?${params.toString()}`;
+            const [filter_res] = await Promise.all([
+              mainApi.get(url),
+              new Promise(resolve => setTimeout(resolve, 800))
+            ]);
+            const result = filter_res.data; 
+            if (result) {
+              setJobsArray(result.data || []);
+              setTotalPages(result.meta?.totalPages || 1);
+            }
+              Notification("Job Deleted", "success");
+        } catch (error) {
+            Notification("Error Deleting job", "error");
+        }
+    };
+    return (
+        <div
+              className="relative flex flex-col w-full md:w-[350px]
+                bg-surface-main dark:bg-[#0b1729] border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+            >
+
+              {/* Status Badge */}
+              <div className="absolute top-3 right-3 flex items-center gap-2">
+                {job.status === "closed" ? (
+                  <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    CLOSED
+                  </span>
+                ) : job.status === "archived" ? (
+                  <span className="rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
+                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
+                    ARCHIVED
+                  </span>
+                ) : (
+                  <span className="rounded-full border border-primary/50 bg-primary/10 text-primary 
+                    text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    OPEN
+                  </span>
+                )}
+              </div>
+
+              {/* Icon & Title */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 flex items-center justify-center text-primary">
+                   <Icon name='ScreenShare' className="w-10 h-10"/>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-surface-main truncate">{job.title}</h2>
+              </div>
+
+
+              {/* Meta Info Slots */}
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400 text-xs font-medium mb-4">
+                <div className="flex items-center gap-1">
+                  <Icon name='Briefcase' size={14} />
+                  <span className="truncate">{job.employmentType}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Icon name='MapPin' size={14} />
+                  <span className="truncate">{job.isRemote ? "Remote" : "On site"}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Icon name='BarChart3' size={14} />
+                  <span className="truncate">{job.department}</span>
+                </div>
+              </div>
+
+              <hr className="border-gray-100 dark:border-slate-800 mb-4" />
+
+              {/* Description */}
+              <div className="relative max-h-24 overflow-hidden text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                <p>{job.description}</p>
+                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-surface-main dark:from-secondary-darkbg to-transparent"></div>
+              </div>
+
+              {/* Skills Tags */}
+              {job.skills.length
+                ? <div className="flex flex-wrap gap-2 mb-6">
+                    {job.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
+                      <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
+                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                : null
+               }
+
+              <hr className="border-gray-100 dark:border-slate-800 mb-6" />
+
+              {/* Footer Actions */}
+              <div className="flex items-center justify-between mt-auto gap-2">
+                <Link to={`/Jobdescription/${job?.id}`} 
+                  className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
+                    rounded-xl hover:bg-[#3B5998] hover:text-surface-main transition-all active:scale-95 whitespace-nowrap"
+                >
+                  Details
+                </Link>
+
+                {isAdminOrRecruiter && (
+                  <>
+                    <div className="flex-1">
+                       <JobPhaseManager jobId={job.id} />
+                    </div>
+                  </>
+                )}
+
+                <div className="flex items-center gap-2 text-gray-500">
+                  {isAdminOrRecruiter && (
+                    <>
+                      <button onClick={() => { setJobItem(job); setIsFormOpen(true); }} className="hover:text-primary">
+                        <Icon name='SquarePen' size={16} />
+                      </button>
+                      <button onClick={() => DeleteJob(job.id)} className="hover:text-red-500">
+                        <Icon name='Trash' size={16} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+        </div>
+    );
+}
+
+export default JobCard;

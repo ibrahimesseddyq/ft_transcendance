@@ -5,7 +5,7 @@ const validateRequest = (schema) => {
     return (req,res,next) => {
         try {
             req.body = schema.parse(req.body);
-        }catch (error) {
+        } catch (error) {
             if(error instanceof ZodError) {
                 const errorMessages = error.issues.map((issue) => 
                     `${issue.path.join(".")} is ${issue.message.toLowerCase()}`
@@ -15,7 +15,6 @@ const validateRequest = (schema) => {
            return next(error);
         }
         next();
-        
     }
 }
 

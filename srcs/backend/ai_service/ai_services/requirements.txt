@@ -1,0 +1,16 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch
+transformers
+faster-whisper
+requests
+uvicorn
+fastapi
+tensorflow-cpu
+numpy
+opencv-python
+python-multipart
+langchain-ollama
+langchain-community
+langchain-text-splitters
+langchain_chroma

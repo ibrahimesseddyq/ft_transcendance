@@ -23,7 +23,6 @@ export const createUser = async (userData) => {
 }
 
 export const updateUser = async (userId , updateData) => {
-    console.log('update data',updateData)
     return await prisma.user.update({
         where : {id : userId},
         data: updateData,
@@ -56,7 +55,7 @@ export const getUserJobs = async (userId) => {
     }) 
 }
 
-export const getUsers = async ({skip = 0 , take = 10 , role, search }) => {
+export const getUsers = async ({skip = 0 , take = 100 , role, search }) => {
     const where = {};
     if (role) where.role = role;
     if (search) {
