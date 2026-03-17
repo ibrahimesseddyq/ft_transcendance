@@ -1,12 +1,35 @@
+# HTTP ingress - just redirects to HTTPS
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: waf-ingress
+  name: waf-ingress-http
+  namespace: hirefy
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: hirefy-redirect-https@kubernetescrd
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: waf
+                port:
+                  number: 8080
+---
+# HTTPS ingress - actual traffic
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: waf-ingress-https
   namespace: hirefy
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: hirefy-redirect-https@kubernetescrd,hirefy-rate-limit@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: hirefy-rate-limit@kubernetescrd
 spec:
   tls:
     - secretName: hirefy-tls
