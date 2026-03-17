@@ -45,7 +45,7 @@ def generate(prompt):
         print(doc.metadata)
         context += (
             "## "
-            + doc.metadata.get("header")
+            + doc.metadata.get("header", "")
             + "\n\n"
             + doc.page_content
             + "\n\n- - -\n\n"

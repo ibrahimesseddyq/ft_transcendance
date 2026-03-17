@@ -1,6 +1,7 @@
 requests
 uvicorn
 fastapi
+slowapi
 python-multipart
 langchain-ollama
 langchain-community
