@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Icon  from '@/components/ui/Icon'
 import { useState } from 'react';
 import Notification from "@/utils/TostifyNotification";
-import { quizApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 type MCQFormValues = z.infer<typeof McqSchema>;
 
@@ -48,7 +48,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
         }
 
         try {
-            await quizApi.post(`api/quiz/mcqs`, { ...data, choices, tags });
+            await mainService.post(`api/quiz/mcqs`, { ...data, choices, tags });
             Notification("Mcq created successfully!", "success");
 
             reset();

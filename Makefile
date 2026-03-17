@@ -68,10 +68,10 @@ kube-build:
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
 # 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
 	docker build -t frontend:dev \
-	--build-arg VITE_MAIN_SERVICE_URL=http://13.36.189.126/api/main/ \
-	--build-arg VITE_QUIZ_SERVICE_URL=http://13.36.189.126/api/quiz/ \
+	--build-arg VITE_SERVICE_URL=http://13.36.189.126 \
 	--build-arg VITE_MAIN_API_URL=/api/main \
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
+	--build-arg VITE_AI_API_URL=/api/ai \
 	$(ROOT)srcs/frontend
 
 kube-load: kube-build
