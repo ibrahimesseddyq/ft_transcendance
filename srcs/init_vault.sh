@@ -1,10 +1,9 @@
 #!/bin/sh
 set -e
 
-if [ -f .env ]; then
-  # Export all vars, skip comments and blank lines
+if [ -f /tmp/.env ]; then
   set -a
-  . ./.env
+  . /tmp/.env
   set +a
 else
   echo "ERROR: .env file not found"
