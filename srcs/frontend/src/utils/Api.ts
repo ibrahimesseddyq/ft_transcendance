@@ -42,7 +42,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
 
                 try {
                     await axios.post(
-                        `${import.meta.env.VITE_MAIN_SERVICE_URL}${env_main_api}/auth/refresh`,
+                        `${import.meta.env.VITE_SERVICE_URL}${env_main_api}/auth/refresh`,
                         {},
                         { withCredentials: true }
                     );
@@ -68,35 +68,11 @@ const attachInterceptors = (instance: AxiosInstance) => {
     );
 };
 
-export const mainApi = axios.create({
-    baseURL: import.meta.env.VITE_MAIN_SERVICE_URL,
-    withCredentials: true,
-});
-
-export const chatApi = axios.create({
-    baseURL: import.meta.env.VITE_CHAT_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const quizApi = axios.create({
-    baseURL: import.meta.env.VITE_QUIZ_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const aiapi = axios.create({
-    baseURL: import.meta.env.VITE_AI_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const ragapi = axios.create({
-    baseURL: import.meta.env.VITE_RAG_SERVICE_URL, 
+export const mainService = axios.create({
+    baseURL: import.meta.env.VITE_SERVICE_URL,
     withCredentials: true,
 });
 
 
 
-attachInterceptors(mainApi);
-attachInterceptors(chatApi);
-attachInterceptors(quizApi);
-attachInterceptors(aiapi);
-attachInterceptors(ragapi);
+attachInterceptors(mainService);

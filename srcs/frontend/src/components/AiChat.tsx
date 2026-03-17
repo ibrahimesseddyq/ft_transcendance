@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { AudioLines, Pause } from 'lucide-react';
 import { Loading } from "./Loading";
-import { aiapi } from '@/utils/Api';
-import { ragapi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import MarkdownPreview  from '@/components/MarkDownPreview'
 const SUGGESTIONS = [
   "who are you?",
@@ -17,7 +16,6 @@ export default function AiChat() {
     { role: "ai", content: "Hello! Upload an audio clip and I'll transcribe it." }
   ]);
   const [input, setInput] = useState("");
-  const [error, setError] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -63,7 +61,7 @@ export default function AiChat() {
   const generateAiResponse = async (userText: string) => {
     setIsGenerating(true);
     try {
-      const response = await ragapi.post(`${env_ai_api}/generate`, { 
+      const response = await mainService.post(`${env_ai_api}/generate`, { 
         text: userText 
       });
 
@@ -84,7 +82,7 @@ export default function AiChat() {
     formData.append("audio", blob, "recording.mp3");
 
     try {
-      const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
+      const response = await mainService.post(`${env_ai_api}/recognate`, formData);
 
       const data = response.data;
       if (data.text) {
@@ -161,6 +159,7 @@ export default function AiChat() {
         <input
           type="text"
           value={input}
+          maxLength={200}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isProcessing ? "Processing..." : "Speak or type..."}
           className=" text-black bg-gray-100 border-none rounded-full w-auto max-w-52

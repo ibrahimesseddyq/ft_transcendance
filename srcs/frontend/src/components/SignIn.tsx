@@ -8,7 +8,7 @@ import { LoginSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useNavigate } from 'react-router-dom';
 import Notification from "@/utils/TostifyNotification"
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
@@ -17,7 +17,7 @@ const Signin = () => {
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
     const {
         register,
@@ -47,7 +47,7 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
         try {
-            const response = await mainApi.post(`${env_main_api}/auth/login`, data);
+            const response = await mainService.post(`${env_main_api}/auth/login`, data);
             const result = response.data?.data;
             console.log("result?.id = ", result?.id);
             const userId = result?.id;
