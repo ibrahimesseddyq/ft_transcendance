@@ -38,24 +38,29 @@ export TEMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064
 export AI_MODEL_NAME=gpt-3.5-turbo
 export AI_API_KEY=your-api-key-here
 
-# Waiting for vault
+# Wait for vault to be reachable
 until vault status >/dev/null 2>&1; do
+  STATUS=$?
+  if [ $STATUS -eq 2 ]; then
+    echo "Vault is sealed but running, proceeding to unseal..."
+    break
+  fi
   echo "Waiting for vault..."
   sleep 2
 done
 
-# Unsealing
+# Now initialize + unseal if needed
 if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  UNSEAL_KEY=$(cat /vault/data/init.json | jq -r '.unseal_keys_b64[0]')
-  VAULT_TOKEN=$(cat /vault/data/init.json | jq -r '.root_token')
-  
-  export VAULT_TOKEN  # Move this BEFORE the unseal command
-  
+  UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' /vault/data/init.json)
+  VAULT_TOKEN=$(jq -r '.root_token' /vault/data/init.json)
+
   vault operator unseal "$UNSEAL_KEY"
+  export VAULT_TOKEN
 fi
+
 echo "Vault is ready!"
 vault status || true
 
