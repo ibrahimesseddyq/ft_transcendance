@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CHAT_MESSAGE_MAX_LENGTH } from '../../types/chat';
-import { aiapi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 const MAX_CHAT_FILE_SIZE_BYTES = 100 * 1024 * 1024;
 const MAX_RECORDING_SECONDS = 30;
@@ -162,7 +162,7 @@ export function ChatInput({
     try {
       const formData = new FormData();
       formData.append('audio', blob, 'recording.mp3');
-      const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
+      const response = await mainService.post(`${env_ai_api}/recognate`, formData);
       const data = response.data;
       if (data.text) {
         setMessage((prev) => (prev ? prev + ' ' + data.text : data.text));

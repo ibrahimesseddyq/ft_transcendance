@@ -6,7 +6,7 @@ import { CandidateProfileSchema } from "@/utils/ZodSchema";
 import { useAuthStore } from '@/utils/ZuStand';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import Notification from "@/utils/TostifyNotification";
 import { ToastContainer } from "react-toastify";
 
@@ -56,7 +56,7 @@ export function EditProfile() {
   const userId = useAuthStore((state) => (state.user?.id));
   const setProfile = useAuthStore((state) => state.setProfile);
   const profile = useAuthStore((state) => state.profile);
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const [avatarPreview, setAvatarPreview] = useState(
@@ -79,7 +79,7 @@ export function EditProfile() {
     if (profile) {
       reset({
         resumeUrl: profile?.resumeUrl ?? "",
-        phone: profile?.phone?.toString() ?? "",
+        phone: profile?.numberPhone?.toString() ?? "",
         linkedinUrl: profile?.linkedinUrl ?? "",
         portfolioUrl: profile?.portfolioUrl ?? "",
         currentCompany: profile?.currentCompany ?? "",
@@ -131,7 +131,7 @@ export function EditProfile() {
         animations.push(startProgressAnimation(setResumeProgress));
       }
 
-      const apiPromise = mainApi.patch(`${env_main_api}/profiles/${userId}`, formData);
+      const apiPromise = mainService.patch(`${env_main_api}/profiles/${userId}`, formData);
       const [response] = await Promise.all([apiPromise, ...animations]);
 
       setProfile(response.data.data);

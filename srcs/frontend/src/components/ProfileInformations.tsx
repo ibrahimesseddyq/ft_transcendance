@@ -9,7 +9,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { Logout } from '@/components/LogOut';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
@@ -59,7 +59,7 @@ export function ProfileInformations() {
   const profile = useAuthStore((state) => state.profile);
   const user = useAuthStore((state) => state.user);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
   const initialAvatar = user?.avatarUrl ? `${BACKEND_URL}${user.avatarUrl}` : '/icons/placeholder.jpg';
@@ -111,7 +111,7 @@ export function ProfileInformations() {
       if (data.resumeUrl instanceof File) formData.append("resume", data.resumeUrl);
 
       console.log("userId : ", userId);
-      const apiPromise = mainApi.post(`${env_main_api}/profiles/${userId}`, formData);
+      const apiPromise = mainService.post(`${env_main_api}/profiles/${userId}`, formData);
       
       const animations = [];
       if (data.avatar instanceof File) 

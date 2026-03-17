@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Icon  from '@/components/ui/Icon'
-import { mainApi, quizApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 
 interface JobPhase {
@@ -50,8 +50,8 @@ export function JobPhaseManager({ jobId }: Props) {
     setLoading(true);
     try {
       const [phasesRes, testsRes] = await Promise.all([
-        mainApi.get(`${env_main_api}/jobPhases/${jobId}/phase`),
-        quizApi.get(`${env_quiz_api}/tests`)
+        mainService.get(`${env_main_api}/jobPhases/${jobId}/phase`),
+        mainService.get(`${env_quiz_api}/tests`)
       ]);
       
       const pData = phasesRes.data?.data ?? phasesRes.data;
@@ -79,7 +79,7 @@ export function JobPhaseManager({ jobId }: Props) {
     setPhases(prev => prev.filter(p => p.id !== phaseId && p._id !== phaseId));
     
     try {
-      await mainApi.delete(`${env_main_api}/jobPhases/${phaseId}`);
+      await mainService.delete(`${env_main_api}/jobPhases/${phaseId}`);
       Notification('Phase deleted', 'success');
     } catch {
       fetchData(); 
@@ -105,7 +105,7 @@ export function JobPhaseManager({ jobId }: Props) {
         durationMinutes: form.durationMinutes ? Number(form.durationMinutes) : undefined,
         testId: form.testId,
       };
-      const res = await mainApi.post(`${env_main_api}/jobPhases/`, payload);
+      const res = await mainService.post(`${env_main_api}/jobPhases/`, payload);
       
       setPhases(prev => [...prev, (res.data?.data ?? res.data)]);
       setForm(defaultForm);

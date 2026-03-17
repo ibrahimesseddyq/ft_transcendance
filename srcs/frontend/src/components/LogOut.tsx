@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
 import Icon  from '@/components/ui/Icon'
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 interface LogoutProps {
   className?: string;
@@ -14,7 +14,7 @@ export function Logout({ className }: LogoutProps) {
 
   const handleLogout = async () => {
     console.log("Iam in logout");
-    await mainApi.post(`${env_main_api}/auth/logout`);
+    await mainService.post(`${env_main_api}/auth/logout`);
     clearAuth();
     navigate('/Login', { replace: true });
   };

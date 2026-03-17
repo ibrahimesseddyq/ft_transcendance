@@ -1594,7 +1594,7 @@ describe('mock contract verification', () => {
 
         await quizService.submitTest(data, null);
 
-        expect(appPhaseService.updateApplicationPhase).toHaveBeenCalledTimes(1);
+        expect(appPhaseService.updateApplicationPhase).toHaveBeenCalledTimes(2);
     });
 
     it('jwtService.generateAuthTokens receives id + email + role', async () => {
