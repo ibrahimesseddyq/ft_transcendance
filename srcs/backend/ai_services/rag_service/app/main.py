@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from limiter.limiter import limiter
 from routers import llm_rag_router
+from services.document_index import index_documents
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 app = FastAPI()
 
@@ -16,7 +21,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(llm_rag_router.router)
 
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="127.0.0.1", port=3002, reload=True)
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.on_event("startup")
+def startup_documents():
+
+    index_documents()
+
+
+app.include_router(llm_rag_router.router)
