@@ -3,6 +3,8 @@ uvicorn
 fastapi
 slowapi
 python-multipart
+python-jose
+python-dotenv
 langchain-ollama
 langchain-community
 langchain-text-splitters
