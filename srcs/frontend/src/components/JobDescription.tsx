@@ -30,7 +30,7 @@ export function JobDescription() {
         setJobItem(result.data);
       }
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.log("Fetch error:", error);
       Notification("Error loading job details", "error");
     }
   };

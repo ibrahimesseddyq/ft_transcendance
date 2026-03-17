@@ -45,7 +45,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
         setTotalPages(result.meta?.totalPages || 1);
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      console.log("Fetch Error:", error);
     } finally {
       setIsLoading(false);
     }

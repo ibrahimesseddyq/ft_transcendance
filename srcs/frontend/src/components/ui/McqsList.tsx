@@ -36,7 +36,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Mcq deleted successfully", "success");
         } catch (err) {
-            console.error(err);
+            console.log(err);
             Notification("Failed to delete Mcq", "error");
         }
     };
