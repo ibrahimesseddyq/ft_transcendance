@@ -13,7 +13,7 @@ export function ChatHeader({
   isOnline,
   onBack,
 }: ChatHeaderProps) {
-  const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_YRL = import.meta.env.VITE_SERVICE_URL;
   if (!conversation) return null;
 
   const getInitials = () => {

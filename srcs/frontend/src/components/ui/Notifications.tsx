@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
 import { chatSocket } from '@/services/chatSocket';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 interface Notification {
   id: string;
@@ -37,7 +37,7 @@ export function Notifications() {
 
     chatSocket.connect();
 
-    mainApi.get('/api/main/notifications')
+    mainService.get('/api/main/notifications')
       .then((res) => {
         if (res.data?.data) setNotifications(res.data.data.filter((n: Notification) => !n.isRead));
       })
@@ -76,14 +76,14 @@ export function Notifications() {
 
   const markAsRead = async (id: string) => {
     try {
-      await mainApi.patch(`/api/main/notifications/${id}/read`);
+      await mainService.patch(`/api/main/notifications/${id}/read`);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch {}
   };
 
   const markAllAsRead = async () => {
     try {
-      await mainApi.patch('/api/main/notifications/read-all');
+      await mainService.patch('/api/main/notifications/read-all');
       setNotifications([]);
     } catch {}
   };
