@@ -76,7 +76,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPag
         );
         setIsFormOpen(false);
       } catch (error) {
-        console.error("updated failed:", error);
+        console.log("updated failed:", error);
         Notification("Error updating job", "error");
       }
     }else{
@@ -98,7 +98,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPag
         Notification("Job added successfully!", "success");
         setIsFormOpen(false);
       } catch (error) {
-        console.error("Submission failed:", error);
+        console.log("Submission failed:", error);
         Notification("Error creating job", "error");
       }
     }

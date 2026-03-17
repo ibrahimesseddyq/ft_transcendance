@@ -22,7 +22,7 @@ export function Dashboard() {
           setDashboardData(res.data.data);
         }
       } catch (err) {
-        console.error("Dashboard fetch error:", err);
+        console.log("Dashboard fetch error:", err);
       } finally {
         setIsLoading(false);
       }

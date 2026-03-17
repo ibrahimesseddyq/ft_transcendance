@@ -33,7 +33,7 @@ export const verifyOwnership = (req, res, next) => {
     if (!req.user)
         throw new HttpException(401, "Unauthorized");
     const resourceUserId = req.params.id || req.params.userId;
-    if (String(req.user?.id) !== String(resourceUserId) && req.user.role !== 'admin')
+    if (String(req.user?.id) !== String(resourceUserId) && req.user.role !== 'recruiter')
         throw new HttpException(403, 'Forbidden:  You can only access your own resources');
     next();
 }

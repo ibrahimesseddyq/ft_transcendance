@@ -17,7 +17,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
             const res = await mainService.get(`${env_quiz_api}/tests`);
             setTests(res.data?.data || []);
         } catch (err) {
-            console.error("Error fetching tests:", err);
+            console.log("Error fetching tests:", err);
         } finally {
             setLoading(false);
         }
@@ -35,7 +35,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Test deleted successfully", "success");
         } catch (err) {
-            console.error(err);
+            console.log(err);
             Notification("Failed to delete Test", "error");
         }
     };

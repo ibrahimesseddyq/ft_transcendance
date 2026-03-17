@@ -93,7 +93,7 @@ export function QRcode() {
                 }
             }
         } catch (error) {
-            console.error("Verification failed:", error);
+            console.log("Verification failed:", error);
             alert("An unexpected error occurred.");
         } finally {
             setLoading(false);

@@ -48,7 +48,7 @@ export function ApplicationDetails() {
       alert("Candidate has been rejected.");
       navigate(-1);
     } catch (error) {
-      console.error("Failed to reject:", error);
+      console.log("Failed to reject:", error);
     }
   };
 
