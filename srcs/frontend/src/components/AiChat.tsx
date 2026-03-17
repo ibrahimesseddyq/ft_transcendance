@@ -1,19 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { AudioLines } from 'lucide-react';
 import { aiapi } from '@/utils/Api';
+import { ragapi } from '@/utils/Api';
 
 const SUGGESTIONS = [
-  "How can i find job?",
-  "What is the rules of a valid picture?",
+  "who are you?",
+  "give me all services do you present?",
   "How can i get the best job offer?"
 ];
 
 export default function AiChat() {
   const [showSuggestions, setShowSuggestions] = useState(true);
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessages(prev => [...prev, { role: "user", content: suggestion }]);
-    setShowSuggestions(false);
-  };
 
   const [messages, setMessages] = useState([
     { role: "ai", content: "Hello! Upload an audio clip and I'll transcribe it." }
@@ -64,11 +61,12 @@ export default function AiChat() {
   const generateAiResponse = async (userText: string) => {
     setIsGenerating(true);
     try {
-      const response = await aiapi.post(`${env_ai_api}/generate`, { 
+      const response = await ragapi.post(`${env_ai_api}/generate`, { 
         text: userText 
       });
 
-      const aiText = response.data.result || response.data.text;
+      const aiText = response.data;
+      console.log("response.data => ", response.data)
       setMessages(prev => [...prev, { role: "ai", content: aiText }]);
     } catch (err) {
       setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
@@ -107,6 +105,10 @@ export default function AiChat() {
     await generateAiResponse(textToSend);
   };
 
+  const handleSuggestionClick = (suggestion: string) => {
+    setInput(suggestion);
+  };
+
   return (
     <div className="flex flex-col z-50 m-2 w-full md:w-80 h-[450px] md:h-[500px]  bg-white rounded-2xl shadow-2xl overflow-hidden border">
       <div className="bg-black p-4 text-white font-bold">AI Assistant</div>
@@ -114,7 +116,7 @@ export default function AiChat() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+            <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
               msg.role === "user" ? "bg-black text-white" : "bg-white border text-gray-800"
             }`}>
               {msg.content}
@@ -144,10 +146,10 @@ export default function AiChat() {
         <div ref={chatEndRef} />
       </div>
 
-      <div className="p-4 bg-white border-t flex items-center gap-2">
+      <div className=" p-4 bg-white border-t flex items-center gap-2">
         <button 
           onClick={isRecording ? stopRecording : startRecording}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+          className={`w-10 h-10  rounded-full flex items-center justify-center transition-all ${
             isRecording ? "bg-red-500 animate-pulse text-white" : "bg-gray-100 text-gray-600"
           }`}
         >
@@ -162,7 +164,10 @@ export default function AiChat() {
           className="flex-1 text-black bg-gray-100 border-none rounded-full px-4 py-2 text-sm outline-none"
         />
         
-        <button onClick={handleSend} className="bg-black text-white w-10 h-10 rounded-full">→</button>
+        <button onClick={handleSend} 
+          className="bg-black text-white w-8 h-8 rounded-full">
+          →
+        </button>
       </div>
     </div>
   );
