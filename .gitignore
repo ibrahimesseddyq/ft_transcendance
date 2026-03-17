@@ -24,7 +24,6 @@ build/
 .next/
 out/
 generated/
-__pycache__/
 *.pyc
 tls.crt
 tls.key
