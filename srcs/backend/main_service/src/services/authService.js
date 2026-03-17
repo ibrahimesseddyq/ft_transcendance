@@ -89,7 +89,7 @@ export const  register = async (data) => {
         from: env.USER_EMAIL,
         to: user.email,
         subject: "Email Verification",
-        text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/main/auth/verify-email/${verificationToken}`
+        text: `Please verify your email by clicking:  ${env.BACKEND_URL}/api/main/auth/verify-email/${verificationToken}`
     });
     return {};
 }

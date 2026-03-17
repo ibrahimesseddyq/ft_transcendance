@@ -10,8 +10,6 @@ interface CustomConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
 
-console.log("herererer : ", import.meta.env.VITE_RAG_SERVICE_URL);
-
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
