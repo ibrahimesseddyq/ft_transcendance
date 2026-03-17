@@ -71,6 +71,7 @@ spec:
               sleep 2
             done
             npx prisma db push
+            npm run seed
             exec node /app/server.js
           ports:
             - name: http
