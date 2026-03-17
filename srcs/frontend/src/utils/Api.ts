@@ -87,6 +87,10 @@ export const aiapi = axios.create({
     withCredentials: true,
 });
 
+export const ragapi = axios.create({
+    baseURL: import.meta.env.VITE_RAG_SERVICE_URL, 
+    withCredentials: true,
+});
 
 
 
@@ -94,3 +98,4 @@ attachInterceptors(mainApi);
 attachInterceptors(chatApi);
 attachInterceptors(quizApi);
 attachInterceptors(aiapi);
+attachInterceptors(ragapi);

@@ -1,15 +1,3 @@
-// =============================================
-// HIRING PLATFORM - QUIZ SERVICE (FINAL - IMPLICIT M2M)
-// 
-// CLEAN & SIMPLE DESIGN:
-// - MCQs created independently (reusable library)
-// - CodeChallenges created independently (reusable library)
-// - Tests composed by connecting to existing MCQs/Challenges
-// - Prisma handles junction tables automatically
-// - NO order field needed - simplified!
-//
-// Database: MySQL 8.0+
-// =============================================
 
 generator client {
   provider = "prisma-client-js"
@@ -19,10 +7,6 @@ generator client {
 datasource db {
   provider = "mysql"
 }
-
-// ===================
-// ENUMS
-// ===================
 
 enum TestType {
   QUIZ
@@ -35,41 +19,24 @@ enum Difficulty {
   HARD
 }
 
-// ===================
-// MCQ LIBRARY (Independent, Reusable)
-// ===================
-
 model Mcq {
   id       String @id @default(uuid()) @db.Char(36)
   question String @db.Text
 
   choices Json
-  /**
-   * [
-   * {"id": "A", "text": "A way to close files", "isCorrect": false},
-   * {"id": "B", "text": "Function with lexical scope", "isCorrect": true},
-   * {"id": "C", "text": "A loop structure", "isCorrect": false},
-   * {"id": "D", "text": "An error handler", "isCorrect": false}
-   * ]
-   * Validation (application layer):
-   * - Must have exactly 4 choices
-   * - Exactly 1 choice must have isCorrect: true
-   */
 
   points      Int     @default(1)
   explanation String? @db.Text
 
-  // Library metadata
-  category   String?     @db.VarChar(100) // "JavaScript", "React", "Algorithms"
+  category   String?     @db.VarChar(100) 
   difficulty Difficulty?
-  tags       Json? // ["closure", "scope", "functions"]
+  tags       Json?
 
   isPublished Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Many-to-many with Test (Prisma handles junction table)
   tests Test[]
 
   @@index([isPublished])
@@ -77,9 +44,6 @@ model Mcq {
   @@index([difficulty])
 }
 
-// ===================
-// CODE CHALLENGE LIBRARY (Independent, Reusable)
-// ===================
 
 model CodeChallenge {
   id          String @id @default(uuid()) @db.Char(36)
@@ -87,44 +51,16 @@ model CodeChallenge {
   description String @db.Text
 
   starterCode String @db.Text
-  language    String @db.VarChar(50) // "javascript", "python", "java"
+  language    String @db.VarChar(50) 
 
   testCases Json
-  /**
-   * [
-   * {
-   * "id": "tc1",
-   * "input": "[2,7,11,15]\n9",
-   * "expectedOutput": "[0,1]",
-   * "isHidden": false,
-   * "points": 3,
-   * "explanation": "Basic test case"
-   * },
-   * {
-   * "id": "tc2",
-   * "input": "[3,2,4]\n6",
-   * "expectedOutput": "[1,2]",
-   * "isHidden": false,
-   * "points": 3,
-   * "explanation": "Middle of array"
-   * },
-   * {
-   * "id": "tc3",
-   * "input": "[large array...]\n500",
-   * "expectedOutput": "[456,789]",
-   * "isHidden": true,
-   * "points": 4,
-   * "explanation": "Edge case"
-   * }
-   * ]
-   */
+ 
 
-  timeLimit   Int   @default(5000) // Milliseconds for Judge0
-  memoryLimit Int   @default(128000) // Kilobytes for Judge0
+  timeLimit   Int   @default(5000)
+  memoryLimit Int   @default(128000)
   totalPoints Int   @default(10)
-  hints       Json? // ["Think hash map", "O(n) possible"]
+  hints       Json?
 
-  // Library metadata
   category   String?     @db.VarChar(100)
   difficulty Difficulty?
   tags       Json?
@@ -134,8 +70,6 @@ model CodeChallenge {
   createdBy String   @db.Char(36)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Many-to-many with Test (Prisma handles junction table)
   tests Test[]
 
   @@index([isPublished])
@@ -145,10 +79,6 @@ model CodeChallenge {
   @@index([createdBy])
 }
 
-// ===================
-// TEST (Composition of MCQs or CodeChallenges)
-// ===================
-
 model Test {
   id          String   @id @default(uuid()) @db.Char(36)
   type        TestType
@@ -156,9 +86,8 @@ model Test {
   description String?  @db.Text
 
   durationMinutes Int
-  passingScore    Int @default(60) // Percentage (0-100)
+  passingScore    Int @default(60)
 
-  // Library metadata
   category   String?     @db.VarChar(100)
   difficulty Difficulty?
   tags       Json?
@@ -167,8 +96,6 @@ model Test {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Many-to-many relations (Prisma creates junction tables)
   mcqs           Mcq[]
   codeChallenges CodeChallenge[]
 
@@ -177,156 +104,3 @@ model Test {
   @@index([category])
   @@index([difficulty])
 }
-
-// ===================
-// WHAT PRISMA CREATES AUTOMATICALLY
-// ===================
-
-/**
- * Prisma will generate these tables in MySQL:
- * 1. _MCQToTest
- * ├─ A (mcqId)
- * ├─ B (testId)
- * └─ PRIMARY KEY (A, B)
- * 2. _CodeChallengeToTest
- * ├─ A (codeChallengeId)
- * ├─ B (testId)
- * └─ PRIMARY KEY (A, B)
- * You don't see them in schema, but they exist in the database!
- * Prisma manages them automatically.
- */
-
-// ===================
-// USAGE EXAMPLES
-// ===================
-
-/**
- * 1. CREATE MCQ IN LIBRARY:
- * const mcq = await prisma.mcq.create({
- * data: {
- * question: "What is a closure?",
- * choices: [...],
- * category: "JavaScript",
- * difficulty: "MEDIUM",
- * isPublished: true,
- * createdBy: userId
- * }
- * });
- * 2. CREATE CODE CHALLENGE IN LIBRARY:
- * const challenge = await prisma.codeChallenge.create({
- * data: {
- * title: "Two Sum",
- * description: "...",
- * starterCode: "function twoSum() {...}",
- * language: "javascript",
- * testCases: [...],
- * category: "Algorithms",
- * isPublished: true,
- * createdBy: userId
- * }
- * });
- * 3. CREATE QUIZ TEST FROM ARRAY OF MCQs:
- * const test = await prisma.test.create({
- * data: {
- * type: "QUIZ",
- * title: "JavaScript Fundamentals",
- * durationMinutes: 30,
- * passingScore: 70,
- * isPublished: true,
- * createdBy: userId,
- * mcqs: {
- * connect: [
- * { id: "mcq-123" },
- * { id: "mcq-456" },
- * { id: "mcq-789" },
- * // ... more MCQs
- * ]
- * }
- * }
- * });
- * 4. CREATE CODE TEST WITH CHALLENGE:
- * const test = await prisma.test.create({
- * data: {
- * type: "CODE",
- * title: "Two Sum Challenge",
- * durationMinutes: 90,
- * passingScore: 60,
- * isPublished: true,
- * createdBy: userId,
- * codeChallenges: {
- * connect: [
- * { id: "challenge-123" }
- * ]
- * }
- * }
- * });
- * 5. ADD MORE MCQs TO EXISTING TEST:
- * await prisma.test.update({
- * where: { id: testId },
- * data: {
- * mcqs: {
- * connect: [
- * { id: "mcq-new-1" },
- * { id: "mcq-new-2" }
- * ]
- * }
- * }
- * });
- * 6. REMOVE MCQ FROM TEST:
- * await prisma.test.update({
- * where: { id: testId },
- * data: {
- * mcqs: {
- * disconnect: [{ id: "mcq-123" }]
- * }
- * }
- * });
- * 7. GET TEST WITH ALL MCQs:
- * const test = await prisma.test.findUnique({
- * where: { id: testId },
- * include: { mcqs: true }
- * });
- * // test.mcqs = [mcq1, mcq2, mcq3, ...]
- * 8. GET MCQ WITH ALL TESTS USING IT:
- * const mcq = await prisma.mcq.findUnique({
- * where: { id: mcqId },
- * include: { tests: true }
- * });
- * // mcq.tests = [test1, test2, test3]
- * console.log(`Used in ${mcq.tests.length} tests`);
- * 9. BROWSE MCQ LIBRARY:
- * const mcqs = await prisma.mcq.findMany({
- * where: {
- * isPublished: true,
- * category: "JavaScript",
- * difficulty: "MEDIUM"
- * }
- * });
- * 10. BROWSE CODE CHALLENGE LIBRARY:
- * const challenges = await prisma.codeChallenge.findMany({
- * where: {
- * isPublished: true,
- * language: "javascript",
- * difficulty: "EASY"
- * }
- * });
- */
-
-// ===================
-// BENEFITS OF THIS DESIGN
-// ===================
-
-/**
- * ✅ SIMPLE: Only 3 tables in schema (Prisma handles rest)
- * ✅ CLEAN: Standard Prisma implicit many-to-many pattern
- * ✅ REUSABLE: MCQs and Challenges can be in multiple tests
- * ✅ FLEXIBLE: Easy to add/remove items from tests
- * ✅ FAST: Prisma optimizes queries automatically
- * ✅ MAINTAINABLE: Less code, fewer bugs
- * ✅ SCALABLE: Each component scales independently
- * PERFECT FOR:
- * - Building test library
- * - Reusing quality questions
- * - Fast test creation
- * - Clean, professional codebase
- */

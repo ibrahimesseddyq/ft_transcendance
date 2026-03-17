@@ -54,19 +54,26 @@ export const getApplicaticationById = async (applicationId) => {
 		throw new HttpException(404, "application not found");
 	return application;
 }
-
 export const advance = async (applicationId) => {
     return await prisma.$transaction(async (tx) => {
         const application = await tx.application.findUnique({
             where: { id: applicationId },
-            include: { applicationPhases: true }
+            include: { 
+                applicationPhases: {
+                    orderBy: { id: 'asc' } 
+                } 
+            }
         });
+
         if (!application) throw new HttpException(404, 'application not found');
         if (application.status !== 'inProgress')
             throw new HttpException(400, 'cannot make progress in this application');
 
         const phases = application.applicationPhases;
         const currentPhase = phases.find(p => p.id === application.currentPhaseId);
+        
+        if (!currentPhase) 
+            throw new HttpException(400, 'Current phase not found in application phases');
         if (currentPhase.status !== 'completed')
             throw new HttpException(400, "can't advance to next phase");
 
@@ -75,13 +82,21 @@ export const advance = async (applicationId) => {
             throw new HttpException(400, 'application already completed');
 
         const nextPhase = phases[currentIndex + 1];
-        const updated = await tx.application.updateMany({
-            where: { id: applicationId, currentPhaseId: currentPhase.id },
-            data: { currentPhaseId: nextPhase.id }
-        });
-        if (updated.count === 0) throw new HttpException(409, 'Concurrent modification — retry');
 
-        return await tx.applicationPhase.update({
+        const updated = await tx.application.updateMany({
+            where: { 
+                id: applicationId, 
+                currentPhaseId: currentPhase.id 
+            },
+            data: { 
+                currentPhaseId: nextPhase.id,
+                status: 'inProgress'
+            }
+        });
+
+        if (updated.count === 0) throw new HttpException(409, 'Concurrent modification — retry');
+        
+		return await tx.applicationPhase.update({
             where: { id: nextPhase.id },
             data: { status: 'inProgress' }
         });
@@ -152,5 +167,7 @@ export const getCurrentPhase = async (applicationId) => {
 	const application = await applicationRepository.getApplicaticationById(applicationId);
 	if (!application)
 		throw new HttpException(404, "application not found");
+	if (!application.currentPhaseId)
+    	throw new HttpException(404, 'No active phase for this application');
 	return await applicationPhaseservice.getApplicaticationPhaseById(application.currentPhaseId);
 }

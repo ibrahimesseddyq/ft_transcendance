@@ -1,37 +1,28 @@
-import {CustomError} from '../utils/httpExceptions.js';
-import { Prisma } from '../../generated/prisma/client.js'
-import { ZodError } from 'zod';
+import { CustomError } from '../utils/httpExceptions.js';
+import handlePrismaError from '../utils/prismaErrorHandler.js';
+import env from '../config/env.js';
 
-const errorFactory = (err,res) => {
-    if (err instanceof CustomError) {
-        res.status(err.statusCode).json({
-            success: false,
-            errors : err.errors
-        });
-        return true;
+const errorHandler = (err, req, res, next) => {
+    if (env.NODE_ENV === 'development')
+    {
+        console.log("START ERROR");
+        console.error(err);
+        console.log("END ERROR");
     }
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        res.status(400).json({
-            success: false,
-            errors:['bad request']
-        });
-        return true;
+    let processedError = err;
+    if (err.name === 'PrismaClientKnownRequestError') {
+        processedError = handlePrismaError(err) || err;
     }
-    return false;
-}
-
-const errorHandler = (err,req,res,next) => {
-    console.log("START ERROR")
-    console.log(err);
-    console.log("END ERROR")
-
-    const handled = errorFactory(err,res);
-    if (handled) return;
-    res.status(500).json({
+    if (processedError instanceof CustomError) {
+        return res.status(processedError.statusCode).json({
+            success: false,
+            errors: processedError.errors
+        });
+    }
+    return res.status(500).json({
         success: false,
-        errors : ['internal server error']
-    })
+        errors: ['internal server error']
+    });
+};
 
-}
-
-export  default  errorHandler;
+export default errorHandler;

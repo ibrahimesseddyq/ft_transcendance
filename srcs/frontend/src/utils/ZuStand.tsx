@@ -15,19 +15,6 @@ interface User {
   isVerified: boolean;
   hasProfile: boolean;
 }
-interface Profile{
-  availableFrom: string;
-  currentCompany: string;
-  currentTitle: string;
-  linkedinUrl: string;
-  phone: string;
-  portfolioUrl: string;
-  resumeUrl: string;
-  skills: string;
-  user: User;
-  userId: string;
-  yearsExperience: string;
-}
 
 interface Profile {
   userId: string;

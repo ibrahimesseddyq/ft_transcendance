@@ -61,7 +61,6 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
 
             Notification('Test created successfully!', 'success');
             
-            // Reset form
             setForm({ 
                 title: '', 
                 description: '', 
