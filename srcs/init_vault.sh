@@ -48,18 +48,22 @@ until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
   sleep 2
 done
-# Now initialize + unseal if needed
-# REPLACE with:
 if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  UNSEAL_KEY=$(grep -o '"unseal_keys_b64":\["[^"]*"' /vault/data/init.json | grep -o '[^"]*"$' | tr -d '"')
-  VAULT_TOKEN=$(grep -o '"root_token":"[^"]*"' /vault/data/init.json | cut -d'"' -f4)
+  # Use sed instead of jq or grep - always available in Alpine
+  UNSEAL_KEY=$(sed 's/.*"unseal_keys_b64":\["\([^"]*\)".*/\1/' /vault/data/init.json)
+  VAULT_TOKEN=$(sed 's/.*"root_token":"\([^"]*\)".*/\1/' /vault/data/init.json)
 
-  echo "$UNSEAL_KEY" | vault operator unseal
+  # Verify parsing worked before attempting unseal
+  echo "DEBUG UNSEAL_KEY=$UNSEAL_KEY"
+  echo "DEBUG VAULT_TOKEN=$VAULT_TOKEN"
+
+  # Pass as positional arg - no TTY needed
+  vault operator unseal "$UNSEAL_KEY"
   export VAULT_TOKEN
-  echo "$VAULT_TOKEN" | vault login -
+  vault login "$VAULT_TOKEN"
 fi
 
 echo "Vault is ready!"
