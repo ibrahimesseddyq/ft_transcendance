@@ -48,7 +48,7 @@ until vault status >/dev/null 2>&1; do
   echo "Waiting for vault..."
   sleep 2
 done
-
+apk add --no-cache jq
 # Now initialize + unseal if needed
 if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
