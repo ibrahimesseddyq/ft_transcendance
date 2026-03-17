@@ -1,7 +1,7 @@
 import Notification from "@/utils/TostifyNotification";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { JobPhaseManager } from "./JobPhaseManager";
 import Icon  from '@/components/ui/Icon'
 import { Link } from 'react-router-dom';
@@ -24,13 +24,13 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
         if (!confirm("Are you sure you want to delete this job?")) 
             return;
         try {
-            await mainApi.delete(`${env_main_api}/jobs/${jobId}`);
+            await mainService.delete(`${env_main_api}/jobs/${jobId}`);
             const limit = 6;
             const params = new URLSearchParams();
             params.append("limit", String(limit));
             const url = `${env_main_api}/jobs?${params.toString()}`;
             const [filter_res] = await Promise.all([
-              mainApi.get(url),
+              mainService.get(url),
               new Promise(resolve => setTimeout(resolve, 800))
             ]);
             const result = filter_res.data; 

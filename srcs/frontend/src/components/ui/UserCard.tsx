@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { mainApi } from '@/utils/Api'
+import { mainService } from '@/utils/Api'
 
 interface props{
   candidateId: string,
   applicationId: string,
 }
 const UserCard = ({ candidateId, applicationId }: props) => {
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
@@ -17,7 +17,7 @@ const UserCard = ({ candidateId, applicationId }: props) => {
     useEffect(()=>{
       const fetchUserContent = async () =>{
         try{
-          const res = await mainApi.get(`${env_main_api}/users/${candidateId}`);
+          const res = await mainService.get(`${env_main_api}/users/${candidateId}`);
           
           const data = res.data;
           if (data.data){
