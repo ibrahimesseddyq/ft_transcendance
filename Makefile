@@ -76,8 +76,8 @@ kube-build:
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
 	--build-arg VITE_AI_API_URL=/api/ai \
 	--build-arg VITE_RAG_API_URL=/api/rag \
+	/home/ec2-user/ft_transcendance/srcs/frontend
 
-	$(ROOT)srcs/frontend
 
 kube-load: kube-build
 	k3d image import gateway:dev main-service:dev quiz-service:dev  frontend:dev waf:dev -c hirefy
