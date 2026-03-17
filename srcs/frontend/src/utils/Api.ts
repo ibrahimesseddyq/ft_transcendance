@@ -15,7 +15,6 @@ let failedQueue: FailedRequest[] = [];
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
 const attachInterceptors = (instance: AxiosInstance) => {
-    console.log("instance :", instance);
     instance.interceptors.request.use((config) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
@@ -28,7 +27,6 @@ const attachInterceptors = (instance: AxiosInstance) => {
         (response) => response,
         async (error: AxiosError) => {
             const originalRequest = error.config as CustomConfig;
-            console.log("originalRequest :", originalRequest);
 
             if (error.response?.status === 401 && !originalRequest._retry) {
                 if (isRefreshing) {
