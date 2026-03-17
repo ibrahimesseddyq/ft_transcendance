@@ -58,7 +58,7 @@ spec:
               . /vault/secrets/config
               . /vault/secrets/jwt
               . /vault/secrets/other
-              exec /app/script.sh
+              exec ./script.sh
 
         - name: rag-service
           image: rag-service:dev
@@ -73,7 +73,7 @@ spec:
               . /vault/secrets/config
               . /vault/secrets/jwt
               . /vault/secrets/other
-              exec /app/script.sh
+              exec ./script.sh
 
         - name: ollama-service
           image: ollama-service:dev
