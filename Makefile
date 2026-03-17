@@ -75,6 +75,8 @@ kube-build:
 	--build-arg VITE_MAIN_API_URL=/api/main \
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
 	--build-arg VITE_AI_API_URL=/api/ai \
+	--build-arg VITE_RAG_API_URL=/api/rag \
+
 	$(ROOT)srcs/frontend
 
 kube-load: kube-build
