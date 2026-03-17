@@ -60,7 +60,7 @@ spec:
               done
               npx prisma db push
               # Start the application
-              exec npm run dev
+              exec node /app/server.js
 ---
 apiVersion: v1
 kind: Service
