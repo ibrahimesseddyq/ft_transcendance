@@ -10,6 +10,8 @@ interface CustomConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
 
+console.log("herererer : ", import.meta.env.VITE_RAG_SERVICE_URL);
+
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
@@ -19,6 +21,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
+
         return config;
     });
 
@@ -26,6 +29,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
         (response) => response,
         async (error: AxiosError) => {
             const originalRequest = error.config as CustomConfig;
+            console.log("originalRequest :", originalRequest);
 
             if (error.response?.status === 401 && !originalRequest._retry) {
                 if (isRefreshing) {
@@ -97,5 +101,5 @@ export const ragapi = axios.create({
 attachInterceptors(mainApi);
 attachInterceptors(chatApi);
 attachInterceptors(quizApi);
-attachInterceptors(aiapi);
 attachInterceptors(ragapi);
+attachInterceptors(aiapi);

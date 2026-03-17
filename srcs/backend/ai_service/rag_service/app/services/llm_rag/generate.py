@@ -7,7 +7,7 @@ from langchain_text_splitters import (
     RecursiveCharacterTextSplitter,
 )
 
-llm = ChatOllama(model="llama3.2:1b", num_predict=200, num_ctx=2048)
+llm = ChatOllama(model="llama3.2:3b", num_predict=200, num_ctx=2048)
 
 embedding = OllamaEmbeddings(model="mxbai-embed-large")
 
