@@ -66,10 +66,12 @@ spec:
             . /vault/secrets/oauth
             . /vault/secrets/other 
             npx prisma generate
-            until mysqladmin ping -h main-service-db --silent; do
+            echo "=== [5] Waiting for DB ==="
+            until nc -z quiz-service-db 3306; do
               echo "Waiting for DB..."
               sleep 2
             done
+            echo "DB is ready!"
             npx prisma db push
             npm run seed
             exec node /app/server.js
