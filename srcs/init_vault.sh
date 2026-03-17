@@ -1,42 +1,15 @@
 #!/bin/sh
 set -e
 
-export VAULT_ADDR="http://127.0.0.1:8200"
-export VAULT_TOKEN="root"
-# Main service DB Creds
-export MARIADB_MAIN_ROOT_PASSWORD=root
-export MARIADB_MAIN_DATABASE=hirefy
-export MARIADB_MAIN_USER=root
-export MARIADB_MAIN_PASSWORD=root
-# Quiz service DB Creds
-export MARIADB_QUIZ_ROOT_PASSWORD=root
-export MARIADB_QUIZ_DATABASE=hirefy
-export MARIADB_QUIZ_USER=root
-export MARIADB_QUIZ_PASSWORD=root
-
-############# Global ###################
-
-export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
-export GOOGLE_CLIENT_SECRET=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
-
-export ACCESS_TOKEN_SECRET=96c2401320859efdd13ac8b2043d93ffce79dc76d93872e61a210c556582b1c4e4865ea773b185805bb5ab92dcba4c5a8334cb4d334197bd71c7efa0680858d9
-export REFRESH_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-
-export VERIFY_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export USER_EMAIL=fttranscendencefttranscendence@gmail.com
-export USER_PASSWORD=mqsuowqknwrumsmp
-
-export INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export AI_INTERNAL_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export RECRUITER_PASS=Abdellatif123@@ 
-
-export VERIFY_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-
-export TEMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
-export AI_MODEL_NAME=gpt-3.5-turbo
-export AI_API_KEY=your-api-key-here
-
+if [ -f .env ]; then
+  # Export all vars, skip comments and blank lines
+  set -a
+  . ./.env
+  set +a
+else
+  echo "ERROR: .env file not found"
+  exit 1
+fi
 # Wait for vault to be reachable
 until vault status >/dev/null 2>&1; do
   STATUS=$?
