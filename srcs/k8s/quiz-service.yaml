@@ -54,6 +54,10 @@ spec:
               . /vault/secrets/jwt
               . /vault/secrets/other
               npx prisma generate
+              until mysqladmin ping -h quiz-service-db --silent; do
+                echo "Waiting for DB..."
+                sleep 2
+              done
               npx prisma db push
               # Start the application
               exec npm run dev
