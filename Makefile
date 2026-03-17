@@ -113,6 +113,7 @@ kube-deploy:
 
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
+	kubectl cp srcs/.env.example hirefy/$$POD:/tmp/.env
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
 	
 	# 5. Service account (required before any Vault-injected pod)
@@ -166,7 +167,6 @@ vault-init:
 vault-ui:
 	echo "=== Opening Vault UI ==="
 	echo "Access Vault UI at: http://localhost:8200"
-	echo "Token: root"
 	kubectl port-forward -n hirefy svc/vault 8200:8200
 
 vault-logs:
@@ -190,3 +190,25 @@ vault-secret-put:
 	read -p "Enter key: " key
 	read -p "Enter value: " value
 	kubectl exec -n hirefy deployment/vault -- vault kv put secret/$$path $$key="$$value"
+
+kube-redeploy: kube-build kube-load
+	# Re-apply only application manifests (skip infra/db setup)
+	kubectl apply -f srcs/k8s/main-service.yaml
+	kubectl apply -f srcs/k8s/quiz-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/waf.yaml
+	kubectl apply -f srcs/k8s/ingress.yaml
+	kubectl apply -f srcs/k8s/frontend.yaml
+	kubectl apply -f srcs/k8s/adminer.yaml
+	kubectl rollout restart deployment -n hirefy --all
+	kubectl rollout status deployment -n hirefy --timeout=120s
+kube-apply:
+	kubectl apply -f srcs/k8s/main-service.yaml
+	kubectl apply -f srcs/k8s/quiz-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/waf.yaml
+	kubectl apply -f srcs/k8s/ingress.yaml
+	kubectl apply -f srcs/k8s/frontend.yaml
+	kubectl apply -f srcs/k8s/adminer.yaml
