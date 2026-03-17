@@ -3,12 +3,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification"
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
-    const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
     const navigate = useNavigate();
     const {
         register,
@@ -25,7 +25,7 @@ const Signup = () => {
 
     const SignUpSubmit = async (data: any) => {
         try {
-            await mainApi.post(`${env_main_api}/auth/register`, data);
+            await mainService.post(`${env_main_api}/auth/register`, data);
             console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
             navigate('/', { replace: true });
