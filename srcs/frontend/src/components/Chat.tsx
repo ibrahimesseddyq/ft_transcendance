@@ -37,7 +37,7 @@ export function Chat() {
   const [chatOpen, setChatOpen] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
   const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
-  const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_YRL = import.meta.env.VITE_SERVICE_URL;
 
   if (isLoading) {
     return (

@@ -1,3 +1,6 @@
+
+import { AiChatButton } from '@/components/ui/AiChatButton'
+import { useAuthStore } from '@/utils/ZuStand';
 import {
   Info,
   Target,
@@ -139,6 +142,8 @@ const SectionTitle = ({
 
 export function AboutUs() {
   const stackCategories = Object.entries(aboutUs.techStack) as [keyof TechStack, string[]][];
+  const user = useAuthStore((state) => state.user);
+  const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar p-4 md:p-6">
@@ -269,6 +274,10 @@ export function AboutUs() {
           </SectionCard>
         </div>
       </div>
+
+      {!isAdminOrRecruiter && (
+        <AiChatButton />
+      )}
     </div>
   );
 }

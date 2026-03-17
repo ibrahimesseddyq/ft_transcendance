@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { quizApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
 
@@ -14,7 +14,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
 
     const fetchUserContent = async () => {
         try {
-            const res = await quizApi.get(`${env_quiz_api}/tests`);
+            const res = await mainService.get(`${env_quiz_api}/tests`);
             setTests(res.data?.data || []);
         } catch (err) {
             console.error("Error fetching tests:", err);
@@ -31,7 +31,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
         if (!confirm("Are you sure you want to delete this Test?")) return;
         
         try {
-            await quizApi.delete(`${env_quiz_api}/tests/${id}`);
+            await mainService.delete(`${env_quiz_api}/tests/${id}`);
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Test deleted successfully", "success");
         } catch (err) {

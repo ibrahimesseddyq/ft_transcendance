@@ -7,13 +7,13 @@ const twoFAService = new TwoFAService();
 
 export const    setup = asyncHandler(async (req, res ,next) =>
 {
-    const data = await twoFAService.setup(req.user.id);
+    const data = await twoFAService.setup(req.body.id);
     res.json(data);
 });
 
 export const    verifySetup = asyncHandler( async (req, res,next) => {
     const { code } = req.body;
-    const data = await twoFAService.verifySetup(req.user.id, code);
+    const data = await twoFAService.verifySetup(req.body.id, code);
     res
     .cookie("accessToken", data.accessToken, accessTokenOptions)
     .cookie("refreshToken", data.refreshToken, refreshTokenOptions)
@@ -26,6 +26,6 @@ export const    verifySetup = asyncHandler( async (req, res,next) => {
 
 export const   disable = asyncHandler( async (req, res,next) => {
     const { token } = req.body;
-    const data = await twoFAService.disable(req.user.id, token);
+    const data = await twoFAService.disable(req.body.id, token);
     res.json(data);
 });

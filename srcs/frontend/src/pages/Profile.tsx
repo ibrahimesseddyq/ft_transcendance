@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { ProfileCover } from "@/components/ProfileCover"
 import SkillsCard from "@/components/ui/SkillsCard"
 import { ToastContainer } from "react-toastify";
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { AiChatButton } from '@/components/ui/AiChatButton'
 
 export function Profile() {
@@ -21,8 +21,8 @@ export function Profile() {
       try{
 
         const [res1, res2] = await Promise.all([
-          mainApi.get(`${env_main_api}/users/${id}`),
-          mainApi.get(`${env_main_api}/profiles/${id}`),
+          mainService.get(`${env_main_api}/users/${id}`),
+          mainService.get(`${env_main_api}/profiles/${id}`),
         ]);
 
         const userData = res1.data;

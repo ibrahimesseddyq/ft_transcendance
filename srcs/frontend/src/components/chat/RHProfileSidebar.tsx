@@ -22,7 +22,7 @@ export function RHProfileSidebar({ recruiter, isOnline, isLoading = false }: RHP
   };
 
   const getAvatarUrl = () => {
-    const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const BACKEND_YRL = import.meta.env.VITE_SERVICE_URL;
     if (recruiter?.avatarUrl) {
       return recruiter.avatarUrl.startsWith('http')
         ? recruiter.avatarUrl

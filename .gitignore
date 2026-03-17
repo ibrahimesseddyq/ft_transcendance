@@ -9,7 +9,6 @@
 **/.env.prod
 **/.env.local
 **/.env copy
-profile_classf_model.weights.h5
 # keep .env.example files (safe to push as templates)
 !**/.env.example
 
@@ -25,7 +24,6 @@ build/
 .next/
 out/
 generated/
-__pycache__/
 *.pyc
 tls.crt
 tls.key
@@ -96,3 +94,5 @@ dist-ssr
 # ── Personal notes ───────────────────────────────────────────────
 notesAndTodos.txt
 repomix-output.xml
+.repomixignore
+
