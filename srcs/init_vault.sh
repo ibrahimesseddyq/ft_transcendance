@@ -6,16 +6,15 @@ export VAULT_TOKEN="root"
 # Main service DB Creds
 export MARIADB_MAIN_ROOT_PASSWORD=root
 export MARIADB_MAIN_DATABASE=hirefy
-export MARIADB_MAIN_USER=user1
-export MARIADB_MAIN_PASSWORD=pass
+export MARIADB_MAIN_USER=root
+export MARIADB_MAIN_PASSWORD=root
 # Quiz service DB Creds
 export MARIADB_QUIZ_ROOT_PASSWORD=root
 export MARIADB_QUIZ_DATABASE=hirefy
-export MARIADB_QUIZ_USER=user2
-export MARIADB_QUIZ_PASSWORD=pass
+export MARIADB_QUIZ_USER=root
+export MARIADB_QUIZ_PASSWORD=root
 
 ############# Global ###################
-export DATABASE_URL="mysql://user1:pass@localhost:3306/hirefy"
 
 export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
@@ -38,24 +37,32 @@ export TEMP_TOKEN_SECRET=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064
 export AI_MODEL_NAME=gpt-3.5-turbo
 export AI_API_KEY=your-api-key-here
 
-# Waiting for vault
+# Wait for vault to be reachable
 until vault status >/dev/null 2>&1; do
+  STATUS=$?
+  if [ $STATUS -eq 2 ]; then
+    echo "Vault is sealed but running, proceeding to unseal..."
+    break
+  fi
   echo "Waiting for vault..."
   sleep 2
 done
-
-# Unsealing
 if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  UNSEAL_KEY=$(cat /vault/data/init.json | jq -r '.unseal_keys_b64[0]')
-  VAULT_TOKEN=$(cat /vault/data/init.json | jq -r '.root_token')
-  
-  export VAULT_TOKEN  # Move this BEFORE the unseal command
-  
+  # -A1 gets the line AFTER the key name, then strip spaces/quotes/commas
+  UNSEAL_KEY=$(grep -A1 'unseal_keys_hex' /vault/data/init.json | tail -1 | tr -d ' [],\"')
+  VAULT_TOKEN=$(grep 'root_token' /vault/data/init.json | cut -d'"' -f4)
+
+  echo "DEBUG UNSEAL_KEY=$UNSEAL_KEY"
+  echo "DEBUG VAULT_TOKEN=$VAULT_TOKEN"
+
   vault operator unseal "$UNSEAL_KEY"
+  export VAULT_TOKEN
+  vault login "$VAULT_TOKEN"
 fi
+
 echo "Vault is ready!"
 vault status || true
 

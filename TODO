@@ -17,3 +17,7 @@ TODO:
 
 
 NOTE : https in envirments vars should setted in url instead of just http
+
+- check if modsecurity handle also frontend
+- remove secret from tls yaml and init vault
+- forbid http and redirect to https
