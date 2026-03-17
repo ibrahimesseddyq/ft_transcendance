@@ -41,7 +41,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: 3002
               protocol: TCP
           command:
             - /bin/sh
@@ -52,7 +52,32 @@ spec:
               . /vault/secrets/other
 
               # Start the application
-              python3 app.py
+              ./script.sh
+        - name: rag-service
+          image: rag-service:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3003
+              protocol: TCP
+          command:
+            - /bin/sh
+            - -c
+            - |
+              . /vault/secrets/config
+              . /vault/secrets/jwt
+              . /vault/secrets/other
+
+              # Start the application
+              ./script.sh
+        - name: rag-service
+          image: ollama-service:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 11434
+              protocol: TCP
+
 ---
 apiVersion: v1
 kind: Service
@@ -64,11 +89,13 @@ spec:
     app: ai-service
   ports:
     - name: http
-      port: 5000
-      targetPort: 5000
+      port: 3002
+      targetPort: 3002
       protocol: TCP
   type: ClusterIP
+
 ---
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

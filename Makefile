@@ -66,7 +66,10 @@ kube-build:
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway 
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service 
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
-# 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
+# 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_services/ai_service 
+# 	docker build -t rag-service:dev   $(ROOT)srcs/backend/ai_services/rag_service 
+# 	docker build -t ollama-service:dev   $(ROOT)srcs/backend/ai_services/ollama_service 
+
 	docker build -t frontend:dev \
 	--build-arg VITE_SERVICE_URL=http://13.36.189.126 \
 	--build-arg VITE_MAIN_API_URL=/api/main \
@@ -128,7 +131,6 @@ kube-deploy:
 # 	kubectl apply -f srcs/k8s/ai-service.yaml
 	kubectl apply -f srcs/k8s/gateway.yaml
 	kubectl apply -f srcs/k8s/waf.yaml
-	kubectl apply -f srcs/k8s/tls-secret.yaml
 	kubectl apply -f srcs/k8s/ingress.yaml
 	kubectl apply -f srcs/k8s/adminer.yaml
 

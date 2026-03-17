@@ -11,7 +11,7 @@ class GenerationRequest(BaseModel):
     text: str
 
 
-@router.post("/api/ai/generate")
+@router.post("/api/rag/generate")
 @limiter.limit("2/minute")
 async def generation_endpoint(request: Request, body: GenerationRequest):
 
