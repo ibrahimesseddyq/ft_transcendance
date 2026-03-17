@@ -11,7 +11,7 @@ export function Header() {
   const profile = useAuthStore((state) => state.profile);
 
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
   const avatarUrl = profile?.user?.avatarUrl
     ? `${BACKEND_URL}${profile.user.avatarUrl}`

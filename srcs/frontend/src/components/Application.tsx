@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ApplicationContent from '@/components/ui/ApplicationContent';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 export function Application() {
     const { jobId } = useParams(); 
@@ -13,7 +13,7 @@ export function Application() {
         const fetchApplications = async () => {
             try {
                 setIsLoading(true);
-                const res = await mainApi.get(`${env_main_api}/jobs/${jobId}/applications`);
+                const res = await mainService.get(`${env_main_api}/jobs/${jobId}/applications`);
                 setApplications(res.data.data || []);
             } catch (err) {
                 console.error("Failed to fetch applications:", err);
