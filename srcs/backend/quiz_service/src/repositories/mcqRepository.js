@@ -25,11 +25,6 @@ export const deleteMcq = async (mcqId) => {
     })
 }
 
-export const getManyMcqs = async (skip = 0 , take = 10, filters = {}) => {
-     const whereClause = Array.isArray(filters) ? {} : filters;
-    return await prisma.mcq.findMany({
-        skip: Number(skip),
-        take : Number(take),
-        where: whereClause
-    })
-}
+export const getManyMcqs = async (mcqFilter) => {
+    return await mcqRepository.getManyMcqs();
+};

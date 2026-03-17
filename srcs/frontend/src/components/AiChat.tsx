@@ -13,7 +13,6 @@ export default function AiChat() {
   const handleSuggestionClick = (suggestion: string) => {
     setMessages(prev => [...prev, { role: "user", content: suggestion }]);
     setShowSuggestions(false);
-    console.log("Fetching AI response for:", suggestion);
   };
 
   const [messages, setMessages] = useState([
@@ -22,6 +21,7 @@ export default function AiChat() {
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -52,14 +52,29 @@ export default function AiChat() {
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
+    } catch {
     }
   };
 
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
+  };
+
+  const generateAiResponse = async (userText: string) => {
+    setIsGenerating(true);
+    try {
+      const response = await aiapi.post(`${env_ai_api}/generate`, { 
+        text: userText 
+      });
+
+      const aiText = response.data.result || response.data.text;
+      setMessages(prev => [...prev, { role: "ai", content: aiText }]);
+    } catch (err) {
+      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const sendAudioToAI = async (blob: Blob) => {
@@ -72,23 +87,24 @@ export default function AiChat() {
       const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
 
       const data = response.data;
-      console.log("data : ", data);
       if (data.text) {
         setInput(data.text);
       }
-    } catch (err) {
-      console.error("AI Reader Error:", err);
+    } catch {
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleSend = () => {
-    if (!input.trim()) 
-      return;
-    setMessages(prev => [...prev, { role: "user", content: input }]);
+  const handleSend = async () => {
+    const textToSend = input.trim();
+    if (!textToSend || isGenerating) return;
+
+    setMessages(prev => [...prev, { role: "user", content: textToSend }]);
     setInput("");
     setShowSuggestions(false);
+
+    await generateAiResponse(textToSend);
   };
 
   return (
