@@ -10,15 +10,19 @@ interface CustomConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
 
+console.log("herererer : ", import.meta.env.VITE_RAG_SERVICE_URL);
+
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
 const attachInterceptors = (instance: AxiosInstance) => {
+    console.log("instance :", instance);
     instance.interceptors.request.use((config) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
+
         return config;
     });
 
@@ -26,6 +30,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
         (response) => response,
         async (error: AxiosError) => {
             const originalRequest = error.config as CustomConfig;
+            console.log("originalRequest :", originalRequest);
 
             if (error.response?.status === 401 && !originalRequest._retry) {
                 if (isRefreshing) {
@@ -41,7 +46,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
 
                 try {
                     await axios.post(
-                        `${import.meta.env.VITE_MAIN_SERVICE_URL}${env_main_api}/auth/refresh`,
+                        `${import.meta.env.VITE_SERVICE_URL}${env_main_api}/auth/refresh`,
                         {},
                         { withCredentials: true }
                     );
@@ -67,35 +72,11 @@ const attachInterceptors = (instance: AxiosInstance) => {
     );
 };
 
-export const mainApi = axios.create({
-    baseURL: import.meta.env.VITE_MAIN_SERVICE_URL,
-    withCredentials: true,
-});
-
-export const chatApi = axios.create({
-    baseURL: import.meta.env.VITE_CHAT_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const quizApi = axios.create({
-    baseURL: import.meta.env.VITE_QUIZ_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const aiapi = axios.create({
-    baseURL: import.meta.env.VITE_AI_SERVICE_URL, 
-    withCredentials: true,
-});
-
-export const ragapi = axios.create({
-    baseURL: import.meta.env.VITE_RAG_SERVICE_URL, 
+export const mainService = axios.create({
+    baseURL: import.meta.env.VITE_SERVICE_URL,
     withCredentials: true,
 });
 
 
 
-attachInterceptors(mainApi);
-attachInterceptors(chatApi);
-attachInterceptors(quizApi);
-attachInterceptors(aiapi);
-attachInterceptors(ragapi);
+attachInterceptors(mainService);

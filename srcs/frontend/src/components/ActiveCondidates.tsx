@@ -2,7 +2,7 @@ import Icon from '@/components/ui/Icon'
 
 export function ActiveCondidates({ data }: { data: any[] }) {
   const candidates = data || [];
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
