@@ -81,8 +81,9 @@ kube-deploy:
 	# 1. Namespace first
 	kubectl apply -f srcs/k8s/namespace.yaml
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-		-keyout tls.key -out tls.crt \
-		-subj "/CN=hirefy.local/O=hirefy"
+	-keyout tls.key -out tls.crt \
+	-subj "/CN=13.36.189.126" \
+	-addext "subjectAltName=IP:13.36.189.126"
 
 	kubectl create secret tls hirefy-tls \
 		--cert=tls.crt --key=tls.key \
