@@ -80,6 +80,15 @@ kube-load: kube-build
 kube-deploy:
 	# 1. Namespace first
 	kubectl apply -f srcs/k8s/namespace.yaml
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+		-keyout tls.key -out tls.crt \
+		-subj "/CN=hirefy.local/O=hirefy"
+
+	kubectl create secret tls hirefy-tls \
+		--cert=tls.crt --key=tls.key \
+		--namespace=hirefy
+
+	rm tls.crt tls.key
 	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm repo add traefik  https://helm.traefik.io/traefik
