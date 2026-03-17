@@ -6,16 +6,15 @@ export VAULT_TOKEN="root"
 # Main service DB Creds
 export MARIADB_MAIN_ROOT_PASSWORD=root
 export MARIADB_MAIN_DATABASE=hirefy
-export MARIADB_MAIN_USER=user1
-export MARIADB_MAIN_PASSWORD=pass
+export MARIADB_MAIN_USER=root
+export MARIADB_MAIN_PASSWORD=root
 # Quiz service DB Creds
 export MARIADB_QUIZ_ROOT_PASSWORD=root
 export MARIADB_QUIZ_DATABASE=hirefy
-export MARIADB_QUIZ_USER=user2
-export MARIADB_QUIZ_PASSWORD=pass
+export MARIADB_QUIZ_USER=root
+export MARIADB_QUIZ_PASSWORD=root
 
 ############# Global ###################
-export DATABASE_URL="mysql://user1:pass@localhost:3306/hirefy"
 
 export QUIZ_PUBLIC_API_KEY=8da503b92526d94b65daa2661d8ea91fd84679bac7aace7398e1064826e2ad
 export GOOGLE_CLIENT_ID=103278425538-0iqof4oahn4rfkl1j51tbd4t8bvu6655.apps.googleusercontent.com
