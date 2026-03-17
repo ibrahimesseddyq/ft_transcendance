@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AudioLines } from 'lucide-react';
-import { aiapi } from '@/utils/Api';
+import { aiapi, ragapi } from '@/utils/Api';
 
 const SUGGESTIONS = [
   "How can i find job?",
@@ -63,14 +63,17 @@ export default function AiChat() {
 
   const generateAiResponse = async (userText: string) => {
     setIsGenerating(true);
+
     try {
-      const response = await aiapi.post(`${env_ai_api}/generate`, { 
+      const response = await ragapi.post(`${env_ai_api}/generate`, { 
         text: userText 
       });
 
-      const aiText = response.data.result || response.data.text;
+      console.log("response.data ", response.data);
+      const aiText = response.data || "";
       setMessages(prev => [...prev, { role: "ai", content: aiText }]);
     } catch (err) {
+      console.log("error : ", err);
       setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
     } finally {
       setIsGenerating(false);
@@ -91,6 +94,7 @@ export default function AiChat() {
         setInput(data.text);
       }
     } catch {
+      console.log("")
     } finally {
       setIsProcessing(false);
     }
