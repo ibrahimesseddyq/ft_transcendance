@@ -66,6 +66,10 @@ spec:
             . /vault/secrets/oauth
             . /vault/secrets/other 
             npx prisma generate
+            until mysqladmin ping -h main-service-db --silent; do
+              echo "Waiting for DB..."
+              sleep 2
+            done
             npx prisma db push
             exec node /app/server.js
           ports:
