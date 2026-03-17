@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
+from limiter.limiter import limiter
 from pydantic import BaseModel
 from services.llm_rag.generate import generate
 
@@ -10,6 +12,12 @@ class GenerationRequest(BaseModel):
 
 
 @router.post("/api/ai/generate")
-async def generation_endpoint(request: GenerationRequest):
-    result = generate(request.text)
+@limiter.limit("2/minute")
+async def generation_endpoint(request: Request, body: GenerationRequest):
+
+    try:
+        result = await run_in_threadpool(generate, body.text)
+    except Exception:
+        raise HTTPException(status_code=500, detail="RAG service failed")
+
     return result
