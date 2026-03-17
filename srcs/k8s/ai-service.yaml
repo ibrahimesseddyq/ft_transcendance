@@ -102,4 +102,4 @@ metadata:
   name: ai-service-config
   namespace: hirefy
 data:
-  PORT: "3002"   # ✅ aligned with container
+  PORT: "3002"   
