@@ -66,10 +66,11 @@ spec:
               echo "QUIZ_PUBLIC_API_KEY=$QUIZ_PUBLIC_API_KEY"
 
               echo "=== [5] Waiting for DB ==="
-              until mysqladmin ping -h quiz-service-db --silent; do
+              until nc -z quiz-service-db 3306; do
                 echo "Waiting for DB..."
                 sleep 2
               done
+              echo "DB is ready!"
 
               echo "=== [6] Running prisma generate ==="
               npx prisma generate
