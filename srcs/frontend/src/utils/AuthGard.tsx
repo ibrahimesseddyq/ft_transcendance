@@ -10,49 +10,29 @@ interface AuthGuardProps {
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { userId, clearAuth, user } = useAuthStore();
-  const [isLoading, setIsLoading] = useState(!userId);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
-  
+
   useEffect(() => {
     const verifySession = async () => {
-      if (!userId) {
+      if (!userId || !user) {
         setIsLoading(false);
         return;
       }
       try {
         const response = await mainService.get(`${env_main_api}/users/me`);
-        const fetchedUserId = response.data.data.user.id;
-
-        if (!fetchedUserId) {
-          clearAuth();
-        }
-      } catch (error) {
-
+        const fetchedUserId = response.data?.data?.user?.id;
+        if (!fetchedUserId) clearAuth();
+      } catch {
         clearAuth();
       } finally {
         setIsLoading(false);
       }
     };
-
     verifySession();
   }, [userId]);
-
-
-   if (!user) {
-    return <Navigate to="/Login" state={{ from: location }} replace />;
-  }
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (!userId) {
-    return <Navigate to="/Login" state={{ from: location }} replace />;
-  }
-
+  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loading /></div>;
+  if (!user || !userId) return <Navigate to="/Login" state={{ from: location }} replace />;
   return <>{children}</>;
 };

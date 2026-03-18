@@ -18,12 +18,12 @@ export default defineConfig({
         secure: false,
       },
       '/api/ai': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:3002',
         changeOrigin: true,
         secure: false,
       },
       '/api/rag': {
-        target: 'http://localhost:8001',
+        target: 'http://localhost:3003',
         changeOrigin: true,
         secure: false,
       },

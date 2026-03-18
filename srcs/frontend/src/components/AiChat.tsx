@@ -115,13 +115,13 @@ export default function AiChat() {
 
   return (
     <div className="flex flex-col z-50 m-2 w-full md:w-80 h-[450px] md:h-[500px]  bg-white rounded-2xl shadow-2xl overflow-hidden border">
-      <div className="bg-black p-4 text-white font-bold">AI Assistant</div>
+      <div className="bg-[#0ea5e9] p-4 text-white font-bold">AI Assistant</div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
-              msg.role === "user" ? "bg-black text-white" : "bg-white border text-gray-800"
+              msg.role === "user" ? "bg-[#0ea5e9] text-white" : "bg-white border text-gray-800"
             }`}>
               <MarkdownPreview text={msg.content}/>
             </div>
@@ -171,7 +171,7 @@ export default function AiChat() {
         />
         
         <button onClick={handleSend} 
-          className="bg-black text-white w-8 h-8 rounded-full">
+          className="bg-[#0ea5e9] text-white w-8 h-8 rounded-full">
           →
         </button>
       </div>

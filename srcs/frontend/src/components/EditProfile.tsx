@@ -79,7 +79,7 @@ export function EditProfile() {
     if (profile) {
       reset({
         resumeUrl: profile?.resumeUrl ?? "",
-        phone: profile?.numberPhone?.toString() ?? "",
+        phone: profile?.phone?.toString() ?? "",
         linkedinUrl: profile?.linkedinUrl ?? "",
         portfolioUrl: profile?.portfolioUrl ?? "",
         currentCompany: profile?.currentCompany ?? "",
@@ -138,7 +138,6 @@ export function EditProfile() {
       Notification("Profile updated successfully", "success");
       setTimeout(() => navigate(-1), 1000);
     } catch (error) {
-      console.log("Update failed:", error);
       setAvatarProgress(0);
       setResumeProgress(0);
       Notification("PLease enter a valide profile", "error");

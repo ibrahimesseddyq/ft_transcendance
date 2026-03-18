@@ -7,7 +7,6 @@ def retreive(prompt):
 
     context = ""
     for doc in vector_docs:
-        print(doc.metadata)
         context += (
             "## " + doc.metadata.get("header", "") + "\n\n" + doc.page_content + "\n\n"
         )

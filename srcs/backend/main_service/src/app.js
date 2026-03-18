@@ -48,7 +48,6 @@ app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cookieParser());
 
 app.use('/api/main/uploads',
-  verifyToken,
   (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
