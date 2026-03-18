@@ -9,12 +9,25 @@ import {
 
 export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, corsOrigin }) => {
   const io = new Server(server, {
+    path: "/api/main/ws/",
     cors: {
-      origin: corsOrigin,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const allowed = [
+          corsOrigin,
+          corsOrigin?.replace('https://', 'http://'),
+          corsOrigin?.replace(':443', ''),
+        ].filter(Boolean);
+        if (process.env.NODE_ENV === 'production') return callback(null, true);
+        if (allowed.includes(origin)) return callback(null, true);
+        callback(new Error('Not allowed by CORS'));
+      },
       methods: ['GET', 'POST'],
       credentials: true,
-      path: "/api/main/ws/",
-    }
+    },
+    transports: ['websocket', 'polling'],
+    pingTimeout: 60000,
+    pingInterval: 25000,
   });
 
   const onlineUsers = new Map();
