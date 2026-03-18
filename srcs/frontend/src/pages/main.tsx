@@ -25,16 +25,13 @@ import { AboutUs } from '@/pages/AboutUs'
 import { PrivacyPolicy } from '@/pages/PrivacyPolicy'
 import { TermsOfService } from '@/pages/TermsOfService'
 import { Footer } from '@/components/Footer'
-import { Loading } from '@/components/Loading';
 
 export function Main() {
   const location = useLocation();
-  const { user, profile, qrVerified, _hasHydrated } = useAuthStore(); 
+  const { user, profile, qrVerified } = useAuthStore(); 
 
-  if (!_hasHydrated)
-      return <Loading />;
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
-  const hasProfile = !!profile;
+  const hasProfile = profile ? true : false;
   
   const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
