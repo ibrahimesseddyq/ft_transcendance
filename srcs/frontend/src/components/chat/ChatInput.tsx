@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import { CHAT_MESSAGE_MAX_LENGTH } from '../../types/chat';
 import { mainService } from '@/utils/Api';
 
-const MAX_CHAT_FILE_SIZE_BYTES = 100 * 1024 * 1024;
 const MAX_RECORDING_SECONDS = 30;
 
 const formatRecordingTime = (seconds: number) => {
@@ -128,16 +127,6 @@ export function ChatInput({
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > MAX_CHAT_FILE_SIZE_BYTES) {
-      toast.error('File is too large (max 100 MB)');
-      return;
-    }
-    setSelectedFile(file);
-  };
-
   const stopMediaTracks = () => {
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
     mediaStreamRef.current = null;
@@ -250,14 +239,7 @@ export function ChatInput({
 
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 576 }}>
         {/* Hidden file input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          style={{ display: 'none' }}
-          accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,application/pdf,audio/*"
-          onChange={handleFileSelect}
-          disabled={disabled}
-        />
+
 
         {/* Input wrapper */}
         <div className="input-wrapper" style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#ffffff', borderRadius: 20, padding: '10px 20px', border: '1px solid #e2e8f0', width: '100%', height: 64, boxSizing: 'border-box' }}>

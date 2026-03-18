@@ -13,7 +13,9 @@ import { mainService } from '@/utils/Api';
 const Signin = () => {
     const [passtype, setPasstype] = useState('password');
     const [PassIcon, setPassIcon] = useState<any>(Eye);
+
     const navigate = useNavigate();
+    const clearAuth = useAuthStore((state) => state.clearAuth);
     const setFirstLogin = useAuthStore((state) => state.setFirstLogin);
     const setUserId = useAuthStore((state) => state.setUserId);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
@@ -47,6 +49,7 @@ const Signin = () => {
 
     const LoginSubmit = async (data: any) => {
         try {
+            clearAuth();
             const response = await mainService.post(`${env_main_api}/auth/login`, data);
             const result = response.data?.data;
             const userId = result?.id;
