@@ -26,6 +26,8 @@ export default function AiChat() {
   const env_ai_api = import.meta.env.VITE_AI_API_URL;
   const env_rag_api = import.meta.env.VITE_RAG_API_URL;
 
+
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isProcessing]);

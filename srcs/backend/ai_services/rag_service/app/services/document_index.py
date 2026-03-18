@@ -13,7 +13,7 @@ from langchain_text_splitters import (
 load_dotenv()
 
 embedding = OllamaEmbeddings(
-    model=os.getenv("OLLAMA_EMBED_MODEL"), base_url=os.getenv("OLLAMA_SERVER_URL")
+    model=os.getenv("OLLAMA_EMBED_MODEL", "mxbai-embed-large"), base_url=os.getenv("OLLAMA_SERVER_URL", "http://localhost:11434")
 )
 
 vector_store = Chroma(
