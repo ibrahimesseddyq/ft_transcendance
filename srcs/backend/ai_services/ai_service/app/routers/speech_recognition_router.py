@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_TOKEN")
 
 def jwt_verify(request: Request):
 
-    token = request.headers.get("Cookie")
+    token = request.cookies.get("accessToken")
 
     if token is None:
         raise HTTPException(status_code=401, detail="Missing token")
