@@ -31,8 +31,8 @@ export function RecruitmentPieChart({ data }: { data: any[] }) {
         </h3>
       </header>
 
-      <div className="flex-1 w-full relative min-w-0">
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={350}>
+      <div className="w-full h-[350px]">
+        <ResponsiveContainer width="100%" height={350} minWidth={0}>
           <PieChart style={{ outline: 'none' }}>
             {/* Background  */}
             <Pie
