@@ -31,13 +31,14 @@ export function Notifications() {
   const navigate = useNavigate();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   useEffect(() => {
     if (!user) return;
 
     chatSocket.connect();
 
-    mainService.get('/api/main/notifications')
+    mainService.get(`${env_main_api}/notifications`)
       .then((res) => {
         if (res.data?.data) setNotifications(res.data.data.filter((n: Notification) => !n.isRead));
       })
@@ -76,14 +77,14 @@ export function Notifications() {
 
   const markAsRead = async (id: string) => {
     try {
-      await mainService.patch(`/api/main/notifications/${id}/read`);
+      await mainService.patch(`${env_main_api}/notifications/${id}/read`);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch {}
   };
 
   const markAllAsRead = async () => {
     try {
-      await mainService.patch('/api/main/notifications/read-all');
+      await mainService.patch(`${env_main_api}/notifications/read-all`);
       setNotifications([]);
     } catch {}
   };

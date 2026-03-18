@@ -23,6 +23,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
     const [inputError, setInputError] = useState("");
     const [choices, setChoices] = useState<TestProps[]>([]);
     const [tags, setTags] = useState<string[]>([]);
+    const env_quiz_api = import.meta.env.VITE_QUIZ_API_URL;
 
     const { 
         register, 
@@ -48,7 +49,7 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
         }
 
         try {
-            await mainService.post(`api/quiz/mcqs`, { ...data, choices, tags });
+            await mainService.post(`${env_quiz_api}/mcqs`, { ...data, choices, tags });
             Notification("Mcq created successfully!", "success");
 
             reset();

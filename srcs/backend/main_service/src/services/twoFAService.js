@@ -75,6 +75,7 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
             token,
             window: 1
         });
+        console.log('token : ', token)
         if (!ok) throw new HttpException(400, "Invalid 2FA Code");
         return true;
     }
