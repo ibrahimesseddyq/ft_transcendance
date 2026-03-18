@@ -15,7 +15,7 @@ load_dotenv()
 app = FastAPI()
 
 origins = [
-    os.getenv("FRONTEND_URL", "http://frontend:80"),
+    os.getenv("FRONTEND_URL", "https://13.36.189.126"),
 ]
 
 app.add_middleware(

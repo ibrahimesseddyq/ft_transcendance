@@ -1,15 +1,11 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from services.chat_moderation.main import moderate
 
 router = APIRouter()
-
-load_dotenv()
-
-API_KEY = os.getenv("SECRET_API_KEY")
 
 
 class ModerationRequest(BaseModel):
@@ -17,10 +13,7 @@ class ModerationRequest(BaseModel):
 
 
 @router.post("/api/ai/moderate")
-async def moderation_endpoint(request: ModerationRequest, api_key: str = Header(None)):
-
-    if API_KEY != api_key:
-        raise HTTPException(status_code=401, detail="Invalid API key")
+async def moderation_endpoint(request: ModerationRequest):
 
     try:
         result = moderate(request.text)

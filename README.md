@@ -453,16 +453,35 @@ Other tasks where AI assisted:
 
 ---
 
-#### 21. Quiz/Assessment Engine (Modules of Choice — Minor, 1 pt)
+#### 21. Implement a complete LLM system interface. (AI — Mijor, 1 pt)
 
 **Justification:** This is a custom module providing a standalone assessment microservice. It goes beyond simple quiz functionality by supporting two assessment types (MCQ and code challenges), test composition from a library of questions, automated evaluation, and integration with the recruitment pipeline.
 
 **Implementation:**
-- Dedicated microservice (`quiz_service`) with its own database, Prisma schema, and Swagger-documented API
+- Implemented using local llm model (llama3.2:1b) pulled using ollama tool
 - MCQ system: questions with 4 choices (JSON), points, explanations, difficulty levels
 - Code challenge system: starter code, test cases (JSON), time/memory limits, multi-language support
 - Test composition: compose tests from MCQs and/or code challenges with passing score thresholds
-- Evaluation: `POST /internal/:testId/evaluate` scores submitted answers
+- Evaluation: `POST /api/rag` scores submitted answers
 - Frontend: `QuizPage.tsx`, `CandidateQuizPage.tsx`, `CreateMcq.tsx`, `CreateTest.tsx`, `TestTakingArea.tsx`
 
 **Team:** aachalla
+
+Major: Implement a complete LLM system interface.
+◦ Generate text and/or images based on user input.
+◦ Handle streaming responses properly.
+◦ Implement error handling and rate limiting.
+• Major: Recommendation system using machine learning.
+◦ Personalized recommendations based on user behavior.
+◦ Collaborative filtering or content-based filtering.
+◦ Continuously improve recommendations over time.
+
+#### 14. Content Moderation AI (Artificial Intelligence — Minor, 1 pt)
+
+**Implementation:**
+- HuggingFace `transformers` pipeline with `Vrandan/Comment-Moderation` model
+- Classifies text for: hate speech (H, H2, HR), violence (V, V2), and sexual content (S, S3)
+- Score thresholds: Block >= 0.4, Warn >= 0.25, Allow otherwise
+- Endpoint: `POST /api/ai/moderate`
+- Integrated in `messagesService.js`: every text message is moderated before delivery; blocked messages are rejected with moderation details
+- Graceful fallback: if the AI service is unavailable, messages still get through
