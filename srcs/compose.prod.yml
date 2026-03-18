@@ -20,6 +20,8 @@ services:
     environment:
       HOSTNAME: main-service
       HOST_IP: main-service
+      USER_PASSWORD: ${USER_PASSWORD}
+      RECRUITER_PASS: ${RECRUITER_PASS}
       MARIADB_DATABASE: ${MARIADB_MAIN_DATABASE}
       MARIADB_USER: ${MARIADB_MAIN_USER}
       MARIADB_PASSWORD: ${MARIADB_MAIN_PASSWORD}
@@ -75,6 +77,8 @@ services:
       - .env
     ports:
       - "3003:3003"
+    depends_on:
+      - ollama_service
   ollama_service:
     build: ./backend/ai_services/ollama_service
     container_name: ollama_service

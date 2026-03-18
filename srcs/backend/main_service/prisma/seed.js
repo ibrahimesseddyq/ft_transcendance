@@ -1,7 +1,10 @@
 // prisma/seed.js
 import { PrismaClient, UserRole } from '../generated/prisma/index.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import dotenv from 'dotenv'
 import argon2 from 'argon2';
+
+// config(); 
 // TODO !!!1 use just env var and remove plainpassword
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
 const prisma = new PrismaClient({ adapter });
