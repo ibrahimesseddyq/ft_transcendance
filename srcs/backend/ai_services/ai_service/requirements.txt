@@ -10,8 +10,5 @@ tensorflow-cpu
 numpy
 opencv-python
 python-multipart
-<<<<<<< HEAD
-=======
 python-jose
 python-dotenv
->>>>>>> 976ce7f9ad7db8f90acee698ae20c86670c5b353

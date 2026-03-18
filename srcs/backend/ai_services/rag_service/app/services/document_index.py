@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader
 from langchain_community.document_loaders.directory import DirectoryLoader
@@ -7,8 +10,10 @@ from langchain_text_splitters import (
     RecursiveCharacterTextSplitter,
 )
 
+load_dotenv()
+
 embedding = OllamaEmbeddings(
-    model="mxbai-embed-large", base_url="http://localhost:11434"
+    model=os.getenv("OLLAMA_EMBED_MODEL"), base_url=os.getenv("OLLAMA_SERVER_URL")
 )
 
 vector_store = Chroma(

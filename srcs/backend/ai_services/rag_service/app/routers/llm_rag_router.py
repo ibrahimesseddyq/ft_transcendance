@@ -34,7 +34,8 @@ def jwt_verify(request: Request):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-@router.post("/api/ai/generate")
+
+@router.post("/api/rag/generate")
 @limiter.limit("2/minute")
 async def generation_endpoint(
     request: Request, body: GenerationRequest, user=Depends(jwt_verify)

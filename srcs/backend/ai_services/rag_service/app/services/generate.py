@@ -1,7 +1,14 @@
+import os
+
+from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
 from services.retreive import retreive
 
-llm = ChatOllama(model="llama3.2:3b", base_url="http://ollama_container:11434")
+load_dotenv()
+
+llm = ChatOllama(
+    model=os.getenv("OLLAMA_MODEL"), base_url=os.getenv("OLLAMA_SERVER_URL")
+)
 
 
 def generate(prompt):

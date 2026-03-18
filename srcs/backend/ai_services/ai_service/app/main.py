@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from routers import img_classf_router, speech_recognition_router, text_moderation_router
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,10 +10,12 @@ from routers import (
     text_moderation_router,
 )
 
+load_dotenv()
+
 app = FastAPI()
 
 origins = [
-    "http://frontend:80",
+    os.getenv("FRONTEND_URL"),
 ]
 
 app.add_middleware(

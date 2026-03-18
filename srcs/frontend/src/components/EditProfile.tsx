@@ -79,7 +79,7 @@ export function EditProfile() {
     if (profile) {
       reset({
         resumeUrl: profile?.resumeUrl ?? "",
-        phone: profile?.numberPhone?.toString() ?? "",
+        phone: profile?.phone?.toString() ?? "",
         linkedinUrl: profile?.linkedinUrl ?? "",
         portfolioUrl: profile?.portfolioUrl ?? "",
         currentCompany: profile?.currentCompany ?? "",

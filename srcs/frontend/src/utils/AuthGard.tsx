@@ -11,9 +11,18 @@ interface AuthGuardProps {
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { userId, clearAuth, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(!userId);
+  const hasHydrated = useAuthStore((s) => s._hasHydrated);
   const location = useLocation();
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   
+
+  // if (!hasHydrated) {
+  //   return <Loading />;
+  // }
+
+  if (!user) {
+    return <Navigate to="/Login" state={{ from: location }} replace />;
+  }
   useEffect(() => {
     const verifySession = async () => {
       if (!userId) {
