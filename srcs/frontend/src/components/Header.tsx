@@ -14,7 +14,7 @@ export function Header() {
   const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
   const avatarUrl = profile?.user?.avatarUrl
-    ? `${BACKEND_URL}${profile.user.avatarUrl}`
+    ? `${BACKEND_URL}${profile.user?.avatarUrl}`
     : "/default-avatar.png";
 
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";

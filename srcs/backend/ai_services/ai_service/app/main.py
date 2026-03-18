@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from routers import img_classf_router, speech_recognition_router, text_moderation_router
 from fastapi.middleware.cors import CORSMiddleware
+from routers import (
+    img_classf_router,
+    speech_recognition_router,
+    text_moderation_router,
+)
 
 app = FastAPI()
 
@@ -16,11 +21,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/api/ai/health")
+def healtch_check():
+    return {"status": "ok"}
+
+
 app.include_router(img_classf_router.router)
 
 app.include_router(text_moderation_router.router)
 
 app.include_router(speech_recognition_router.router)
-
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="127.0.0.1", port=3002, reload=True)

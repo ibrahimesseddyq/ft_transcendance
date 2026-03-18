@@ -215,17 +215,18 @@ function MessageRow({ message, currentUser }: Readonly<MessageRowProps>) {
   const fileUrl = buildFileUrl(message.fileUrl);
 
   return (
-    <div key={message.id} style={{ maxWidth: '65%', display: 'flex', flexDirection: 'column', alignSelf: isSent ? 'flex-end' : 'flex-start', alignItems: isSent ? 'flex-end' : 'flex-start' }}>
+    <div key={message.id} style={{ maxWidth: '65%', display: 'flex', flexDirection: 'column', 
+      alignSelf: isSent ? 'flex-start' : 'flex-end', alignItems: isSent ? 'flex-end' : 'flex-start' }}>
       <div className={bubbleClass} style={contentStyle}>
         {message.messageType === 'file' && fileUrl ? (
           <AttachmentContent message={message} fileUrl={fileUrl} isSent={isSent} />
         ) : (
-          <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{message.content}</p>
+          <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{message.content}Hello World</p>  
         )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 11, color: '#94a3b8' }}>
         {modAction === 'Block' && (
-          <span style={{ color: '#ef4444', fontWeight: 500 }}>Blocked</span>
+          <span className="rigth-0 text-[#ef4444] font-bold">Blocked</span>
         )}
         {modAction === 'Warn' && (
           <span style={{ color: '#f59e0b', fontWeight: 500 }}>Warning</span>
