@@ -94,7 +94,7 @@ export function ProfileCover({ profile, user }: props) {
             href={resumeUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-full sm:w-auto px-6 py-2 flex items-center justify-center gap-2 border border-primary rounded-lg 
+            className="w-full  px-6 py-2 flex items-center justify-center gap-2 border border-primary rounded-lg 
                        text-primary text-sm font-semibold hover:bg-primary/10 transition-colors text-center"
           >
             <Icon name='ArrowDownFromLine' className="h-4 w-4"/>
@@ -102,7 +102,7 @@ export function ProfileCover({ profile, user }: props) {
           </a>
 
           <button onClick={handleCopy}
-            className="w-full sm:w-auto px-6 py-2 bg-primary rounded-lg text-surface-main text-sm text-center
+            className="w-full px-6 py-2 bg-primary rounded-lg text-surface-main text-sm text-center
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-primary/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>
