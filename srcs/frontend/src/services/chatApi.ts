@@ -8,7 +8,7 @@ class ChatAPI {
   private readonly baseUrl: string;
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_MAIN_SERVICE_URL;
+    this.baseUrl = import.meta.env.VITE_SERVICE_URL;
     
     
     this.api = axios.create({
@@ -23,7 +23,6 @@ class ChatAPI {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Handle unauthorized
           globalThis.location.href = '/login';
         }
         return Promise.reject(error);

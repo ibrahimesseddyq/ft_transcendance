@@ -66,7 +66,14 @@ spec:
             . /vault/secrets/oauth
             . /vault/secrets/other 
             npx prisma generate
+            echo "=== [5] Waiting for DB ==="
+            until nc -z main-service-db 3306; do
+              echo "Waiting for DB..."
+              sleep 2
+            done
+            echo "DB is ready!"
             npx prisma db push
+            npm run seed
             exec node /app/server.js
           ports:
             - name: http
@@ -100,15 +107,15 @@ data:
   NODE_ENV: "production"
   HOSTNAME: "main-service"
   HOST_IP: "main-service"
-  HOST: "main-service"
+  HOST: "13.36.189.126"
   BCRYPT_ROUNDS: "10"
-  CALLBACK_URL: "http://13.36.189.126/api/main/auth/google/callback"
+  CALLBACK_URL: "/api/main/auth/google/callback"
   ACCESS_TOKEN_EXPIRY: "1d"
   REFRESH_TOKEN_EXPIRY: "7d"
   VERIFY_SECRET_EXPIRY: "7d"
-  FRONTEND_URL: "http://13.36.189.126"
-  BACKEND_URL: "http://gateway:8081/api/main"
-  QUIZ_SERVICE_URL: "http://gateway:8081/api/quiz"
+  FRONTEND_URL: "https://13.36.189.126"
+  BACKEND_URL: "https://13.36.189.126"
+  QUIZ_SERVICE_URL: "http://quiz-service:3001/"
   VERIFY_TOKEN_EXPIRY: "7d"
   TEMP_TOKEN_EXPIRY: "15m"
-  AI_SERVICE_URL: "http://ai-service:5000"
+  AI_SERVICE_URL: "http://ai-service:3002/"

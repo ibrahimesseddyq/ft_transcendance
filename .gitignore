@@ -9,7 +9,6 @@
 **/.env.prod
 **/.env.local
 **/.env copy
-profile_classf_model.weights.h5
 # keep .env.example files (safe to push as templates)
 !**/.env.example
 
@@ -25,7 +24,7 @@ build/
 .next/
 out/
 generated/
-
+*.pyc
 tls.crt
 tls.key
 
@@ -51,6 +50,7 @@ srcs/backend/main_service/uploads/
 *.zip
 *.tar.gz
 *.local
+.pdf
 
 # ── OS & editor ─────────────────────────────────────────────────
 .DS_Store
@@ -63,7 +63,36 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+__pycache__/
+*.pyc
+# Logs
+logs
+*.log
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+generated
+.env.dev
+node_modules
+dist
+dist-ssr
+*.local
 
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 # ── Personal notes ───────────────────────────────────────────────
 notesAndTodos.txt
 repomix-output.xml
+.repomixignore
+

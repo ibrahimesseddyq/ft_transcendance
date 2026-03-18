@@ -5,7 +5,9 @@ import argon2 from 'argon2';
 import { HttpException } from '../utils/httpExceptions.js';
 import sendMail from './emailService.js';
 import twoFAService from './twoFAService.js';
-const DUMMY_HASH = process.env.DUMMY_PASSWORD_HASH;
+import { getSafeUser } from '../utils/excludeSensitive.js';
+
+const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$placeholder$placeholderhashplaceholderhashxx';
 const twoFAService2 = new twoFAService();
 
 export const login = async (data) => {
@@ -52,7 +54,7 @@ export const login = async (data) => {
     });
   
     const updatedUser = await userService.updateUser(user.id, { refreshToken: tokens.refreshToken });
-    return { user: updatedUser, ...tokens};
+    return { user: getSafeUser(updatedUser), ...tokens};
   };
 
 export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
@@ -60,7 +62,6 @@ export const verifyLoginWith2FA = async (tempToken, twoFACode) => {
 
     if (decoded.purpose !== '2fa-pending')
         throw new HttpException(403, "Invalid Token");
-
     const user = await userService.getUserById(decoded.id);
 
     if (!user || !user.twoFAEnabled) 
@@ -88,7 +89,7 @@ export const  register = async (data) => {
         from: env.USER_EMAIL,
         to: user.email,
         subject: "Email Verification",
-        text: `Please verify your email by clicking:  ${env.BACKEND_URL}api/main/auth/verify-email/${verificationToken}`
+        text: `Please verify your email by clicking:  ${env.BACKEND_URL}/api/main/auth/verify-email/${verificationToken}`
     });
     return {};
 }
@@ -113,13 +114,13 @@ export const logout = async (refreshToken) => {
     try {
         const decoded = await jwtService.verifyRefreshToken(refreshToken);
         const user = await userService.getUserById(decoded.id);
-        if(user && user.refreshToken === refreshToken)
-            await userService.updateUser(user.id, { refreshToken: null});
+        if (user && user.refreshToken === refreshToken)
+            await userService.updateUser(user.id, { refreshToken: null });
+    } catch (error) {
+        if (error?.statusCode === 401 || error?.statusCode === 403) return;
+        throw error;
     }
-    catch(error){
-
-    }
-}
+};
 
 export const verifyEmail = async(token) => {
     const decoded = await jwtService.verifyVerificationToken(token);
@@ -142,7 +143,7 @@ export const resendVerification = async (email) => {
         throw new HttpException(400,"email already verified");
     const verificationToken = await jwtService.generateVerificationToken(user.id, email);
     const subject = "verification email";
-    const message = `${env.FRONTEND_URL}/api/main/auth/verify-email/${verificationToken}`;
+   const message = `${env.BACKEND_URL}api/main/auth/verify-email/${verificationToken}`;
     await sendMail({
         from : env.USER_EMAIL,
         to : user.email,

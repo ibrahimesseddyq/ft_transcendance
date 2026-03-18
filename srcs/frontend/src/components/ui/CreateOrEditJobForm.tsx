@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateJobSchema } from "@/utils/ZodSchema";
 import Notification from "@/utils/TostifyNotification";
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 type JobFormData = z.infer<typeof CreateJobSchema>;
 interface props{
@@ -65,7 +65,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPag
 
     if (jobItem){
       try {
-        const response = await mainApi.patch(`${env_main_api}/jobs/${jobItem.id}`, data);
+        const response = await mainService.patch(`${env_main_api}/jobs/${jobItem.id}`, data);
 
         const result = response.data;
         const savedJob = result.data;
@@ -76,18 +76,18 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPag
         );
         setIsFormOpen(false);
       } catch (error) {
-        console.error("updated failed:", error);
+        console.log("updated failed:", error);
         Notification("Error updating job", "error");
       }
     }else{
       try {
-        await mainApi.post(`${env_main_api}/jobs`, data);
+        await mainService.post(`${env_main_api}/jobs`, data);
         const limit = 6;
         const params = new URLSearchParams();
         params.append("limit", String(limit));
         const url = `${env_main_api}/jobs?${params.toString()}`;
         const [filter_res] = await Promise.all([
-          mainApi.get(url),
+          mainService.get(url),
           new Promise(resolve => setTimeout(resolve, 800))
         ]);
         const result = filter_res.data; 
@@ -98,7 +98,7 @@ const CreateOrEditJobForm = ({ jobItem, setIsFormOpen, setJobsArray, setTotalPag
         Notification("Job added successfully!", "success");
         setIsFormOpen(false);
       } catch (error) {
-        console.error("Submission failed:", error);
+        console.log("Submission failed:", error);
         Notification("Error creating job", "error");
       }
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/utils/ZuStand';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { Loading } from '@/components/Loading';
 
 interface AuthGuardProps {
@@ -9,31 +9,24 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
-  const { userId, setUserId, clearAuth, user } = useAuthStore();
+  const { userId, clearAuth, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(!userId);
   const location = useLocation();
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   console.log("AuthGuard userId :", userId);
-  if (!user) {
-    return <Navigate to="/Login" state={{ from: location }} replace />;
-  }
   
   useEffect(() => {
     const verifySession = async () => {
-      if (userId) {
+      if (!userId) {
         setIsLoading(false);
         return;
       }
-
       try {
-        const response = await mainApi.get(`${env_main_api}/users/${userId}/me`);
-        const fetchedUserId = response.data.userId;
-        console.log("response.data :", fetchedUserId);
+        const response = await mainService.get(`${env_main_api}/users/me`);
+        const fetchedUserId = response.data.data.user.id;
 
-        if (fetchedUserId) {
-          setUserId(fetchedUserId);
-        } else {
+        if (!fetchedUserId) {
           clearAuth();
         }
       } catch (error) {
@@ -45,8 +38,12 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     };
 
     verifySession();
-  }, [userId, setUserId, clearAuth]);
+  }, [userId]);
 
+
+   if (!user) {
+    return <Navigate to="/Login" state={{ from: location }} replace />;
+  }
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">

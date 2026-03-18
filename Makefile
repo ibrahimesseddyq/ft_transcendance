@@ -66,20 +66,35 @@ kube-build:
 	docker build -t gateway:dev     $(ROOT)srcs/backend/gateway 
 	docker build -t main-service:dev $(ROOT)srcs/backend/main_service 
 	docker build -t quiz-service:dev $(ROOT)srcs/backend/quiz_service 
-# 	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_service 
+	docker build -t ai-service:dev   $(ROOT)srcs/backend/ai_services/ai_service 
+	docker build -t rag-service:dev   $(ROOT)srcs/backend/ai_services/rag_service 
+	docker build -t ollama-service:dev   $(ROOT)srcs/backend/ai_services/ollama_service 
+
 	docker build -t frontend:dev \
-	--build-arg VITE_MAIN_SERVICE_URL=http://13.36.189.126/api/main/ \
-	--build-arg VITE_QUIZ_SERVICE_URL=http://13.36.189.126/api/quiz/ \
+	--build-arg VITE_SERVICE_URL=http://13.36.189.126 \
 	--build-arg VITE_MAIN_API_URL=/api/main \
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
-	$(ROOT)srcs/frontend
+	--build-arg VITE_AI_API_URL=/api/ai \
+	--build-arg VITE_RAG_API_URL=/api/rag \
+	/home/ec2-user/ft_transcendance/srcs/frontend
+
 
 kube-load: kube-build
-	k3d image import gateway:dev main-service:dev quiz-service:dev  frontend:dev waf:dev -c hirefy
+	k3d image import gateway:dev main-service:dev quiz-service:dev  frontend:dev ai-service:dev  rag-service:dev ollama-service:dev waf:dev -c hirefy
 
 kube-deploy:
 	# 1. Namespace first
 	kubectl apply -f srcs/k8s/namespace.yaml
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+	-keyout tls.key -out tls.crt \
+	-subj "/CN=13.36.189.126" \
+	-addext "subjectAltName=IP:13.36.189.126"
+
+	kubectl create secret tls hirefy-tls \
+		--cert=tls.crt --key=tls.key \
+		--namespace=hirefy
+
+	rm tls.crt tls.key
 	# 2. Install/upgrade Vault via Helm
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm repo add traefik  https://helm.traefik.io/traefik
@@ -98,6 +113,7 @@ kube-deploy:
 
 	POD=$$(kubectl get pod -n hirefy -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
 	kubectl cp srcs/init_vault.sh hirefy/$$POD:/tmp/init_vault.sh
+	kubectl cp srcs/.env.example hirefy/$$POD:/tmp/.env
 	kubectl exec -n hirefy $$POD -- /bin/sh /tmp/init_vault.sh
 	
 	# 5. Service account (required before any Vault-injected pod)
@@ -115,10 +131,9 @@ kube-deploy:
 	# 7. Application services
 	kubectl apply -f srcs/k8s/main-service.yaml
 	kubectl apply -f srcs/k8s/quiz-service.yaml
-# 	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
 	kubectl apply -f srcs/k8s/gateway.yaml
 	kubectl apply -f srcs/k8s/waf.yaml
-	kubectl apply -f srcs/k8s/tls-secret.yaml
 	kubectl apply -f srcs/k8s/ingress.yaml
 	kubectl apply -f srcs/k8s/adminer.yaml
 
@@ -152,7 +167,6 @@ vault-init:
 vault-ui:
 	echo "=== Opening Vault UI ==="
 	echo "Access Vault UI at: http://localhost:8200"
-	echo "Token: root"
 	kubectl port-forward -n hirefy svc/vault 8200:8200
 
 vault-logs:
@@ -176,3 +190,25 @@ vault-secret-put:
 	read -p "Enter key: " key
 	read -p "Enter value: " value
 	kubectl exec -n hirefy deployment/vault -- vault kv put secret/$$path $$key="$$value"
+
+kube-redeploy: kube-build kube-load
+	# Re-apply only application manifests (skip infra/db setup)
+	kubectl apply -f srcs/k8s/main-service.yaml
+	kubectl apply -f srcs/k8s/quiz-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/waf.yaml
+	kubectl apply -f srcs/k8s/ingress.yaml
+	kubectl apply -f srcs/k8s/frontend.yaml
+	kubectl apply -f srcs/k8s/adminer.yaml
+	kubectl rollout restart deployment -n hirefy --all
+	kubectl rollout status deployment -n hirefy --timeout=120s
+kube-apply:
+	kubectl apply -f srcs/k8s/main-service.yaml
+	kubectl apply -f srcs/k8s/quiz-service.yaml
+	kubectl apply -f srcs/k8s/ai-service.yaml
+	kubectl apply -f srcs/k8s/gateway.yaml
+	kubectl apply -f srcs/k8s/waf.yaml
+	kubectl apply -f srcs/k8s/ingress.yaml
+	kubectl apply -f srcs/k8s/frontend.yaml
+	kubectl apply -f srcs/k8s/adminer.yaml

@@ -10,7 +10,7 @@ interface props {
 }
 
 export function ProfileCover({ profile, user }: props) {
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
   const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
   const loggedUser = useAuthStore((state) => state.user);
@@ -45,7 +45,7 @@ export function ProfileCover({ profile, user }: props) {
         navigate('/Chat');
       }
     } catch (error) {
-      console.error('Failed to open conversation:', error);
+      console.log('Failed to open conversation:', error);
     }
   }
 

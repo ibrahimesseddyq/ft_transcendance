@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AppCard from '@/components/ui/AppCard';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand';
 import { ToastContainer } from "react-toastify";
 import Icon  from '@/components/ui/Icon'
@@ -23,13 +23,13 @@ export function UserApplications() {
 
             try {
                 setIsLoading(true);
-                const res = await mainApi.get(`${env_main_api}/users/${user.id}/applications`);
+                const res = await mainService.get(`${env_main_api}/users/${user.id}/applications`);
                 
                 if (res.data?.data) {
                     setApplications(res.data.data.applications || []);
                 }
             } catch (err) {
-                console.error("Failed to fetch applications:", err);
+                console.log("Failed to fetch applications:", err);
             } finally {
                 setIsLoading(false);
             }

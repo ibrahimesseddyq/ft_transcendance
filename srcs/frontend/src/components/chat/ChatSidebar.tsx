@@ -43,7 +43,7 @@ export function ChatSidebar({
   };
 
   const getAvatarUrl = (p: any) => {
-    const BACKEND_YRL = import.meta.env.VITE_MAIN_SERVICE_URL;
+    const BACKEND_YRL = import.meta.env.VITE_SERVICE_URL;
     if (p?.user?.avatarUrl) {
       return p.user.avatarUrl.startsWith('http')
         ? p.user.avatarUrl

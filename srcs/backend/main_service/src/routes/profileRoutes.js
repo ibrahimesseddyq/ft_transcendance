@@ -6,11 +6,13 @@ import {
 } from '../validators/profileValidator.js';
 import validateRequest from '../middleware/ValidateRequest.js';
 import express from 'express';
+import { verifyOwnership } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // the validate request should be refactored based on req.body & req.files
-router.get('/:id', 
+router.get('/:id',
+            verifyOwnership,
             profileController.getProfile)
     .post('/:id',
         uploadProfile.fields([

@@ -11,7 +11,7 @@ export function Header() {
   const profile = useAuthStore((state) => state.profile);
 
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
-  const BACKEND_URL = import.meta.env.VITE_MAIN_SERVICE_URL;
+  const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
   const avatarUrl = profile?.user?.avatarUrl
     ? `${BACKEND_URL}${profile.user.avatarUrl}`
@@ -36,12 +36,12 @@ export function Header() {
       >
         <img 
           src="/logo.svg" 
-          alt="RH Connect" 
+          alt="Hirefy" 
           className="w-7 h-7 md:w-8 md:h-8 object-contain transition-all duration-700 ease-in-out group-hover:rotate-[360deg]" 
         />
         <h1 className="text-sm md:text-md text-center p-2 sm:flex hidden text-black dark:text-white 
           transition-colors duration-300">
-          RH-<span className="text-[#00adef] font-bold">Connect</span>
+          <span className="text-[#00adef] font-semibold text-lg">Hirefy</span>
         </h1>
       </Link>
 

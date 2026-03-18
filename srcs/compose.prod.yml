@@ -48,6 +48,46 @@ services:
       - .env
     ports:
       - "3001:3001"
+###
+  ai_service:
+    build: ./backend/ai_services/ai_service
+    container_name: ai_service
+    environment:
+      HOSTNAME: ai_service
+      HOST_IP: ai_service
+    networks:
+      - microservices
+    env_file:
+      - .env
+    ports:
+      - "3002:3002"
+
+  rag_service:
+    build: ./backend/ai_services/rag_service
+    container_name: rag_service
+    environment:
+      HOSTNAME: rag_service
+      HOST_IP: rag_service
+
+    networks:
+      - microservices
+    env_file:
+      - .env
+    ports:
+      - "3003:3003"
+  ollama_service:
+    build: ./backend/ai_services/ollama_service
+    container_name: ollama_service
+    environment:
+      HOSTNAME: ollama_service
+      HOST_IP: ollama_service
+    networks:
+      - microservices
+    env_file:
+      - .env
+    ports:
+      - "11434:11434"
+##
   gateway:
     build: ./backend/gateway
     container_name: api-gateway

@@ -4,7 +4,7 @@ import * as userController from '../controllers/userController.js';
 import ValidateRequest from '../middleware/ValidateRequest.js';
 import {createUserSchema,updateUserSchema} from '../validators/userValidator.js';
 import { UserRole } from '../../generated/prisma/index.js';
-import { verifyRoles } from '../middleware/auth.js';
+import { verifyRoles, verifyOwnership } from '../middleware/auth.js';
 
 const router =  express.Router();
 
@@ -12,6 +12,7 @@ router
   .get('/me',
     userController.checkAuth)
   .get('/:id',
+    verifyOwnership,
     userController.getUserById)
   .get('/:id/jobs',
     userController.getUserJobs)

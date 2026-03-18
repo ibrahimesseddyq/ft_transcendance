@@ -1,20 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { AudioLines } from 'lucide-react';
-import { aiapi } from '@/utils/Api';
-
+import { AudioLines, Pause } from 'lucide-react';
+import { Loading } from "./Loading";
+import { mainService } from '@/utils/Api';
+import MarkdownPreview  from '@/components/MarkDownPreview'
 const SUGGESTIONS = [
-  "How can i find job?",
-  "What is the rules of a valid picture?",
+  "who are you?",
+  "give me all services do you present?",
   "How can i get the best job offer?"
 ];
 
 export default function AiChat() {
   const [showSuggestions, setShowSuggestions] = useState(true);
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessages(prev => [...prev, { role: "user", content: suggestion }]);
-    setShowSuggestions(false);
-    console.log("Fetching AI response for:", suggestion);
-  };
 
   const [messages, setMessages] = useState([
     { role: "ai", content: "Hello! Upload an audio clip and I'll transcribe it." }
@@ -22,10 +18,12 @@ export default function AiChat() {
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const env_ai_api = import.meta.env.VITE_AI_API_URL;
+  const env_rag_api = import.meta.env.VITE_RAG_API_URL;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,14 +50,32 @@ export default function AiChat() {
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
+    } catch {
     }
   };
 
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
+  };
+
+  const generateAiResponse = async (userText: string) => {
+    setIsGenerating(true);
+
+    try {
+      const response = await mainService.post(`${env_rag_api}/generate`, { 
+        text: userText 
+      });
+
+      const aiText = response.data;
+      console.log("response.data => ", response.data)
+      setMessages(prev => [...prev, { role: "ai", content: aiText }]);
+    } catch (err) {
+      console.log("error : ", err);
+      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const sendAudioToAI = async (blob: Blob) => {
@@ -69,26 +85,32 @@ export default function AiChat() {
     formData.append("audio", blob, "recording.mp3");
 
     try {
-      const response = await aiapi.post(`${env_ai_api}/recognate`, formData);
+      const response = await mainService.post(`${env_ai_api}/recognate`, formData);
 
       const data = response.data;
-      console.log("data : ", data);
       if (data.text) {
         setInput(data.text);
       }
-    } catch (err) {
-      console.error("AI Reader Error:", err);
+    } catch {
+      console.log("")
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleSend = () => {
-    if (!input.trim()) 
-      return;
-    setMessages(prev => [...prev, { role: "user", content: input }]);
+  const handleSend = async () => {
+    const textToSend = input.trim();
+    if (!textToSend || isGenerating) return;
+
+    setMessages(prev => [...prev, { role: "user", content: textToSend }]);
     setInput("");
     setShowSuggestions(false);
+
+    await generateAiResponse(textToSend);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setInput(suggestion);
   };
 
   return (
@@ -98,10 +120,10 @@ export default function AiChat() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+            <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
               msg.role === "user" ? "bg-black text-white" : "bg-white border text-gray-800"
             }`}>
-              {msg.content}
+              <MarkdownPreview text={msg.content}/>
             </div>
           </div>
         ))}
@@ -124,29 +146,34 @@ export default function AiChat() {
           </div>
         )}
 
-        {isProcessing && <div className="text-xs italic text-gray-400">Transcribing audio...</div>}
+        {(isGenerating || isProcessing) && <div className="h-6 w-6"><Loading/></div>}
         <div ref={chatEndRef} />
       </div>
 
-      <div className="p-4 bg-white border-t flex items-center gap-2">
+      <div className=" p-4 bg-white border-t flex items-center justify-between gap-2">
         <button 
           onClick={isRecording ? stopRecording : startRecording}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-            isRecording ? "bg-red-500 animate-pulse text-white" : "bg-gray-100 text-gray-600"
+          className={`w-8 h-8  rounded-full flex text-sm text-center items-center justify-center transition-all ${
+            isRecording ? "bg-red-500 animate-pulse text-white " : "bg-gray-100 text-gray-600"
           }`}
         >
-          {isRecording ? "■" : <AudioLines/>}
+          {isRecording ? <Pause className="w-5 h-5"/> : <AudioLines className="w-5 h-5"/>}
         </button>
         
         <input
           type="text"
           value={input}
+          maxLength={200}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isProcessing ? "Processing..." : "Speak or type..."}
-          className="flex-1 text-black bg-gray-100 border-none rounded-full px-4 py-2 text-sm outline-none"
+          className=" text-black bg-gray-100 border-none rounded-full w-auto max-w-52
+            px-4 py-2 text-sm outline-none"
         />
         
-        <button onClick={handleSend} className="bg-black text-white w-10 h-10 rounded-full">→</button>
+        <button onClick={handleSend} 
+          className="bg-black text-white w-8 h-8 rounded-full">
+          →
+        </button>
       </div>
     </div>
   );

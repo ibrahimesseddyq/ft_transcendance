@@ -32,41 +32,32 @@ export const startTest = async (data) => {
     }
 }
 
-export const submitTest = async (data) => {
+export const submitTest = async (data, io) => {
     const testId = data.params.testId;
-    const {applicationPhaseId, answers, userId} = data.body;
+    const { applicationPhaseId, answers, userId } = data.body;
+    
     const applicationPhase = await applicationPhaseService.getApplicaticationPhaseById(applicationPhaseId);
 
     if (applicationPhase.application?.candidateId !== userId)
         throw new HttpException(403, 'not your application');
-    console.log('hello world ',applicationPhase.status)
-    if (applicationPhase.status !==  'inProgress')
-        throw new HttpException(400,'Test not started or already completed');
-    // const durationMs = (applicationPhase.jobPhase?.durationMinutes ?? 0) * 60 * 1000;
-    if (!applicationPhase.startedAt)
-        throw new HttpException(400, 'Test has not been started yet');
-    // const deadLine = new Date(applicationPhase.startedAt).getTime() + durationMs;
-//    if (Date.now() > deadLine) {
-//         await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
-//             completedAt: new Date(),
-//             status: 'failed',
-//             score: 0,
-//             notes: 'Time expired — auto-failed'
-//         });
-//         throw new HttpException(400, 'Test duration has expired');
-//     }
+        
+    if (applicationPhase.status !== 'inProgress')
+        throw new HttpException(400, 'Test not started or already completed');
     const evaluationResult = await quizSevice.evaluateTest(testId, answers);
     await applicationPhaseService.updateApplicationPhase(applicationPhaseId, {
         status: evaluationResult.passed ? 'completed' : 'failed',
         score: evaluationResult.totalScore,
         completedAt: new Date(),
-    })
+    });
+    if (!evaluationResult.passed)
+        await applicationService.rejectApplication(applicationPhase.applicationId, io)
+    else
+        await applicationService.acceptApplication(applicationPhase.applicationId, io)
     return {
         score: evaluationResult.totalScore,
         maxPossibleScore: evaluationResult.maxPossibleScore,
         percentage: evaluationResult.percentage,
-        passed : evaluationResult.passed,
+        passed: evaluationResult.passed,
         details: evaluationResult.result
-    }
-    
-}
+    };
+};

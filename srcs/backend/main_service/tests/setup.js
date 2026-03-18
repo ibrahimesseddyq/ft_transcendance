@@ -39,6 +39,6 @@ vi.mock('../config/prisma.js', () => ({
       create: vi.fn(),
       findUnique: vi.fn(),
       update: vi.fn(),
-    },
     }
-}))
+    }
+}));

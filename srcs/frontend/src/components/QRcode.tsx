@@ -1,11 +1,11 @@
 import Icon  from '@/components/ui/Icon'
-import { useState, useEffect } from 'react';
+import { useState, KeyboardEvent, useEffect } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { OtpCode } from './OtpCode';
 import { Logout } from '@/components/LogOut';
 import { useNavigate } from 'react-router-dom';
 import { ProfileChecker } from '@/components/ProfileChecker'
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 type AuthStep = 'QR_CODE' | 'VERIFY_OTP';
 
 export function QRcode() {
@@ -26,7 +26,7 @@ export function QRcode() {
             return;
         setLoading(true);
         try {
-            const res = await mainApi.post(`${env_main_api}/2fa/setup/`, { id: userId });
+            const res = await mainService.post(`${env_main_api}/2fa/setup/`, { id: userId });
             const result = res.data;
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
@@ -45,6 +45,11 @@ export function QRcode() {
             setStep('VERIFY_OTP');
     }, [userId]);
 
+    const handleKeyEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+        handleSubmit(); 
+    }
+};
     const handleReset = (e: React.MouseEvent) => {
         e.preventDefault();
         if (confirm("Are you sure? This will invalidate the previous QR code.")) {
@@ -58,7 +63,7 @@ export function QRcode() {
             : { code: finalOtp };
 
         try {
-            const res = await mainApi.post(`/${route}`, obj);
+            const res = await mainService.post(`${route}`, obj);
 
             if (!res) {
                 setQrVerified(false);
@@ -88,15 +93,16 @@ export function QRcode() {
                 }
             }
         } catch (error) {
-            console.error("Verification failed:", error);
+            console.log("Verification failed:", error);
             alert("An unexpected error occurred.");
         } finally {
             setLoading(false);
         }
     }
    
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) 
+            e.preventDefault();
         if (step === 'QR_CODE') {
             setStep('VERIFY_OTP');
             return;
@@ -108,9 +114,9 @@ export function QRcode() {
         }
         setLoading(true);
         if (firstLogin)
-            await verify("verify-setup", "api/main/2fa/verify-setup/", finalOtp);
+            await verify("verify-setup", `${env_main_api}/2fa/verify-setup/`, finalOtp);
         else
-            await verify("verify-2fa", "api/main/auth/verify-2fa/", finalOtp);
+            await verify("verify-2fa", `${env_main_api}/auth/verify-2fa/`, finalOtp);
         setOtpArray(new Array(6).fill(""));
     };
 
@@ -144,7 +150,7 @@ export function QRcode() {
                         )}
                     </div>
                 ) : (
-                    <OtpCode otp={otpArray} setOtp={setOtpArray} />
+                    <OtpCode otp={otpArray} setOtp={setOtpArray} onKeyEnter={handleKeyEnter} />
                 )}
 
                 <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">

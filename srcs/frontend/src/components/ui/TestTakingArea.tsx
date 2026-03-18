@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 import Icon from '@/components/ui/Icon';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +15,8 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
     const totalSteps = questions.length;
     const isLastQuestion = currentStep === totalSteps - 1;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
+
+    console.log("questions : ", questions);
 
     const getLetter = (index: number) => String.fromCharCode(65 + index);
 
@@ -55,7 +57,7 @@ const TestTakingArea = ({ phaseId, testData, candidateId }: any) => {
         };
 
         try {
-            await mainApi.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
+            await mainService.post(`${env_main_api}/quizzes/tests/${testData.id}/submit`, payload);
             navigate('/Applications', { replace: true });
         } catch (err: any) {
             setError("Submission failed. Please check your connection.");

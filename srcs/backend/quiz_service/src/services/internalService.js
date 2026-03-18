@@ -22,9 +22,9 @@ export const evaluateQuiz = async (test, answers) => {
             earnedPoints
         })
     });
-    const percentage = (totalScore / maxPossibleScore) * 100;
-    const Passed = percentage >= test.passingScore;
-    return {totalScore, maxPossibleScore, percentage,Passed,result}
+   const percentage = maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0;
+    const passed = percentage >= test.passingScore;
+    return {totalScore, maxPossibleScore, percentage,passed,result}
 }
 export const evaluateCodeChallenge =  async (test, answers) => {
     
@@ -35,10 +35,8 @@ export const evaluateTest = async (testId, answers) => {
     let result;
     if (!test)
         throw new HttpException(404, 'test not found');
-    if (test.type === 'MCQ')
-        result = evaluateQuiz(test, answers);
-    else
-        result = await evaluateCodeChallenge(test, answers);
+    if (test.type === 'QUIZ')
+        result = await evaluateQuiz(test, answers);
     return result;
 }
 

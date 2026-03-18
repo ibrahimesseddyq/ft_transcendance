@@ -1,23 +1,20 @@
 import  {z, ZodError } from 'zod';
 import  { HttpValidationException } from '../utils/httpExceptions.js';
 
-const validateRequest = (schema) => {
-    return (req,res,next) => {
+const validateRequest = (schema, target = 'body') => {
+    return (req, res, next) => {
         try {
-            console.log('req.body validate request middelware ',req.body)
-            req.body = schema.parse(req.body);
+            const parsed = schema.parse(req[target]);
+            req[target] = parsed;
         } catch (error) {
-            if(error instanceof ZodError) {
-                const errorMessages = error.issues.map((issue) => 
-                    `${issue.path.join(".")} is ${issue.message.toLowerCase()}`
-                );
-               return next(new HttpValidationException(errorMessages));
+            if (error instanceof ZodError) {
+                const messages = error.issues.map(i => `${i.path.join('.')} is ${i.message.toLowerCase()}`);
+                return next(new HttpValidationException(messages));
             }
-           return next(error);
+            return next(error);
         }
         next();
-        
-    }
-}
+    };
+};
 
 export default  validateRequest;

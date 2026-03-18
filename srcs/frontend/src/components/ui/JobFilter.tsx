@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Icon  from '@/components/ui/Icon'
-import { mainApi } from '@/utils/Api';
+import { mainService } from '@/utils/Api';
 
 
 const SKILLS = ["ui", "ux", "figma", "adobe xd", "react", "typescript"];
@@ -33,7 +33,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
       const url = `${env_main_api}/jobs?${params.toString()}`;
       console.log("Fetching URL:", url);
       const [response] = await Promise.all([
-        mainApi.get(url),
+        mainService.get(url),
         new Promise(resolve => setTimeout(resolve, 800))
       ]);
 
@@ -45,7 +45,7 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
         setTotalPages(result.meta?.totalPages || 1);
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      console.log("Fetch Error:", error);
     } finally {
       setIsLoading(false);
     }

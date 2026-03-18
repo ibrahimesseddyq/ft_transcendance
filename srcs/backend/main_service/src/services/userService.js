@@ -23,7 +23,6 @@ export const findUserOrCreate = async (profile) => {
         firstName: profile.name.givenName || profile.displayName.split(' ')[0] || 'User',
         lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
         passwordHash,
-        avatarUrl: profile.photos?.[0]?.value || null,
         role: 'candidate',
         isVerified: true,
         firstLogin: true
@@ -72,10 +71,10 @@ export const uploadAvatar = async (userId, file) => {
     if (!user)
         throw new HttpException(404, 'user not found');
     const {avatarUrl} =  await fileService.saveAvatar(userId,file);
-    const tasks = [userRepository.updateUser(userId, {avatarUrl})];
+    let tasks = [userRepository.updateUser(userId, {avatarUrl})];
     if (avatarUrl !== user.avatarUrl)
         tasks.push(fileService.deleteFile(user.avatarUrl));
-    await Promise.all(tasks);
+    tasks = await Promise.all(tasks);
     return tasks[0];
 }
 
