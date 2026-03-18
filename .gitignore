@@ -24,7 +24,7 @@ build/
 .next/
 out/
 generated/
-*.pyc
+**.pyc
 tls.crt
 tls.key
 
@@ -64,7 +64,6 @@ Thumbs.db
 *.sln
 *.sw?
 __pycache__/
-*.pyc
 # Logs
 logs
 *.log
