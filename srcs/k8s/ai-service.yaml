@@ -27,6 +27,8 @@ spec:
         vault.hashicorp.com/agent-inject-template-jwt: |
           {{- with secret "secret/data/ai-service/jwt" -}}
           export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+          export SECRET_TOKEN="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+
           export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
           {{- end }}
 
@@ -36,7 +38,6 @@ spec:
           export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
           export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
           export SECRET_TOKEN="{{ .Data.data.SECRET_TOKEN }}"
-          export SECRET_API_KEY="{{ .Data.data.SECRET_API_KEY }}"
           {{- end }}
 
     spec:
