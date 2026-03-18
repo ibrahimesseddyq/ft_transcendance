@@ -37,7 +37,6 @@ spec:
           {{- with secret "secret/data/ai-service/other" -}}
           export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
           export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
-          export SECRET_TOKEN="{{ .Data.data.SECRET_TOKEN }}"
           {{- end }}
 
     spec:

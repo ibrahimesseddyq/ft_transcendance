@@ -168,7 +168,7 @@ Other tasks where AI assisted:
 | 17 | WAF/ModSecurity + HashiCorp Vault | Cybersecurity | Major | 2 | Implemented |
 | 18 | Backend as Microservices | DevOps | Major | 2 | Implemented |
 | 19 | Advanced Analytics Dashboard | Data and Analytics | Major | 2 | Implemented |
-| 20 | Recruitment Pipeline System (Custom) | Modules of Choice | Major | 2 | Implemented |
+| 20 | Kubernetes Deployment & Orchestration (Custom) | Modules of Choice | Major | 2 | Implemented |
 | 21 | Quiz/Assessment Engine (Custom) | Modules of Choice | Minor | 1 | Implemented |
 | | | | **Total** | **31** | |
 
@@ -178,11 +178,11 @@ Other tasks where AI assisted:
 
 #### 1. Frontend + Backend Frameworks (Web — Major, 2 pts)
 
-**Implementation:** React 19 with Vite, TypeScript, and Tailwind CSS for the frontend. Express 4 (main service) and Express 5 (quiz service) for the backend. FastAPI (Python) for the AI service. Spring Cloud Gateway (Java) for API routing.
+**Implementation:** React  with Vite, TypeScript, and Tailwind CSS for the frontend. Express  (main service) and Express  (quiz service) for the backend. FastAPI (Python) for the AI service. Spring Cloud Gateway (Java) for API routing.
 
 **Justification:** Using a framework for both sides is the foundation of the project. React provides component-based UI composition with a mature ecosystem (React Query, Zustand, React Router). Express was chosen for its simplicity and large middleware ecosystem.
 
-**Team:** ibes-sed (architecture decisions), eaboudi (frontend + backend implementation), aachalla (quiz service)
+**Team:** ibes-sed , sessarhi, eaboudi , aachalla 
 
 ---
 
@@ -190,8 +190,7 @@ Other tasks where AI assisted:
 
 **Implementation:** Socket.IO server in the main service handles:
 - JWT-based socket authentication (via cookies)
-- Online user tracking with `Map<userId, Set<socketId>>`
-- Events: `join:conversation`, `typing:start`, `typing:stop`, `message:new`, `message:received`, `user:online`, `user:offline`
+- Online user tracking 
 - Real-time notification broadcasting (`notification:new`, `notification:cleared`)
 - Graceful connection/disconnection handling
 
@@ -210,7 +209,7 @@ Other tasks where AI assisted:
 
 **Justification:** User interaction is the core of the platform — candidates and recruiters must communicate and present themselves effectively.
 
-**Team:** eaboudi (chat system, profiles), ael-fagr (profile design)
+**Team:** eaboudi ,ael-fagr, sessarhi
 
 ---
 
@@ -218,14 +217,13 @@ Other tasks where AI assisted:
 
 **Implementation:** The Quiz Service exposes a fully documented public API:
 - **API Key authentication** via `x-api-key` header with timing-safe comparison (`crypto.timingSafeEqual`)
-- **Rate limiting**: 100 requests/15min for reads, 30 requests/15min for writes (`express-rate-limit`)
 - **Swagger/OpenAPI documentation** auto-generated with `swagger-jsdoc`
 - **12+ endpoints** covering GET, POST, PATCH, DELETE across MCQs, Tests, and internal evaluation
 - Secured, documented, and rate-limited as required
 
 **Justification:** A public API allows external tools and integrations to interact with the assessment engine, and demonstrates proper API design practices.
 
-**Team:** aachalla
+**Team:** sessarhi
 
 ---
 
@@ -235,7 +233,7 @@ Other tasks where AI assisted:
 - **Main service:** 14 models (User, Job, Application, JobPhase, ApplicationPhase, Profile, Interview, Offer, Conversation, Message, etc.)
 - **Quiz service:** 3 models (Mcq, CodeChallenge, Test) with many-to-many relations
 
-**Team:** ibes-sed (schema design), eaboudi, aachalla
+**Team:**  sessarhi, ibes-sed
 
 ---
 
@@ -261,7 +259,7 @@ Other tasks where AI assisted:
 - `JobPhaseManager`, `TestTakingArea`, `McqsList`, `TestsList` — domain components
 - Built with Tailwind CSS, `class-variance-authority`, Radix UI, and `tailwind-merge` for consistent theming
 
-**Team:** eaboudi, ael-fagr, sessarhi
+**Team:**  ael-fagr
 
 ---
 
@@ -274,7 +272,7 @@ Other tasks where AI assisted:
 - Frontend `Pagination.tsx`: page navigation with prev/next
 - Keyword search across `title`, `description`, `department`, `skills`
 
-**Team:** eaboudi, ael-fagr
+**Team:**  ael-fagr, sessarhi
 
 ---
 
@@ -288,7 +286,7 @@ Other tasks where AI assisted:
 - Chat file uploads: images, videos, PDFs, and audio attachments via `ChatInput.tsx`
 - Profile routes support `multipart/form-data` for simultaneous avatar + resume upload
 
-**Team:** eaboudi
+**Team:** sessarhi, ael-fagr
 
 ---
 
@@ -301,7 +299,7 @@ Other tasks where AI assisted:
 - Profile pages: `Profile.tsx`, `EditProfile.tsx`, `ProfileCover.tsx`, `ProfileInformations.tsx`
 - User model: email, passwordHash (Argon2), role, firstName, lastName, phone, avatarUrl, isVerified
 
-**Team:** eaboudi, ibes-sed
+**Team:** sessarhi, ael-fagr
 
 ---
 
@@ -313,7 +311,7 @@ Other tasks where AI assisted:
 - Role-protected routes: job CRUD (recruiter/admin), user listing (recruiter), dashboard (recruiter), application management (recruiter/admin)
 - Role-based views: conversation controller shows different data per role; candidates see their own conversations, recruiters see all
 
-**Team:** eaboudi, ibes-sed
+**Team:** sessarhi
 
 ---
 
@@ -325,7 +323,7 @@ Other tasks where AI assisted:
 - Routes: `GET /auth/google` (initiate) and `GET /auth/google/callback` (handle callback)
 - Frontend: `OAuthCallback.tsx` component handles redirect flow
 
-**Team:** eaboudi, ibes-sed
+**Team:** ael-fagr
 
 ---
 
@@ -339,7 +337,7 @@ Other tasks where AI assisted:
 - Frontend: `QRcode.tsx` and `OtpCode.tsx` components for setup and verification
 - Login flow includes `POST /auth/verify-2fa` for 2FA-enabled accounts
 
-**Team:** eaboudi, ibes-sed
+**Team:** ibes-sed, ael-fagr
 
 ---
 
@@ -353,7 +351,7 @@ Other tasks where AI assisted:
 - Integrated in `messagesService.js`: every text message is moderated before delivery; blocked messages are rejected with moderation details
 - Graceful fallback: if the AI service is unavailable, messages still get through
 
-**Team:** eaboudi
+**Team:** aachalla
 
 ---
 
@@ -364,11 +362,10 @@ Other tasks where AI assisted:
 - Endpoint: `POST /api/ai/recognate` — accepts audio file, returns transcribed text
 - Frontend integration in both `AiChat.tsx` and `ChatInput.tsx`:
   - Browser microphone recording via `MediaRecorder` API
-  - Recording timer with 30-second max
   - Transcribed text fills the message input field
 - Supports multiple audio codecs: `audio/webm;codecs=opus`, `audio/webm`, `audio/mp4`, `audio/ogg;codecs=opus`
 
-**Team:** eaboudi
+**Team:** aachalla, ael-fagr
 
 ---
 
@@ -382,14 +379,14 @@ Other tasks where AI assisted:
 - Endpoint: `POST /api/ai/classify`
 - Integrated in `fileService.js`: avatar uploads are validated via AI — invalid profile images are rejected with HTTP 400
 
-**Team:** eaboudi
+**Team:** aachalla, sessarhi
 
 ---
 
 #### 17. WAF/ModSecurity + HashiCorp Vault (Cybersecurity — Major, 2 pts)
 
 **Implementation:**
-- **WAF:** OWASP ModSecurity CRS with Nginx (`owasp/modsecurity-crs:nginx` base image). `SecRuleEngine On`, request body inspection enabled. Acts as reverse proxy: `/` → frontend, `/api` → gateway. Deployed as first entry point on port 8080.
+- **WAF:** OWASP ModSecurity CRS with Nginx (`owasp/modsecurity-crs:nginx` base image). `SecRuleEngine On`, request body inspection enabled. Acts as reverse proxy: `/` → frontend, `/api` → gateway. Deployed as first entry point .
 - **HashiCorp Vault:** Runs in standalone mode with Raft storage. KV v2 secrets engine. Kubernetes authentication with per-service policies (main-service, quiz-service, ai-service, main-service-db, quiz-service-db). Secrets injected via Vault Agent sidecar annotations. Stores: DB credentials, JWT secrets, OAuth secrets, API keys.
 
 **Justification:** Security is critical for a recruitment platform that handles personal data, resumes, and authentication credentials. The WAF protects against OWASP top-10 attacks, while Vault ensures secrets are never stored in plaintext or environment files in production.
@@ -414,7 +411,7 @@ Other tasks where AI assisted:
 - API routing through the gateway: `/api/main/**`, `/api/quiz/**`, `/api/ai/**`
 - Full Docker Compose and Kubernetes deployment manifests
 
-**Team:** ibes-sed (architecture), eaboudi (main_service), aachalla (quiz_service)
+**Team:** ibes-sed (architecture), sessarhi, aachalla, ael-fagr
 
 ---
 
@@ -430,28 +427,29 @@ Other tasks where AI assisted:
 
 **Justification:** Recruiters need data-driven insights to manage their hiring pipeline effectively. The dashboard provides real-time visibility into recruitment metrics.
 
-**Team:** ael-fagr, sessarhi, eaboudi
+**Team:** ael-fagr, sessarhi
 
 ---
 
-#### 20. Recruitment Pipeline System (Modules of Choice — Major, 2 pts)
+### 20. Kubernetes Deployment & Orchestration (Modules of Choice — Major, 2 pts)
 
-**Justification:** This is a custom module unique to the Hirefy platform. It implements a full multi-phase recruitment pipeline that does not exist in the subject's predefined modules. It demonstrates significant technical complexity:
-- Configurable job phases (test/interview) with ordering
-- Application state machine (pending → inProgress → accepted/rejected/withdrawn)
-- Per-phase status tracking with scores and notes
-- Interview scheduling with participants and modes (online/onsite)
-- Offer management (salary, equity, benefits, status lifecycle)
-- Integration with the quiz service for automated assessments within pipeline phases
+**Justification:** This module demonstrates full **Kubernetes-native deployment and orchestration** for the Hirefy microservices platform, ensuring scalability, resilience, and declarative infrastructure management.
 
 **Implementation:**
-- Prisma models: `JobPhase`, `Application`, `ApplicationPhase`, `Interview`, `InterviewParticipant`, `Offer`
-- Backend: `applicationService.js` handles `submitApplication()`, `advance()`, `acceptApplication()`, `rejectApplication()` with real-time notifications at each stage
-- Frontend: `Application.tsx`, `ApplicationDetails.tsx`, `UserApplications.tsx`, `UserPhase.tsx`, `CandidateQuizPage.tsx`
+- **K3d Cluster:** Local development and testing uses a `k3d` Kubernetes cluster with separate namespaces for services.
+- **Microservices Deployment:** Each service (main, quiz, AI, gateway, WAF) runs in its own Deployment with a dedicated Service:
+  - **main-service**: Node.js / Express
+  - **quiz-service**: Node.js / Express
+  - **ai-service**: FastAPI / Python
+  - **gateway**: Spring Boot / Java
+  - **WAF**: ModSecurity + Nginx
+- **Persistent Storage:** MariaDB databases deployed with PersistentVolumeClaims to retain data.
+- **Secrets Management:** HashiCorp Vault integrates with Kubernetes via the **Vault Agent Injector**, injecting DB credentials, JWT secrets, and API keys directly into pods.
+- **Configuration Management:** Environment variables and service URLs managed via ConfigMaps and Secrets.
+- **Ingress & Routing:** Frontend, gateway, and AI service are exposed using **Ingress** and internal ClusterIP Services, with WAF handling incoming traffic and security rules.
 
-**Why it deserves Major status (2 pts):** The pipeline system involves 6 interrelated database models, a state machine with validation rules, integration across two microservices (main + quiz), and real-time notification triggers — making it substantially more complex than most predefined modules.
 
-**Team:** ibes-sed (architecture, models), eaboudi (implementation), ael-fagr (requirements)
+**Team:** ibes-sed 
 
 ---
 
