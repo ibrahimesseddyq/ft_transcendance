@@ -26,11 +26,9 @@ const Signup = () => {
     const SignUpSubmit = async (data: any) => {
         try {
             await mainService.post(`${env_main_api}/auth/register`, data);
-            console.log("Sing Up seccusfull");
             Notification("succes Sign Up", "success");
             navigate('/', { replace: true });
         } catch (error) {
-            console.log("Submission failed:", error);
             Notification("error Sign Up", "error");
         }
         reset();

@@ -35,7 +35,6 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Test deleted successfully", "success");
         } catch (err) {
-            console.log(err);
             Notification("Failed to delete Test", "error");
         }
     };

@@ -33,6 +33,7 @@ export const createProfile = async (userId, profileData) => {
         profile.user.avatarUrl = user.avatarUrl;
     return profile;
 }
+
 export const updateProfile = async (userId, profileData) => {
     const [user, profile] = await Promise.all([
         userService.getUserById(userId),

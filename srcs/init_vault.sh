@@ -23,7 +23,6 @@ if ! vault operator init -status >/dev/null 2>&1; then
   vault operator init -key-shares=1 -key-threshold=1 \
     -format=json > /vault/data/init.json
 
-  # -A1 gets the line AFTER the key name, then strip spaces/quotes/commas
   UNSEAL_KEY=$(grep -A1 'unseal_keys_hex' /vault/data/init.json | tail -1 | tr -d ' [],\"')
   VAULT_TOKEN=$(grep 'root_token' /vault/data/init.json | cut -d'"' -f4)
 
@@ -75,32 +74,27 @@ EOF
 vault write auth/kubernetes/role/main-service \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=main-service \
-    ttl=24h
+    policies=main-service 
 
 vault write auth/kubernetes/role/quiz-service \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=quiz-service \
-    ttl=24h
+    policies=quiz-service
 
 vault write auth/kubernetes/role/ai-service \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=ai-service \
-    ttl=24h
+    policies=ai-service 
 
 vault write auth/kubernetes/role/main-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=main-service-db \
-    ttl=24h
+    policies=main-service-db 
 
 vault write auth/kubernetes/role/quiz-service-db \
     bound_service_account_names=app-service-account \
     bound_service_account_namespaces=hirefy \
-    policies=quiz-service-db \
-    ttl=24h
+    policies=quiz-service-db 
 
 # Storing main service secrets
 echo "Storing secrets in vault..."
@@ -164,6 +158,8 @@ vault kv put secret/ai-service/jwt \
 
 vault kv put secret/ai-service/other \
   AI_INTERNAL_API_KEY="${AI_INTERNAL_API_KEY}" \
-  INTERNAL_API_KEY="${INTERNAL_API_KEY}"
+  INTERNAL_API_KEY="${INTERNAL_API_KEY}" \
+
+
   
 echo "===== Vault initialization complete! ====="

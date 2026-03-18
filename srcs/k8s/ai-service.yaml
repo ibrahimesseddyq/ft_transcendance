@@ -27,6 +27,8 @@ spec:
         vault.hashicorp.com/agent-inject-template-jwt: |
           {{- with secret "secret/data/ai-service/jwt" -}}
           export ACCESS_TOKEN_SECRET="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+          export SECRET_TOKEN="{{ .Data.data.ACCESS_TOKEN_SECRET }}"
+
           export REFRESH_TOKEN_SECRET="{{ .Data.data.REFRESH_TOKEN_SECRET }}"
           {{- end }}
 
@@ -106,4 +108,8 @@ metadata:
   name: ai-service-config
   namespace: hirefy
 data:
-  PORT: "3002"   
+  PORT: "3002"  
+  FRONTEND_URL: "https://13.36.189.126"
+  OLLAMA_MODEL: "llama3.2:1b"
+  OLLAMA_SERVER_URL: "http://localhost:11434"
+  OLLAMA_EMBED_MODEL: "mxbai-embed-large"

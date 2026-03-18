@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, KeyboardEvent, useRef } from "react";
 import { AudioLines, Pause } from 'lucide-react';
 import { Loading } from "./Loading";
 import { mainService } from '@/utils/Api';
 import MarkdownPreview  from '@/components/MarkDownPreview'
 
 const SUGGESTIONS = [
-  "who are you?",
-  "give me all services do you present?",
-  "How can i get the best job offer?"
+  "How the company hire?",
+  "What the company expect from the employers?",
+  "Give me an overview about the company?"
 ];
 
 export default function AiChat() {
   const [showSuggestions, setShowSuggestions] = useState(true);
 
   const [messages, setMessages] = useState([
-    { role: "ai", content: "Hello! Upload an audio clip and I'll transcribe it." }
+    { role: "ai", content: "Hello! Upload an audio clip or insert text." }
   ]);
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
@@ -23,8 +23,11 @@ export default function AiChat() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const env_ai_api = import.meta.env.VITE_AI_API_URL;
   const env_rag_api = import.meta.env.VITE_RAG_API_URL;
+
+
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -60,22 +63,47 @@ export default function AiChat() {
     setIsRecording(false);
   };
 
+   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleSend();
+      }
+    };
   const generateAiResponse = async (userText: string) => {
-    setIsGenerating(true);
+  setIsGenerating(true);
+  setMessages(prev => [...prev, { role: "ai", content: "" }]);
 
-    try {
-      const response = await mainService.post(`${env_rag_api}/generate`, { 
-        text: userText 
-      });
+  let accumulated = "";
 
-      const aiText = response.data;
-      setMessages(prev => [...prev, { role: "ai", content: aiText }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  try {
+    await mainService.post(
+      `${env_rag_api}/generate`,
+      { text: userText },
+      {
+        responseType: "text",
+        onDownloadProgress: (progressEvent) => {
+          const raw = progressEvent.event?.target?.responseText ?? "";
+          accumulated = raw;
+          setMessages(prev => {
+            const copy = [...prev];
+            copy[copy.length - 1] = {
+              ...copy[copy.length - 1],
+              content: accumulated,
+            };
+            return copy;
+          });
+        },
+      }
+    );
+  } catch {
+    setMessages(prev => {
+      const copy = [...prev];
+      copy[copy.length - 1].content = "Sorry, I couldn't generate a response.";
+      return copy;
+    });
+  } finally {
+    setIsGenerating(false);
+  }
+};
 
   const sendAudioToAI = async (blob: Blob) => {
     setIsProcessing(true);
@@ -160,8 +188,10 @@ export default function AiChat() {
         
         <input
           type="text"
+          ref={inputRef}
           value={input}
           maxLength={200}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isProcessing ? "Processing..." : "Speak or type..."}
           className=" text-black bg-gray-100 border-none rounded-full w-auto max-w-52

@@ -71,7 +71,7 @@ kube-build:
 	docker build -t ollama-service:dev   $(ROOT)srcs/backend/ai_services/ollama_service 
 
 	docker build -t frontend:dev \
-	--build-arg VITE_SERVICE_URL=http://13.36.189.126 \
+	--build-arg VITE_SERVICE_URL=https://13.36.189.126 \
 	--build-arg VITE_MAIN_API_URL=/api/main \
 	--build-arg VITE_QUIZ_API_URL=/api/quiz \
 	--build-arg VITE_AI_API_URL=/api/ai \

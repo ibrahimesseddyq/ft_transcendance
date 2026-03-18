@@ -94,21 +94,19 @@ export const  register = async (data) => {
     return {};
 }
 
-export const refresh = async  (refreshToken) => {
+export const refresh = async (refreshToken) => {
+    if (!refreshToken) throw new HttpException(403, 'Forbidden');
     const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    const user = await  userService.getUserById(decoded.id);
-    if(!user)
-        throw new HttpException(403, "Forbidden");
-    if (user.refreshToken?.trim() !== refreshToken?.trim())
-        throw new HttpException(403, "Forbidden");
-    const {accessToken,refreshToken: newRefreshToken} = jwtService.generateAuthTokens({
-        id : user.id,
-        email : user.email,
-        role: user.role
+    const user = await userService.getUserById(decoded.id);
+    if (!user) throw new HttpException(403, 'Forbidden');
+    if (!user.refreshToken || user.refreshToken.trim() !== refreshToken.trim())
+        throw new HttpException(403, 'Forbidden');
+    const { accessToken, refreshToken: newRefreshToken } = jwtService.generateAuthTokens({
+        id: user.id, email: user.email, role: user.role
     });
     await userService.updateUser(user.id, { refreshToken: newRefreshToken });
     return { user, accessToken, refreshToken: newRefreshToken };
-}
+};
 
 export const logout = async (refreshToken) => {
     try {

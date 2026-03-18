@@ -56,7 +56,7 @@ export function ProfileCover({ profile, user }: props) {
       <div 
         style={{ backgroundImage: `url("${avatarUrl}")` }}
         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
-            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl z-10"
+            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl"
       />
 
       <div className="text-center">
@@ -94,15 +94,15 @@ export function ProfileCover({ profile, user }: props) {
             href={resumeUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 border border-primary rounded-lg 
-                       text-primary py-2 px-4 text-sm font-semibold hover:bg-primary/10 transition-colors"
+            className="w-full  px-6 py-2 flex items-center justify-center gap-2 border border-primary rounded-lg 
+                       text-primary text-sm font-semibold hover:bg-primary/10 transition-colors text-center"
           >
             <Icon name='ArrowDownFromLine' className="h-4 w-4"/>
             CV
           </a>
 
           <button onClick={handleCopy}
-            className="flex-1 bg-primary rounded-lg text-surface-main py-2 px-4 text-sm 
+            className="w-full px-6 py-2 bg-primary rounded-lg text-surface-main text-sm text-center
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-primary/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>

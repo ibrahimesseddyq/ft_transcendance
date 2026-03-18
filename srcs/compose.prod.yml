@@ -1,11 +1,9 @@
 services:
   waf:
-    # image: owasp/modsecurity-crs:nginx
     build:
       context: .
       dockerfile: ./waf/Dockerfile
     container_name: waf
-    user: root # TO REMOVE!!!!!!!!!!!!!!!!!!
     ports:
       - "8080:8080"
     depends_on:
@@ -20,8 +18,6 @@ services:
     environment:
       HOSTNAME: main-service
       HOST_IP: main-service
-      USER_PASSWORD: ${USER_PASSWORD}
-      RECRUITER_PASS: ${RECRUITER_PASS}
       MARIADB_DATABASE: ${MARIADB_MAIN_DATABASE}
       MARIADB_USER: ${MARIADB_MAIN_USER}
       MARIADB_PASSWORD: ${MARIADB_MAIN_PASSWORD}

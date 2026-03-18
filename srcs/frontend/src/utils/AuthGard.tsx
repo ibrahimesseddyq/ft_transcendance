@@ -24,15 +24,20 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
         const response = await mainService.get(`${env_main_api}/users/me`);
         const fetchedUserId = response.data?.data?.user?.id;
         if (!fetchedUserId) clearAuth();
-      } catch {
-        clearAuth();
+      } catch (err: any) {
+        if (err?.response?.status === 401) {
+          clearAuth();
+        }
       } finally {
         setIsLoading(false);
       }
     };
     verifySession();
   }, [userId]);
-  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loading /></div>;
-  if (!user || !userId) return <Navigate to="/Login" state={{ from: location }} replace />;
+
+  if (isLoading)
+    return <div className="flex-1 flex items-center justify-center"><Loading /></div>;
+  if (!user || !userId)
+    return <Navigate to="/Login" state={{ from: location }} replace />;
   return <>{children}</>;
 };

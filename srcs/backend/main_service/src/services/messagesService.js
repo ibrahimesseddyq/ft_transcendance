@@ -137,7 +137,7 @@ export const uploadFile = async ({ userId, conversationId, file, io }) => {
 		messageType,
 		attachment: {
 			fileName: payload.file.originalname,
-			filePath: `/uploads/chat/${payload.file.filename}`,
+			filePath: `/api/main/uploads/chat/${payload.file.filename}`,
 			fileSize: payload.file.size,
 			mimeType
 		}
