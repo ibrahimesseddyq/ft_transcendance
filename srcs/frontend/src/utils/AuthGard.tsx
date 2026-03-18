@@ -10,7 +10,7 @@ interface AuthGuardProps {
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { userId, clearAuth, user } = useAuthStore();
-  const [isLoading, setIsLoading] = useState(true); // always start true
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
@@ -22,7 +22,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       }
       try {
         const response = await mainService.get(`${env_main_api}/users/me`);
-        const fetchedUserId = response.data?.data?.user?.id; // safe chain
+        const fetchedUserId = response.data?.data?.user?.id;
         if (!fetchedUserId) clearAuth();
       } catch {
         clearAuth();
@@ -32,8 +32,6 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     };
     verifySession();
   }, [userId]);
-
-  // isLoading MUST come first — prevents flash redirect on valid sessions
   if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loading /></div>;
   if (!user || !userId) return <Navigate to="/Login" state={{ from: location }} replace />;
   return <>{children}</>;

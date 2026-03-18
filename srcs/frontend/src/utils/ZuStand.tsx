@@ -36,6 +36,7 @@ type State = {
   qrVerified: boolean;
   userId: string | null;
   firstLogin: boolean;
+  _hasHydrated: boolean; 
 };
 
 
@@ -58,6 +59,7 @@ export const useAuthStore = create<State & Action>()(
       tmpToken: null,
       qrVerified: false,
       firstLogin: false,
+      _hasHydrated: false,
 
       setFirstLogin: (status) =>
         set(()=>({
@@ -88,7 +90,9 @@ export const useAuthStore = create<State & Action>()(
               ? { 
                   ...state.user, 
                   avatarUrl: newAvatar ?? state.user.avatarUrl,
-                  phone: updatedProfile.phone ?? state.user.phone 
+                  phone: updatedProfile.phone
+                    ?? updatedProfile.numberPhone
+                    ?? state.user.phone
                 } 
               : null,
           };
@@ -110,6 +114,11 @@ export const useAuthStore = create<State & Action>()(
             : null,
         })),
     }),
-    { name: 'auth-storage' }
+    { 
+      name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        useAuthStore.setState({ _hasHydrated: true });
+      }
+     }
   )
 );

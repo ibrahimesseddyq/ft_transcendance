@@ -1,8 +1,12 @@
-from fastapi import APIRouter, HTTPException, Request
-from fastapi.concurrency import run_in_threadpool
+import os
+
+from dotenv import load_dotenv
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import StreamingResponse
+from jose import JWTError, jwt
 from limiter.limiter import limiter
 from pydantic import BaseModel
-from services.llm_rag.generate import generate
+from services.generate import generate
 
 router = APIRouter()
 
@@ -11,13 +15,37 @@ class GenerationRequest(BaseModel):
     text: str
 
 
-@router.post("/api/rag/generate")
-@limiter.limit("2/minute")
-async def generation_endpoint(request: Request, body: GenerationRequest):
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_TOKEN")
+
+
+def jwt_verify(request: Request):
+
+    token = request.cookies.get("accessToken")
+
+    if token is None:
+        raise HTTPException(status_code=401, detail="Missing token")
 
     try:
-        result = await run_in_threadpool(generate, body.text)
-    except Exception:
-        raise HTTPException(status_code=500, detail="RAG service failed")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return payload
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-    return result
+
+
+@router.post("/api/rag/generate")
+@limiter.limit("2/minute")
+async def generation_endpoint(
+    request: Request, body: GenerationRequest, user=Depends(jwt_verify)
+):
+
+    async def stream_response():
+        try:
+            for chunk in generate(body.text):
+                yield chunk
+        except Exception:
+            raise HTTPException(status_code=500, detail="RAG service failed")
+
+    return StreamingResponse(stream_response(), media_type="text/plain")

@@ -8,7 +8,8 @@ RUN apt update && apt install -y \
 	libxcb1
 WORKDIR /app
 COPY requirements.txt requirements.txt
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+
+RUN	curl -LsSf https://astral.sh/uv/install.sh | sh && \
 	. $HOME/.local/bin/env && \
 	/root/.local/bin/uv venv && \
 	. .venv/bin/activate && \

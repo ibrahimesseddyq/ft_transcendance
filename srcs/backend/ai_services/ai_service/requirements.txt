@@ -10,3 +10,5 @@ tensorflow-cpu
 numpy
 opencv-python
 python-multipart
+python-jose
+python-dotenv
