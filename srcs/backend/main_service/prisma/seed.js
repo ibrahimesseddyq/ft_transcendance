@@ -2,7 +2,6 @@
 import { PrismaClient, UserRole } from '../generated/prisma/index.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import argon2 from 'argon2';
-// TODO !!!1 use just env var and remove plainpassword
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
 const prisma = new PrismaClient({ adapter });
 

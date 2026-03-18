@@ -1,11 +1,9 @@
 services:
   waf:
-    # image: owasp/modsecurity-crs:nginx
     build:
       context: .
       dockerfile: ./waf/Dockerfile
     container_name: waf
-    user: root # TO REMOVE!!!!!!!!!!!!!!!!!!
     ports:
       - "8080:8080"
     depends_on:
