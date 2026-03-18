@@ -8,7 +8,7 @@ from langchain_text_splitters import (
 )
 
 embedding = OllamaEmbeddings(
-    model="mxbai-embed-large", base_url="http://ollama_container:11434"
+    model="mxbai-embed-large", base_url="http://localhost:11434"
 )
 
 vector_store = Chroma(

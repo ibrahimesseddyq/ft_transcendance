@@ -1,5 +1,6 @@
 #!/bin/bash
 
-cd /app
+. /app/.venv/bin/activate
 
-/root/.local/bin/uv run uvicorn main:app --port 3002 --host 0.0.0.0 
+cd /app/app
+/app/.venv/bin/uvicorn main:app --port 3002 --host 0.0.0.0
