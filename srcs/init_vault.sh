@@ -158,7 +158,8 @@ vault kv put secret/ai-service/jwt \
 
 vault kv put secret/ai-service/other \
   AI_INTERNAL_API_KEY="${AI_INTERNAL_API_KEY}" \
-  INTERNAL_API_KEY="${INTERNAL_API_KEY}" 
+  INTERNAL_API_KEY="${INTERNAL_API_KEY}" \
+
 
   
 echo "===== Vault initialization complete! ====="
