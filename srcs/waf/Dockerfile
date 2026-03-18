@@ -1,6 +1,7 @@
 FROM owasp/modsecurity-crs:nginx
 
 COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
+COPY waf/allow_patch.conf /etc/modsecurity.d/allow_patch.conf
 
 # Ensure expected directory exists
 RUN mkdir -p /etc/nginx/modsecurity.d

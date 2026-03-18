@@ -99,7 +99,7 @@ export const refresh = async  (refreshToken) => {
     const user = await  userService.getUserById(decoded.id);
     if(!user)
         throw new HttpException(403, "Forbidden");
-    if (user.refreshToken !== refreshToken)
+    if (user.refreshToken?.trim() !== refreshToken?.trim())
         throw new HttpException(403, "Forbidden");
     const {accessToken,refreshToken: newRefreshToken} = jwtService.generateAuthTokens({
         id : user.id,

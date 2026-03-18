@@ -6,7 +6,7 @@ import { classifyAvatar } from './aiService.js';
 export const saveResume = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
     const filename = `${userId}${fileExt}`;
-    const resumePath = '/uploads/resumes/' + filename;
+    const resumePath = '/api/main/uploads/resumes/' + filename;
     return {
         type: 'resume',
         resumeUrl: resumePath
@@ -23,10 +23,8 @@ export const saveAvatar = async (userId, file) => {
         if (result.class !== 'valid profile')
         {
             await fs.unlink(physicalPath);
-            throw new HttpException(400, 'inalid avatar image');
+            throw new HttpException(400, 'invalid avatar image');
         }
-        else
-            await fs.unlink(physicalPath);
     } catch (err) {
 
     }
