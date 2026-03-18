@@ -63,7 +63,7 @@ export function QRcode() {
             : { code: finalOtp };
 
         try {
-            const res = await mainService.post(`/${route}`, obj);
+            const res = await mainService.post(`${route}`, obj);
 
             if (!res) {
                 setQrVerified(false);
@@ -114,9 +114,9 @@ export function QRcode() {
         }
         setLoading(true);
         if (firstLogin)
-            await verify("verify-setup", "api/main/2fa/verify-setup/", finalOtp);
+            await verify("verify-setup", `${env_main_api}/2fa/verify-setup/`, finalOtp);
         else
-            await verify("verify-2fa", "api/main/auth/verify-2fa/", finalOtp);
+            await verify("verify-2fa", `${env_main_api}/auth/verify-2fa/`, finalOtp);
         setOtpArray(new Array(6).fill(""));
     };
 

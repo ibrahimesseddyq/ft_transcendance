@@ -7,7 +7,7 @@ import sendMail from './emailService.js';
 import twoFAService from './twoFAService.js';
 import { getSafeUser } from '../utils/excludeSensitive.js';
 
-const DUMMY_HASH = process.env.DUMMY_PASSWORD_HASH;
+const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$placeholder$placeholderhashplaceholderhashxx';
 const twoFAService2 = new twoFAService();
 
 export const login = async (data) => {

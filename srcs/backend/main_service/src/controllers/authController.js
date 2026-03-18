@@ -40,7 +40,6 @@ export const login = asyncHandler(async (req, res, next) => {
                     id: result.userId,
                     firstLogin: result.firstLogin
                 }
-                
             });
         }
         res
@@ -79,26 +78,22 @@ export const register = asyncHandler(async (req, res, next) => {
     });
 })
 
-
-export const refresh =  asyncHandler(async (req, res, next) => {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            return res
-            .status(401)
-            .json({
-                error: 'refreshToken not provided'
-            });
-        }
-        const {user, accessToken} = await  authService.refresh(refreshToken);
-        res
+export const refresh = asyncHandler(async (req, res, next) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json({ error: 'refreshToken not provided' });
+    }
+    const { user, accessToken, refreshToken: newRefreshToken } = await authService.refresh(refreshToken);
+    res
         .status(200)
-        .cookie('accessToken',accessToken,accessTokenOptions)
+        .cookie('accessToken', accessToken, accessTokenOptions)
+        .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
         .json({
             success: true,
             message: 'token refreshed successfully',
             data: getSafeUser(user)
         });
-})
+});
 
 export const logout =  asyncHandler(async (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;

@@ -23,7 +23,6 @@ export const findUserOrCreate = async (profile) => {
         firstName: profile.name.givenName || profile.displayName.split(' ')[0] || 'User',
         lastName: profile.name.familyName || profile.displayName.split(' ')[1] || '',
         passwordHash,
-        avatarUrl: profile.photos?.[0]?.value || null,
         role: 'candidate',
         isVerified: true,
         firstLogin: true

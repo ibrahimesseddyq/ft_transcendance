@@ -15,10 +15,32 @@ let failedQueue: FailedRequest[] = [];
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
 const attachInterceptors = (instance: AxiosInstance) => {
-    instance.interceptors.request.use((config) => {
+     instance.interceptors.request.use((config) => {
+        const url = config.url || "";
+
+
+        if (import.meta.env.DEV) {
+            
+            if (url.startsWith("/api/main")) {
+                config.baseURL = "http://localhost:3000";
+            }
+            else if (url.startsWith("/api/quiz")) {
+                config.baseURL = "http://localhost:3001";
+            } else if (url.startsWith("/api/ai")) {
+                config.baseURL = "http://localhost:8000";
+            } else if (url.startsWith("/api/rag")) {
+                config.baseURL = "http://localhost:8001";
+            }
+        }
+
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
+
+        console.log("FINAL REQUEST =>", {
+            url: config.url,
+            baseURL: config.baseURL
+        });
 
         return config;
     });

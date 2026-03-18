@@ -22,7 +22,7 @@ export const registerNotificationSocketEvents = ({ io, socket, prisma, userId })
 
       io.in(`user_${userId}`).emit('notification:cleared', { conversationId });
     } catch (error) {
-      console.error('Error broadcasting read status:', error);
+
     }
   });
 };

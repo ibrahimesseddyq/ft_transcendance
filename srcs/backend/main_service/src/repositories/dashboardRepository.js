@@ -31,7 +31,6 @@ export const getApplicationsOverview = async (start, end) => {
     const endDate = new Date(end);
 
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        console.error("Invalid dates passed to getApplicationsOverview:", { start, end });
         return { labels: [], datasets: { received: [], processed: [] } };
     }
 

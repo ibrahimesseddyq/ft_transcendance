@@ -62,7 +62,7 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
             refreshToken: tokens.refreshToken
         };
     }
-    // trow HTTP Exceptions
+
     async verifyLogin(userId, token)
     {
         const user = await this.userRepo.getUserById(userId);

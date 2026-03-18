@@ -113,7 +113,6 @@ app.get('/api/main/health', async (req, res) => {
       database: 'connected'
     });
   } catch (error) {
-    console.error('Health check failed:', error.message);
     res.status(503).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
