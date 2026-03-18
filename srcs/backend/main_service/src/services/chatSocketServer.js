@@ -9,11 +9,11 @@ import {
 
 export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, corsOrigin }) => {
   const io = new Server(server, {
+    path: "/api/main/ws/",
     cors: {
       origin: corsOrigin,
       methods: ['GET', 'POST'],
       credentials: true,
-      path: "/api/main/ws/",
     }
   });
 
