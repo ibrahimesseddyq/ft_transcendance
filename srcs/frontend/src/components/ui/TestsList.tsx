@@ -17,7 +17,7 @@ const TestsList = ({ refreshKey }: TestsListProps) => {
             const res = await mainService.get(`${env_quiz_api}/tests`);
             setTests(res.data?.data || []);
         } catch (err) {
-            console.log("Error fetching tests:", err);
+           
         } finally {
             setLoading(false);
         }

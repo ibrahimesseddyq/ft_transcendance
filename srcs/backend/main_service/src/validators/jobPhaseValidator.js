@@ -7,7 +7,7 @@ export const createJobPhaseSchema = z.object({
 	name: z.string()
 		.max(100, 'name length should be less than 100'),
 	description: z.string(),
-	orderIndex: z.number(), //maybe should ignored and the oreder will be based on creation
+	orderIndex: z.number(),
 	isRequired: z.boolean().default(true),
 	durationMinutes: z.number(),
 	testId: z.string().uuid(),

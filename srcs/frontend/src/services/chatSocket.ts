@@ -36,7 +36,6 @@ class ChatSocketService {
   private setupEventListeners(): void {
     if (!this.socket) return;
 
-    // Connection events
     this.socket.on('connect', () => {
       this.emit('onConnect', null);
     });
@@ -49,11 +48,8 @@ class ChatSocketService {
       this.emit('onError', error);
     });
 
-    // Message events
     const forwardMessage = (data: any) => {
-      // Support both payloads:
-      // 1) { message, conversationId }
-      // 2) direct message object with conversationId on it
+
       const payload = data?.message
         ? data
         : {
@@ -81,7 +77,6 @@ class ChatSocketService {
       this.emit('onMessageRead', data);
     });
 
-    // Typing events
     this.socket.on('typing:update', (data: any) => {
       this.emit('onTypingUpdate', data);
     });
@@ -104,7 +99,6 @@ class ChatSocketService {
       });
     });
 
-    // User status events
     this.socket.on('user:online', (data: any) => {
       this.emit('onUserOnline', data);
     });
@@ -117,12 +111,10 @@ class ChatSocketService {
       this.emit('onOnlineUsers', data);
     });
 
-    // Conversation events
     this.socket.on('conversation:new', (data: any) => {
       this.emit('onNewConversation', data);
     });
 
-    // Notification events
     this.socket.on('notification:new', (data: any) => {
       this.emit('onNotificationNew', data);
     });
@@ -160,7 +152,6 @@ class ChatSocketService {
     }
   }
 
-  // Emit events to server
   sendMessage(
     conversationId: string,
     content: string,

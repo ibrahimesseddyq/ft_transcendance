@@ -18,7 +18,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
             const res = await mainService.get(`${env_quiz_api}/mcqs`);
             setTests(res.data?.data || []);
         } catch (err) {
-            console.log(err);
+           
         } finally {
             setLoading(false);
         }
@@ -36,7 +36,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
             setTests(prev => prev.filter(test => test.id !== id));
             Notification("Mcq deleted successfully", "success");
         } catch (err) {
-            console.log(err);
+            
             Notification("Failed to delete Mcq", "error");
         }
     };

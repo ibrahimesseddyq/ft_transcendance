@@ -41,7 +41,6 @@ export function UserPhase() {
                     }
                 }
             } catch (err) {
-                console.log("Failed to fetch data:", err);
             } finally {
                 setLoading(false);
             }

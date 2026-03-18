@@ -134,12 +134,6 @@ export const CandidateProfileSchema = z.object({
   portfolioUrl: z.string()
     .optional(),
 
-  // yearsExperience: z.coerce.number() 
-  //   .int()
-  //   .min(0)
-  //   .optional()
-  //   .nullable(),
-
   currentCompany: z.string()
     .optional(),
 
@@ -159,18 +153,6 @@ const chicesSchema =  z.object({
       .default(false)
 })
 
-// id       String @id @default(uuid()) @db.Char(36)
-//   question String @db.Text
-
-//   choices Json
-
-//   points      Int     @default(1)
-//   explanation String? @db.Text
-
-//   // Library metadata
-//   category   String?     @db.VarChar(100) // "JavaScript", "React", "Algorithms"
-//   difficulty Difficulty?
-//   tags       Json? // ["closure", "scope", "functions"]
 export const McqSchema =  z.object({
     question: z
       .string()

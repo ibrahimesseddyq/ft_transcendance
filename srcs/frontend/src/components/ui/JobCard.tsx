@@ -106,7 +106,7 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
               </div>
 
               {/* Skills Tags */}
-              {job.skills.length
+              {job.skills?.length
                 ? <div className="flex flex-wrap gap-2 mb-6">
                     {job.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
                       <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 

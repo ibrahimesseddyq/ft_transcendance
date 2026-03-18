@@ -50,34 +50,27 @@ export function useChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasConnectedOnce = useRef(false);
 
-  // Initialize chat
   useEffect(() => {
     const initializeChat = async () => {
       try {
-        // Get current user
         const user = await chatApi.getCurrentUser();
         setState((prev) => ({ ...prev, user }));
 
-        // Connect socket
         chatSocket.connect();
 
-        // Check if user is candidate
         const isCandidate = user.role?.toLowerCase() === 'candidate';
 
         if (isCandidate) {
-          // For candidates, load recruiter profile and create/get conversation
+
           setIsLoadingRecruiter(true);
           try {
             const recruiterData = await chatApi.getRecruiter();
             setRecruiter(recruiterData);
 
-            // Create or get conversation with recruiter
             const conversation = await chatApi.createConversation();
 
-            // Load messages before joining room to avoid race with socket events
             const rawMessages = await chatApi.getMessages(conversation.id);
 
-            // Single atomic setState — no window for socket events to race
             setState((prev) => ({
               ...prev,
               conversations: [conversation],
@@ -85,18 +78,16 @@ export function useChat() {
               messages: rawMessages.map(normalizeMessage).reverse(),
             }));
 
-            // Join room only after state is settled
             chatSocket.joinConversation(conversation.id);
           } catch {
           } finally {
             setIsLoadingRecruiter(false);
           }
         } else {
-          // For RH/Admin, load conversations list
+
           const conversations = await chatApi.getConversations();
           setState((prev) => ({ ...prev, conversations }));
 
-          // Restore last open conversation from sessionStorage
           const savedId = sessionStorage.getItem('chat_conversationId');
           if (savedId) {
             const saved = conversations.find((c) => c.id === savedId);
@@ -126,14 +117,11 @@ export function useChat() {
     };
   }, []);
 
-  // Stable socket listeners: connection + status events.
-  // These never re-register while the component is mounted so no status events are missed.
   useEffect(() => {
     const handleConnect = () => {
       hasConnectedOnce.current = true;
       setState((prev) => ({ ...prev, isConnected: true }));
-      // Re-request online users list on every (re)connect so state is
-      // always fresh without needing a page refresh.
+
       chatSocket.requestOnlineUsers();
     };
 
@@ -187,8 +175,6 @@ export function useChat() {
     chatSocket.on('onOnlineUsers', handleOnlineUsers);
     chatSocket.on('onNewConversation', handleNewConversation);
 
-    // If the socket connected before these handlers were registered,
-    // synchronize state immediately so online status is not stale.
     if (chatSocket.isConnected()) {
       hasConnectedOnce.current = true;
       setState((prev) => ({ ...prev, isConnected: true }));
@@ -204,24 +190,21 @@ export function useChat() {
       chatSocket.off('onOnlineUsers', handleOnlineUsers);
       chatSocket.off('onNewConversation', handleNewConversation);
     };
-  }, []); // intentionally stable — never re-registers
+  }, []);
 
-  // Conversation-specific listeners: messages + typing.
-  // Re-registers when the open conversation changes.
   useEffect(() => {
     const handleNewMessage = (data: { message: any; conversationId: string }) => {
       const { message: raw, conversationId } = data;
       const message = normalizeMessage(raw);
 
       setState((prev) => {
-        // Add to messages only if this is the current conversation
+
         const updatedMessages =
           prev.currentConversation?.id === conversationId &&
           !prev.messages.some((m) => m.id === message.id)
             ? [...prev.messages, message]
             : prev.messages;
 
-        // Update last message + unread count in conversation list
         const updatedConversations = prev.conversations.map((conv) => {
           if (conv.id !== conversationId) return conv;
           return {
@@ -237,7 +220,6 @@ export function useChat() {
         return { ...prev, messages: updatedMessages, conversations: updatedConversations };
       });
 
-      // Mark as read if it's the active conversation
       setState((prev) => {
         if (prev.currentConversation?.id === conversationId) {
           chatSocket.markAsRead(conversationId);
@@ -273,12 +255,10 @@ export function useChat() {
     };
   }, [state.currentConversation?.id]);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [state.messages]);
 
-  // Select a conversation
   const selectConversation = useCallback(async (conversationId: string) => {
     try {
       setIsLoadingMessages(true);
@@ -286,15 +266,12 @@ export function useChat() {
       const conversation = state.conversations.find((c) => c.id === conversationId);
       if (!conversation) return;
 
-      // Persist so it survives a page refresh
       sessionStorage.setItem('chat_conversationId', conversationId);
 
-      // Load messages before updating currentConversation to avoid race
       const rawMessages = await chatApi.getMessages(conversationId);
       const loaded = rawMessages.map(normalizeMessage);
 
       setState((prev) => {
-        // Merge any socket messages that arrived while we were loading
         const existing = new Set(loaded.map((m) => m.id));
         const socketMessages = prev.messages.filter(
           (m) => m.conversationId === conversationId && !existing.has(m.id)
@@ -311,12 +288,10 @@ export function useChat() {
         };
       });
 
-      // Join room and mark read after state is set
       chatSocket.joinConversation(conversationId);
       chatSocket.markAsRead(conversationId);
       await chatApi.markConversationAsRead(conversationId);
 
-      // Refresh online status for all participants in this conversation
       const conv = state.conversations.find((c) => c.id === conversationId);
       if (conv?.participants) {
         conv.participants.forEach(async (p: any) => {
@@ -342,7 +317,6 @@ export function useChat() {
 
   const [moderationAlert, setModerationAlert] = useState<{ action: string; reason: string[] } | null>(null);
 
-  // Send a message
   const sendMessage = useCallback(
     async (content: string) => {
       if (!state.currentConversation || !content.trim()) return;
@@ -353,7 +327,6 @@ export function useChat() {
           content.trim()
         );
 
-        // Block: message was not sent — show it locally in red
         if (raw.blocked && raw.moderation?.action === 'Block') {
           const blockedMessage: Message = {
             id: `blocked-${Date.now()}`,
@@ -376,7 +349,6 @@ export function useChat() {
 
         const message = normalizeMessage(raw);
 
-        // Warn: message was sent but flagged
         if (raw.moderation?.action === 'Warn') {
           message.moderation = raw.moderation;
           setModerationAlert({ action: 'Warn', reason: raw.moderation.reason || [] });
@@ -402,12 +374,10 @@ export function useChat() {
     [state.currentConversation, state.user]
   );
 
-  // Upload and send file
   const sendFile = useCallback(
     async (file: File) => {
       if (!state.currentConversation) return;
 
-      // Check file size (100MB limit)
       if (file.size > 100 * 1024 * 1024) {
         toast.error('File is too large (max 100 MB)');
         return;
@@ -434,21 +404,18 @@ export function useChat() {
     [state.currentConversation]
   );
 
-  // Start typing indicator
   const startTyping = useCallback(() => {
     if (state.currentConversation) {
       chatSocket.startTyping(state.currentConversation.id);
     }
   }, [state.currentConversation]);
 
-  // Stop typing indicator
   const stopTyping = useCallback(() => {
     if (state.currentConversation) {
       chatSocket.stopTyping(state.currentConversation.id);
     }
   }, [state.currentConversation]);
 
-  // Get other participant in conversation
   const getOtherParticipant = useCallback(
     (conversation: Conversation) => {
       return conversation.participants.find((p) => p.userId !== state.user?.id);

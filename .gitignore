@@ -11,7 +11,7 @@
 **/.env copy
 # keep .env.example files (safe to push as templates)
 !**/.env.example
-
+/api/main/uploads
 # ── Dependencies ────────────────────────────────────────────────
 node_modules/
 .pnp
@@ -24,7 +24,7 @@ build/
 .next/
 out/
 generated/
-*.pyc
+**.pyc
 tls.crt
 tls.key
 
@@ -64,7 +64,6 @@ Thumbs.db
 *.sln
 *.sw?
 __pycache__/
-*.pyc
 # Logs
 logs
 *.log

@@ -13,7 +13,6 @@ export function Logout({ className }: LogoutProps) {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
   const handleLogout = async () => {
-    console.log("Iam in logout");
     await mainService.post(`${env_main_api}/auth/logout`);
     clearAuth();
     navigate('/Login', { replace: true });
