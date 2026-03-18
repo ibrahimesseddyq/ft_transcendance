@@ -18,9 +18,9 @@ const attachInterceptors = (instance: AxiosInstance) => {
      instance.interceptors.request.use((config) => {
         const url = config.url || "";
 
-         console.log(' url ',  url)
-        if (import.meta.env.DEV) {
 
+        if (import.meta.env.DEV) {
+            
             if (url.startsWith("/api/main")) {
                 config.baseURL = "http://localhost:3000";
             }
