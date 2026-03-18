@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y curl && \
       echo "Waiting for Ollama server..." && sleep 1; \
     done && \
     echo "Ollama is up! Pulling models..." && \
-    ollama pull llama3.2:3b && \
+    ollama pull llama3.2:1b && \
     ollama pull mxbai-embed-large && \
     pkill ollama && \
     rm -rf /var/lib/apt/lists/*

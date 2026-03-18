@@ -7,7 +7,7 @@ from services.retreive import retreive
 load_dotenv()
 
 llm = ChatOllama(
-    model=os.getenv("OLLAMA_MODEL", "llama3.2:3b"), base_url=os.getenv("OLLAMA_SERVER_URL", "http://localhost:11434")
+    model=os.getenv("OLLAMA_MODEL", "llama3.2:1b"), base_url=os.getenv("OLLAMA_SERVER_URL", "http://localhost:11434")
 )
 
 
