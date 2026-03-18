@@ -43,7 +43,7 @@ export function Main() {
     </main>
   );
 
-  if (isPublicPage) {
+  if (isPublicPage && !user) {
     return (
       <FullScreenWrapper>
         <Routes>
