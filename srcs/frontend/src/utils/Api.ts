@@ -12,36 +12,14 @@ interface CustomConfig extends InternalAxiosRequestConfig {
 
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
+
 const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
 const attachInterceptors = (instance: AxiosInstance) => {
-     instance.interceptors.request.use((config) => {
-        const url = config.url || "";
-
-
-        if (import.meta.env.DEV) {
-            
-            if (url.startsWith("/api/main")) {
-                config.baseURL = "http://localhost:3000";
-            }
-            else if (url.startsWith("/api/quiz")) {
-                config.baseURL = "http://localhost:3001";
-            } else if (url.startsWith("/api/ai")) {
-                config.baseURL = "http://localhost:8000";
-            } else if (url.startsWith("/api/rag")) {
-                config.baseURL = "http://localhost:8001";
-            }
-        }
-
+    instance.interceptors.request.use((config) => {
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
-
-        console.log("FINAL REQUEST =>", {
-            url: config.url,
-            baseURL: config.baseURL
-        });
-
         return config;
     });
 
@@ -50,7 +28,7 @@ const attachInterceptors = (instance: AxiosInstance) => {
         async (error: AxiosError) => {
             const originalRequest = error.config as CustomConfig;
 
-            if (error.response?.status === 401 && !originalRequest._retry) {
+            if ((error.response?.status === 401 || error.response?.status === 403 )&& !originalRequest._retry) {
                 if (isRefreshing) {
                     return new Promise((resolve, reject) => {
                         failedQueue.push({ resolve, reject });
@@ -63,38 +41,38 @@ const attachInterceptors = (instance: AxiosInstance) => {
                 isRefreshing = true;
 
                 try {
-                    await axios.post(
-                        `${import.meta.env.VITE_SERVICE_URL}${env_main_api}/auth/refresh`,
-                        {},
-                        { withCredentials: true }
+                    await instance.get(
+                        `${env_main_api}/auth/refresh`,
+                        { withCredentials: true, _retry: true } as CustomConfig
                     );
-                    
-                    failedQueue.forEach(prom => prom.resolve());
+
+                    failedQueue.forEach(prom => prom.resolve(null));
                     failedQueue = [];
                     return instance(originalRequest);
+
                 } catch (refreshError) {
                     failedQueue.forEach(prom => prom.reject(refreshError));
-                    useAuthStore.getState().clearAuth(); 
-                    
                     failedQueue = [];
-                    if (!window.location.pathname.includes('/login')) {
-                        window.location.href = '/login';
+                    useAuthStore.getState().clearAuth();
+
+                    if (!window.location.pathname.includes('/Login')) {
+                        window.location.href = '/Login';
                     }
+
                     return Promise.reject(refreshError);
                 } finally {
                     isRefreshing = false;
                 }
             }
+
             return Promise.reject(error);
         }
     );
 };
 
 export const mainService = axios.create({
-    baseURL: import.meta.env.VITE_SERVICE_URL,
+    baseURL: '',
     withCredentials: true,
 });
-
-
 
 attachInterceptors(mainService);

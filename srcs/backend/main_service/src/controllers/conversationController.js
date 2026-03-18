@@ -4,19 +4,11 @@ import pkg from '../../generated/prisma/index.js';
 import { createConversationInputSchema } from '../validators/chatValidator.js';
 const { UserRole } = pkg;
 
-/**
- * Get all conversations for the authenticated user
- * - Candidates: Get their conversation with the RH (auto-created if doesn't exist)
- * - RH: Get all conversations with candidates
- */
 export const getConversations = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
-
-    // For candidates, return their conversation with RH
     if (userRole === UserRole.candidate) {
-      // Find the first RH user
       const rh = await prisma.user.findFirst({
         where: { role: UserRole.recruiter },
         select: { 
@@ -33,7 +25,6 @@ export const getConversations = async (req, res, next) => {
         return res.status(200).json([]);
       }
 
-      // Check if conversation exists between candidate and RH
       let conversation = await prisma.conversation.findFirst({
         where: {
           AND: [
@@ -64,7 +55,6 @@ export const getConversations = async (req, res, next) => {
         }
       });
 
-      // If no conversation exists, create one
       if (!conversation) {
         conversation = await prisma.conversation.create({
           data: {
@@ -102,7 +92,6 @@ export const getConversations = async (req, res, next) => {
       return res.status(200).json([conversation]);
     }
 
-    // For RH: Get all their conversations
     const conversations = await prisma.conversation.findMany({
       where: {
         participants: {
@@ -139,10 +128,7 @@ export const getConversations = async (req, res, next) => {
   }
 };
 
-/**
- * Get a specific conversation by ID
- * Verify user has access to this conversation
- */
+
 export const getConversationById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -183,18 +169,12 @@ export const getConversationById = async (req, res, next) => {
   }
 };
 
-/**
- * Create a new conversation
- * - RH can create conversations with candidates
- * - Candidates are automatically assigned to RH conversation (handled in getConversations)
- */
 export const createConversation = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
     let participantId = req.body.participantId;
 
-    // If candidate is creating conversation, auto-assign to the RH
     if (userRole === UserRole.candidate && !participantId) {
       const rh = await prisma.user.findFirst({
         where: { role: UserRole.recruiter },
@@ -210,7 +190,6 @@ export const createConversation = async (req, res, next) => {
 
     participantId = createConversationInputSchema.parse({ participantId }).participantId;
 
-    // Verify participant exists
     const participant = await prisma.user.findUnique({
       where: { id: participantId }
     });
@@ -219,7 +198,6 @@ export const createConversation = async (req, res, next) => {
       throw new HttpException(404, 'Participant not found');
     }
 
-    // Check if conversation already exists
     const existingConversation = await prisma.conversation.findFirst({
       where: {
         AND: [
@@ -249,7 +227,6 @@ export const createConversation = async (req, res, next) => {
       return res.status(200).json(existingConversation);
     }
 
-    // Create new conversation
     const conversation = await prisma.conversation.create({
       data: {
         participants: {
@@ -283,16 +260,11 @@ export const createConversation = async (req, res, next) => {
   }
 };
 
-/**
- * Mark conversation as read
- * Updates lastReadAt for the user's participant record
- */
 export const markConversationAsRead = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
 
-    // Find the participant record
     const participant = await prisma.conversationParticipant.findFirst({
       where: {
         conversationId: id,
@@ -304,7 +276,6 @@ export const markConversationAsRead = async (req, res, next) => {
       throw new HttpException(404, 'Conversation not found');
     }
 
-    // Update lastReadAt
     await prisma.conversationParticipant.update({
       where: { id: participant.id },
       data: { lastReadAt: new Date() }
@@ -316,10 +287,6 @@ export const markConversationAsRead = async (req, res, next) => {
   }
 };
 
-/**
- * Get RH profile information
- * Used by candidates to see RH details
- */
 export const getRHProfile = async (req, res, next) => {
   try {
     const rh = await prisma.user.findFirst({

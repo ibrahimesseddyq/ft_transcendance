@@ -13,8 +13,6 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   const [isLoading, setIsLoading] = useState(!userId);
   const location = useLocation();
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
-
-  console.log("AuthGuard userId :", userId);
   
   useEffect(() => {
     const verifySession = async () => {
@@ -30,7 +28,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
           clearAuth();
         }
       } catch (error) {
-        console.log('Session verification failed:', error);
+
         clearAuth();
       } finally {
         setIsLoading(false);

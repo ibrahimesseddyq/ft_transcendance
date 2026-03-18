@@ -19,7 +19,6 @@ const ApplicationContent = ({ Title, applications }: Props) => {
   };
   
   const limitedUsers = applications.slice(0, 6);
-  console.log("limitedUsers: ", limitedUsers);
   const hasMore = applications.length > 6;
   
   return (

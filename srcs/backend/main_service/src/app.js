@@ -40,24 +40,23 @@ app.use(helmet({
       "frame-ancestors": ["'self'", env.FRONTEND_URL],
     },
   },
-  // Disable X-Frame-Options so CSP frame-ancestors takes precedence
   frameguard: false,
 }));
-// app.use(bodyParser(express.json));
+
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({extended:true, limit : "10mb"}));
 app.use(cookieParser());
 
-app.use('/uploads',
+app.use('/api/main/uploads',
   verifyToken,
   (req, res, next) => {
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   next();
-}, express.static(path.join(import.meta.dirname, '../uploads')));
+}, express.static(path.join(import.meta.dirname, '../api/main/uploads')));
 
 app.use(passport.initialize());
 
-// routes 
+
 app.use('/api/main/auth',
   authRoutes);
 

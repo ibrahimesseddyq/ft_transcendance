@@ -16,7 +16,7 @@ export function Application() {
                 const res = await mainService.get(`${env_main_api}/jobs/${jobId}/applications`);
                 setApplications(res.data.data || []);
             } catch (err) {
-                console.log("Failed to fetch applications:", err);
+
             } finally {
                 setIsLoading(false);
             }
@@ -25,7 +25,6 @@ export function Application() {
         if (jobId) fetchApplications();
     }, [jobId]);
 
-    console.log(applications);
     const filteredApplications = (targetStatus: string) => {
         if (!applications)
             return [];

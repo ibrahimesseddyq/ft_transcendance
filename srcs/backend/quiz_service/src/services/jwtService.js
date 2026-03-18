@@ -4,7 +4,6 @@ import env from '../config/env.js';
 
 const accessTokenSecret = env.ACCESS_TOKEN_SECRET;
 
-
 export const verify = async (token, secret) => {
     return new Promise((resolve,reject) => {
         jwt.verify(token,secret, (err, decoded) => {
@@ -25,41 +24,3 @@ export const verify = async (token, secret) => {
 export const verifyAccessToken = (token) => {
     return verify(token,accessTokenSecret);
 }
-
-// export const verifyRefreshToken = (token) => {
-//     return verify(token , refreshTokenSecret);
-// }
-
-// export const sign = (payload , secret , options = {}) =>{
-//     return jwt.sign(payload,secret,options);
-// }
-
-// export const decode = (token) => {
-//     return jwt.decode(token)
-// }
-
-// export const refreshAccessToken = async (refreshToken) => {
-//     const decoded = await verifyRefreshToken(refreshToken);
-//     const { iat, exp, ...payload } = decoded;
-//     const accessToken = sign(payload, accessTokenSecret, {
-//         expiresIn : accessTokenExpiry
-//     })
-//     return {accessToken};
-// }
-
-// export const verifyVerificationToken = async (token) => {
-//     const decoded = await verify(token,accessTokenSecret);
-//     if (!decoded || decoded.type !== 'email_verification')
-//         throw new HttpException(403, 'Invalid token type');
-//     return decoded;
-// }
-
-// export const generateVerificationToken = async (userId, email) => {
-//     const payload = {
-//         id : userId,
-//         email: email,
-//         type: 'email_verification'
-//     }
-//     const token = sign(payload,accessTokenSecret,{expiresIn: "24h"});
-//     return token;
-// }

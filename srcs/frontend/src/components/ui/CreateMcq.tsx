@@ -37,7 +37,6 @@ const CreateMcq = ({ onSuccess }: CreateMcqProps) => {
 
 
     const TestSubmit = async (data: MCQFormValues) => {
-        console.log("IAm here");
         if (choices.length !== 4) {
             Notification("Please add exactly 4 choices", "error");
             return;

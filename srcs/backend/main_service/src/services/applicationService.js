@@ -54,6 +54,7 @@ export const getApplicaticationById = async (applicationId) => {
 		throw new HttpException(404, "application not found");
 	return application;
 }
+
 export const advance = async (applicationId) => {
     return await prisma.$transaction(async (tx) => {
         const application = await tx.application.findUnique({

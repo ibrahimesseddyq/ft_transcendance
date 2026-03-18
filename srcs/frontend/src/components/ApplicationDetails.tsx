@@ -24,15 +24,12 @@ export function ApplicationDetails() {
           try {
             const userRes = await mainService.get(`${env_main_api}/users/${appData.candidateId}`);
             appData.candidate = userRes.data.data || userRes.data;
-            console.log("appData => ", appData);
           } catch (userErr) {
-            console.log("Failed to fetch candidate details:", userErr);
           }
         }
         setDetails(appData);
 
       } catch (err) {
-        console.log("Failed to fetch application details:", err);
       } finally {
         setIsLoading(false);
       }
@@ -48,7 +45,7 @@ export function ApplicationDetails() {
       alert("Candidate has been rejected.");
       navigate(-1);
     } catch (error) {
-      console.log("Failed to reject:", error);
+
     }
   };
 

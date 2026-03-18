@@ -31,7 +31,6 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
       params.append("limit", String(limit));
       
       const url = `${env_main_api}/jobs?${params.toString()}`;
-      console.log("Fetching URL:", url);
       const [response] = await Promise.all([
         mainService.get(url),
         new Promise(resolve => setTimeout(resolve, 800))
@@ -40,12 +39,11 @@ const JobFilter = ({ totalJobs, currentPage, setJobsArray, setIsLoading, setTota
       const result = response.data; 
 
       if (result) {
-        console.log("result : ", result);
         setJobsArray(result.data || []);
         setTotalPages(result.meta?.totalPages || 1);
       }
     } catch (error) {
-      console.log("Fetch Error:", error);
+
     } finally {
       setIsLoading(false);
     }

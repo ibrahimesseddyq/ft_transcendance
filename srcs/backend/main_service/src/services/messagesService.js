@@ -3,7 +3,6 @@ import * as messageRepository from '../repositories/messageRepository.js';
 import { moderateText } from './aiService.js';
 import { createChatNotification } from './notificationService.js';
 import {
-	sendMessageInputSchema,
 	editMessageInputSchema,
 	uploadFileInputSchema
 } from '../validators/chatValidator.js';
@@ -33,17 +32,6 @@ const notifyOtherParticipants = async ({ io, conversationId, senderId, senderNam
 	);
 };
 
-const moderateTextSafely = async ({ text, conversationId, userId }) => {
-	const moderation = await moderateText(text, {
-		conversationId,
-		userId
-	}).catch((error) => {
-		console.warn('Text moderation unavailable:', error?.message || error);
-		return null;
-	});
-
-	return moderation;
-};
 
 export const getMessages = async ({ conversationId, userId, limit, before }) => {
 	await validateConversationAccess(conversationId, userId);
@@ -64,7 +52,7 @@ export const sendMessage = async ({ conversationId, userId, content, messageType
 				return {moderation};
 			}
 		} catch (error) {
-			// Do not block messaging if moderation service is unavailable.
+			
 		}
 	}
 

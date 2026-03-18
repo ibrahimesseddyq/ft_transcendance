@@ -17,7 +17,7 @@ const AppCard = ({app}:props) => {
         const res = await mainService.get(`${env_main_api}/jobs/${app?.jobId}`)
         setJob(res.data.data);
       } catch (err){
-        console.log(err);
+
       }
     }
 

@@ -9,10 +9,8 @@ export async function ProfileChecker({ userId, setProfile }: ProfileProps) {
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
     try {
         const res = await mainService.get(`${env_main_api}/profiles/${userId}`);
-        console.log("profile checker :", res.data);
         setProfile(res.data);
     } catch (error) {
-        console.log("No Profile Provided", error);
         return false;
     }
     return true;
