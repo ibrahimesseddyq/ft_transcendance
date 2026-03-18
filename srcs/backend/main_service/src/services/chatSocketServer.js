@@ -12,7 +12,8 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
     cors: {
       origin: corsOrigin,
       methods: ['GET', 'POST'],
-      credentials: true
+      credentials: true,
+      path: "/api/main/ws/",
     }
   });
 

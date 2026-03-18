@@ -21,6 +21,7 @@ class ChatSocketService {
       auth: token ? { token } : {},
       transports: ['websocket', 'polling'],
       withCredentials: true,
+      path: "/api/main/ws/",
     });
 
     this.setupEventListeners();

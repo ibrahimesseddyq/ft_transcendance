@@ -3,6 +3,7 @@ import { AudioLines, Pause } from 'lucide-react';
 import { Loading } from "./Loading";
 import { mainService } from '@/utils/Api';
 import MarkdownPreview  from '@/components/MarkDownPreview'
+
 const SUGGESTIONS = [
   "who are you?",
   "give me all services do you present?",
