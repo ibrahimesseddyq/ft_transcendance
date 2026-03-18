@@ -61,21 +61,41 @@ export default function AiChat() {
   };
 
   const generateAiResponse = async (userText: string) => {
-    setIsGenerating(true);
+  setIsGenerating(true);
+  setMessages(prev => [...prev, { role: "ai", content: "" }]);
 
-    try {
-      const response = await mainService.post(`${env_rag_api}/generate`, { 
-        text: userText 
-      });
+  let accumulated = "";
 
-      const aiText = response.data;
-      setMessages(prev => [...prev, { role: "ai", content: aiText }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: "ai", content: "Sorry, I couldn't generate a response." }]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  try {
+    await mainService.post(
+      `${env_rag_api}/generate`,
+      { text: userText },
+      {
+        responseType: "text",
+        onDownloadProgress: (progressEvent) => {
+          const raw = progressEvent.event?.target?.responseText ?? "";
+          accumulated = raw;
+          setMessages(prev => {
+            const copy = [...prev];
+            copy[copy.length - 1] = {
+              ...copy[copy.length - 1],
+              content: accumulated,
+            };
+            return copy;
+          });
+        },
+      }
+    );
+  } catch {
+    setMessages(prev => {
+      const copy = [...prev];
+      copy[copy.length - 1].content = "Sorry, I couldn't generate a response.";
+      return copy;
+    });
+  } finally {
+    setIsGenerating(false);
+  }
+};
 
   const sendAudioToAI = async (blob: Blob) => {
     setIsProcessing(true);

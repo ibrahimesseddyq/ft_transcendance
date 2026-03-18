@@ -45,6 +45,7 @@ const envSchema = z.object({
   VERIFY_TOKEN_SECRET:z.string(),
   VERIFY_TOKEN_EXPIRY:z.string(),
   
+  
   USER_EMAIL:z.string(),
   USER_PASSWORD:z.string(),
 

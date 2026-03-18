@@ -56,7 +56,7 @@ export function ProfileCover({ profile, user }: props) {
       <div 
         style={{ backgroundImage: `url("${avatarUrl}")` }}
         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
-            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl z-10"
+            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl"
       />
 
       <div className="text-center">

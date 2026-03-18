@@ -30,7 +30,6 @@ export function JobDescription() {
         setJobItem(result.data);
       }
     } catch (error) {
-      console.log("Fetch error:", error);
       Notification("Error loading job details", "error");
     }
   };
@@ -45,7 +44,6 @@ export function JobDescription() {
       Notification("Job Applied successfully!", "success");
       setTimeout(() => { navigate('/Jobs'); }, 1500)
     } catch (error) {
-      console.log("Apply failed:", error);
       Notification("Cannot apply to this job", "error");
     }
   };

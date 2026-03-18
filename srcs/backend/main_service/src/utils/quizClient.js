@@ -16,6 +16,8 @@ quizClient.interceptors.response.use(
         return response;
     },
     (error) => {
+
+        console.log('quizClient.baseURL ',quizClient.baseURL)
         if (error.response)
             throw new HttpException(error.response.status, 
             error.response.data?.message || "quiz service error");
