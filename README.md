@@ -353,7 +353,7 @@ Other tasks where AI assisted:
 - Integrated in `messagesService.js`: every text message is moderated before delivery; blocked messages are rejected with moderation details
 - Graceful fallback: if the AI service is unavailable, messages still get through
 
-**Team:** aachalla
+**Team:** aachalla, sessarhi
 
 ---
 
@@ -455,35 +455,67 @@ Other tasks where AI assisted:
 
 ---
 
-#### 21. Implement a complete LLM system interface. (AI — Major, 1 pt)
+## 21. Complete RAG (Retrieval-Augmented Generation) System (Artificial Intelligence — Major, 2 pts)
 
-**Justification:** This is a custom module providing a standalone assessment microservice. It goes beyond simple quiz functionality by supporting two assessment types (MCQ and code challenges), test composition from a library of questions, automated evaluation, and integration with the recruitment pipeline.
+### Implementation:
 
-**Implementation:**
-- Implemented using local llm model (llama3.2:1b) pulled using ollama tool
-- MCQ system: questions with 4 choices (JSON), points, explanations, difficulty levels
-- Code challenge system: starter code, test cases (JSON), time/memory limits, multi-language support
-- Test composition: compose tests from MCQs and/or code challenges with passing score thresholds
-- Evaluation: `POST /api/rag` scores submitted answers
-- Frontend: `QuizPage.tsx`, `CandidateQuizPage.tsx`, `CreateMcq.tsx`, `CreateTest.tsx`, `TestTakingArea.tsx`
+This module implements a full **Retrieval-Augmented Generation (RAG)** pipeline that enables the system to answer user queries based on a structured knowledge base.
+
+#### Data Handling & Storage:
+- The knowledge base consists of **Markdown documents**, allowing structured and LLM-friendly content.
+- Documents are processed, chunked, and embedded using the **mxbai-embed-large** model.
+- Embeddings are stored in **ChromaDB**, enabling fast semantic similarity search.
+
+#### Context Retrieval:
+- **LangChain** is used to orchestrate the retrieval pipeline.
+- For each user query:
+  - The query is embedded.
+  - Relevant document chunks are retrieved from **ChromaDB** using vector similarity.
+  - Top-k relevant chunks are selected and formatted as context for the LLM.
+
+#### Response Generation:
+- Retrieved context is injected into a prompt template and passed to the **llama3.2:1b** model via **Ollama**.
+- The LLM generates answers grounded in the retrieved **Markdown** content, reducing hallucinations and improving factual accuracy.
+
+#### User Interaction:
+- Users can ask natural language questions.
+- The system returns **context-aware answers** derived from the internal dataset.
+- Supports iterative queries with consistent retrieval behavior.
+
+### Justification:
+The RAG system significantly improves answer quality by combining **semantic search (ChromaDB)** with **LLM generation (LLaMA via Ollama)**. Using **Markdown** as the source format ensures clean structure and better prompt injection, making responses more accurate and explainable.
 
 **Team:** aachalla
 
-Major: Implement a complete LLM system interface.
-◦ Generate text and/or images based on user input.
-◦ Handle streaming responses properly.
-◦ Implement error handling and rate limiting.
-• Major: Recommendation system using machine learning.
-◦ Personalized recommendations based on user behavior.
-◦ Collaborative filtering or content-based filtering.
-◦ Continuously improve recommendations over time.
+---
 
-#### 22. Content Moderation AI (Artificial Intelligence — Minor, 1 pt)
+## 22. Complete LLM System Interface (Artificial Intelligence — Major, 2 pts)
 
-**Implementation:**
-- HuggingFace `transformers` pipeline with `Vrandan/Comment-Moderation` model
-- Classifies text for: hate speech (H, H2, HR), violence (V, V2), and sexual content (S, S3)
-- Score thresholds: Block >= 0.4, Warn >= 0.25, Allow otherwise
-- Endpoint: `POST /api/ai/moderate`
-- Integrated in `messagesService.js`: every text message is moderated before delivery; blocked messages are rejected with moderation details
-- Graceful fallback: if the AI service is unavailable, messages still get through
+### Implementation:
+
+This module provides a complete interface for interacting with a **Large Language Model (LLM)**, enabling real-time text generation based on user input.
+
+#### Text Generation:
+- The system uses **llama3.2:1b** served through **Ollama** for local inference.
+- Users can submit prompts and receive coherent, context-aware text responses.
+- Designed for general-purpose use (chat, assistance, explanations, etc.).
+
+#### Streaming Responses:
+- Implements **streaming output**, allowing tokens to be sent progressively to the frontend.
+- Improves user experience by reducing perceived latency and enabling real-time interaction.
+
+#### Integration with LangChain:
+- **LangChain** is used to standardize LLM calls and manage prompt templates.
+
+#### Error Handling:
+Handles runtime errors such as:
+- **LLM service unavailability** (Ollama not running)
+- **Invalid or empty prompts**
+
+#### Rate Limiting:
+- Implements request throttling to prevent abuse and system overload (2 requests per minute).
+
+### Justification:
+This module delivers a robust and responsive LLM interface using **local inference (Ollama)**, ensuring full control over the models. **Streaming**, **error handling**, and **rate limiting** make the system production-ready and user-friendly.
+
+**Team:** aachalla, ael-fagr
