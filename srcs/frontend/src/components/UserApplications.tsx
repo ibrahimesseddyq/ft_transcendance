@@ -29,7 +29,6 @@ export function UserApplications() {
                     setApplications(res.data.data.applications || []);
                 }
             } catch (err) {
-                console.log("Failed to fetch applications:", err);
             } finally {
                 setIsLoading(false);
             }
@@ -37,8 +36,6 @@ export function UserApplications() {
 
         fetchUserContent();
     }, [user?.id, env_main_api]);
-            
-    console.log('apps :', applications);
 
     return (
         <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">

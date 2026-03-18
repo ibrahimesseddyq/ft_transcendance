@@ -11,7 +11,7 @@
 **/.env copy
 # keep .env.example files (safe to push as templates)
 !**/.env.example
-
+/api/main/uploads
 # ── Dependencies ────────────────────────────────────────────────
 node_modules/
 .pnp

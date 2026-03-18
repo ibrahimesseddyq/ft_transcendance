@@ -27,13 +27,10 @@ export function Profile() {
 
         const userData = res1.data;
         const profileData = res2.data;
-
-        console.log("userData :", userData);
-        console.log("profileData :", profileData);
         setUser(userData.data);
         setProfile(profileData.data);
       }catch (err){
-        console.log("Err :", err);
+
       }
     };
 

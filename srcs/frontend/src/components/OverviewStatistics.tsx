@@ -7,7 +7,6 @@ export function OverviewStatistics({ data }: { data: any }) {
     processed: data.datasets.processed[index] || 0
   })) || [];
 
-  console.log("Transformed Chart Data:", chartData);
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">

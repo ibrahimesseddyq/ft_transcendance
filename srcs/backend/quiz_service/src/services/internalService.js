@@ -26,9 +26,6 @@ export const evaluateQuiz = async (test, answers) => {
     const passed = percentage >= test.passingScore;
     return {totalScore, maxPossibleScore, percentage,passed,result}
 }
-export const evaluateCodeChallenge =  async (test, answers) => {
-    
-}
 
 export const evaluateTest = async (testId, answers) => {
     const test = await testService.getTestById(testId);

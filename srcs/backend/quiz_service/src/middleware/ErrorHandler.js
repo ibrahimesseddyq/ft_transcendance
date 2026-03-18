@@ -17,10 +17,6 @@ const errorFactory = (err,res) => {
 }
 
 const errorHandler = (err,req,res,next) => {
-    console.log("START ERROR")
-    console.log(err);
-    console.log("END ERROR")
-
     const handled = errorFactory(err,res);
     if (handled) return;
 

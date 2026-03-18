@@ -13,7 +13,6 @@ const UserCard = ({ candidateId, applicationId }: props) => {
     const avatarUrl = `${BACKEND_URL}${(user as any)?.avatarUrl}`;
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
-    console.log(candidateId)
     useEffect(()=>{
       const fetchUserContent = async () =>{
         try{
@@ -24,7 +23,7 @@ const UserCard = ({ candidateId, applicationId }: props) => {
             setUser(data.data);
           }
         }catch(err){
-          console.log(err);
+        
         }
       }
       fetchUserContent();

@@ -60,7 +60,7 @@ export function JobPhaseManager({ jobId }: Props) {
       setPhases(Array.isArray(pData) ? pData : []);
       setAvailableTests(Array.isArray(tData) ? tData : []);
     } catch {
-      console.log('Failed to load data');
+
     } finally {
       setLoading(false);
     }

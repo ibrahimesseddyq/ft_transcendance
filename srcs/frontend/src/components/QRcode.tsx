@@ -31,7 +31,7 @@ export function QRcode() {
             setQrLink(result.qrDataUrl);
             setStep('QR_CODE');
         } catch (error) {
-            console.log("Failed to fetch QR:", error);
+
         } finally {
             setLoading(false);
         }
@@ -72,22 +72,16 @@ export function QRcode() {
                 return;
             }
         
-            console.log("Verified Successfully!");
-            console.log("res :", res);
             const { data } = res.data;
-
-            console.log("user data = ", data);
         
             if (data) {
                 setUser(data);
                 setQrVerified(true);
                 const currentUser = data; 
-                console.log("currentUser = ", currentUser.role);
                 if (currentUser.role === 'recruiter' || currentUser.role === 'admin') {
                     navigate('/Dashboard', { replace: true });
                 }else{
                     const hasProfile = await ProfileChecker({ userId, setProfile });
-                    console.log("hasProfile: ", hasProfile);
                     const targetPath = hasProfile ? '/Jobs' : "/Createprofile";
                     navigate(targetPath, { replace: true });
                 }

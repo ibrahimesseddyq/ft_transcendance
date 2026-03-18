@@ -18,11 +18,10 @@ export function Dashboard() {
         setIsLoading(true);
         const res = await mainService.get(`${env_main_api}/dashboard`);
         if (res.data?.success) {
-          console.log("Dashboard : respons ", res.data);
           setDashboardData(res.data.data);
         }
       } catch (err) {
-        console.log("Dashboard fetch error:", err);
+
       } finally {
         setIsLoading(false);
       }
@@ -30,7 +29,7 @@ export function Dashboard() {
     fetchDashboard();
   }, [env_main_api]);
 
-  console.log("Dashboard : data ", dashboardData);
+
   const TotalStatistics = () => {
     const stats = dashboardData?.kpiCards || [];
 
