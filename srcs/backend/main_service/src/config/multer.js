@@ -3,14 +3,14 @@ import path from 'path';
 import fs from 'fs';
 import {HttpException} from '../utils/httpExceptions.js';
 
-fs.mkdirSync(`${import.meta.dirname}/../../uploads/avatars`, {recursive: true});
-fs.mkdirSync(`${import.meta.dirname}/../../uploads/resumes`, {recursive: true});
+fs.mkdirSync(`${import.meta.dirname}/../../api/main/uploads/avatars`, {recursive: true});
+fs.mkdirSync(`${import.meta.dirname}/../../api/main/uploads/resumes`, {recursive: true});
 
 const diskStorage =  multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = file.fieldname === 'avatar' ?
-        'uploads/avatars':
-        'uploads/resumes';
+        'api/main/uploads/avatars':
+        'api/main/uploads/resumes';
         cb(null, uploadPath);
     },
     filename:(req, file, cb) => {

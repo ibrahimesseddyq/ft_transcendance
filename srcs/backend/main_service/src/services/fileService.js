@@ -17,7 +17,7 @@ export const saveAvatar = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
     const filename = `${userId}${fileExt}`;
     const physicalPath = file.path;
-    const avatarPath = '/uploads/avatars/' + filename;
+    const avatarPath = '/api/main/uploads/avatars/' + filename;
     try {
         const result = await classifyAvatar(physicalPath);
         if (result.class !== 'valid profile')

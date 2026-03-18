@@ -16,11 +16,10 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
     }
   });
 
-  // Track online users: Map<userId, Set<socketId>>
   const onlineUsers = new Map();
 
   io.use((socket, next) => {
-    // Primary: read the httpOnly accessToken cookie.
+
     let token = null;
     const cookieHeader = socket.handshake.headers.cookie || '';
     const cookieMatch = /(?:^|;\s*)accessToken=([^;]+)/.exec(cookieHeader);
@@ -28,7 +27,6 @@ export const initializeChatSocketServer = ({ server, prisma, accessTokenSecret, 
       token = decodeURIComponent(cookieMatch[1]);
     }
 
-    // Fallback: legacy clients passing token via socket.handshake.auth.token
     if (!token) {
       token = socket.handshake.auth?.token;
     }
