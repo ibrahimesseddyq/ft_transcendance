@@ -127,6 +127,7 @@ export function ChatInput({
     }
   };
 
+
   const stopMediaTracks = () => {
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
     mediaStreamRef.current = null;
@@ -240,20 +241,9 @@ export function ChatInput({
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 576 }}>
         {/* Hidden file input */}
 
-
         {/* Input wrapper */}
         <div className="input-wrapper" style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#ffffff', borderRadius: 20, padding: '10px 20px', border: '1px solid #e2e8f0', width: '100%', height: 64, boxSizing: 'border-box' }}>
           {/* Attach button */}
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={disabled}
-            style={{ padding: 6, background: 'transparent', border: 'none', cursor: disabled ? 'not-allowed' : 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', transition: 'color 0.2s', opacity: disabled ? 0.6 : 1, flexShrink: 0 }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-            </svg>
-          </button>
 
           <button
             type="button"
