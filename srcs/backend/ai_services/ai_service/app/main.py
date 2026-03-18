@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import (
@@ -6,10 +9,12 @@ from routers import (
     text_moderation_router,
 )
 
+load_dotenv()
+
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",
+    os.getenv("FRONTEND_URL"),
 ]
 
 app.add_middleware(

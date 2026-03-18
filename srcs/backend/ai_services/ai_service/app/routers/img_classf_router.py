@@ -26,4 +26,4 @@ async def recognite(file: UploadFile = File(...), api_key: str = Header(None)):
         return {"class": labels[result]}
 
     except Exception:
-        raise HTTPException(status_code=500, detail="Img recognition service failed")
+        raise HTTPException(status_code=500, detail="Image recognition service failed")
