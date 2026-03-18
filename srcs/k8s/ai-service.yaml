@@ -37,7 +37,6 @@ spec:
           {{- with secret "secret/data/ai-service/other" -}}
           export AI_INTERNAL_API_KEY="{{ .Data.data.AI_INTERNAL_API_KEY }}"
           export INTERNAL_API_KEY="{{ .Data.data.INTERNAL_API_KEY }}"
-          export SECRET_TOKEN="{{ .Data.data.SECRET_TOKEN }}"
           {{- end }}
 
     spec:
@@ -58,9 +57,6 @@ spec:
             - /bin/sh
             - -c
             - |
-              . /vault/secrets/config
-              . /vault/secrets/jwt
-              . /vault/secrets/other
               exec ./script.sh
 
         - name: rag-service
@@ -73,9 +69,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              . /vault/secrets/config
-              . /vault/secrets/jwt
-              . /vault/secrets/other
+
               exec ./script.sh
 
         - name: ollama-service
