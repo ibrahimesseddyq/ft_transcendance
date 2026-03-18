@@ -36,7 +36,7 @@ export function UserPhase() {
                         
                         const testResult = testRes.data;
                         if (testResult) {
-                            setTestData(testResult.data.test.data);
+                            setTestData(testResult?.data?.test?.data);
                         }
                     }
                 }
@@ -53,7 +53,11 @@ export function UserPhase() {
             setLoading(false);
         }
 
-    }, [appId, env_main_api, user?.id]); 
+    }, [appId, env_main_api, user?.id]);
+
+    const handleStartTest = () =>{
+      setStartTest(!startTest)
+    }
 
     if (loading) {
       return (
@@ -112,7 +116,7 @@ export function UserPhase() {
             />
             ) : (
             <button
-                onClick={() => setStartTest(!startTest)}
+                onClick={handleStartTest}
                 className='flex items-center gap-3 bg-black dark:bg-surface-main text-surface-main dark:text-black
                 px-10 py-3 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all
                 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600
