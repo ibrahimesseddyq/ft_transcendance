@@ -23,10 +23,8 @@ export const saveAvatar = async (userId, file) => {
         if (result.class !== 'valid profile')
         {
             await fs.unlink(physicalPath);
-            throw new HttpException(400, 'inalid avatar image');
+            throw new HttpException(400, 'invalid avatar image');
         }
-        else
-            await fs.unlink(physicalPath);
     } catch (err) {
 
     }

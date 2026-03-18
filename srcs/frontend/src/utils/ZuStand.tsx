@@ -22,7 +22,7 @@ interface Profile {
   currentCompany: string;
   currentTitle: string;
   linkedinUrl: string;
-  numberPhone: string;
+  phone: string;
   portfolioUrl: string;
   resumeUrl: string;
   skills: string;
