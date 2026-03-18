@@ -28,9 +28,10 @@ import { Footer } from '@/components/Footer'
 
 export function Main() {
   const location = useLocation();
-  const { user, profile, qrVerified } = useAuthStore();
+  const { user, profile, qrVerified } = useAuthStore(); 
+
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
-  const hasProfile = !!profile;
+  const hasProfile = profile ? true : false;
   
   const publicPaths = ['/Login', '/reset-password', '/Otp', '/auth/callback'];
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
@@ -42,7 +43,7 @@ export function Main() {
     </main>
   );
 
-  if (isPublicPage) {
+  if (isPublicPage && !user) {
     return (
       <FullScreenWrapper>
         <Routes>
