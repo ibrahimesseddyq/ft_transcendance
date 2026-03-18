@@ -153,14 +153,12 @@ vault kv put secret/ai-service/config \
   AI_API_KEY="${AI_API_KEY}"
 
 vault kv put secret/ai-service/jwt \
-  ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
+  SECRET_TOKEN="${ACCESS_TOKEN_SECRET}" \
   REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"
 
 vault kv put secret/ai-service/other \
   AI_INTERNAL_API_KEY="${AI_INTERNAL_API_KEY}" \
-  INTERNAL_API_KEY="${INTERNAL_API_KEY}" \
-  SECRET_TOKEN="${INTERNAL_API_KEY}" \
-  SECRET_API_KEY="${SECRET_API_KEY}"
+  INTERNAL_API_KEY="${INTERNAL_API_KEY}" 
 
   
 echo "===== Vault initialization complete! ====="
