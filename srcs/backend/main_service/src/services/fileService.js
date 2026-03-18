@@ -6,7 +6,7 @@ import { classifyAvatar } from './aiService.js';
 export const saveResume = async (userId, file) => {
     const fileExt = path.extname(file.originalname);
     const filename = `${userId}${fileExt}`;
-    const resumePath = '/uploads/resumes/' + filename;
+    const resumePath = '/api/main/uploads/resumes/' + filename;
     return {
         type: 'resume',
         resumeUrl: resumePath
