@@ -153,7 +153,7 @@ vault kv put secret/ai-service/config \
   AI_API_KEY="${AI_API_KEY}"
 
 vault kv put secret/ai-service/jwt \
-  SECRET_TOKEN="${ACCESS_TOKEN_SECRET}" \
+  ACCESS_TOKEN_SECRET="${ACCESS_TOKEN_SECRET}" \
   REFRESH_TOKEN_SECRET="${REFRESH_TOKEN_SECRET}"
 
 vault kv put secret/ai-service/other \
