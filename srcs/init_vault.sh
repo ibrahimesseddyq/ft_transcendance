@@ -27,8 +27,6 @@ if ! vault operator init -status >/dev/null 2>&1; then
   UNSEAL_KEY=$(grep -A1 'unseal_keys_hex' /vault/data/init.json | tail -1 | tr -d ' [],\"')
   VAULT_TOKEN=$(grep 'root_token' /vault/data/init.json | cut -d'"' -f4)
 
-  echo "DEBUG UNSEAL_KEY=$UNSEAL_KEY"
-  echo "DEBUG VAULT_TOKEN=$VAULT_TOKEN"
 
   vault operator unseal "$UNSEAL_KEY"
   export VAULT_TOKEN

@@ -1,13 +1,12 @@
 FROM owasp/modsecurity-crs:nginx
 
 COPY waf/nginx.conf /etc/nginx/templates/conf.d/default.conf.template
+COPY waf/allow_patch.conf /etc/modsecurity.d/allow_patch.conf
 
 # Ensure expected directory exists
 RUN mkdir -p /etc/nginx/modsecurity.d
-# RUN rm -f /etc/nginx/templates/conf.d/modsecurity.conf.template
 
-# Put unicode.mapping where the NGINX/ModSecurity config expects it
-# Copy is more reliable than symlink across images/layers
+
 RUN if [ -f /etc/modsecurity.d/unicode.mapping ]; then \
       cp /etc/modsecurity.d/unicode.mapping /etc/nginx/modsecurity.d/unicode.mapping; \
     else \
