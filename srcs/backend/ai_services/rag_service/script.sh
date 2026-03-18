@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd /ai_service/app
 
 . /.venv/bin/activate
 
