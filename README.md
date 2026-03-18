@@ -169,7 +169,9 @@ Other tasks where AI assisted:
 | 18 | Backend as Microservices | DevOps | Major | 2 | Implemented |
 | 19 | Advanced Analytics Dashboard | Data and Analytics | Major | 2 | Implemented |
 | 20 | Kubernetes Deployment & Orchestration (Custom) | Modules of Choice | Major | 2 | Implemented |
-| 21 | Quiz/Assessment Engine (Custom) | Modules of Choice | Minor | 1 | Implemented |
+| 21 | Implement a complete LLM system interface | AI | Major | 2 | Implemented |
+| 22 | Content Moderation AI | AI | Minor | 1 | Implemented |
+
 | | | | **Total** | **31** | |
 
 **Breakdown:** 10 Major modules (10 x 2 = 20 pts) + 11 Minor modules (11 x 1 = 11 pts) = **31 points** (14 required to pass, 5 bonus points max).
@@ -453,7 +455,7 @@ Other tasks where AI assisted:
 
 ---
 
-#### 21. Implement a complete LLM system interface. (AI — Mijor, 1 pt)
+#### 21. Implement a complete LLM system interface. (AI — Major, 1 pt)
 
 **Justification:** This is a custom module providing a standalone assessment microservice. It goes beyond simple quiz functionality by supporting two assessment types (MCQ and code challenges), test composition from a library of questions, automated evaluation, and integration with the recruitment pipeline.
 
@@ -476,7 +478,7 @@ Major: Implement a complete LLM system interface.
 ◦ Collaborative filtering or content-based filtering.
 ◦ Continuously improve recommendations over time.
 
-#### 14. Content Moderation AI (Artificial Intelligence — Minor, 1 pt)
+#### 22. Content Moderation AI (Artificial Intelligence — Minor, 1 pt)
 
 **Implementation:**
 - HuggingFace `transformers` pipeline with `Vrandan/Comment-Moderation` model

@@ -3,7 +3,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import * as  userService from '../services/userService.js';
 
-const callbackURL = env.NODE_ENV === 'development'? `http://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`: `https://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`;
+const callbackURL = env.NODE_ENV === 'development'? `https://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`: `https://${env.HOST}:${env.PORT}${env.CALLBACK_URL}`;
 
 passport.use(new GoogleStrategy({
         clientID: env.GOOGLE_CLIENT_ID,
