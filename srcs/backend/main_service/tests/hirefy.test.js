@@ -1051,7 +1051,7 @@ describe('userService', () => {
             await userService.findUserOrCreate(profile);
 
             const args = userRepo.createUser.mock.calls[0][0];
-            expect(args.avatarUrl).toBeNull();
+            expect(args.avatarUrl).toBeUndefined();
         });
     });
 });

@@ -62,7 +62,7 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
             refreshToken: tokens.refreshToken
         };
     }
-    // trow HTTP Exceptions
+
     async verifyLogin(userId, token)
     {
         const user = await this.userRepo.getUserById(userId);
@@ -75,7 +75,6 @@ import { getSafeUser } from "../utils/excludeSensitive.js";
             token,
             window: 1
         });
-        console.log('token : ', token)
         if (!ok) throw new HttpException(400, "Invalid 2FA Code");
         return true;
     }

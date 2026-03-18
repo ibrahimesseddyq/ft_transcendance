@@ -30,7 +30,8 @@ export const getJobPhaseById = asyncHandler( async (req, res, next) => {
 
 export const deleteJobPhase = asyncHandler( async (req, res, next) => {
 	await jobPhaseService.deleteJobPhase(req.params.id);
-	res.status(204);
+	res.status(204)
+	.end();
 })
 
 export const getJobPhases = asyncHandler( async(req, res, next) => {
