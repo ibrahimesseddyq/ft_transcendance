@@ -20,6 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/api/ai/health")
+def healtch_check():
+    return {"status": "ok"}
+
+
 app.include_router(img_classf_router.router)
 
 app.include_router(text_moderation_router.router)

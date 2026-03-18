@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import StreamingResponse
 from jose import JWTError, jwt
 from limiter.limiter import limiter
 from pydantic import BaseModel
@@ -22,7 +22,7 @@ SECRET_KEY = os.getenv("SECRET_TOKEN")
 
 def jwt_verify(request: Request):
 
-    token = request.headers.get("Cookie")
+    token = request.cookies.get("accessToken")
 
     if token is None:
         raise HTTPException(status_code=401, detail="Missing token")
@@ -40,9 +40,11 @@ async def generation_endpoint(
     request: Request, body: GenerationRequest, user=Depends(jwt_verify)
 ):
 
-    try:
-        result = await run_in_threadpool(generate, body.text)
-    except Exception:
-        raise HTTPException(status_code=500, detail="RAG service failed")
+    async def stream_response():
+        try:
+            for chunk in generate(body.text):
+                yield chunk
+        except Exception:
+            raise HTTPException(status_code=500, detail="RAG service failed")
 
-    return result
+    return StreamingResponse(stream_response(), media_type="text/plain")

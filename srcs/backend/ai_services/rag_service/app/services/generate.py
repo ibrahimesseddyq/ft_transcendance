@@ -41,6 +41,5 @@ CONTEXT:\n"""
         ("human", prompt),
     ]
 
-    response = llm.invoke(template)
-
-    return response.content
+    for chunk in llm.stream(template):
+        yield chunk.content

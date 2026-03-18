@@ -33,4 +33,9 @@ def startup_documents():
     index_documents()
 
 
+@app.get("/api/rag/health")
+def health_check():
+    return {"status": "ok"}
+
+
 app.include_router(llm_rag_router.router)
