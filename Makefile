@@ -33,7 +33,7 @@ clean-dev: clear
 
 # Main dev target
 dev: clean-dev down-dev
-	sudo npm install -g concurrently
+	npm install -g concurrently
 	$(DEV_COMPOSE) build --no-cache
 	$(DEV_COMPOSE) up -d
 	@echo "Waiting for databases..."
