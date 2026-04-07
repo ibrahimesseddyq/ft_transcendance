@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import Icon  from '@/components/ui/Icon'
 import { Link } from 'react-router-dom';
 import { AiChatButton } from '@/components/ui/AiChatButton'
+import { Loading } from '@/components/Loading';
 
 export function UserApplications() {
     const [applications, setApplications] = useState([]);
@@ -41,7 +42,7 @@ export function UserApplications() {
         <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
             <ToastContainer />
             {isLoading ? (
-            <p className="text-slate-500 mt-10">Loading applications...</p>
+            <Loading label="Loading applications..." />
         ) : applications.length > 0 ? (
             <div className='flex flex-wrap gap-4 justify-center w-full'>
                 {applications?.map((app: any) => (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { mainService } from '@/utils/Api';
 import TestCard from '@/components/ui/TestCard';
 import Notification from "@/utils/TostifyNotification";
+import { Loading } from '@/components/Loading';
 
 
 interface McqsListProps {
@@ -43,9 +44,7 @@ const McqsList = ({ refreshKey }: McqsListProps) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center p-10">
-                <p className="text-sm font-medium text-gray-500 animate-pulse">Loading Mcqs...</p>
-            </div>
+            <Loading compact className="min-h-[120px]" />
         );
     }
 

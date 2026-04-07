@@ -37,8 +37,8 @@ export function Main() {
   const isPublicPage = publicPaths.includes(location.pathname) || location.pathname === '/';
 
   const FullScreenWrapper = ({ children }: { children: React.ReactNode }) => (
-    <main className="min-h-screen w-full flex flex-col bg-[#F0F3FA]
-      dark:bg-[#0f172a] md:h-screen md:overflow-hidden ">
+    <main className="min-h-screen w-full flex flex-col bg-gradient-to-b from-slate-50 via-sky-50/60 to-slate-100
+      dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 md:h-screen md:overflow-hidden">
       {children}
     </main>
   );

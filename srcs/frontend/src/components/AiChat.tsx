@@ -1,21 +1,33 @@
 import { useState, useEffect, KeyboardEvent, useRef } from "react";
-import { AudioLines, Pause } from 'lucide-react';
+import { AudioLines, Pause, SendHorizontal, Sparkles, CircleDot, Trash2 } from 'lucide-react';
 import { Loading } from "./Loading";
 import { mainService } from '@/utils/Api';
 import MarkdownPreview  from '@/components/MarkDownPreview'
 
 const SUGGESTIONS = [
-  "How the company hire?",
-  "What the company expect from the employers?",
-  "Give me an overview about the company?"
+  "How does the company hire?",
+  "What does the company expect from candidates?",
+  "Give me a quick overview of the company."
+];
+
+type ChatRole = "user" | "ai";
+type ChatMessage = {
+  role: ChatRole;
+  content: string;
+};
+
+const CHAT_STORAGE_KEY = "ai-chat-messages-v1";
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    role: "ai",
+    content: "Hello, I am your hiring assistant. Ask me about the company, process, or role expectations."
+  }
 ];
 
 export default function AiChat() {
   const [showSuggestions, setShowSuggestions] = useState(true);
 
-  const [messages, setMessages] = useState([
-    { role: "ai", content: "Hello! Upload an audio clip or insert text." }
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,8 +42,38 @@ export default function AiChat() {
 
 
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (!saved) return;
+
+      const parsed = JSON.parse(saved) as ChatMessage[];
+      const isValid = Array.isArray(parsed) && parsed.every(
+        (msg) => (msg.role === "user" || msg.role === "ai") && typeof msg.content === "string"
+      );
+
+      if (isValid && parsed.length > 0) {
+        setMessages(parsed);
+        setShowSuggestions(false);
+      }
+    } catch {
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isProcessing]);
+
+  const clearChat = () => {
+    setMessages(INITIAL_MESSAGES);
+    setInput("");
+    setShowSuggestions(true);
+    localStorage.removeItem(CHAT_STORAGE_KEY);
+  };
 
   const startRecording = async () => {
     try {
@@ -55,6 +97,13 @@ export default function AiChat() {
       mediaRecorder.start();
       setIsRecording(true);
     } catch {
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "ai",
+          content: "I cannot access your microphone right now. Please check browser permissions and try again."
+        }
+      ]);
     }
   };
 
@@ -65,6 +114,7 @@ export default function AiChat() {
 
    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+        e.preventDefault();
         handleSend();
       }
     };
@@ -140,14 +190,42 @@ export default function AiChat() {
   };
 
   return (
-    <div className="flex flex-col z-50 m-2 w-full md:w-80 h-[450px] md:h-[500px]  bg-white rounded-2xl shadow-2xl overflow-hidden border">
-      <div className="bg-[#0ea5e9] p-4 text-white font-bold">AI Assistant</div>
+    <div className="flex flex-col z-50 m-2 w-full md:w-80 h-[450px] md:h-[500px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+      <div className="bg-gradient-to-r from-[#0ea5e9] via-[#0284c7] to-[#0369a1] p-4 text-white">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="font-semibold leading-tight">AI Assistant</h2>
+              <p className="text-[11px] text-white/85">Professional hiring support</p>
+            </div>
+          </div>
+          <div className="flex gap-2 group">
+            <button
+              onClick={clearChat}
+              disabled={isGenerating || isProcessing || isRecording}
+              className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] text-white hover:bg-white/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Clear chat"
+              >
+              <span className="group-hover:text-red-600">Clear</span>
+            </button>
+            <div className="flex items-center gap-1 rounded-full bg-white/15 px-2 py-1 text-[11px]">
+              <CircleDot className="w-3 h-3" />
+              <span>{isGenerating ? "Responding" : isProcessing ? "Listening" : "Online"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
-              msg.role === "user" ? "bg-[#0ea5e9] text-white" : "bg-white border text-gray-800"
+            <div className={`max-w-[86%] p-3 rounded-2xl text-sm whitespace-pre-wrap shadow-sm ${
+              msg.role === "user"
+                ? "bg-[#0284c7] text-white rounded-br-md"
+                : "bg-white border border-slate-200 text-slate-800 rounded-bl-md dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
             }`}>
               <MarkdownPreview text={msg.content}/>
             </div>
@@ -156,14 +234,15 @@ export default function AiChat() {
 
         {showSuggestions && (
           <div className="mt-4 space-y-2">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Example Questions</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Suggested Questions</p>
             <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.map((text, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSuggestionClick(text)}
-                  className="text-left bg-white border border-gray-200 hover:border-pink-400 
-                  hover:bg-pink-50 transition-colors px-4 py-2 rounded-xl text-sm text-gray-700 shadow-sm"
+                  className="text-left bg-white border border-slate-200 hover:border-[#0ea5e9]
+                  hover:bg-sky-50 transition-colors px-4 py-2 rounded-xl text-sm text-slate-700 shadow-sm
+                  dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   {text}
                 </button>
@@ -172,15 +251,24 @@ export default function AiChat() {
           </div>
         )}
 
-        {(isGenerating || isProcessing) && <div className="h-6 w-6"><Loading/></div>}
+        {(isGenerating || isProcessing) && (
+          <div className="flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-3 py-2 w-fit text-xs text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">
+            <div className="h-5 w-5"><Loading/></div>
+            <span>{isGenerating ? "Generating response..." : "Processing audio..."}</span>
+          </div>
+        )}
         <div ref={chatEndRef} />
       </div>
 
-      <div className=" p-4 bg-white border-t flex items-center justify-between gap-2">
+      <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
         <button 
           onClick={isRecording ? stopRecording : startRecording}
-          className={`w-8 h-8  rounded-full flex text-sm text-center items-center justify-center transition-all ${
-            isRecording ? "bg-red-500 animate-pulse text-white " : "bg-gray-100 text-gray-600"
+          aria-label={isRecording ? "Stop recording" : "Start recording"}
+          disabled={isProcessing || isGenerating}
+          className={`w-9 h-9 rounded-full flex text-sm text-center items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+            isRecording
+              ? "bg-red-500 animate-pulse text-white"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           }`}
         >
           {isRecording ? <Pause className="w-5 h-5"/> : <AudioLines className="w-5 h-5"/>}
@@ -194,13 +282,18 @@ export default function AiChat() {
           onKeyDown={handleKeyDown}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isProcessing ? "Processing..." : "Speak or type..."}
-          className=" text-black bg-gray-100 border-none rounded-full w-auto max-w-52
-            px-4 py-2 text-sm outline-none"
+          className="text-black bg-slate-100 border border-slate-200 rounded-full flex-1
+            px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-300
+            dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-400"
         />
         
-        <button onClick={handleSend} 
-          className="bg-[#0ea5e9] text-white w-8 h-8 rounded-full">
-          →
+        <button
+          onClick={handleSend}
+          disabled={!input.trim() || isGenerating}
+          aria-label="Send message"
+          className="bg-[#0284c7] text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#0369a1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <SendHorizontal className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -54,21 +54,21 @@ export function Profile() {
    
     const SingleLine = ({title, value}: any) => {
       return (
-        <div className='flex gap-10 p-2'>
-          <h1 className='text-black dark:text-surface-main font-medium text-sm'>{title}:</h1>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 p-3'>
+          <h1 className='text-black dark:text-surface-main font-medium text-sm sm:min-w-[140px]'>{title}:</h1>
           {value 
             ? 
-              <p className='text-gray-500 dark:text-gray-400 font-medium text-sm'>{value}</p>
+              <p className='text-gray-500 dark:text-gray-400 font-medium text-sm break-all sm:text-right'>{value}</p>
             :
-              <p className='text-gray-500 dark:text-gray-600 font-medium text-sm italic'>Not set</p>}
+              <p className='text-gray-500 dark:text-gray-600 font-medium text-sm italic sm:text-right'>Not set</p>}
         </div>
       );
     }
 
     return (
-      <div className="flex-1 w-full md:w-auto lg:col-span-4 p-2">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-[#00adef] font-medium text-xl font-bold flex items-center gap-2">
+      <div className="flex-1 w-full md:w-auto p-2 sm:p-3">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-[#00adef] text-lg sm:text-xl font-semibold flex items-center gap-2">
               Personal details
             </h2>
           </div>
@@ -87,26 +87,26 @@ export function Profile() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-6 overflow-y-auto no-scrollbar items-center h-full w-full">
+    <div className="flex flex-col gap-4 p-3 sm:p-4 lg:p-6 overflow-y-auto no-scrollbar items-center w-full max-w-screen-2xl mx-auto">
       <ToastContainer />
       
-      <div className='w-full mt-10'>
+      <div className='w-full mt-4 sm:mt-8'>
         <ProfileCover profile={profile} user={user}/>
       </div>
 
-      <div className='w-full grid grid-cols-1 lg:grid-cols-5 gap-4'>
-        <div className='col-span-1 lg:col-span-3 p-2 bg-surface-main dark:bg-secondary-darkbg border 
-          border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
+      <div className='w-full grid grid-cols-1 xl:grid-cols-5 gap-4'>
+        <div className='xl:col-span-3 p-2 sm:p-3 bg-surface-main dark:bg-secondary-darkbg border 
+          border-gray-200 dark:border-gray-800 rounded-xl transition-colors shadow-sm'>
           <UserInfoCard profile={profile} user={user}/>
         </div>
 
-        <div className='col-span-1 lg:col-span-2 w-full p-2 bg-surface-main dark:bg-secondary-darkbg border
-           border-gray-200 dark:border-gray-800 rounded-lg transition-colors'>
+        <div className='xl:col-span-2 w-full p-2 sm:p-3 bg-surface-main dark:bg-secondary-darkbg border
+           border-gray-200 dark:border-gray-800 rounded-xl transition-colors shadow-sm'>
           {profile && <SkillsCard profile={profile} />}
         </div>
       </div>
 
-      <div className='w-full items-center mb-10'>
+      <div className='w-full items-center mb-6 sm:mb-10'>
         <Logout />
       </div>
       

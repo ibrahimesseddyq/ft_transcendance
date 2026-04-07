@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Icon  from '@/components/ui/Icon'
 import { mainService } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
+import { Loading } from '@/components/Loading';
 
 interface JobPhase {
   id?: string;
@@ -140,9 +141,7 @@ export function JobPhaseManager({ jobId }: Props) {
       {open && (
         <div className="mt-3 flex flex-col gap-2">
           {loading ? (
-            <div className="flex justify-center py-3">
-              <Icon name='Loader2' size={16} className="animate-spin text-accent" />
-            </div>
+            <Loading compact className="min-h-[90px]" />
           ) : (
             <>
               {phases.length > 0 && (

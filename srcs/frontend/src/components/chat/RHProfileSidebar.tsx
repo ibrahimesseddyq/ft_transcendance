@@ -1,4 +1,5 @@
 import { User } from '../../types/chat';
+import { Loading } from '@/components/Loading';
 
 interface RHProfileSidebarProps {
   recruiter: User | null;
@@ -9,9 +10,7 @@ interface RHProfileSidebarProps {
 export function RHProfileSidebar({ recruiter, isOnline, isLoading = false }: RHProfileSidebarProps) {
   if (isLoading) {
     return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-        <div style={{ width: 48, height: 48, border: '3px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      </div>
+      <Loading compact className="min-h-[180px]" />
     );
   }
 

@@ -7,6 +7,7 @@ import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import {ToastContainer} from "react-toastify";
 import { AiChatButton } from '@/components/ui/AiChatButton'
+import { Loading } from './Loading';
 
 import './chat/chat.css';
 
@@ -41,11 +42,8 @@ export function Chat() {
 
   if (isLoading) {
     return (
-      <div style={{ width: '100%', height: 'calc(100vh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0F3FA' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ width: 48, height: 48, border: '3px solid #00adef', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-          <p style={{ color: '#64748b' }}>Loading chat...</p>
-        </div>
+      <div className="chat-loading-screen">
+        <Loading />
       </div>
     );
   }
@@ -144,29 +142,29 @@ export function Chat() {
         )}
 
         <div className={`chat-empty-state${!currentConversation ? ' active' : ''}`}>
-          <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#e8ecf4', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, color: '#94a3b8' }}>
+          <div className="chat-empty-icon">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
           </div>
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1e293b', marginBottom: 8 }}>Select a conversation</h2>
-          <p style={{ fontSize: 14, color: '#64748b' }}>Choose a conversation from the sidebar or start a new one</p>
+          <h2 className="chat-empty-title">Select a conversation</h2>
+          <p className="chat-empty-description">Choose a conversation from the sidebar or start a new one.</p>
         </div>
 
         <div className={`chat-active${currentConversation ? ' active' : ''}`}>
 
           <div className="mobile-rh-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 6, background: '#e0f2fe', color: '#00adef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 16, overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+            <div className="mobile-rh-profile">
+              <div className="mobile-rh-avatar">
                 {recruiterAvatarUrl ? (
-                  <img src={recruiterAvatarUrl} alt={recruiterName} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                  <img src={recruiterAvatarUrl} alt={recruiterName} className="mobile-rh-avatar-image" />
                 ) : (
                   recruiterInitials
                 )}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span className="chat-header-name" style={{ fontWeight: 600, color: '#1e293b', fontSize: 14 }}>{recruiterName}</span>
-                <span style={{ fontSize: 12, color: isOtherUserOnline ? '#10b981' : '#94a3b8' }}>
+              <div className="mobile-rh-meta">
+                <span className="chat-header-name mobile-rh-name">{recruiterName}</span>
+                <span className={`mobile-rh-status ${isOtherUserOnline ? 'online' : 'offline'}`}>
                   {isOtherUserOnline ? 'Online' : 'Offline'}
                 </span>
               </div>
@@ -198,46 +196,20 @@ export function Chat() {
         </div>
 
         {hasConnectedOnce && !isConnected && (
-          <div style={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#f59e0b', color: 'white', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', zIndex: 200 }}>
+          <div className="chat-connection-banner">
             Reconnecting...
           </div>
         )}
 
         {moderationAlert && (
-          <div className="moderation-overlay" style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 300,
-            padding: '20px 32px',
-            borderRadius: 12,
-            background: moderationAlert.action === 'Block' ? '#fef2f2' : '#fffbeb',
-            border: `2px solid ${moderationAlert.action === 'Block' ? '#ef4444' : '#f59e0b'}`,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-            textAlign: 'center',
-            maxWidth: 360,
-            animation: 'fadeInOut 4s ease-in-out forwards',
-          }}>
-            <div style={{
-              fontSize: 28,
-              marginBottom: 8,
-            }}>
-              {moderationAlert.action === 'Block' ? '\u26D4' : '\u26A0\uFE0F'}
+          <div className={`moderation-overlay ${moderationAlert.action === 'Block' ? 'block' : 'warn'}`}>
+            <div className="moderation-icon">
+              {moderationAlert.action === 'Block' ? '!' : '!!'}
             </div>
-            <div style={{
-              fontWeight: 600,
-              fontSize: 16,
-              color: moderationAlert.action === 'Block' ? '#dc2626' : '#d97706',
-              marginBottom: 6,
-            }}>
+            <div className="moderation-title">
               {moderationAlert.action === 'Block' ? 'Message Blocked' : 'Warning'}
             </div>
-            <div style={{
-              fontSize: 13,
-              color: '#475569',
-              lineHeight: 1.5,
-            }}>
+            <div className="moderation-description">
               {moderationAlert.reason.length > 0
                 ? `Reason: ${moderationAlert.reason.join(', ')}`
                 : 'Your message was flagged by moderation.'}

@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ApplicationContent from '@/components/ui/ApplicationContent';
 import { mainService } from '@/utils/Api';
+import { Loading } from '@/components/Loading';
 
 export function Application() {
     const { jobId } = useParams(); 
@@ -38,7 +39,7 @@ export function Application() {
         <div className="w-full h-full p-4 flex flex-col gap-4 items-center transition-all overflow-y-auto custom-scrollbar">
             
             {isLoading ? (
-                <p className="text-slate-500 mt-10">Loading applications...</p>
+                <Loading label="Loading applications..." />
             ) : (
                 <>
                     <ApplicationContent Title="Pending" applications={filteredApplications("pending")} />

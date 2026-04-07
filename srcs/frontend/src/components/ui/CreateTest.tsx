@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { mainService } from '@/utils/Api';
 import Notification from '@/utils/TostifyNotification';
 import Icon  from '@/components/ui/Icon'
+import { Loading } from '@/components/Loading';
 
 interface Mcq {
     id: string;
@@ -165,7 +166,7 @@ const CreateTest = ({ onSuccess }: CreateTestProps) => {
                 </h1>
 
                 {loading ? (
-                    <p className='text-gray-400 text-sm animate-pulse'>Loading MCQs...</p>
+                    <Loading compact className="min-h-[90px]" />
                 ) : availableMcqs.length === 0 ? (
                     <p className='text-gray-400 text-sm'>No MCQs available. Create some first.</p>
                 ) : (

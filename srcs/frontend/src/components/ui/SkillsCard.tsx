@@ -3,26 +3,30 @@ interface props {
 }
 
 const SkillsCard = ({ profile }: props) => {
+  const skills = typeof profile?.skills === 'string'
+    ? profile.skills.split(',').map((skill: string) => skill.trim()).filter(Boolean)
+    : [];
   
   return (
-    <div className="flex-1 w-full md:w-auto p-2">
+    <div className="flex-1 w-full p-2 sm:p-3">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#00adef] font-medium text-xl flex items-center gap-2">Top Skills</h2>
+        <h2 className="text-[#00adef] font-semibold text-lg sm:text-xl flex items-center gap-2">Top Skills</h2>
       </div>
       
-      {profile?.skills && profile.skills.length > 0 ? (
+      {skills.length > 0 ? (
         <div className="flex flex-wrap gap-2">
-          {profile.skills.split(',').map((skill: string, index: number) => (
+          {skills.map((skill: string, index: number) => (
             <span 
-              key={`${skill.trim()}-${index}`} 
-              className="px-4 py-2 bg-[#1C263B] text-gray-300 text-sm rounded-xl border border-gray-700"
+              key={`${skill}-${index}`} 
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-sky-50 text-sky-800 text-sm rounded-xl border border-sky-200
+                dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700"
             >
-              {skill.trim()}
+              {skill}
             </span>
           ))}
         </div>
       ) : (
-        <p className="text-[#5F88B8] text-xs text-center mt-2">No Skills Available</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm text-center mt-2">No skills available</p>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import { useAuthStore } from '@/utils/ZuStand';
 import { ToastContainer } from "react-toastify";
 import { mainService } from '@/utils/Api';
 import { useState, useEffect } from 'react';
+import { Loading } from '@/components/Loading';
 
 export function JobDescription() {
   const { jobId } = useParams();
@@ -48,7 +49,7 @@ export function JobDescription() {
     }
   };
 
-  if (!jobItem) return <div className="p-20 text-center">Loading Job Details...</div>;
+  if (!jobItem) return <Loading label="Loading job details..." />;
 
   interface props {
     Icon: LucideIcon;

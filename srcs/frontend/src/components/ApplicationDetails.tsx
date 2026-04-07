@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mainService } from '@/utils/Api';
 import { useAuthStore } from '@/utils/ZuStand'
+import { Loading } from '@/components/Loading';
 
 export function ApplicationDetails() {
   const { id } = useParams(); 
@@ -49,7 +50,7 @@ export function ApplicationDetails() {
     }
   };
 
-  if (isLoading) return <div className="p-10 text-center text-slate-500">Loading details...</div>;
+  if (isLoading) return <Loading label="Loading application details..." />;
   if (!details) return <div className="p-10 text-center text-red-500">Application not found.</div>;
 
   return (

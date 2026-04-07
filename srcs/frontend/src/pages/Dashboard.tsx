@@ -5,6 +5,7 @@ import { RecruitmentPieChart } from "@/components/RecruitmentPieChart";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from 'react'
 import { mainService } from '@/utils/Api'
+import { Loading } from '@/components/Loading'
 
 export function Dashboard() {
 
@@ -60,7 +61,7 @@ export function Dashboard() {
   };
 
   if (isLoading){
-    return <div className="p-10 text-center">Loading Dashboard...</div>;
+    return <Loading label="Loading dashboard..." />;
   }
 
   return (

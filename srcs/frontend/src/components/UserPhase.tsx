@@ -4,6 +4,7 @@ import { useParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand'
 import { mainService } from '@/utils/Api'
+import { Loading } from '@/components/Loading';
 
 export function UserPhase() {
     const { appId } = useParams();
@@ -60,18 +61,7 @@ export function UserPhase() {
 
     if (loading) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center">
-          <div className="relative w-16 h-16 mb-6">
-            <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
-          </div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Loading Test...
-          </h3>
-          <p className="text-gray-500 text-sm max-w-xs">
-            Please wait just a moment while we get your questions ready.
-          </p>
-        </div>
+        <Loading label="Preparing your test..." className="min-h-[50vh]" />
       );
     }
 

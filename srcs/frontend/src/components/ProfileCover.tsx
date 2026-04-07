@@ -12,7 +12,9 @@ interface props {
 export function ProfileCover({ profile, user }: props) {
   const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
   const resumeUrl = `${BACKEND_URL}${profile?.resumeUrl}`;
-  const avatarUrl = `${BACKEND_URL}${user?.avatarUrl}`;
+  const avatarUrl = user?.avatarUrl
+    ? (String(user.avatarUrl).startsWith('http') ? user.avatarUrl : `${BACKEND_URL}${user.avatarUrl}`)
+    : '/icons/placeholder.jpg';
   const loggedUser = useAuthStore((state) => state.user);
   const navigate = useNavigate();
   const [profileUrl] = useState(window.location.href);
@@ -50,39 +52,39 @@ export function ProfileCover({ profile, user }: props) {
   }
 
   return (
-    <div className="relative flex flex-col gap-4 p-6 pt-20 bg-surface-main dark:bg-secondary-darkbg border 
+    <div className="relative flex flex-col gap-4 p-4 sm:p-6 pt-16 sm:pt-20 bg-surface-main dark:bg-secondary-darkbg border 
       border-gray-100 dark:border-slate-800 rounded-xl items-center shadow-sm transition-colors duration-300">
 
       <div 
         style={{ backgroundImage: `url("${avatarUrl}")` }}
         className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
-            h-32 w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl"
+            h-24 w-24 sm:h-32 sm:w-32 rounded-full bg-cover bg-center border-4 border-surface-main dark:border-secondary-darkbg shadow-xl"
       />
 
       <div className="text-center">
-        <h2 className="font-bold text-2xl text-secondary-darkbg dark:text-surface-main">
+        <h2 className="font-bold text-xl sm:text-2xl text-secondary-darkbg dark:text-surface-main">
           {user?.firstName} {user?.lastName}
         </h2>
-        <p className="text-lg font-medium text-slate-500 dark:text-slate-400">{user?.role}</p>
+        <p className="text-base sm:text-lg font-medium text-slate-500 dark:text-slate-400">{user?.role}</p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400">
-        <span className="text-sm font-light">{user?.email}</span>
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-slate-600 dark:text-slate-400 w-full text-center">
+        <span className="text-sm font-light break-all">{user?.email}</span>
         {user?.phone && (
-          <span className="text-sm font-light border-l border-slate-300 dark:border-slate-700 pl-4">
+          <span className="text-sm font-light border-l border-slate-300 dark:border-slate-700 pl-4 break-all">
             {user?.phone}
           </span>
         )}
       </div>
       
-      <div className="flex flex-wrap gap-3 mt-4 w-full justify-center">
-        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto min-w-[320px] max-w-full">
+      <div className="flex flex-col gap-3 mt-4 w-full justify-center">
+        <div className="flex flex-wrap justify-center gap-2 w-full">
           
           {isRecruiter && !isOwnProfile && (
             <button 
               onClick={handleStartChat}
-              className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 dark:bg-indigo-500 
-                rounded-lg text-surface-main py-2 px-4 text-sm font-semibold hover:bg-indigo-700 transition-all 
+              className="w-full sm:w-auto sm:min-w-[180px] flex items-center justify-center gap-2 bg-indigo-600 dark:bg-indigo-500 
+                rounded-xl text-surface-main py-2.5 px-4 text-sm font-semibold hover:bg-indigo-700 transition-all 
                 shadow-lg shadow-indigo-500/20 active:scale-95"
             >
               <Icon name='MessageSquarePlus' className="h-4 w-4"/>
@@ -94,7 +96,7 @@ export function ProfileCover({ profile, user }: props) {
             href={resumeUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-full  px-6 py-2 flex items-center justify-center gap-2 border border-primary rounded-lg 
+            className="w-full sm:w-auto sm:min-w-[180px] px-6 py-2.5 flex items-center justify-center gap-2 border border-primary rounded-xl 
                        text-primary text-sm font-semibold hover:bg-primary/10 transition-colors text-center"
           >
             <Icon name='ArrowDownFromLine' className="h-4 w-4"/>
@@ -102,7 +104,7 @@ export function ProfileCover({ profile, user }: props) {
           </a>
 
           <button onClick={handleCopy}
-            className="w-full px-6 py-2 bg-primary rounded-lg text-surface-main text-sm text-center
+            className="w-full sm:w-auto sm:min-w-[180px] px-6 py-2.5 bg-primary rounded-xl text-surface-main text-sm text-center
               font-semibold hover:bg-[#009cd6] transition-colors shadow-lg shadow-primary/20">
             {copyState ? <span className="animate-in fade-in zoom-in-95 duration-200">{copyState}</span> : "Share"}
           </button>
@@ -112,7 +114,7 @@ export function ProfileCover({ profile, user }: props) {
         {isOwnProfile && (
           <Link 
             to="/EditProfile"
-            className="w-full sm:w-auto px-6 py-2 text-center bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-700 
+            className="w-full sm:w-auto self-center px-6 py-2.5 text-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-700 
               dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           >
             Edit Profile

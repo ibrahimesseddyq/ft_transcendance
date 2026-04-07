@@ -14,7 +14,7 @@ import { mainService } from '@/utils/Api';
 type ProfileFormData = z.infer<typeof CandidateProfileSchema>;
 
 const InternalProgressBar = ({ progress }: { progress: number }) => (
-  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2 overflow-hidden">
+  <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1.5 mt-2 overflow-hidden">
     <div 
       className="bg-primary h-1.5 rounded-full transition-all duration-300 ease-out" 
       style={{ width: `${progress}%` }}
@@ -34,19 +34,19 @@ interface FormFieldProps {
 }
 
 const FormField = ({ label, name, register, maxLength, error, placeholder, type, optional }: FormFieldProps) => (
-  <div className="flex flex-col lg:flex-row md:items-center gap-2 md:gap-6 group">
-    <label htmlFor={name} className="w-full md:w-40 text-sm font-medium text-gray-400 group-focus-within:text-primary transition-colors">
+  <div className="flex flex-col xl:flex-row xl:items-center gap-2 xl:gap-6 group">
+    <label htmlFor={name} className="w-full xl:w-44 text-sm font-medium text-slate-500 dark:text-slate-400 group-focus-within:text-primary transition-colors">
       {label}
     </label>
     <div className="flex-1 relative">
-      {!optional && <h1 className="absolute top-0 right-1 text-red-600">*</h1>}
+      {!optional && <h1 className="absolute top-0 right-1 text-red-500">*</h1>}
       <input
         id={name}
         type={type}
         maxLength={maxLength}
         {...register(name, { valueAsNumber: type === "number" })}
         placeholder={placeholder}
-        className="h-11 w-full text-sm text-black dark:text-surface-main outline-none px-3 border-b border-gray-300 dark:border-gray-700 bg-transparent focus:border-primary dark:focus:border-primary transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
+        className="h-11 w-full rounded-lg text-sm text-black dark:text-surface-main outline-none px-3 border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/50 focus:border-primary dark:focus:border-primary transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
       />
       {error && <p className="mt-1 text-danger-hover text-[10px] italic">{error}</p>}
     </div>
@@ -129,7 +129,7 @@ export function ProfileInformations() {
     } catch (error) {
       setAvatarProgress(0);
       setResumeProgress(0);
-      Notification("PLease enter a valide profile", "error");
+      Notification("Please enter a valid profile", "error");
     }
   };
 
@@ -142,17 +142,21 @@ export function ProfileInformations() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onApplySubmit)} className="max-w-screen-2xl p-6 overflow-y-auto custom-scrollbar bg-transparent w-full mx-auto">
+    <form onSubmit={handleSubmit(onApplySubmit)} className="max-w-screen-2xl p-3 sm:p-5 lg:p-6 overflow-y-auto custom-scrollbar w-full mx-auto rounded-3xl bg-gradient-to-b from-white/40 via-sky-50/40 to-transparent dark:from-slate-900/30 dark:via-slate-900/10 dark:to-transparent">
       <ToastContainer />
-      <header className="border-b border-gray-200 dark:border-gray-800 pb-4 w-full">
-        <h1 className="text-black dark:text-surface-main text-2xl font-bold">Profile Setup</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Wait for uploads to finish before redirecting.</p>
-      </header>
+      <div className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm shadow-xl">
+        <header className="border-b border-slate-200 dark:border-slate-800 p-4 sm:p-6 w-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/30 dark:text-sky-300 dark:border-sky-900 mb-3">
+            Candidate Onboarding
+          </div>
+          <h1 className="text-black dark:text-surface-main text-2xl sm:text-3xl font-bold">Create Your Professional Profile</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Complete your information to unlock personalized jobs and recruiter outreach.</p>
+        </header>
 
       {/* Avatar Section */}
-      <div className="relative group mx-auto my-8 w-32 h-32">
+      <div className="relative group mx-auto my-6 sm:my-8 w-28 h-28 sm:w-32 sm:h-32">
         <div 
-          className={`h-full w-full rounded-full bg-gray-100 dark:bg-[#1e1e1e] bg-cover bg-center border-2 transition-all duration-300 ${
+          className={`h-full w-full rounded-full bg-gray-100 dark:bg-[#1e1e1e] bg-cover bg-center border-2 transition-all duration-300 shadow-md ${
               errors.avatar ? 'border-red-500 bg-red-50/5' : hasAvatar ? 'border-green-500 bg-green-50/5' : 'border-gray-300 dark:border-gray-700 hover:border-primary bg-primary/5'
             }`}
           style={{ backgroundImage: `url("${avatarPreview ?? '/icons/placeholder.jpg'}")`}}
@@ -170,12 +174,12 @@ export function ProfileInformations() {
         </label>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 w-full">
-        <section className="flex flex-col gap-6">
+      <div className="px-4 sm:px-6 pb-6 sm:pb-8 grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-10 w-full">
+        <section className="flex flex-col gap-5 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 bg-white/70 dark:bg-slate-900/40">
           <h2 className="text-primary text-lg font-semibold flex items-center gap-2">
             <span className="w-1 h-6 bg-primary rounded-full" /> Professional Information
           </h2>
-          <div className="flex flex-col gap-5 pl-4">
+          <div className="flex flex-col gap-4">
             <FormField label="LinkedIn URL" name="linkedinUrl" type="url" optional={false} register={register} error={errors.linkedinUrl?.message} />
             <FormField label="Portfolio URL" name="portfolioUrl" type="url" optional={true} register={register} error={errors.portfolioUrl?.message} />
             <FormField label="Current Company" name="currentCompany" optional={true} register={register} error={errors.currentCompany?.message} />
@@ -184,16 +188,16 @@ export function ProfileInformations() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-6">
+        <section className="flex flex-col gap-5 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 bg-white/70 dark:bg-slate-900/40">
           <h2 className="text-primary text-lg font-semibold flex items-center gap-2">
             <span className="w-1 h-6 bg-primary rounded-full" /> Contact & Resume
           </h2>
-          <div className="flex flex-col gap-5 pl-4 mb-2">
+          <div className="flex flex-col gap-4 mb-1">
             <FormField label="Available From" name="availableFrom" type='date' optional={true} register={register} error={errors.availableFrom?.message} />
             <FormField label="Phone Number" name="phone" optional={false} register={register} error={errors.phone?.message} />
           </div>
 
-          <div className="w-full">
+          <div className="w-full mt-1">
             <label className={`flex flex-col items-center justify-center w-full h-32 cursor-pointer border-2 border-dashed rounded-lg transition-all duration-200 ${
               errors.resumeUrl ? 'border-red-500 bg-red-50/5' : hasResume ? 'border-green-500 bg-green-50/5' : 'border-gray-300 dark:border-gray-700 hover:border-primary bg-primary/5'
             }`}>
@@ -220,7 +224,16 @@ export function ProfileInformations() {
         </section>
       </div>
 
-      <footer className="flex mt-8 gap-2 justify-end">
+      <footer className="flex flex-col-reverse sm:flex-row mt-1 px-4 sm:px-6 pb-6 sm:pb-8 gap-2 justify-end">
+        {profile ? (
+          <button type="button" onClick={() => navigate(-1)} className="w-full sm:w-auto font-semibold py-3 px-6 text-black dark:text-surface-main hover:text-red-500 border border-slate-200 dark:border-slate-700 rounded-xl">
+            Cancel
+          </button>
+        ) : (
+          <div className="w-full sm:w-auto">
+            <Logout />
+          </div>
+        )}
         <button 
           type="submit" 
           disabled={isSubmitting} 
@@ -228,14 +241,8 @@ export function ProfileInformations() {
         >
           {isSubmitting ? <><Icon name='Loader2' className="animate-spin h-4 w-4" /> Saving...</> : "Save Profile"}
         </button>
-        {profile ? (
-          <button type="button" onClick={() => navigate(-1)} className="font-semibold py-3 px-6 text-black dark:text-surface-main hover:text-red-500">
-            Cancel
-          </button>
-        ) : (
-          <Logout />
-        )}
       </footer>
+      </div>
     </form>
   );
 }

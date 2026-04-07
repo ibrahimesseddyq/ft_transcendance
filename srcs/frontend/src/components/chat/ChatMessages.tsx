@@ -1,4 +1,5 @@
 import { Message, User } from '../../types/chat';
+import { Loading } from '@/components/Loading';
 
 interface ChatMessagesProps {
   readonly messages: Message[];
@@ -247,15 +248,13 @@ export function ChatMessages({
 
   if (isLoading) {
     content = (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-        <div style={{ width: 40, height: 40, border: '3px solid #00adef', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      </div>
+      <Loading compact className="min-h-[120px]" />
     );
   } else if (messages.length === 0) {
     content = (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#94a3b8', textAlign: 'center' }}>
-        <p style={{ fontSize: 14 }}>No messages yet</p>
-        <p style={{ fontSize: 13, marginTop: 8 }}>Send a message to start the conversation</p>
+      <div className="chat-messages-empty">
+        <p className="chat-messages-empty-title">No messages yet</p>
+        <p className="chat-messages-empty-description">Send a message to start the conversation.</p>
       </div>
     );
   } else {
