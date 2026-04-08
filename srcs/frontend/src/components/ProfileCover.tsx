@@ -3,6 +3,7 @@ import Icon  from '@/components/ui/Icon'
 import { useState } from 'react';
 import { useAuthStore } from '@/utils/ZuStand';
 import { chatApi } from '@/services/chatApi';
+import Notification from '@/utils/TostifyNotification';
 
 interface props {
   profile: any;
@@ -32,22 +33,31 @@ export function ProfileCover({ profile, user }: props) {
   const handleStartChat = async () => {
     if (!loggedUser || !isRecruiter) return;
     try {
+      if (!user?.id) {
+        Notification('Candidate profile is not ready yet. Please try again.', 'warning');
+        return;
+      }
+
       const conversations = await chatApi.getConversations();
 
       const existing = conversations.find((conv: any) =>
-        conv.participants?.some((p: any) => p.id === user?.id)
+        conv.participants?.some((p: any) => (p.userId === user.id) || (p.user?.id === user.id))
       );
 
       if (existing) {
         sessionStorage.setItem('chat_conversationId', existing.id);
         navigate('/Chat');
       } else {
-        const newConversation = await chatApi.createConversation(user?.id);
+        const newConversation = await chatApi.createConversation(user.id);
         sessionStorage.setItem('chat_conversationId', newConversation.id);
         navigate('/Chat');
       }
-    } catch (error) {
-
+    } catch (error: any) {
+      const apiErrors = error?.response?.data?.errors;
+      const message = Array.isArray(apiErrors) && apiErrors.length > 0
+        ? apiErrors.join(', ')
+        : (error?.response?.data?.message || 'Unable to start conversation.');
+      Notification(message, 'error');
     }
   }
 

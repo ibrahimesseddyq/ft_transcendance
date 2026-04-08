@@ -12,6 +12,19 @@ const AppCard = ({app}:props) => {
     const [job, setJob] = useState([]);
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
 
+    const status = app?.status || 'pending';
+    const normalizedStatus = String(status)
+      .replace('inProgress', 'In Progress')
+      .replace(/^./, (c: string) => c.toUpperCase());
+    const statusClass =
+      status === 'accepted'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800'
+        : status === 'rejected'
+        ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-300 dark:border-rose-800'
+        : status === 'withdrawn'
+        ? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+        : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800';
+
     const fetchJob = async () =>{
       try{
         const res = await mainService.get(`${env_main_api}/jobs/${app?.jobId}`)
@@ -38,69 +51,56 @@ const AppCard = ({app}:props) => {
     };
 
     return (
-      <div className="group min-h-20 w-full
-          overflow-hidden p-4 bg-gray-50 dark:bg-slate-800/80 items-center rounded-xl 
-          shadow-lg dark:shadow-none border border-transparent dark:border-slate-700 
-          transition-colors duration-300">
-          
-        <div className="h-full flex flex-col justify-between items-center">
-
-            <div className="mt-6 flex flex-col gap-5 w-full">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium 
-                  text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/30 dark:text-blue-300 
-                  dark:ring-blue-500/30 transition-colors duration-300">
-                  {(job as any)?.department}
-                </span>
-                <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-sm 
-                  font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 dark:bg-purple-900/30 
-                  dark:text-purple-300 dark:ring-purple-500/30 transition-colors duration-300">
-                  {(job as any)?.employmentType}
-                </span>
-
-                <span className="inline-flex items-center px-2.5 py-1 text-sm 
-                  font-medium text-slate-600 dark:text-slate-300 transition-colors duration-300">
-                  <div className="flex gap-1">
-                    <Icon name="MapPinHouse" className="text-gray-400 w-4 h-4"/> {(job as any)?.location}
-                  </div>
-                </span>
-                <span className="inline-flex items-center px-2.5 py-1 text-sm 
-                  font-medium text-green-700 dark:text-green-400 transition-colors duration-300">
-                  💰 ${(job as any)?.salaryMin} - ${(job as any)?.salaryMax}
-                </span>
-              </div>
-
-              <div className="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/50 
-                border border-slate-100 dark:border-slate-700 transition-colors duration-300">
-                <h3 className="mb-2 text-sm font-bold text-[#445a84] dark:text-slate-200">
-                  Job Description
-                </h3>
-                <p className="text-sm font-normal leading-relaxed text-slate-600 
-                  dark:text-slate-400 break-words transition-colors duration-300">
-                  {(job as any)?.description}
-                </p>
-              </div>
+      <article className="w-full rounded-xl border border-slate-200 bg-white p-4 transition-colors duration-300 dark:border-slate-700 dark:bg-slate-900">
+        <div className="flex flex-col gap-4">
+          <header className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+            <div className="min-w-0">
+              <h3 className="truncate text-base font-semibold text-slate-900 dark:text-slate-100">
+                {(job as any)?.title || 'Role'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {(job as any)?.department || 'Department not set'}
+              </p>
             </div>
+            <span className={`inline-flex w-fit rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass}`}>
+              {normalizedStatus}
+            </span>
+          </header>
 
-            <div className="flex mt-6 md:mt-4 gap-2 w-full items-center justify-center">
-              <button onClick={handleSeeDetails}
-                className='text-center font-medium font-sans w-full md:w-52 h-10
-                rounded-xl border border-[#25aeca] dark:border-[#5bc8f5] 
-                text-[#25aeca] dark:text-[#5bc8f5] hover:bg-[#25aeca] hover:text-white 
-                dark:hover:bg-[#5bc8f5] dark:hover:text-slate-900 p-2 transition-colors duration-300'>
-                Details
-              </button>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800">
+              {(job as any)?.employmentType || 'Type N/A'}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800">
+              <Icon name="MapPinHouse" className="h-3.5 w-3.5 text-slate-400" />
+              {(job as any)?.location || 'Location N/A'}
+            </span>
+            <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 dark:border-slate-700 dark:bg-slate-800">
+              ${(job as any)?.salaryMin ?? 0} - ${(job as any)?.salaryMax ?? 0}
+            </span>
+          </div>
 
-              <button onClick={handleSeePhases}
-                className='text-center font-medium font-sans w-full md:w-52 h-10
-                rounded-xl bg-[#25aeca] dark:bg-[#00adef] text-white
-                hover:bg-[#25aeca]/80 dark:hover:bg-[#00adef]/80 p-2 transition-colors duration-300'>
-                Phases
-              </button>
-            </div>
+          <p className="line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            {(job as any)?.description || 'No description provided.'}
+          </p>
 
+          <div className="flex w-full items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-700">
+            <button
+              onClick={handleSeeDetails}
+              className="h-9 w-full rounded-md border border-slate-300 bg-white px-2 text-center text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              Details
+            </button>
+
+            <button
+              onClick={handleSeePhases}
+              className="h-9 w-full rounded-md bg-slate-800 px-2 text-center text-xs font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+            >
+              Phases
+            </button>
+          </div>
         </div>
-      </div>
+      </article>
     );
 };
 

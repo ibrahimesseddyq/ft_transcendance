@@ -9,7 +9,7 @@
     <script>
       (function () {
         var storedTheme = localStorage.getItem('theme');
-        var isDark = storedTheme === 'dark' || (storedTheme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var isDark = storedTheme === 'dark';
         document.documentElement.classList.toggle('dark', isDark);
         document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
       })();

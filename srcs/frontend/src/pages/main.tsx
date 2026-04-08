@@ -56,16 +56,16 @@ export function Main() {
     );
   }
 
- if (user && !isAdminOrRecruiter && qrVerified && !hasProfile) {
-    return (
-      <FullScreenWrapper>
-        <Routes>
-          <Route path="/Createprofile" element={<ProfileInformations />} />
-          <Route path="*" element={<Navigate to="/Createprofile" replace />} />
-        </Routes>
-      </FullScreenWrapper>
-    );
-  }
+//  if (user && !isAdminOrRecruiter && qrVerified && !hasProfile) {
+//     return (
+//       <FullScreenWrapper>
+//         <Routes>
+//           <Route path="/Createprofile" element={<ProfileInformations />} />
+//           <Route path="*" element={<Navigate to="/Createprofile" replace />} />
+//         </Routes>
+//       </FullScreenWrapper>
+//     );
+//   }
 
   return (
     <AuthGuard>
