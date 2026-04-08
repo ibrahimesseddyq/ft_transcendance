@@ -91,7 +91,7 @@ const Signup = () => {
                              border-gray-300 dark:border-gray-800 justify-center bg-transparent text-black dark:text-surface-main
                             hover:bg-black hover:text-surface-main dark:hover:bg-surface-main dark:hover:text-black transition-all items-center mt-2">
                         <img className="h-6 w-6" 
-                             src="/icons/google1.png"
+                             src="/icons/google.png"
                              alt="Google icon"/>
                         <span className='text-xs lg:text-sm font-semibold whitespace-nowrap'>Sign up with Google</span>
                     </button>

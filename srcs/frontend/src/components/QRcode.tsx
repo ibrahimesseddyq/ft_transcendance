@@ -113,82 +113,100 @@ export function QRcode() {
         setOtpArray(new Array(6).fill(""));
     };
 
+    const isQrStep = firstLogin && step === 'QR_CODE';
+
     return (
-        <div className="p-4 py-10 flex flex-col items-center justify-center m-auto
-            bg-surface-main dark:bg-[#242c3e] rounded-2xl transition-colors duration-300">
-            <div className="flex flex-col gap-4 md:gap-8 items-center max-w-sm">
-                {/* Header Text */}
-                <div className="flex flex-col gap-1 items-center text-center">
-                    <h1 className="font-bold text-black dark:text-surface-main text-lg md:text-xl">
-                        {firstLogin && step === 'QR_CODE' ? "Scan QR Code" : "Verify Code"}
-                    </h1>
-                    <p className="font-light text-black dark:text-gray-400 text-xs md:text-sm">
-                        {firstLogin && step === 'QR_CODE' 
-                            ? "Scan this image with your Authenticator App to begin setup." 
-                            : "Enter the 6-digit code from your app."}
-                    </p>
-                </div>
+        <section className="w-full px-4 py-8 md:py-10">
+            <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-sky-100 bg-gradient-to-b from-white to-slate-50 p-6 shadow-[0_18px_60px_-30px_rgba(2,132,199,0.45)] transition-colors duration-300 dark:border-slate-700 dark:from-slate-900 dark:to-slate-800">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-sky-200/40 blur-2xl dark:bg-sky-500/20" />
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-200/40 blur-2xl dark:bg-cyan-500/20" />
 
-                {/* QR Code Section */}
-                {firstLogin && step === 'QR_CODE' ? (
-                    <div className='relative flex items-center justify-center p-2 border-2 border-dashed 
-                        border-gray-200 dark:border-gray-700 rounded-lg bg-surface-main'>
-                        {qrLink ? (
-                            <img src={qrLink} alt="2FA QR Code" className='h-40 w-40' />
-                        ) : (
-                            <div className="h-40 w-40 flex items-center justify-center 
-                                bg-gray-100 dark:bg-slate-800 animate-pulse">
-                                <p className="text-xs text-gray-400">Generating...</p>
-                            </div>
-                        )}
+                <div className="relative flex flex-col items-center gap-6">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-700 dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-200">
+                        <Icon name="ShieldCheck" className="h-3.5 w-3.5" />
+                        Two-Factor Authentication
                     </div>
-                ) : (
-                    <OtpCode otp={otpArray} setOtp={setOtpArray} onKeyEnter={handleKeyEnter} />
-                )}
 
-                <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-                    <button 
-                        type="submit" 
-                        disabled={loading}
-                        className="group flex gap-2 justify-center items-center w-full h-12 
-                            bg-primary hover:bg-[#008dbf] rounded-lg font-extrabold 
-                            text-surface-main transition-colors shadow-lg shadow-primary/20"
-                    >
-                        <span>{loading ? "Verifying..." : step === 'QR_CODE' ? "Next" : "Verify"}</span>
-                        <Icon name='ArrowRightToLine' className='w-5 h-5 group-hover:translate-x-1 transition-transform'/>
-                    </button>
+                    <div className="flex w-full items-center justify-center gap-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-300">
+                        <span className={`rounded-full px-3 py-1 ${isQrStep ? 'bg-primary text-white' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-100'}`}>
+                            Scan
+                        </span>
+                        <div className="h-px w-8 bg-slate-300 dark:bg-slate-600" />
+                        <span className={`rounded-full px-3 py-1 ${!isQrStep ? 'bg-primary text-white' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-100'}`}>
+                            Verify
+                        </span>
+                    </div>
 
-                    <div className="flex flex-col items-center gap-2">
-                        {firstLogin && step === 'VERIFY_OTP' && (
-                            <button 
-                                type="button" 
-                                onClick={() => setStep('QR_CODE')}
-                                className="text-sm flex items-center gap-1 text-gray-500 dark:text-gray-400 
-                                    hover:text-black dark:hover:text-surface-main transition-colors"
-                            >
-                                <Icon name='ChevronLeft' className="w-4 h-4"/> Back to QR
-                            </button>
-                        )}
-
-                        <p className="font-light text-black dark:text-gray-400 text-sm">
-                            Need help?{" "}
-                            {firstLogin
-                                ?
-                                <span onClick={handleReset} className="font-bold underline cursor-pointer text-black dark:text-surface-main">
-                                    Reset 2FA    
-                                </span> 
-                                : <span className="font-bold underline cursor-pointer text-black dark:text-surface-main">
-                                    Contact support 
-                                </span> 
-                            }
+                    <div className="flex flex-col items-center gap-1 text-center">
+                        <h1 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+                            {isQrStep ? "Scan QR Code" : "Verify Security Code"}
+                        </h1>
+                        <p className="max-w-xs text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                            {isQrStep
+                                ? "Open your authenticator app and scan this QR code to connect your account securely."
+                                : "Enter the 6-digit code from your authenticator app to complete sign in."}
                         </p>
                     </div>
-                </form>
-                        
-                <div className='items-center'>
-                    <Logout />
+
+                    {isQrStep ? (
+                        <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                            <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 dark:border-slate-600 dark:bg-slate-800">
+                                {qrLink ? (
+                                    <img src={qrLink} alt="2FA QR Code" className="h-44 w-44 rounded-md" />
+                                ) : (
+                                    <div className="flex h-44 w-44 items-center justify-center rounded-md bg-slate-100 dark:bg-slate-700 animate-pulse">
+                                        <p className="text-xs font-medium text-slate-500 dark:text-slate-300">Generating secure QR...</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                            <OtpCode otp={otpArray} setOtp={setOtpArray} onKeyEnter={handleKeyEnter} />
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="w-full space-y-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-extrabold text-white shadow-lg shadow-sky-500/30 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#008dbf] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            <span>{loading ? "Verifying..." : isQrStep ? "Continue" : "Verify & Login"}</span>
+                            <Icon name="ArrowRightToLine" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                        </button>
+
+                        <div className="flex flex-col items-center gap-2 text-sm">
+                            {firstLogin && step === 'VERIFY_OTP' && (
+                                <button
+                                    type="button"
+                                    onClick={() => setStep('QR_CODE')}
+                                    className="inline-flex items-center gap-1 font-medium text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+                                >
+                                    <Icon name="ChevronLeft" className="h-4 w-4" /> Back to QR
+                                </button>
+                            )}
+
+                            <p className="text-slate-500 dark:text-slate-300">
+                                Need help?{" "}
+                                {firstLogin ? (
+                                    <button type="button" onClick={handleReset} className="font-semibold text-slate-800 underline underline-offset-2 transition-colors hover:text-primary dark:text-slate-100">
+                                        Reset 2FA
+                                    </button>
+                                ) : (
+                                    <span className="font-semibold text-slate-800 underline underline-offset-2 dark:text-slate-100">
+                                        Contact support
+                                    </span>
+                                )}
+                            </p>
+                        </div>
+                    </form>
+
+                    <div className="pt-1">
+                        <Logout />
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }

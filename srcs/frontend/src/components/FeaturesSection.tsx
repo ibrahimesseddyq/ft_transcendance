@@ -40,47 +40,63 @@ const Features = [
   }
 ];
 
-const InfoCard = ({ title, description, icon: Icon }: FeatureItem) => {
+const InfoCard = ({ id, title, description, icon: Icon }: FeatureItem) => {
+  const delay = ((id ?? 1) - 1) * 120;
+
   return (
-    <div className="group p-6 bg-surface-main/60 dark:bg-secondary-darkbg/60 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm">
-      <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-surface-main dark:group-hover:bg-blue-600 dark:group-hover:text-surface-main transition-colors">
-        <Icon size={24} />
+    <article
+      className="feature-reveal group relative overflow-hidden p-6 md:p-7 bg-white/70 dark:bg-slate-900/55 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-sky-500/10 transition-all duration-500 hover:-translate-y-1"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="feature-card-glow" />
+
+      <div className="mb-5 flex items-center justify-between">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-50 dark:from-sky-900/40 dark:to-cyan-900/30 text-sky-700 dark:text-sky-300 border border-sky-200/70 dark:border-sky-700/70 group-hover:scale-110 transition-transform duration-500">
+          <Icon size={22} />
+        </div>
+        <span className="feature-kicker-font text-[11px] font-bold tracking-[0.12em] text-slate-400 dark:text-slate-500">
+          0{id}
+        </span>
       </div>
       
-      <h3 className="text-lg font-bold text-secondary-darkbg dark:text-slate-100 mb-2">
+      <h3 className="feature-heading-font text-lg font-bold text-secondary-darkbg dark:text-slate-100 mb-2 leading-tight">
         {title}
       </h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+      <p className="feature-body-font text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
         {description}
       </p>
-    </div>
+    </article>
   );
 }
 
 export const FeaturesSection = () => {
   return (
     <section className="w-full h-full md:overflow-auto no-scrollbar">
-      {/* Header Section */}
-      <div className="mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-secondary-darkbg dark:text-slate-100 transition-colors">
-          Everything you need to <span className="text-blue-600 dark:text-primary">succeed</span>
-        </h2>
-        <p className="mt-4 text-lg text-slate-500 dark:text-slate-400 max-w-2xl transition-colors">
-          Powerful tools designed to accelerate your career growth and connect you with your next big move.
-        </p>
-      </div>
+      <div className="relative overflow-hidden p-6 md:p-10">
 
-      {/* Grid Layout */}
-      <div className="flex flex-col max-w-2xl gap-6">
-        {Features.map((item) => (
-          <div key={item.id} className='h-full w-full'>
+        <div className="feature-reveal mb-10 md:mb-12 relative z-10" style={{ animationDelay: '40ms' }}>
+          <span className="feature-kicker-font inline-flex items-center px-3 py-1 rounded-full border border-sky-200 dark:border-sky-700 bg-white/80 dark:bg-sky-900/30 text-[11px] font-semibold tracking-wide text-sky-700 dark:text-sky-300">
+            Career Acceleration Toolkit
+          </span>
+          <h2 className="feature-heading-font mt-4 text-3xl md:text-4xl font-bold text-secondary-darkbg dark:text-slate-100 transition-colors leading-tight">
+            Everything you need to <span className="text-sky-600 dark:text-primary">stand out and get hired</span>
+          </h2>
+          <p className="feature-body-font mt-4 text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl transition-colors leading-relaxed">
+          Powerful tools designed to accelerate your career growth and connect you with your next big move.
+          </p>
+        </div>
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {Features.map((item) => (
             <InfoCard
+              key={item.id}
+              id={item.id}
               title={item.title}
               description={item.description}
               icon={item.icon}
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

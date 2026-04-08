@@ -1,19 +1,21 @@
 
-import { useRef, KeyboardEvent, useEffect } from 'react';
+import { useRef, KeyboardEvent, ClipboardEvent, useEffect } from 'react';
 
 interface InputFieldProps {
     val: string;
     onChange: (value: string) => void;
     onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onPaste: (e: ClipboardEvent<HTMLInputElement>) => void;
     inputRef: (el: HTMLInputElement | null) => void;
 }
 
-const InputField = ({ val, onChange, onKeyDown, inputRef }: InputFieldProps) => {
+const InputField = ({ val, onChange, onKeyDown, onPaste, inputRef }: InputFieldProps) => {
     return (
         <input
             ref={inputRef}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={onKeyDown}
+      onPaste={onPaste}
             value={val}
             type="text"
             maxLength={1}
@@ -61,6 +63,26 @@ export function OtpCode({ otp, setOtp, onKeyEnter }: OtpCodeProps) {
     }
   };
 
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>, index: number) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '');
+    if (!pasted) return;
+
+    const newOtp = [...otp];
+    let writeIndex = index;
+
+    for (const digit of pasted) {
+      if (writeIndex > 5) break;
+      newOtp[writeIndex] = digit;
+      writeIndex += 1;
+    }
+
+    setOtp(newOtp);
+
+    const focusIndex = Math.min(writeIndex, 5);
+    inputRefs.current[focusIndex]?.focus();
+  };
+
   return (
     <div className="flex gap-2 w-full items-center justify-center">
       {otp.map((digit, idx) => (
@@ -70,6 +92,7 @@ export function OtpCode({ otp, setOtp, onKeyEnter }: OtpCodeProps) {
           inputRef={(el) => (inputRefs.current[idx] = el)}
           onChange={(val) => handleChange(val, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
+          onPaste={(e) => handlePaste(e, idx)}
         />
       ))}
     </div>
