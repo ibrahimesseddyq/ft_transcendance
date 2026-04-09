@@ -15,6 +15,8 @@ export function Profile() {
   const env_main_api = import.meta.env.VITE_MAIN_API_URL;
   const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
+  const panelClassName = "rounded-xl border border-slate-200 bg-white shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900";
+
  
   useEffect(() => {
     const fetchUser = async () => {
@@ -87,7 +89,7 @@ export function Profile() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-3 sm:p-4 lg:p-6 overflow-y-auto no-scrollbar items-center w-full max-w-screen-2xl mx-auto">
+    <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-4 overflow-y-auto p-3 no-scrollbar transition-colors duration-300 sm:p-4 lg:p-6">
       <ToastContainer />
       
       <div className='w-full mt-4 sm:mt-8'>
@@ -95,13 +97,11 @@ export function Profile() {
       </div>
 
       <div className='w-full grid grid-cols-1 xl:grid-cols-5 gap-4'>
-        <div className='xl:col-span-3 p-2 sm:p-3 bg-surface-main dark:bg-secondary-darkbg border 
-          border-gray-200 dark:border-gray-800 rounded-xl transition-colors shadow-sm'>
+        <div className={`${panelClassName} xl:col-span-3 p-2 sm:p-3`}>
           <UserInfoCard profile={profile} user={user}/>
         </div>
 
-        <div className='xl:col-span-2 w-full p-2 sm:p-3 bg-surface-main dark:bg-secondary-darkbg border
-           border-gray-200 dark:border-gray-800 rounded-xl transition-colors shadow-sm'>
+        <div className={`${panelClassName} xl:col-span-2 w-full p-2 sm:p-3`}>
           {profile && <SkillsCard profile={profile} />}
         </div>
       </div>

@@ -72,9 +72,10 @@ export function Jobs() {
       {isAdminOrRecruiter && (
         <button 
           onClick={() => {setJobItem(null); setIsFormOpen(true)}}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 bg-accent hover:bg-[#0da371] text-white rounded-full shadow-lg transition-all flex items-center justify-center"
+          aria-label="Create new job"
+          className="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-white shadow-xl shadow-slate-900/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-800 active:translate-y-0 active:scale-95 dark:border-slate-600 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
         >
-          <Icon name='Plus' size={25} strokeWidth={3} />
+          <Icon name='Plus' size={22} strokeWidth={2.75} />
         </button>
       )}
     

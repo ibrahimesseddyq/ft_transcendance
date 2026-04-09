@@ -73,42 +73,44 @@ These Terms of Service were last updated on January 1, 2025.`,
 
 export function TermsOfService() {
   return (
-    <div className="w-full h-full overflow-y-auto custom-scrollbar p-4 md:p-6">
+    <div className="h-full w-full overflow-y-auto  p-4 transition-colors duration-300 custom-scrollbar md:p-6">
       {/* Hero */}
-      <div className="relative mb-8 rounded-2xl overflow-hidden bg-gradient-to-br from-primary to-[#0086b8] p-8 md:p-12 text-white shadow-lg">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '32px 32px' }}
-        />
-        <div className="relative z-10 flex flex-col gap-3 max-w-3xl">
-          <div className="inline-flex items-center gap-2">
-            <ScrollText size={28} />
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">Terms of Service</h1>
+      <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-200 bg-white p-7 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 md:p-10">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 opacity-90" />
+        <div className="flex max-w-3xl flex-col gap-3">
+          <div className="inline-flex items-center gap-3">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              <ScrollText size={20} />
+            </div>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl">Terms of Service</h1>
+              <p className="text-sm font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Hirefy legal terms</p>
+            </div>
           </div>
-          <p className="text-base md:text-lg opacity-90 font-medium">
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300 md:text-base">
             Please read these terms carefully before using the Hirefy platform. By using our services, you agree to these terms.
           </p>
         </div>
       </div>
 
       {/* Sections */}
-      <div className="flex flex-col gap-6 max-w-4xl mx-auto">
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
         {sections.map((section) => {
           const Icon = section.icon;
           return (
             <div
               key={section.title}
-              className="bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-slate-800 rounded-2xl p-6 transition-colors duration-300"
+              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10 text-primary">
-                  <Icon size={18} />
+              <div className="mb-4 flex items-center gap-2">
+                <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  <Icon size={17} />
                 </div>
-                <h2 className="text-lg font-bold text-black dark:text-surface-main tracking-wide">
+                <h2 className="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100">
                   {section.title}
                 </h2>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">
+              <p className="whitespace-pre-line text-sm leading-6 text-slate-600 dark:text-slate-300">
                 {section.content}
               </p>
             </div>

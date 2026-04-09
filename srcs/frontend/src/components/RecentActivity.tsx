@@ -8,13 +8,13 @@ export function RecentActivity({ activities }: { activities: any[] }) {
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
-      <header className="flex items-center justify-between h-full w-full max-h-16 sticky top-0 z-20 border-b border-gray-50 dark:border-slate-800">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-surface-main ml-5 m-3">
+      <header className="sticky top-0 z-20 flex h-full w-full max-h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800">
+        <h3 className="m-3 ml-5 text-base font-semibold text-slate-900 dark:text-slate-100">
           Recent Activity
         </h3>
       </header>
 
-      <div className="flex flex-col divide-y divide-gray-100 dark:divide-slate-800 overflow-auto custom-scrollbar">
+      <div className="flex flex-col divide-y divide-slate-200 overflow-auto custom-scrollbar dark:divide-slate-800">
         {activities && activities.length > 0 ? activities.map((item: any) => {
           const firstName = item.candidate?.firstName || 'Unknown';
           const lastName = item.candidate?.lastName || '';
@@ -25,33 +25,33 @@ export function RecentActivity({ activities }: { activities: any[] }) {
           return (
             <div 
               key={item.id} 
-              className="group p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors duration-200"
+              className="group p-4 transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
             >
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold text-sm">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                   {initials || <Icon name='User' size={16} />}
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-surface-main truncate">
+                    <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {fullName}
                     </p>
 
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                       item.status === "completed" 
-                        ? "bg-green-100 text-green-700 border-green-200" 
-                        : "bg-amber-100 text-amber-700 border-amber-200"
+                        ? "border-green-200 bg-green-100 text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300" 
+                        : "border-amber-200 bg-amber-100 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300"
                     }`}>
                       {item.status}
                     </span>
                   </div>
                     
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Applied for <span className="font-medium text-gray-800 dark:text-gray-200">{jobTitle}</span>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    Applied for <span className="font-medium text-slate-800 dark:text-slate-200">{jobTitle}</span>
                   </p>
                     
-                  <div className="flex items-center mt-2 text-xs text-gray-400 dark:text-gray-500">
+                  <div className="mt-2 flex items-center text-xs text-slate-500 dark:text-slate-400">
                     <Icon name='Clock' size={12} className="mr-1" />
                     {formatDate(item.appliedAt)}
                   </div>
@@ -60,7 +60,7 @@ export function RecentActivity({ activities }: { activities: any[] }) {
             </div>
           );
         }) : (
-            <div className="p-10 text-center text-gray-400 text-sm">No recent activity.</div>
+            <div className="p-10 text-center text-sm text-slate-500 dark:text-slate-400">No recent activity.</div>
         )}
       </div>
     </div>

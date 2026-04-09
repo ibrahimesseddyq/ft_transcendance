@@ -20,13 +20,13 @@ export function RecruitmentPieChart({ data }: { data: any[] }) {
 
   const renderLegendText = (value: string, entry: any) => {
     const count = entry.payload?.value ?? 0;
-    return <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{value} ({count})</span>;
+    return <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{value} ({count})</span>;
   };
 
   return (
     <div className="w-full h-full min-h-[400px] flex flex-col relative outline-none">
-      <header className="flex items-center justify-between w-full max-h-16 border-b border-gray-50 dark:border-slate-800">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-surface-main ml-5 m-3">
+      <header className="flex w-full max-h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800">
+        <h3 className="m-3 ml-5 text-base font-semibold text-slate-900 dark:text-slate-100">
           Recruitment Status
         </h3>
       </header>
@@ -91,10 +91,10 @@ export function RecruitmentPieChart({ data }: { data: any[] }) {
         </ResponsiveContainer>
             
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] pointer-events-none flex flex-col items-center">
-          <span className="text-3xl font-black text-gray-800 dark:text-white">
+          <span className="text-3xl font-black text-slate-900 dark:text-slate-100">
             {totalApps}
           </span>
-          <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+          <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400">
             Total
           </span>
         </div>

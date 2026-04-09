@@ -13,9 +13,23 @@ export function Header() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
   const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
 
-  const avatarUrl = profile?.user?.avatarUrl
-    ? `${BACKEND_URL}${profile.user?.avatarUrl}`
-    : "/default-avatar.png";
+  const avatarSource = user?.avatarUrl ?? profile?.user?.avatarUrl;
+  const avatarUrl = !avatarSource
+    ? '/icons/placeholder.jpg'
+    : String(avatarSource).startsWith('http')
+      ? String(avatarSource)
+      : `${BACKEND_URL}${avatarSource}`;
+
+  const Avatar = ({ className = '' }: { className?: string }) => (
+    <img
+      src={avatarUrl}
+      alt="Profile avatar"
+      onError={(event) => {
+        event.currentTarget.src = '/icons/placeholder.jpg';
+      }}
+      className={`h-8 w-8 rounded-full border-2 border-slate-800 object-cover bg-slate-100 dark:border-slate-200 md:h-10 md:w-10 ${className}`}
+    />
+  );
 
   const redirectPath = isAdminOrRecruiter ? "/Dashboard" : "/Jobs";
 
@@ -63,11 +77,7 @@ export function Header() {
         </button>
 
         {isAdminOrRecruiter ? (
-          <div
-            className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
-              border-gray-800 dark:border-slate-200 transition-all"
-            style={{ backgroundImage: `url("/recruiter.jpg")` }}
-          />
+          <Avatar />
         ) : (
           <Link to={`/Profile/${user?.id}`} className="flex items-center gap-2 md:gap-3 group">
             <div className="text-right hidden lg:block">
@@ -78,11 +88,7 @@ export function Header() {
                 @{user?.role}
               </p>
             </div>
-            <div
-              className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-cover bg-center border-2 
-                border-gray-800 dark:border-slate-200 group-hover:border-primary transition-all"
-              style={{ backgroundImage: `url("${avatarUrl}")` }}
-            />
+            <Avatar className="group-hover:border-primary transition-all" />
           </Link>
         )}
 

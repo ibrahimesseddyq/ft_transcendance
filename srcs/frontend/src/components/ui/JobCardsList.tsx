@@ -18,8 +18,8 @@ const JobCardsList = ({ jobsArray, currentPage, totalPages, setTotalPages, setJo
 
 
   return (
-    <div className="relative flex-1 h-full w-full overflow-auto no-scrollbar p-6 transition-colors duration-300">
-      <div className="flex flex-wrap gap-6 justify-center">
+    <div className="relative flex-1 h-full w-full overflow-auto no-scrollbar p-6 md:p-8 transition-colors duration-300">
+      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {jobsArray.length > 0 ? (
           jobsArray.map((item: any) => (
             <JobCard key={item.id}
@@ -30,7 +30,9 @@ const JobCardsList = ({ jobsArray, currentPage, totalPages, setTotalPages, setJo
               setIsFormOpen={setIsFormOpen}/>
           ))
         ) : (
-          <div className="text-center w-full py-10 text-gray-400">No jobs found.</div>
+          <div className="col-span-full rounded-xl border border-dashed border-slate-300 bg-white py-12 text-center text-sm font-medium text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+            No jobs found.
+          </div>
         )}
       </div>
 

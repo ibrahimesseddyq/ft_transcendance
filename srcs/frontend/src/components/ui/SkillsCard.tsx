@@ -9,8 +9,8 @@ const SkillsCard = ({ profile }: props) => {
   
   return (
     <div className="flex-1 w-full p-2 sm:p-3">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#00adef] font-semibold text-lg sm:text-xl flex items-center gap-2">Top Skills</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">Top Skills</h2>
       </div>
       
       {skills.length > 0 ? (
@@ -18,15 +18,14 @@ const SkillsCard = ({ profile }: props) => {
           {skills.map((skill: string, index: number) => (
             <span 
               key={`${skill}-${index}`} 
-              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-sky-50 text-sky-800 text-sm rounded-xl border border-sky-200
-                dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700"
+              className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
             >
               {skill}
             </span>
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 dark:text-slate-400 text-sm text-center mt-2">No skills available</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">No skills available</p>
       )}
     </div>
   );

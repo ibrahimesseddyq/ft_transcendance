@@ -6,8 +6,8 @@ export function ActiveCondidates({ data }: { data: any[] }) {
 
   return (
     <div className="flex flex-col w-full h-full overflow-hidden">
-      <header className="flex items-center justify-between p-5 border-b border-gray-50 dark:border-slate-800">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-surface-main">
+      <header className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-800">
+        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
           Active Candidates
         </h3>
       </header>
@@ -20,7 +20,7 @@ export function ActiveCondidates({ data }: { data: any[] }) {
           return (
             <div 
               key={item.id}
-              className="flex items-center border border-gray-100 dark:border-slate-800 rounded-xl p-3 justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-all"
+              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800/50"
             >
               <div className="flex gap-3 items-center">
                 <div className="relative shrink-0 h-11 w-11">
@@ -33,7 +33,7 @@ export function ActiveCondidates({ data }: { data: any[] }) {
                     />
                   )}
 
-                  <div className="h-11 w-11 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center border-2 border-white dark:border-slate-700 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-slate-100 text-xs font-bold uppercase text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                     {initials || <Icon name='User' size={18} />}
                   </div>
 
@@ -44,16 +44,16 @@ export function ActiveCondidates({ data }: { data: any[] }) {
                 </div>
 
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm text-gray-900 dark:text-surface-main font-bold truncate">
+                  <span className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
                     {item.firstName} {item.lastName}
                   </span>
-                  <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {item.currentTitle || 'Candidate'} • <span className="text-gray-400 dark:text-gray-500">{item.jobTitle}</span>
+                  <span className="truncate text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    {item.currentTitle || 'Candidate'} • <span className="text-slate-400 dark:text-slate-500">{item.jobTitle}</span>
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-slate-800/50">
+              <div className="flex items-center rounded-lg bg-slate-50 px-2 py-1 dark:bg-slate-800/50">
                 <span className={`text-[10px] font-black uppercase tracking-wider ${
                   item.applicationStatus === 'inProgress' ? 'text-amber-600' : 'text-green-600'
                 }`}>
@@ -63,7 +63,7 @@ export function ActiveCondidates({ data }: { data: any[] }) {
             </div>
           );
         }) : (
-          <div className="p-10 text-center text-gray-400 text-sm">No active candidates.</div>
+          <div className="p-10 text-center text-sm text-slate-500 dark:text-slate-400">No active candidates.</div>
         )}
       </div>
     </div>

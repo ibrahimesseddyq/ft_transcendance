@@ -1,5 +1,4 @@
 import Notification from "@/utils/TostifyNotification";
-import { useNavigate } from "react-router-dom";
 import { useAuthStore } from '@/utils/ZuStand';
 import { mainService } from '@/utils/Api';
 import { JobPhaseManager } from "./JobPhaseManager";
@@ -15,7 +14,6 @@ interface props {
 }
 
 const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: props) =>{
-    const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
     const isAdminOrRecruiter = ["admin", "recruiter"].includes(user?.role ?? "");
     const env_main_api = import.meta.env.VITE_MAIN_API_URL;
@@ -43,74 +41,69 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
             Notification("Error Deleting job", "error");
         }
     };
+    const statusTheme =
+      job.status === "closed"
+        ? "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300"
+        : job.status === "archived"
+          ? "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+          : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300";
+
     return (
-        <div
-              className="relative flex flex-col w-full md:w-[350px]
-                bg-surface-main dark:bg-[#0b1729] border border-gray-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+        <article
+              className="group relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
             >
 
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 opacity-90" />
+
               {/* Status Badge */}
-              <div className="absolute top-3 right-3 flex items-center gap-2">
-                {job.status === "closed" ? (
-                  <span className="rounded-full border border-red-500/50 bg-red-500/10 text-red-500 
-                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    CLOSED
-                  </span>
-                ) : job.status === "archived" ? (
-                  <span className="rounded-full border border-gray-500/50 bg-gray-500/10 text-gray-500 
-                      text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse" />
-                    ARCHIVED
-                  </span>
-                ) : (
-                  <span className="rounded-full border border-primary/50 bg-primary/10 text-primary 
-                    text-[10px] font-bold backdrop-blur-sm px-2 py-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    OPEN
-                  </span>
-                )}
+              <div className="absolute right-4 top-4 flex items-center gap-2">
+                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusTheme}`}>
+                  <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                  {job.status || "open"}
+                </span>
               </div>
 
               {/* Icon & Title */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 flex items-center justify-center text-primary">
-                   <Icon name='ScreenShare' className="w-10 h-10"/>
+              <div className="mb-4 mt-2 flex items-start gap-3 pr-24">
+                <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                   <Icon name='ScreenShare' className="h-5 w-5"/>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-surface-main truncate">{job.title}</h2>
+                <div className="min-w-0">
+                  <h2 className="truncate text-base font-semibold text-slate-900 dark:text-slate-100">{job.title}</h2>
+                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{job.department || "General Department"}</p>
+                </div>
               </div>
 
 
               {/* Meta Info Slots */}
-              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400 text-xs font-medium mb-4">
-                <div className="flex items-center gap-1">
+              <div className="mb-4 grid grid-cols-1 gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+                <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 dark:border-slate-700 dark:bg-slate-800/80">
                   <Icon name='Briefcase' size={14} />
-                  <span className="truncate">{job.employmentType}</span>
+                  <span className="truncate">{job.employmentType || "Not specified"}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 dark:border-slate-700 dark:bg-slate-800/80">
                   <Icon name='MapPin' size={14} />
                   <span className="truncate">{job.isRemote ? "Remote" : "On site"}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="inline-flex w-fit items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 dark:border-slate-700 dark:bg-slate-800/80">
                   <Icon name='BarChart3' size={14} />
-                  <span className="truncate">{job.department}</span>
+                  <span className="truncate">{job.department || "Department"}</span>
                 </div>
               </div>
 
-              <hr className="border-gray-100 dark:border-slate-800 mb-4" />
+              <hr className="mb-4 border-slate-200 dark:border-slate-800" />
 
               {/* Description */}
-              <div className="relative max-h-24 overflow-hidden text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              <div className="relative mb-4 min-h-[78px] max-h-24 overflow-hidden text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
                 <p>{job.description}</p>
-                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-surface-main dark:from-secondary-darkbg to-transparent"></div>
+                <div className="absolute bottom-0 h-12 w-full bg-gradient-to-t from-white to-transparent dark:from-slate-900" />
               </div>
 
               {/* Skills Tags */}
               {job.skills?.length
-                ? <div className="flex flex-wrap gap-2 mb-6">
+                ? <div className="mb-6 flex flex-wrap gap-2">
                     {job.skills?.split(',').slice(0, 4).map((tag: string, i: number) => (
-                      <span key={i} className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 
-                        text-[10px] font-bold rounded-full max-w-[80px] truncate border border-blue-100 dark:border-blue-800/50">
+                      <span key={i} className="max-w-[110px] truncate rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                         {tag.trim()}
                       </span>
                     ))}
@@ -118,13 +111,12 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
                 : null
                }
 
-              <hr className="border-gray-100 dark:border-slate-800 mb-6" />
+              <hr className="mb-5 border-slate-200 dark:border-slate-800" />
 
               {/* Footer Actions */}
-              <div className="flex items-center justify-between mt-auto gap-2">
+              <div className="mt-auto flex items-center justify-between gap-2">
                 <Link to={`/Jobdescription/${job?.id}`} 
-                  className="px-4 py-2 border-2 border-[#3B5998] dark:border-blue-500 text-[#3B5998] dark:text-blue-400 text-xs font-bold 
-                    rounded-xl hover:bg-[#3B5998] hover:text-surface-main transition-all active:scale-95 whitespace-nowrap"
+                  className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 whitespace-nowrap"
                 >
                   Details
                 </Link>
@@ -137,20 +129,20 @@ const JobCard = ({job, setTotalPages, setJobItem, setJobsArray, setIsFormOpen}: 
                   </>
                 )}
 
-                <div className="flex items-center gap-2 text-gray-500">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-300">
                   {isAdminOrRecruiter && (
                     <>
-                      <button onClick={() => { setJobItem(job); setIsFormOpen(true); }} className="hover:text-primary">
+                      <button onClick={() => { setJobItem(job); setIsFormOpen(true); }} className="rounded-md p-1.5 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100">
                         <Icon name='SquarePen' size={16} />
                       </button>
-                      <button onClick={() => DeleteJob(job.id)} className="hover:text-red-500">
+                      <button onClick={() => DeleteJob(job.id)} className="rounded-md p-1.5 transition-colors hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-300">
                         <Icon name='Trash' size={16} />
                       </button>
                     </>
                   )}
                 </div>
               </div>
-        </div>
+        </article>
     );
 }
 

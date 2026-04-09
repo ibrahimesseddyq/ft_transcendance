@@ -118,8 +118,7 @@ const SectionCard = ({
   className?: string;
 }) => (
   <div
-    className={`bg-surface-main dark:bg-secondary-darkbg border border-gray-200 dark:border-slate-800
-      rounded-2xl p-6 transition-colors duration-300 ${className}`}
+    className={`rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 ${className}`}
   >
     {children}
   </div>
@@ -132,11 +131,11 @@ const SectionTitle = ({
   icon: React.ElementType;
   label: string;
 }) => (
-  <div className="flex items-center gap-2 mb-5">
-    <div className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10 text-primary">
+  <div className="mb-4 flex items-center gap-2">
+    <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
       <Icon size={18} />
     </div>
-    <h2 className="text-lg font-bold text-black dark:text-surface-main tracking-wide">{label}</h2>
+    <h2 className="text-base font-semibold tracking-wide text-slate-900 dark:text-slate-100">{label}</h2>
   </div>
 );
 
@@ -146,24 +145,20 @@ export function AboutUs() {
   const isAdminOrRecruiter = ["admin", "recruiter"].includes((user as any)?.role ?? "");
 
   return (
-    <div className="w-full h-full overflow-y-auto custom-scrollbar p-4 md:p-6">
+    <div className="h-full w-full overflow-y-auto p-4 transition-colors duration-300 custom-scrollbar md:p-6">
 
       {/* Hero banner */}
-      <div className="relative mb-8 rounded-2xl overflow-hidden bg-gradient-to-br from-primary to-[#0086b8] p-8 md:p-12 text-white shadow-lg">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '32px 32px' }}
-        />
-        <div className="relative z-10 flex flex-col gap-3 max-w-3xl">
-          <span className="text-xs font-bold uppercase tracking-widest opacity-80">v{aboutUs.version}</span>
-          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">{aboutUs.name}</h1>
-          <p className="text-base md:text-lg opacity-90 font-medium">{aboutUs.tagline}</p>
+      <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-200 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-10">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-slate-500 via-slate-600 to-slate-500 opacity-90" />
+        <div className="flex flex-col gap-3 max-w-3xl">
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Version {aboutUs.version}</span>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl">{aboutUs.name}</h1>
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300 md:text-base">{aboutUs.tagline}</p>
           <a
             href={aboutUs.contact.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 self-start text-sm font-semibold
-              bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-xl"
+            className="mt-2 inline-flex items-center gap-2 self-start rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
           >
             <Github size={16} />
             View on GitHub
@@ -179,7 +174,7 @@ export function AboutUs() {
           {/* Description */}
           <SectionCard>
             <SectionTitle icon={Info} label="About" />
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
               {aboutUs.description}
             </p>
           </SectionCard>
@@ -187,7 +182,7 @@ export function AboutUs() {
           {/* Mission */}
           <SectionCard>
             <SectionTitle icon={Target} label="Our Mission" />
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
               {aboutUs.mission}
             </p>
           </SectionCard>
@@ -198,8 +193,8 @@ export function AboutUs() {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {aboutUs.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-accent" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+                  <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-slate-500 dark:text-slate-400" />
+                  <span className="text-sm leading-6 text-slate-600 dark:text-slate-300">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -216,23 +211,23 @@ export function AboutUs() {
               {aboutUs.team.map((member, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-700"
+                  className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/70"
                 >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-primary font-bold text-sm">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       {member.name.charAt(0)}
                     </span>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-black dark:text-surface-main truncate">
+                    <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {member.name}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{member.role}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{member.role}</p>
                     <a
                       href={member.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-0.5"
+                      className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                     >
                       <Github size={12} />
                       GitHub
@@ -252,8 +247,8 @@ export function AboutUs() {
                 return (
                   <div key={category}>
                     <div className="flex items-center gap-1.5 mb-2">
-                      <CategoryIcon size={14} className="text-primary" />
-                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <CategoryIcon size={14} className="text-slate-500 dark:text-slate-400" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         {category}
                       </span>
                     </div>
@@ -261,7 +256,7 @@ export function AboutUs() {
                       {items.map((tech) => (
                         <span
                           key={tech}
-                          className="text-xs px-2.5 py-1 rounded-lg bg-primary/10 text-primary font-medium"
+                          className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                         >
                           {tech}
                         </span>
