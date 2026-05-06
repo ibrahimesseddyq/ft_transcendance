@@ -10,6 +10,11 @@ export const submitApplication = async (data, io) => {
 	const job = await jobService.getJobById(data.jobId);
 	if (!job || !job.jobPhases || job.jobPhases.length === 0 || job.status != 'open')
 		throw new HttpException(400, 'cannot apply to this job');
+	// Only block if there is already an active (pending, inProgress, or accepted) application;
+	// completed/rejected/withdrawn ones allow a new contract to be created.
+	const existingApplication = await applicationRepository.getApplicationByJobAndCondidate(data.jobId, data.candidateId);
+	if (existingApplication)
+		throw new HttpException(409, 'An active application for this job already exists');
 	const application = await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
 			include: {

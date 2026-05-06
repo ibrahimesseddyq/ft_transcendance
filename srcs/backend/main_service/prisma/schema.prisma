@@ -88,7 +88,7 @@ model Application {
   jobPhase          JobPhase?          @relation(fields: [jobPhaseId], references: [id])
   jobPhaseId        String?            @db.Char(36)
 
-  @@unique([jobId, candidateId])
+  @@index([jobId, candidateId])
   @@index([currentPhaseId])
   @@index([candidateId])
   @@index([jobId])
