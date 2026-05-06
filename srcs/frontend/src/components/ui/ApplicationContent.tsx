@@ -69,6 +69,7 @@ const ApplicationContent = ({ Title, applications }: Props) => {
                 <UserCard 
                   candidateId={item.candidateId}
                   applicationId={item.id}
+                  application={item}
                 />
               </div>
             ))

@@ -72,3 +72,17 @@ export const advance = asyncHandler( async (req, res, next) => {
     })
 })
 
+export const setContractEndDate = asyncHandler(async (req, res, next) => {
+    const id = req.params?.id;
+    const { contractEndDate } = req.body;
+    const updated = await applicationService.setContractEndDate(id, contractEndDate);
+    res.status(200).json({ success: true, data: updated });
+});
+
+export const renewApplication = asyncHandler(async (req, res, next) => {
+    const id = req.params?.id;
+    const io = req.app.get('io');
+    const newApplication = await applicationService.renewApplication(id, io);
+    res.status(201).json({ success: true, data: newApplication });
+});
+

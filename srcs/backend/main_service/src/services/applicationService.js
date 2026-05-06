@@ -177,3 +177,21 @@ export const getCurrentPhase = async (applicationId) => {
     	throw new HttpException(404, 'No active phase for this application');
 	return await applicationPhaseservice.getApplicaticationPhaseById(application.currentPhaseId);
 }
+
+export const setContractEndDate = async (applicationId, contractEndDate) => {
+	const application = await applicationRepository.getApplicaticationById(applicationId);
+	if (!application) throw new HttpException(404, 'application not found');
+	if (application.status !== 'accepted')
+		throw new HttpException(400, 'Contract end date can only be set on accepted applications');
+	return await applicationRepository.updateApplication(applicationId, {
+		contractEndDate: contractEndDate ? new Date(contractEndDate) : null
+	});
+};
+
+export const renewApplication = async (applicationId, io) => {
+	const original = await applicationRepository.getApplicaticationById(applicationId);
+	if (!original) throw new HttpException(404, 'application not found');
+	if (original.status !== 'accepted')
+		throw new HttpException(400, 'Can only renew accepted applications');
+	return await submitApplication({ jobId: original.jobId, candidateId: original.candidateId }, io);
+};
