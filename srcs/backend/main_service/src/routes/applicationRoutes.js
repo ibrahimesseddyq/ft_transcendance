@@ -13,6 +13,9 @@ router.get('/:id',
         applicationController.getApplicationPhases)
     .post('/', 
         applicationController.submitApplication)
+    .post('/:id/renew',
+        verifyRoles([UserRole.recruiter]),
+        applicationController.renewApplication)
     .patch('/:id/withdraw',
         verifyRoles([UserRole.candidate]),
         applicationController.withdrawApplication)
@@ -22,5 +25,8 @@ router.get('/:id',
     .patch('/:id/advance',
         verifyRoles([UserRole.recruiter]),
         applicationController.advance)
+    .patch('/:id/contract-end',
+        verifyRoles([UserRole.recruiter]),
+        applicationController.setContractEndDate)
 
 export default router

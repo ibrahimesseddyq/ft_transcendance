@@ -50,6 +50,6 @@ export const getApplicatications = async (skip = 0, take = 100, filters = {}) =>
 
 export const getApplicationByJobAndCondidate = async(jobId, candidateId) => {
 	return await prisma.application.findFirst({
-    	where: { jobId, candidateId }
-});
+    	where: { jobId, candidateId, status: { in: ['pending', 'inProgress', 'accepted'] } }
+	});
 }

@@ -73,13 +73,14 @@ model ApplicationPhase {
 }
 
 model Application {
-  id             String             @id @default(dbgenerated("(uuid())")) @db.Char(36)
-  jobId          String             @db.Char(36)
-  candidateId    String             @db.Char(36)
-  status         ApplicationStatus? @default(pending)
-  currentPhaseId String?            @db.Char(36)
-  appliedAt      DateTime?          @default(now()) @db.Timestamp(0)
-  updatedAt      DateTime?          @default(now()) @db.Timestamp(0)
+  id              String             @id @default(dbgenerated("(uuid())")) @db.Char(36)
+  jobId           String             @db.Char(36)
+  candidateId     String             @db.Char(36)
+  status          ApplicationStatus? @default(pending)
+  currentPhaseId  String?            @db.Char(36)
+  appliedAt       DateTime?          @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime?          @default(now()) @db.Timestamp(0)
+  contractEndDate DateTime?          @db.Date
 
   applicationPhases ApplicationPhase[]
   job               Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -88,7 +89,7 @@ model Application {
   jobPhase          JobPhase?          @relation(fields: [jobPhaseId], references: [id])
   jobPhaseId        String?            @db.Char(36)
 
-  @@unique([jobId, candidateId])
+  @@index([jobId, candidateId])
   @@index([currentPhaseId])
   @@index([candidateId])
   @@index([jobId])

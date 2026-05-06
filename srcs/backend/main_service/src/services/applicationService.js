@@ -10,6 +10,11 @@ export const submitApplication = async (data, io) => {
 	const job = await jobService.getJobById(data.jobId);
 	if (!job || !job.jobPhases || job.jobPhases.length === 0 || job.status != 'open')
 		throw new HttpException(400, 'cannot apply to this job');
+	// Only block if there is already an active (pending, inProgress, or accepted) application;
+	// completed/rejected/withdrawn ones allow a new contract to be created.
+	const existingApplication = await applicationRepository.getApplicationByJobAndCondidate(data.jobId, data.candidateId);
+	if (existingApplication)
+		throw new HttpException(409, 'An active application for this job already exists');
 	const application = await prisma.$transaction( async (tx) => {
 		const application = await tx.application.create({data,
 			include: {
@@ -172,3 +177,21 @@ export const getCurrentPhase = async (applicationId) => {
     	throw new HttpException(404, 'No active phase for this application');
 	return await applicationPhaseservice.getApplicaticationPhaseById(application.currentPhaseId);
 }
+
+export const setContractEndDate = async (applicationId, contractEndDate) => {
+	const application = await applicationRepository.getApplicaticationById(applicationId);
+	if (!application) throw new HttpException(404, 'application not found');
+	if (application.status !== 'accepted')
+		throw new HttpException(400, 'Contract end date can only be set on accepted applications');
+	return await applicationRepository.updateApplication(applicationId, {
+		contractEndDate: contractEndDate ? new Date(contractEndDate) : null
+	});
+};
+
+export const renewApplication = async (applicationId, io) => {
+	const original = await applicationRepository.getApplicaticationById(applicationId);
+	if (!original) throw new HttpException(404, 'application not found');
+	if (original.status !== 'accepted')
+		throw new HttpException(400, 'Can only renew accepted applications');
+	return await submitApplication({ jobId: original.jobId, candidateId: original.candidateId }, io);
+};
